@@ -6,5 +6,5 @@ void DialogButton::onMouseAccessState(MouseMoveType type, CCPoint location) {
 	}
 	else {
 		this->onMouseExit();
-	}
+}
 };
