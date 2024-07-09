@@ -1,6 +1,10 @@
-void DialogButton::setMouseListener()
-{
-    // Create a mouse listener
-    mouseListener->onMouseMove = CC_CALLBACK_1(DialogButton::onMouseMove, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
-}
+#include "DialogButton.hpp"
+
+void DialogButton::onMouseAccessState(MouseMoveType type, CCPoint location) {
+	if (type == MouseMoveType::Enter) {
+		this->onMouseEnter();
+	}
+	else {
+		this->onMouseExit();
+	}
+};

@@ -8,11 +8,15 @@ using namespace geode::prelude;
 
 class DialogButton : public CCMenuItem {
 private:
-	EventListener<MouseMoveFilter> m_listener = {
-		this, 
+	EventListener<MouseEnterExitFilter> m_listener = {
+		this, &DialogButton::onMouseAccessState,
+		MouseEnterExitFilter(this, false)
 	};
 
-	void onMouse
+	void onMouseAccessState(MouseMoveType type, CCPoint location);
+
+	void onMouseEnter();
+	void onMouseExit();
 };
 
 #endif
