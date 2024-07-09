@@ -1,9 +1,9 @@
 #include "Triangles.hpp"
 #include "../../utils.hpp"
 
-Triangles* Triangles::create(CCSize size) {
+Triangles* Triangles::create(CCSize size, int quantity, ccColor3B baseColor) {
     auto ret = new Triangles();
-    if (ret && ret->init(size)) {
+    if (ret && ret->init(size, quantity, baseColor)) {
         ret->autorelease();
     }
     else {
@@ -13,8 +13,9 @@ Triangles* Triangles::create(CCSize size) {
     return ret;
 }
 
-bool Triangles::init(CCSize size) {
-    int triangles = 45;
+bool Triangles::init(CCSize size, int quantity, ccColor3B color) {
+    m_color = color;
+    int triangles = quantity;
 
     this->setContentSize(size);
     for (int idc = 0; idc < triangles; idc++) {
@@ -55,8 +56,9 @@ void Triangles::assignAction(CCNode* node, float startTime) {
 }
 CCSprite* Triangles::makeTriangle() {
     auto s = CCSprite::createWithSpriteFrameName("tri_fill.png"_spr);
-    int shiftValue = randomFloat() * 10;
-    s->setColor(ccc3(30+shiftValue, 23+shiftValue, 30+shiftValue));
+    int shiftValue = randomFloat()*10;
+    s->setColor(ccc3(m_color.r+shiftValue, m_color.g + shiftValue, m_color.b + shiftValue));
+    
     auto size = randomFloat() * 2+0.5;
     if (size == 0) { size = 1; }
     s->setScale(size);

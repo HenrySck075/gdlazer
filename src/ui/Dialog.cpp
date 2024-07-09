@@ -36,7 +36,13 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     // convenience function provided by Popup
     // for adding/setting a title to the popup
     this->setTitle(title);
-
+    m_bodyLayout = CCLayer::create();
+    m_bodyLayout->setContentSize(m_bgSprite->getContentSize());
+    m_bodyLayout->setAnchorPoint(ccp(0.5, 0.5));
+    m_bodyLayout->setPosition(m_mainLayer->getPosition());
+    m_bodyLayout->ignoreAnchorPointForPosition(false);
+    m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(0));
+    this->addChild(m_bodyLayout);
 
     auto contentSize = m_bgSprite->getContentSize();
     auto batchNode = getChildOfType<CCSpriteBatchNode*>(m_mainLayer,0);
@@ -51,10 +57,9 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     m_bgSprite->removeFromParent();
     m_mainLayer->addChild(m_bgSpriteClip);
 
-    m_bgSpriteClip->addChild(Triangles::create(contentSize));
+    m_bgSpriteClip->addChild(Triangles::create(contentSize,45,ccc3(30,23,30)));
 
-    m_title->limitLabelWidth(contentSize.width - 2.f, 1.f, .1f);
-    m_title->setScale(0.6);
+    //m_title->limitLabelWidth(contentSize.width - 2.f, 1.f, .1f);
     
     m_title->setPositionY(m_title->getPositionY() - 71);
     m_title->setFntFile("torus-regular.fnt"_spr);
@@ -62,7 +67,14 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     auto label = CCLabelBMFont::create(content.c_str(), "torus-regular.fnt"_spr);
     label->setPosition(m_title->getPosition()-CCPoint{0,12});
     label->setScale(0.4);
-    m_mainLayer->addChild(label);
+    m_title->setScale(0.6);
+
+    m_title->removeFromParent();
+    m_bodyLayout->addChild(m_title);
+    m_bodyLayout->addChild(label);
+
+    m_bodyLayout->updateLayout();
+    label->limitLabelWidth(contentSize.width - 2.f, 0.4f, .1f);
 
     this->setOpacity(0);
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-in.wav"_spr);

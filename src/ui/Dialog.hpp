@@ -3,13 +3,16 @@
 
 #include "Geode/Geode.hpp"
 #include "../utils.hpp"
+#include "../helpers/colors.hpp"
 #include "deco/Triangles.hpp"
+// #include "DialogButton.hpp"
 
 using namespace geode::prelude;
 
 class osuDialog : public geode::Popup<std::string const&, std::string const&> {
 private:
     CCClippingNode* m_bgSpriteClip;
+    CCLayer* m_bodyLayout;
 protected:
     bool setup(std::string const& title, std::string const& content) override;
 
@@ -20,7 +23,7 @@ public:
     void show();
     static osuDialog* create(std::string const& title, std::string const& content) {
         auto ret = new osuDialog();
-        if (ret->init(220.f, 200.f, title, content, "dialog.png"_spr)) {
+        if (ret->initAnchored(220.f, 200.f, title, content, "dialog.png"_spr)) {
             ret->autorelease();
             return ret;
         }

@@ -12,10 +12,11 @@ add_library(${PROJECT_NAME} SHARED
     # Add any extra C++ source files here
     src/intro/IntroTriangles.hpp src/intro/IntroTriangles.cpp
     src/utils.cpp src/utils.hpp  
-    src/LabelBMFont.cpp 
+    # src/LabelBMFont.cpp 
 
     src/helpers/CustomActions.cpp src/helpers/CustomActions.hpp 
     src/helpers/MouseEvent.hpp src/helpers/MouseEvent.cpp
+    src/helpers/colors.hpp
 
     src/ui/Dialog.hpp src/ui/Dialog.cpp
     src/ui/DialogButton.cpp src/ui/DialogButton.hpp

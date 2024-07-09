@@ -7,7 +7,9 @@ using namespace geode::prelude;
 
 class Triangles : public CCLayer {
 private:
-	bool init(CCSize size);
+	ccColor3B m_color;
+
+	bool init(CCSize size, int quantity, ccColor3B color);
 
 	// TODO: tweak this because cocos2d space is not based on real window size
 	float triangle_size = 100;
@@ -18,7 +20,7 @@ private:
 	// mf crashes when the node does not have a parent :laugh:
 	void assignAction(CCNode* node, float startTime);
 public:
-	static Triangles* create(CCSize size);
+	static Triangles* create(CCSize size, int quantity, ccColor3B baseColor);
 };
 
 #endif

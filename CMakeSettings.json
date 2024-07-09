@@ -26,6 +26,11 @@
           "name": "GEODE_CLI",
           "value": "C:/Users/email/geode/geode.exe",
           "type": "FILEPATH"
+        },
+        {
+          "name": "SKIP_BUILDING_CODEGEN",
+          "value": "OFF",
+          "type": "BOOL"
         }
       ]
     }

@@ -29,6 +29,6 @@ ListenerResult MouseEnterExitFilter::handle(MiniFunction<MouseEnterExitFilter::C
 class $modify(CCEGLView) {
 	void onGLFWMouseMoveCallback(GLFWwindow * window, double x, double y) {
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
-		MouseMoveEvent(CCPoint{ x,y }).post();
+		MouseMoveEvent(CCPoint{ (float)x, (float)y }).post();
 	};
 };
