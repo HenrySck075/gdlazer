@@ -76,6 +76,8 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     m_bodyLayout->updateLayout();
     label->limitLabelWidth(contentSize.width - 2.f, 0.4f, .1f);
 
+
+    m_bodyLayout->addChild(DialogButton::create("my mom called me for dinner", dialog_button_primary));
     this->setOpacity(0);
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-in.wav"_spr);
     return true;

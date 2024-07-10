@@ -1,7 +1,7 @@
 #include "DialogButton.hpp"
 #include "../utils.hpp"
 
-DialogButton* DialogButton::create(std::string& label, ccColor3B color) {
+DialogButton* DialogButton::create(const char* label, ccColor3B color) {
     auto ret = new DialogButton();
     if (ret && ret->init(label, color)) {
         ret->autorelease();
@@ -13,22 +13,24 @@ DialogButton* DialogButton::create(std::string& label, ccColor3B color) {
     return ret;
 }
 
-bool DialogButton::init(std::string& label, ccColor3B color) {
+bool DialogButton::init(const char* label, ccColor3B color) {
     m_color = color;
     this->setContentSize(CCSize{ 6.f,height });
     auto d = CCDrawNode::create();
-    d->setID("dialogbutton-background");
+    d->setID("dialogbutton_background");
+    //d->setContentSize(CCSize{ 6.f,height });
 
     auto clipNode = CCClippingNode::create();
     clipNode->setID("dialogbutton-clipnode");
     clipNode->addChild(Triangles::create(d->getContentSize(),4,color));
 
-    auto j = CCLabelBMFont::create(label.c_str(), "torus-bold.fnt"_spr);
+    auto j = CCLabelBMFont::create(label, "torus-bold.fnt"_spr);
     j->setID("dialogbutton-label");
     j->setAnchorPoint(ccp(0.5, 0.5));
 
-    this->addChild(clipNode);
     this->addChild(d);
+    this->addChild(clipNode);
+    this->addChild(j);
     this->redraw();
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
@@ -36,8 +38,8 @@ bool DialogButton::init(std::string& label, ccColor3B color) {
 }
 
 void DialogButton::redraw() {
-    auto d = static_cast<CCDrawNode*>(this->getChildByID("dialogbutton-background"));
-    d->clear();
+    auto d = static_cast<CCDrawNode*>(this->getChildByID("dialogbutton_background"));
+    //d->clear();
     d->setContentSize(this->getContentSize());
     auto color = m_color;
     auto color4F = ccColor4F{ rgbColor(color.r,color.g,color.b),1.f };

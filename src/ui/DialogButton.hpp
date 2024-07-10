@@ -9,24 +9,26 @@ using namespace geode::prelude;
 
 class DialogButton : public CCMenuItem {
 private:
-	float height = 12;
-	ccColor3B m_color;
-
+	/*
 	EventListener<MouseEnterExitFilter> m_listener = {
 		this, &DialogButton::onMouseAccessState,
 		MouseEnterExitFilter(this, false)
 	};
+	*/
 
-	void onMouseAccessState(MouseMoveType type, CCPoint location);
+	float height = 12;
+	ccColor3B m_color;
+
+	void onMouseAccessState(MouseMoveType, CCPoint);
 
 	void onMouseEnter();
 	void onMouseExit();
-	bool init(std::string& label, ccColor3B color);
+	bool init(const char* label, ccColor3B color);
 	void redraw();
 	void setContentSize(const CCSize& size);
 
 public:
-	static DialogButton* create(std::string& label, ccColor3B color);
+	static DialogButton* create(const char* label, ccColor3B color);
 	void setParent(CCNode* parent);
 };
 

@@ -5,7 +5,7 @@
 #include "../utils.hpp"
 #include "../helpers/colors.hpp"
 #include "deco/Triangles.hpp"
-// #include "DialogButton.hpp"
+#include "DialogButton.hpp"
 
 using namespace geode::prelude;
 
@@ -20,7 +20,7 @@ protected:
     void onClose(cocos2d::CCObject*) override;
 
 public:
-    void show();
+    void show() override;
     static osuDialog* create(std::string const& title, std::string const& content) {
         auto ret = new osuDialog();
         if (ret->initAnchored(220.f, 200.f, title, content, "dialog.png"_spr)) {
