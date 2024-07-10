@@ -4,12 +4,57 @@
 #include <Geode/Geode.hpp>
 #include "intro/IntroTriangles.hpp"
 #include "ui/Dialog.hpp"
+#include "helpers/MouseEvent.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
  */
 using namespace geode::prelude;
 
+#include <Geode/modify/CCDrawNode.hpp>
+class $modify(CCDrawNode2, CCDrawNode) {
+	void render() {
+		auto curProg = GL_CURRENT_PROGRAM;
+		
+		glProgramUniform1f(curProg, glGetUniformLocation(curProg, "u_alpha"), _displayedOpacity / 255.0);
+		if (m_bDirty)
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_uVbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(ccV2F_C4B_T2F) * m_uBufferCapacity, m_pBuffer, GL_STREAM_DRAW);
+			m_bDirty = false;
+		}
+#if CC_TEXTURE_ATLAS_USE_VAO     
+		ccGLBindVAO(m_uVao);
+#else
+		ccGLEnableVertexAttribs(kCCVertexAttribFlag_PosColorTex);
+		glBindBuffer(GL_ARRAY_BUFFER, m_uVbo);
+		// vertex
+		glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, sizeof(ccV2F_C4B_T2F), (GLvoid*)offsetof(ccV2F_C4B_T2F, vertices));
+
+		// color
+		glVertexAttribPointer(kCCVertexAttrib_Color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ccV2F_C4B_T2F), (GLvoid*)offsetof(ccV2F_C4B_T2F, colors));
+
+		// texcood
+		glVertexAttribPointer(kCCVertexAttrib_TexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(ccV2F_C4B_T2F), (GLvoid*)offsetof(ccV2F_C4B_T2F, texCoords));
+#endif
+
+		glDrawArrays(GL_TRIANGLES, 0, m_nBufferCount);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		CC_INCREMENT_GL_DRAWS(1);
+		CHECK_GL_ERROR_DEBUG();
+	};
+	/*
+	void draw()
+	{
+		
+		CC_NODE_DRAW_SETUP();
+		ccGLBlendFunc(m_sBlendFunc.src, m_sBlendFunc.dst);
+
+		CCDrawNode2::renderOpacity();
+	}
+	*/
+};
 
 /**
  * `$modify` lets you extend and modify GD's classes.
@@ -108,4 +153,12 @@ class $modify(MyMenuLayer, MenuLayer) {
 	void onMyButton2(CCObject*) {
 		osuDialog::create("Are you sure you want to exit GD?","Last chance to turn back")->show();
 	}
+};
+
+#include <Geode/modify/CCEGLView.hpp>
+class $modify(CCEGLView) {
+	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
+		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
+		MouseMoveEvent(CCPoint{ (float)x, (float)y }).post();
+	};
 };

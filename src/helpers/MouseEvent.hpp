@@ -29,7 +29,6 @@ public:
     using Callback = void(CCPoint);
 
     ListenerResult handle(MiniFunction<Callback> fn, MouseMoveEvent* event);
-    MouseMoveFilter() {};
     MouseMoveFilter(CCNode* target, bool keepPropangating) {
         m_target = target;
         m_keepPropangating = keepPropangating;
@@ -55,4 +54,5 @@ public:
         m_keepPropangating = keepPropangating;
     };
 };
+
 #endif

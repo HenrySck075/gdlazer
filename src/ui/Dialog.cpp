@@ -39,10 +39,10 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     m_bodyLayout = CCLayer::create();
     m_bodyLayout->setContentSize(m_bgSprite->getContentSize());
     m_bodyLayout->setAnchorPoint(ccp(0.5, 0.5));
-    m_bodyLayout->setPosition(m_mainLayer->getPosition());
+    //m_bodyLayout->setPosition(m_bgSprite->getPosition());
     m_bodyLayout->ignoreAnchorPointForPosition(false);
-    m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(0));
-    this->addChild(m_bodyLayout);
+    m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(0)->setAxisReverse(true));
+    m_mainLayer->addChild(m_bodyLayout);
 
     auto contentSize = m_bgSprite->getContentSize();
     auto batchNode = getChildOfType<CCSpriteBatchNode*>(m_mainLayer,0);
@@ -67,17 +67,20 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     auto label = CCLabelBMFont::create(content.c_str(), "torus-regular.fnt"_spr);
     label->setPosition(m_title->getPosition()-CCPoint{0,12});
     label->setScale(0.4);
+    label->setZOrder(0);
+    m_title->setZOrder(-1);
     m_title->setScale(0.6);
 
     m_title->removeFromParent();
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
+    m_bodyLayout->addChild(DialogButton::create("my mom called me for dinner", dialog_button_primary));
+
     m_bodyLayout->updateLayout();
     label->limitLabelWidth(contentSize.width - 2.f, 0.4f, .1f);
 
 
-    m_bodyLayout->addChild(DialogButton::create("my mom called me for dinner", dialog_button_primary));
     this->setOpacity(0);
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-in.wav"_spr);
     return true;
