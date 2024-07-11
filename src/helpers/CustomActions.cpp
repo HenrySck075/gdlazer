@@ -58,7 +58,7 @@ CCActionSkip* CCActionSkip::create(float startTime, CCActionInterval* action) {
 
 bool CCActionSkip::initWithACatgirl(CCActionInterval* action, float startTime) {
     if (this->initWithAction(action) && this->initWithDuration(action->getDuration() - startTime)) {
-        this->m_fStartTime = startTime;
+        this->m_fStartTime = startTime / action->getDuration();
         action->retain();
         return true;
     }
@@ -96,7 +96,7 @@ CCActionSkip::~CCActionSkip() {
 
 // why is this delays the action
 void CCActionSkip::update(float time) {
-    m_pInner->update(time + 5.f);
+    m_pInner->update(time + m_fStartTime);
 }
 
 //

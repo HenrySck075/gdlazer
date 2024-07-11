@@ -48,7 +48,7 @@ public:
 /** @brief Sizes a CCNode object to a zoom factor by modifying it's contentSize attribute.
  @warning This action doesn't support "reverse"
  */
-class CC_DLL CCResizeTo : public CCActionInterval
+class CCResizeTo : public CCActionInterval
 {
 public:
     /** initializes the action with the same scale factor for X and Y */

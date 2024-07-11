@@ -46,12 +46,8 @@ void Triangles::assignAction(CCNode* node, float startTime) {
         CCRemoveSelf::create(), \
         nullptr \
     ))
-    if (startTime != 0) {
-        no(CCActionSkip::create(randomFloat() * 15 + 3, moveToAction));
-    }
-    else {
-        no(moveToAction);
-    }
+    no(CCActionSkip::create(startTime, moveToAction));
+ 
 
 }
 CCSprite* Triangles::makeTriangle() {

@@ -21,7 +21,17 @@ bool CCRectangle::init(ccColor4F color) {
 
 void CCRectangle::setContentSize(const CCSize& size) {
     CCNode::setContentSize(size);
+    this->redraw();
+}
+
+void CCRectangle::redraw() {
     auto drawnode = getChildOfType<CCDrawNode>(this, 0);
     drawnode->clear();
-    drawnode->drawRect(ccp(0, 0), CCPoint(size), m_color, 0, m_color);
+    drawnode->drawRect(ccp(0, 0), CCPoint(this->getContentSize()), m_color, 0, m_color);
+}
+
+void CCRectangle::setOpacity(GLubyte opacity) {
+    CCNodeRGBA::setOpacity(opacity);
+    m_color.a = opacity / 100;
+    this->redraw();
 }

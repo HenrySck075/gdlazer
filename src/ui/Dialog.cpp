@@ -36,26 +36,24 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
     // convenience function provided by Popup
     // for adding/setting a title to the popup
     this->setTitle(title);
-    m_bodyLayout = CCLayer::create();
+    m_bodyLayout = CCLayerRGBA::create();
     m_bodyLayout->setContentSize(m_bgSprite->getContentSize());
-    //m_bodyLayout->setAnchorPoint(ccp(0.5, 0.5));
+    m_bodyLayout->setAnchorPoint(ccp(0.5, 0.5));
     m_bodyLayout->setPosition(m_bgSprite->getPosition());
     m_bodyLayout->ignoreAnchorPointForPosition(false);
     m_bodyLayout->setZOrder(2);
     m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(0)->setAxisReverse(true));
+    
     m_mainLayer->addChild(m_bodyLayout);
 
     auto contentSize = m_bgSprite->getContentSize();
     auto batchNode = getChildOfType<CCSpriteBatchNode*>(m_mainLayer,0);
-    auto sprit = roundedRectangle(contentSize,6,ccColor4F{rgbColor(34,26,33),1.f});
-    m_mainLayer->addChild(sprit);
-    sprit->setPosition(m_bgSprite->getPosition());
-    sprit->setAnchorPoint(CCPoint{ 0.5,0.5 });
-    m_bgSpriteClip = CCClippingNode::create(roundedRectangle(contentSize, 6, ccColor4F{ 0.f,0.f,0.f,1.f }));
+    m_bgSpriteClip = CCClippingNode::create(m_bgSprite);
+    m_bgSpriteClip->setAlphaThreshold(0.02f);
     m_bgSpriteClip->setPosition(m_bgSprite->getPosition());
     m_bgSpriteClip->setContentSize(contentSize);
     m_bgSpriteClip->setAnchorPoint(m_bgSprite->getAnchorPoint()); // in case inherited dialogs also modifies this (who will do this)
-    m_bgSprite->removeFromParent();
+    //m_bgSprite->removeFromParent();
     m_mainLayer->addChild(m_bgSpriteClip);
 
     m_bgSpriteClip->addChild(Triangles::create(contentSize,45,ccc3(30,23,30)));
@@ -76,7 +74,7 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
-    auto btnLayer = CCLayer::create();
+    auto btnLayer = CCLayerRGBA::create();
     btnLayer->setLayout(
         ColumnLayout::create()
         ->setAutoScale(false)

@@ -53,6 +53,7 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
     this->setContentSize(CCSize{ 12.f,height });
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
+    this->setCascadeOpacityEnabled(true);
 
     m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
         if (type == MouseType::Enter) {

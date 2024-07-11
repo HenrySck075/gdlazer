@@ -8,7 +8,7 @@
 
 using namespace geode::prelude;
 
-class DialogButton : public CCNode {
+class DialogButton : public CCNodeRGBA {
 private:
 	EventListenerProtocol* m_listener;
 
@@ -19,6 +19,7 @@ private:
 	void onMouseEnter();
 	void onMouseExit();
 	bool init(const char* label, ccColor3B color, const char* clickSfx);
+
 
 public:
 	void setContentSize(const CCSize& size);

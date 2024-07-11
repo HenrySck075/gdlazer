@@ -5,7 +5,7 @@
 using namespace geode::prelude;
 #include "../../helpers/CustomActions.hpp"
 
-class Triangles : public CCLayer {
+class Triangles : public CCLayerRGBA {
 private:
 	ccColor3B m_color;
 
