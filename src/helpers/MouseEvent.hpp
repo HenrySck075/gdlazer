@@ -3,6 +3,7 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/modify/CCEGLView.hpp>
+#include "../utils.hpp"
 
 using namespace geode::prelude;
 
@@ -52,6 +53,7 @@ public:
     MouseEnterExitFilter(CCNode* target, bool keepPropangating) {
         m_target = target;
         m_keepPropangating = keepPropangating;
+        log::debug("[MouseEnterExitFilter]: {} | bounding box location: {}", target, boundingBoxFromContentSize(target));
     };
 };
 

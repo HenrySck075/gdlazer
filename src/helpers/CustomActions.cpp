@@ -98,3 +98,92 @@ CCActionSkip::~CCActionSkip() {
 void CCActionSkip::update(float time) {
     m_pInner->update(time + 5.f);
 }
+
+//
+// SizeTo
+//
+CCResizeTo* CCResizeTo::create(float duration, float s)
+{
+    CCResizeTo* pSizeTo = new CCResizeTo();
+    pSizeTo->initWithDuration(duration, s);
+    pSizeTo->autorelease();
+
+    return pSizeTo;
+}
+
+bool CCResizeTo::initWithDuration(float duration, float s)
+{
+    if (CCActionInterval::initWithDuration(duration))
+    {
+        m_fEndContentWidth = s;
+        m_fEndContentHeight = s;
+
+        return true;
+    }
+
+    return false;
+}
+
+CCResizeTo* CCResizeTo::create(float duration, float sx, float sy)
+{
+    CCResizeTo* pSizeTo = new CCResizeTo();
+    pSizeTo->initWithDuration(duration, sx, sy);
+    pSizeTo->autorelease();
+
+    return pSizeTo;
+}
+
+bool CCResizeTo::initWithDuration(float duration, float sx, float sy)
+{
+    if (CCActionInterval::initWithDuration(duration))
+    {
+        m_fEndContentWidth = sx;
+        m_fEndContentHeight = sy;
+
+        return true;
+    }
+
+    return false;
+}
+
+CCObject* CCResizeTo::copyWithZone(CCZone* pZone)
+{
+    CCZone* pNewZone = NULL;
+    CCResizeTo* pCopy = NULL;
+    if (pZone && pZone->m_pCopyObject)
+    {
+        //in case of being called at sub class
+        pCopy = (CCResizeTo*)(pZone->m_pCopyObject);
+    }
+    else
+    {
+        pCopy = new CCResizeTo();
+        pZone = pNewZone = new CCZone(pCopy);
+    }
+
+    CCActionInterval::copyWithZone(pZone);
+
+
+    pCopy->initWithDuration(m_fDuration, m_fEndContentWidth, m_fEndContentHeight);
+
+    CC_SAFE_DELETE(pNewZone);
+    return pCopy;
+}
+
+void CCResizeTo::startWithTarget(CCNode* pTarget)
+{
+    CCActionInterval::startWithTarget(pTarget);
+    m_fStartContentWidth = pTarget->getContentWidth();
+    m_fStartContentHeight = pTarget->getContentHeight();
+    m_fDeltaX = m_fEndContentWidth - m_fStartContentWidth;
+    m_fDeltaY = m_fEndContentHeight - m_fStartContentHeight;
+}
+
+void CCResizeTo::update(float time)
+{
+    if (m_pTarget)
+    {
+        m_pTarget->setContentWidth(m_fStartContentWidth + m_fDeltaX * time);
+        m_pTarget->setContentHeight(m_fStartContentHeight + m_fDeltaY * time);
+    }
+}

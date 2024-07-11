@@ -38,9 +38,10 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     this->setTitle(title);
     m_bodyLayout = CCLayer::create();
     m_bodyLayout->setContentSize(m_bgSprite->getContentSize());
-    m_bodyLayout->setAnchorPoint(ccp(0.5, 0.5));
-    //m_bodyLayout->setPosition(m_bgSprite->getPosition());
+    //m_bodyLayout->setAnchorPoint(ccp(0.5, 0.5));
+    m_bodyLayout->setPosition(m_bgSprite->getPosition());
     m_bodyLayout->ignoreAnchorPointForPosition(false);
+    m_bodyLayout->setZOrder(2);
     m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(0)->setAxisReverse(true));
     m_mainLayer->addChild(m_bodyLayout);
 

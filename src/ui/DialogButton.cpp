@@ -18,6 +18,7 @@ bool DialogButton::init(const char* label, ccColor3B color) {
     this->setZOrder(3);
     auto d = CCDrawNode::create();
     d->setID("dialogbutton-background");
+    this->setSkewX(30);
     //d->setContentSize(CCSize{ 6.f,height });
 
     auto clipNode = CCClippingNode::create();
@@ -28,6 +29,8 @@ bool DialogButton::init(const char* label, ccColor3B color) {
     j->setID("dialogbutton-label");
     j->setAnchorPoint(ccp(0.5, 0.5));
     j->setScale(0.5);
+    // unskew yourself
+    j->setSkewX(-30);
 
     this->addChild(d);
     //this->addChild(clipNode);
@@ -35,11 +38,13 @@ bool DialogButton::init(const char* label, ccColor3B color) {
     this->setContentSize(CCSize{ 12.f,height });
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
+
     m_listener = this->template addEventListener<MouseEnterExitFilter>([this](MouseMoveType type, CCPoint location) {
         if (type == MouseMoveType::Enter) {
             this->onMouseEnter();
+            return;
         }
-        else {
+        if (type == MouseMoveType::Exit) {
             this->onMouseExit();
         }
     }, false);
@@ -50,7 +55,7 @@ bool DialogButton::init(const char* label, ccColor3B color) {
 
 void DialogButton::redraw() {
     auto d = static_cast<CCDrawNode*>(this->getChildByID("dialogbutton-background"));
-    //d->clear();
+    d->clear();
     
     d->setContentSize(this->getContentSize());
     auto color = m_color;
@@ -62,7 +67,7 @@ void DialogButton::redraw() {
     CCPoint rightedgePolygon[3] = { CCPoint{width-6,1}, CCPoint{width,height}, CCPoint{width-6,height} };
     d->drawPolygon(rightedgePolygon, 3, color4F, 0, ccColor4F{ 0,0,0,0.f });
     */
-    d->drawRect(ccp(6, height), ccp(width - 6, 0), color4F, 0, color4F);
+    d->drawRect(ccp(0, height), ccp(width, 0), color4F, 0, color4F);
     /*
     auto clipNode = static_cast<CCClippingNode*>(this->getChildByID("dialogbutton-clipnode"));
     getChildOfType<Triangles>(clipNode, 0)->setContentSize(this->getContentSize());
@@ -74,6 +79,14 @@ void DialogButton::setContentSize(const CCSize& size) {
     CCNode::setContentSize(size);
     this->redraw();
 }
+/*
+void DialogButton::setContentWidth(float width) {
+    this->setContentSize(CCSize{width,this->getContentHeight()});
+}
+void DialogButton::setContentHeight(float height) {
+    this->setContentSize(CCSize{ this->getContentWidth(), height });
+}
+*/
 
 void DialogButton::setParent(CCNode* parent) {
     CCNode::setParent(parent);
@@ -82,6 +95,8 @@ void DialogButton::setParent(CCNode* parent) {
 
 void DialogButton::onMouseEnter() {
     FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav");
+    this->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f,m_pParent->getParent()->getContentWidth()*0.9, this->getContentHeight())));
 }
 void DialogButton::onMouseExit() {
+    this->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f, m_pParent->getParent()->getContentWidth()*0.8,this->getContentHeight())));
 }

@@ -159,6 +159,10 @@ class $modify(MyMenuLayer, MenuLayer) {
 class $modify(CCEGLView) {
 	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
-		MouseMoveEvent(CCPoint{ (float)x, (float)y }).post();
+		auto sp = CCDirector::sharedDirector()->getWinSize();
+		auto r = sp.width / CCDirector::sharedDirector()->getWinSizeInPixels().width;
+		auto p = CCPoint(x * r, sp.height-(y * r));
+		log::debug("[hook: CCEGLView]: {}", p);
+		MouseMoveEvent(CCPoint{ (float)p.x, (float)p.y }).post();
 	};
 };

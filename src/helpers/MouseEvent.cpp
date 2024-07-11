@@ -10,9 +10,9 @@ ListenerResult MouseMoveFilter::handle(MiniFunction<MouseMoveFilter::Callback> f
 	return ListenerResult::Propagate;
 };
 ListenerResult MouseEnterExitFilter::handle(MiniFunction<MouseEnterExitFilter::Callback> fn, MouseMoveEvent* event) {
-	auto mouseloc = m_target->convertToNodeSpace(event->getLocation());
-	log::debug("[MouseEnterExitFilter]: {}", mouseloc);
-	if (m_target->boundingBox().containsPoint(mouseloc)) {
+	auto mouseloc = event->getLocation();
+	//log::debug("[MouseEnterExitFilter]: {}", mouseloc);
+	if (boundingBoxFromContentSize(m_target).containsPoint(mouseloc)) {
 		if (!m_entered) {
 			fn(MouseMoveType::Enter, mouseloc);
 			m_entered = true;
