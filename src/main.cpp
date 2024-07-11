@@ -157,12 +157,15 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
+
 	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
-		auto sp = CCDirector::sharedDirector()->getWinSize();
-		auto r = sp.width / CCDirector::sharedDirector()->getWinSizeInPixels().width;
-		auto p = CCPoint(x * r, sp.height-(y * r));
-		log::debug("[hook: CCEGLView]: {}", p);
+		int w; int h;
+		w = m_obScreenSize.width;
+		h = m_obScreenSize.height;
+		auto st = CCDirector::sharedDirector()->getVisibleSize();
+		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
+		log::debug("[hook: CCEGLView]: {} | {}", p, m_obScreenSize);
 		MouseMoveEvent(CCPoint{ (float)p.x, (float)p.y }).post();
 	};
 };

@@ -53,7 +53,7 @@ public:
     MouseEnterExitFilter(CCNode* target, bool keepPropangating) {
         m_target = target;
         m_keepPropangating = keepPropangating;
-        log::debug("[MouseEnterExitFilter]: {} | bounding box location: {}", target, boundingBoxFromContentSize(target));
+        log::debug("[MouseEnterExitFilter]: {} | {}", CCDirector::sharedDirector()->getVisibleSize(), CCDirector::sharedDirector()->getWinSizeInPixels());
     };
 };
 

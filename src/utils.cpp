@@ -32,7 +32,7 @@ CCRect boundingBoxFromContentSize(CCNode* node) {
 		//log::debug("[boundingBoxFromContentSize]:n pos: {} | parent: {}", pos, parent);
 		parent = parent->getParent();
 	}
-	//log::debug("[boundingBoxFromContentSize]: base size: {}, calculated pos: {}", size, pos);
+	log::debug("[boundingBoxFromContentSize]: base size: {}, calculated pos: {}", size, pos);
 
 	return CCRect{ pos.x, pos.y, size.width, size.height };
 }
