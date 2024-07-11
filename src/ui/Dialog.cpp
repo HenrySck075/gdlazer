@@ -30,7 +30,7 @@ CCDrawNode* roundedRectangle(CCSize size, float radius, ccColor4F color) {
     return node;
 }
 
-bool osuDialog::setup(std::string const& title, std::string const& content) {
+bool osuDialog::setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     // convenience function provided by Popup
@@ -76,7 +76,20 @@ bool osuDialog::setup(std::string const& title, std::string const& content) {
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
-    m_bodyLayout->addChild(DialogButton::create("my mom called me for dinner", dialog_button_primary));
+    auto btnLayer = CCLayer::create();
+    btnLayer->setLayout(
+        ColumnLayout::create()
+        ->setAutoScale(false)
+        ->setAxisReverse(true)
+        ->setGap(0.5)
+    );
+    btnLayer->setContentWidth(contentSize.width);
+    btnLayer->setAnchorPoint(ccp(0.5, 0.5));
+    btnLayer->setPosition(ccp(contentSize.width/2,55));
+
+    for (auto& btn : buttons) { btnLayer->addChild(btn); }
+    btnLayer->updateLayout();
+    m_mainLayer->addChild(btnLayer);
 
     m_bodyLayout->updateLayout();
     label->limitLabelWidth(contentSize.width - 2.f, 0.4f, .1f);

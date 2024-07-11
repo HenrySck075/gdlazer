@@ -9,21 +9,21 @@
 
 using namespace geode::prelude;
 
-class osuDialog : public geode::Popup<std::string const&, std::string const&> {
+class osuDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<DialogButton*>> {
 private:
     CCClippingNode* m_bgSpriteClip;
     CCLayer* m_bodyLayout;
 protected:
-    bool setup(std::string const& title, std::string const& content) override;
+    bool setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) override;
 
 
     void onClose(cocos2d::CCObject*) override;
 
 public:
     void show() override;
-    static osuDialog* create(std::string const& title, std::string const& content) {
+    static osuDialog* create(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
         auto ret = new osuDialog();
-        if (ret->initAnchored(220.f, 200.f, title, content, "dialog.png"_spr)) {
+        if (ret->initAnchored(220.f, 200.f, title, content, buttons, "dialog.png"_spr)) {
             ret->autorelease();
             return ret;
         }

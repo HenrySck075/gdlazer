@@ -14,14 +14,15 @@ add_library(${PROJECT_NAME} SHARED
     src/utils.cpp src/utils.hpp  
     # src/LabelBMFont.cpp 
 
-    src/helpers/CustomActions.cpp src/helpers/CustomActions.hpp 
+    src/helpers/CustomActions.hpp src/helpers/CustomActions.cpp 
     src/helpers/MouseEvent.hpp src/helpers/MouseEvent.cpp
     src/helpers/colors.hpp
 
     src/ui/Dialog.hpp src/ui/Dialog.cpp
-    src/ui/DialogButton.cpp src/ui/DialogButton.hpp
+    src/ui/DialogButton.hpp src/ui/DialogButton.cpp
 
-    src/ui/deco/Triangles.cpp src/ui/deco/Triangles.hpp 
+    src/ui/deco/Triangles.hpp src/ui/deco/Triangles.cpp 
+    src/ui/deco/Rectangle.hpp src/ui/deco/Rectangle.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})

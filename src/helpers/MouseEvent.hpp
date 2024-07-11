@@ -7,53 +7,37 @@
 
 using namespace geode::prelude;
 
-class MouseMoveEvent : public Event {
+class MouseEvent : public Event {
 
 protected:
     CCPoint m_location;
 
 public:
-    MouseMoveEvent(CCPoint const& location) {
+    MouseEvent(CCPoint const& location) {
         m_location = location;
     };
 
     CCPoint getLocation() const { return this->m_location; };
 };
 
-
-class MouseMoveFilter : public EventFilter<MouseMoveEvent> {
-protected:
-    CCNode* m_target;
-    bool m_keepPropangating;
-public:
-    
-    using Callback = void(CCPoint);
-
-    ListenerResult handle(MiniFunction<Callback> fn, MouseMoveEvent* event);
-    MouseMoveFilter(CCNode* target, bool keepPropangating) {
-        m_target = target;
-        m_keepPropangating = keepPropangating;
-    };
+enum MouseType {
+    Enter, Exit, Click
 };
 
-enum MouseMoveType {
-    Enter, Exit
-};
-
-class MouseEnterExitFilter : public EventFilter<MouseMoveEvent> {
+class MouseFilter : public EventFilter<MouseEvent> {
 protected:
     bool m_entered = false;
     CCNode* m_target;
     bool m_keepPropangating;
 public:
 
-    using Callback = void(MouseMoveType, CCPoint);
+    using Callback = void(MouseType, CCPoint);
 
-    ListenerResult handle(MiniFunction<Callback> fn, MouseMoveEvent* event);
-    MouseEnterExitFilter(CCNode* target, bool keepPropangating) {
+    ListenerResult handle(MiniFunction<Callback> fn, MouseEvent* event);
+    MouseFilter(CCNode* target, bool keepPropangating) {
         m_target = target;
         m_keepPropangating = keepPropangating;
-        log::debug("[MouseEnterExitFilter]: {} | {}", CCDirector::sharedDirector()->getVisibleSize(), CCDirector::sharedDirector()->getWinSizeInPixels());
+        log::debug("[MouseFilter]: {} | {}", CCDirector::sharedDirector()->getVisibleSize(), CCDirector::sharedDirector()->getWinSizeInPixels());
     };
 };
 

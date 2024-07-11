@@ -151,13 +151,19 @@ class $modify(MyMenuLayer, MenuLayer) {
 		CCDirector::get()->pushScene(osuIntroTriangles::create());
 	}
 	void onMyButton2(CCObject*) {
-		osuDialog::create("Are you sure you want to exit GD?","Last chance to turn back")->show();
+		osuDialog::create(
+			"Are you sure you want to exit GD?", 
+			"Last chance to turn back", 
+			{ 
+				DialogButton::create("my mom called me for dinner", dialog_button_primary, "dialog-ok-select.wav"_spr),
+				DialogButton::create("clicked the wrong button mb", dialog_button_secondary, "dialog-cancel-select.wav"_spr) 
+			}
+		)->show();
 	}
 };
 
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
-
 	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
 		int w; int h;
@@ -165,7 +171,6 @@ class $modify(CCEGLView) {
 		h = m_obScreenSize.height;
 		auto st = CCDirector::sharedDirector()->getVisibleSize();
 		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
-		log::debug("[hook: CCEGLView]: {} | {}", p, m_obScreenSize);
-		MouseMoveEvent(CCPoint{ (float)p.x, (float)p.y }).post();
+		MouseEvent(CCPoint{ (float)p.x, (float)p.y }).post();
 	};
 };

@@ -1,9 +1,9 @@
 #include "DialogButton.hpp"
 #include "../utils.hpp"
 
-DialogButton* DialogButton::create(const char* label, ccColor3B color) {
+DialogButton* DialogButton::create(const char* label, ccColor3B color, const char* clickSfx) {
     auto ret = new DialogButton();
-    if (ret && ret->init(label, color)) {
+    if (ret && ret->init(label, color, clickSfx)) {
         ret->autorelease();
     }
     else {
@@ -13,13 +13,15 @@ DialogButton* DialogButton::create(const char* label, ccColor3B color) {
     return ret;
 }
 
-bool DialogButton::init(const char* label, ccColor3B color) {
+bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx) {
     m_color = color;
+    m_sfx = clickSfx;
     this->setZOrder(3);
-    auto d = CCDrawNode::create();
+    auto d = CCRectangle::create(ccc4FFromccc3B(color));
     d->setID("dialogbutton-background");
-    this->setSkewX(30);
-    //d->setContentSize(CCSize{ 6.f,height });
+    d->setAnchorPoint(ccp(0.5, 0.5));
+    d->setSkewX(30);
+    d->setContentHeight(height);
 
     auto clipNode = CCClippingNode::create();
     clipNode->setID("dialogbutton-clipnode");
@@ -28,10 +30,23 @@ bool DialogButton::init(const char* label, ccColor3B color) {
     auto j = CCLabelBMFont::create(label, "torus-bold.fnt"_spr);
     j->setID("dialogbutton-label");
     j->setAnchorPoint(ccp(0.5, 0.5));
-    j->setScale(0.5);
+    j->setScale(0.4);
     // unskew yourself
-    j->setSkewX(-30);
 
+    // Gradient layers
+#define gradientSetup(side) \
+    auto grad##side = CCLayerGradient::create(ccc4BFromccc4F(ccc4FFromccc3B(color)), ccc4(color.r, color.g, color.b, 0), ccp(1, 0)); \
+    grad##side->setContentSize(CCSize(0,height)); \
+    grad##side->setID("gradient"#side); \
+    grad##side->setOpacity(0)
+    
+    gradientSetup(Left);
+    gradientSetup(Right);
+#undef gradientSetup
+    gradLeft->setScaleX(-1);
+
+    this->addChild(gradLeft);
+    this->addChild(gradRight);
     this->addChild(d);
     //this->addChild(clipNode);
     this->addChild(j);
@@ -39,12 +54,12 @@ bool DialogButton::init(const char* label, ccColor3B color) {
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
 
-    m_listener = this->template addEventListener<MouseEnterExitFilter>([this](MouseMoveType type, CCPoint location) {
-        if (type == MouseMoveType::Enter) {
+    m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
+        if (type == MouseType::Enter) {
             this->onMouseEnter();
             return;
         }
-        if (type == MouseMoveType::Exit) {
+        if (type == MouseType::Exit) {
             this->onMouseExit();
         }
     }, false);
@@ -53,50 +68,44 @@ bool DialogButton::init(const char* label, ccColor3B color) {
 
 }
 
-void DialogButton::redraw() {
-    auto d = static_cast<CCDrawNode*>(this->getChildByID("dialogbutton-background"));
-    d->clear();
-    
-    d->setContentSize(this->getContentSize());
-    auto color = m_color;
-    auto color4F = ccColor4F{ rgbColor(color.r,color.g,color.b),1.f };
-    auto width = this->getContentWidth();
-    /*
-    CCPoint leftedgePolygon[3] = { CCPoint{0.f,0.f}, CCPoint{6,0.f}, CCPoint{6.f,height} };
-    d->drawPolygon(leftedgePolygon, 3, color4F, 0, ccColor4F{ 0,0,0,0.f });
-    CCPoint rightedgePolygon[3] = { CCPoint{width-6,1}, CCPoint{width,height}, CCPoint{width-6,height} };
-    d->drawPolygon(rightedgePolygon, 3, color4F, 0, ccColor4F{ 0,0,0,0.f });
-    */
-    d->drawRect(ccp(0, height), ccp(width, 0), color4F, 0, color4F);
-    /*
-    auto clipNode = static_cast<CCClippingNode*>(this->getChildByID("dialogbutton-clipnode"));
-    getChildOfType<Triangles>(clipNode, 0)->setContentSize(this->getContentSize());
-    */
-    getChildOfType<CCLabelBMFont>(this, 0)->setPosition(this->getContentSize() / 2);
-}
-
 void DialogButton::setContentSize(const CCSize& size) {
     CCNode::setContentSize(size);
-    this->redraw();
+    this->getChildByID("dialogbutton-label")->setPosition(size/2);
+    auto j = this->getChildByID("dialogbutton-background");
+    j->setContentWidth(size.width * 0.8);
+    j->setPosition(size / 2);
+
+    auto gradWidth = size.width * 0.125;
+    
+    auto gradLeft = static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"));
+    gradLeft->setContentWidth(gradWidth);
+    auto gradRight = static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"));
+    gradRight->setContentWidth(gradWidth);
+    gradRight->setPosition(ccp(size.width-gradWidth, 0));
 }
+
 /*
 void DialogButton::setContentWidth(float width) {
     this->setContentSize(CCSize{width,this->getContentHeight()});
 }
-void DialogButton::setContentHeight(float height) {
-    this->setContentSize(CCSize{ this->getContentWidth(), height });
-}
 */
+// no
+void DialogButton::setContentHeight(float height) {
+}
 
 void DialogButton::setParent(CCNode* parent) {
     CCNode::setParent(parent);
-    this->setContentWidth(parent->getContentWidth() * 0.8);
+    this->setContentWidth(parent->getContentWidth());
 }
 
 void DialogButton::onMouseEnter() {
-    FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav");
-    this->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f,m_pParent->getParent()->getContentWidth()*0.9, this->getContentHeight())));
+    FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
+    this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f,m_pParent->getParent()->getContentWidth()*0.9, height)));
+    this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
+    this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
 }
 void DialogButton::onMouseExit() {
-    this->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f, m_pParent->getParent()->getContentWidth()*0.8,this->getContentHeight())));
+    this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f, m_pParent->getParent()->getContentWidth()*0.8,height)));
+    this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
+    this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
 }
