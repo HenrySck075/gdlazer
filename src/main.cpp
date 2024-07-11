@@ -173,4 +173,7 @@ class $modify(CCEGLView) {
 		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
 		MouseEvent(CCPoint{ (float)p.x, (float)p.y }).post();
 	};
+	void onGLFWMouseCallback(GLFWwindow* window, int button, int action, int mods) {
+		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
+	}
 };
