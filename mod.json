@@ -27,10 +27,10 @@
 				"size": 80
 			}
 		},
-		"sprites": [
-			"resources/ui/*.png"
-		],
 		"spritesheets": {
+			"UISheet": [
+				"resources/ui/*.png"
+			],
 			"IntroSheet": [
 				"resources/iconset/*.png",
 				"resources/triangle/*.png"

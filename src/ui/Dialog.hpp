@@ -12,7 +12,7 @@ using namespace geode::prelude;
 class osuDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<DialogButton*>> {
 private:
     CCClippingNode* m_bgSpriteClip;
-    CCLayer* m_bodyLayout;
+    CCLayerRGBA* m_bodyLayout;
 protected:
     bool setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) override;
 

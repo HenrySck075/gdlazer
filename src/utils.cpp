@@ -15,7 +15,7 @@ bool randomBool() {
 /// <returns>the node's bottom-left position</returns>
 CCPoint getPositionAnchorAware(CCNode* node) {
 	auto pos = node->getPosition();
-	auto size = node->getContentSize();
+	auto size = node->getScaledContentSize();
 	auto anchor = node->isIgnoreAnchorPointForPosition() ? CCPoint{0,0} : node->getAnchorPoint();
 
 	return CCPoint{ pos.x - size.width * anchor.x,pos.y - size.height * anchor.y };
@@ -23,7 +23,7 @@ CCPoint getPositionAnchorAware(CCNode* node) {
 
 
 CCRect boundingBoxFromContentSize(CCNode* node) {
-	auto size = node->getContentSize();
+	auto size = node->getScaledContentSize();
 
 	auto pos = getPositionAnchorAware(node);
 	auto parent = node->getParent();

@@ -22,7 +22,6 @@ add_library(${PROJECT_NAME} SHARED
     src/ui/DialogButton.hpp src/ui/DialogButton.cpp
 
     src/ui/deco/Triangles.hpp src/ui/deco/Triangles.cpp 
-    src/ui/deco/Rectangle.hpp src/ui/deco/Rectangle.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})

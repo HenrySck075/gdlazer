@@ -4,7 +4,6 @@
 #include "Geode/Geode.hpp"
 #include "../helpers/MouseEvent.hpp"
 #include "deco/Triangles.hpp"
-#include "deco/Rectangle.hpp"
 
 using namespace geode::prelude;
 
@@ -21,7 +20,9 @@ private:
 	bool init(const char* label, ccColor3B color, const char* clickSfx);
 
 
+
 public:
+	void setOpacity(GLubyte opacity);
 	void setContentSize(const CCSize& size);
 	static DialogButton* create(const char* label, ccColor3B color, const char* clickSfx);
 	void setContentHeight(float height);

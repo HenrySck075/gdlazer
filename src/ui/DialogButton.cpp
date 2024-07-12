@@ -17,11 +17,13 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
     m_color = color;
     m_sfx = clickSfx;
     this->setZOrder(3);
-    auto d = CCRectangle::create(ccc4FFromccc3B(color));
+
+
+    auto d = CCScale9Sprite::createWithSpriteFrameName("thisisasquare.png"_spr);
     d->setID("dialogbutton-background");
     d->setAnchorPoint(ccp(0.5, 0.5));
-    d->setSkewX(30);
     d->setContentHeight(height);
+    d->setColor(color);
 
     auto clipNode = CCClippingNode::create();
     clipNode->setID("dialogbutton-clipnode");
@@ -67,6 +69,12 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
 
     return true;
 
+}
+
+void DialogButton::setOpacity(GLubyte opacity) {
+    CCNodeRGBA::setOpacity(opacity); 
+    getChildOfType<CCLayerGradient>(this, 0)->setOpacity(opacity);
+    getChildOfType<CCLayerGradient>(this, 1)->setOpacity(opacity);
 }
 
 void DialogButton::setContentSize(const CCSize& size) {

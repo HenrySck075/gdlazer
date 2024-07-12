@@ -42,7 +42,8 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
     m_bodyLayout->setPosition(m_bgSprite->getPosition());
     m_bodyLayout->ignoreAnchorPointForPosition(false);
     m_bodyLayout->setZOrder(2);
-    m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(0)->setAxisReverse(true));
+    m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(2)->setAxisReverse(true));
+    m_bodyLayout->setCascadeOpacityEnabled(true);
     
     m_mainLayer->addChild(m_bodyLayout);
 
@@ -79,11 +80,12 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
         ColumnLayout::create()
         ->setAutoScale(false)
         ->setAxisReverse(true)
-        ->setGap(0.5)
+        ->setGap(0)
     );
     btnLayer->setContentWidth(contentSize.width);
     btnLayer->setAnchorPoint(ccp(0.5, 0.5));
     btnLayer->setPosition(ccp(contentSize.width/2,55));
+    btnLayer->setCascadeOpacityEnabled(true);
 
     for (auto& btn : buttons) { btnLayer->addChild(btn); }
     btnLayer->updateLayout();
@@ -107,7 +109,7 @@ void osuDialog::show() {
     m_buttonMenu->setVisible(false);
 
     m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
-    m_bgSprite->runAction(CCEaseOut::create(CCFadeIn::create(0.2), 5));
+    m_bgSprite->runAction(CCEaseOutQuint(CCFadeIn::create(0.2)));
 
 }
 
@@ -115,11 +117,13 @@ void osuDialog::onClose(cocos2d::CCObject*) {
     this->setKeypadEnabled(false);
     this->setTouchEnabled(false);
 
-    m_mainLayer->runAction(CCEaseOut::create(CCScaleTo::create(0.4, 0.7f),2));
+    m_mainLayer->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f),2));
     CCObject* obj;
     CCARRAY_FOREACH(m_mainLayer->getChildren(), obj) {
-        static_cast<CCNode*>(obj)->runAction(CCEaseOut::create(CCFadeOut::create(0.4), 5));
+        static_cast<CCNode*>(obj)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
     }
+    getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
+    
     this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.5), CCRemoveSelf::create()));
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-out.wav"_spr);
 }

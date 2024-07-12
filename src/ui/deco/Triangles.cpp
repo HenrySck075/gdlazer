@@ -17,6 +17,7 @@ bool Triangles::init(CCSize size, int quantity, ccColor3B color) {
     m_color = color;
     int triangles = quantity;
 
+    this->setCascadeOpacityEnabled(true);
     this->setContentSize(size);
     for (int idc = 0; idc < triangles; idc++) {
         auto tri = makeTriangle();
