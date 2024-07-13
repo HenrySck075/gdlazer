@@ -118,6 +118,8 @@ class $modify(MyMenuLayer, MenuLayer) {
 	}
 };
 
+#ifndef GEODE_IS_ANDROID
+
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
 	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
@@ -133,3 +135,4 @@ class $modify(CCEGLView) {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
 };
+#endif // DEBUG

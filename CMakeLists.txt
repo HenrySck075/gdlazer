@@ -32,5 +32,8 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
+# android
+# target_link_libraries(${PROJECT_NAME} -L/data/data/com.termux/files/usr/lib/libGLESv2.so.2)
+
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})

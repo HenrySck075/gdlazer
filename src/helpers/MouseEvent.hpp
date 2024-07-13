@@ -2,7 +2,6 @@
 #define __osu_helpers_mouse_event__
 
 #include <Geode/Geode.hpp>
-#include <Geode/modify/CCEGLView.hpp>
 #include "../utils.hpp"
 
 using namespace geode::prelude;

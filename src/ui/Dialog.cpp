@@ -1,35 +1,5 @@
 #include "Dialog.hpp"
 
-CCDrawNode* roundedRectangle(CCSize size, float radius, ccColor4F color) {
-    auto node = CCDrawNode::create();
-    node->setContentSize(size);
-
-    auto innerRectSize = size - CCSize(radius * 2, radius * 2);
-    auto iTL = CCPoint(radius, radius);
-    auto iTR = CCPoint(innerRectSize.width + radius, radius);
-    auto iBL = CCPoint(radius, innerRectSize.height + radius);
-    auto iBR = CCPoint(innerRectSize.width + radius, innerRectSize.height + radius);
-
-
-    node->drawRect(iTL, iBR, color,1,color);
-
-    node->drawRect(iTL - CCPoint(radius, 0), iBL, color,1,color);
-    node->drawRect(iTL - CCPoint(0, radius), iTR, color,1,color);
-    node->drawRect(iTR, iBR + CCPoint(radius, 0), color,1,color);
-    node->drawRect(iBL, iBR + CCPoint(0, radius), color,1,color);
-
-    node->drawCircle(iTL, radius, color,1.f,color, 10);
-    node->drawCircle(iTR, radius, color,1.f,color, 10);
-    node->drawCircle(iBL, radius, color,1.f,color, 10);
-    node->drawCircle(iBR, radius, color,1.f,color, 10);
-    // draw it like twice because why
-    node->drawCircle(iTL, radius, color, 1.f, color, 10);
-    node->drawCircle(iTR, radius, color, 1.f, color, 10);
-    node->drawCircle(iBL, radius, color, 1.f, color, 10);
-    node->drawCircle(iBR, radius, color, 1.f, color, 10);
-    return node;
-}
-
 bool osuDialog::setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -48,7 +18,7 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
     m_mainLayer->addChild(m_bodyLayout);
 
     auto contentSize = m_bgSprite->getContentSize();
-    auto batchNode = getChildOfType<CCSpriteBatchNode*>(m_mainLayer,0);
+    auto batchNode = getChildOfType<CCSpriteBatchNode>(m_mainLayer,0);
     m_bgSpriteClip = CCClippingNode::create(m_bgSprite);
     m_bgSpriteClip->setAlphaThreshold(0.02f);
     m_bgSpriteClip->setPosition(m_bgSprite->getPosition());
