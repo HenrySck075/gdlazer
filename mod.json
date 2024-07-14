@@ -1,10 +1,10 @@
 {
 	"geode": "3.2.0",
 	"gd": {
-		"win": "2.206",
-		"android": "2.206",
-		"mac": "2.206",
-		"ios": "2.206"
+    "win": "2.206",
+    "android": "2.206",
+    "mac": "2.206",
+    "ios": "2.206"
 	},
 	"id": "henrysck075.osulazer",
 	"name": "osu!lazer",
@@ -13,32 +13,36 @@
 	"description": "nico nico niii",
 	"early-load": true,
 	"resources": {
-		"fonts": {
-			"torus-regular": {
-				"path": "resources/torus/regular.ttf",
-				"size": 80
-			},
-			"torus-light": {
-				"path": "resources/torus/light.ttf",
-				"size": 80
-			},
-			"torus-bold": {
-				"path": "resources/torus/bold.ttf",
-				"size": 80
-			}
-		},
-		"spritesheets": {
-			"UISheet": [
-				"resources/ui/*.png"
-			],
-			"IntroSheet": [
-				"resources/iconset/*.png",
-				"resources/triangle/*.png"
-			]
-		},
-		"files": [
-			"resources/triangles.mp3",
-			"resources/sfx/*.wav"
-		]
+    "fonts": {
+    	"torus-regular": {
+        "path": "resources/torus/regular.ttf",
+        "size": 80
+    	},
+    	"torus-light": {
+        "path": "resources/torus/light.ttf",
+        "size": 80
+    	},
+    	"torus-bold": {
+        "path": "resources/torus/bold.ttf",
+        "size": 80
+    	}
+    },
+    "sprites": [
+      "resources/ui/dialog.png"
+    ],
+    "spritesheets": {
+      "UISheet": [
+        "resources/ui/thisisasquare.png"
+      ],
+    	"IntroSheet": [
+        "resources/iconset/*.png",
+        "resources/triangle/*.png"
+    	]
+    },
+    "files": [
+    	"resources/triangles.mp3",
+    	"resources/sfx/**/*.wav",
+      "resources/sfx/gameplay/pause-loop.mp3"
+    ]
 	}
 }

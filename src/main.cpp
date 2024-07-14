@@ -5,6 +5,7 @@
 #include "intro/IntroTriangles.hpp"
 #include "ui/Dialog.hpp"
 #include "helpers/MouseEvent.hpp"
+#include "main/PauseLayer.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
@@ -27,6 +28,7 @@ using namespace geode::prelude;
  *
  * struct MyMenuLayer : Modify<MyMenuLayer, MenuLayer> {};
  */
+
 #include <Geode/modify/LoadingLayer.hpp>
 class $modify(LoadingLayer) {
 	bool init(bool idk) {
@@ -79,10 +81,12 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 		auto d = static_cast<CCMenuItemSpriteExtra*>(this->getChildByIDRecursive("close-button"));
 
-		auto replaceBtn = CCMenuItemSpriteExtra::create(d->getNormalImage(), this, menu_selector(MyMenuLayer::onMyButton2));
-		replaceBtn->setPosition(d->getPosition());
-		this->getChildByID("close-menu")->addChild(replaceBtn);
-		d->removeFromParent();
+    if (d!=nullptr) {
+      auto replaceBtn = CCMenuItemSpriteExtra::create(d->getNormalImage(), this, menu_selector(MyMenuLayer::onMyButton2));
+      replaceBtn->setPosition(d->getPosition());
+      this->getChildByID("close-menu")->addChild(replaceBtn);
+      d->removeFromParent();
+    }
 
 		/**
 		 * We update the layout of the menu to ensure that our button is properly placed.

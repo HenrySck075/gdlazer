@@ -10,10 +10,13 @@ project(osulazer VERSION 1.0.0)
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     # Add any extra C++ source files here
+
+    # Intros
     src/intro/IntroTriangles.hpp src/intro/IntroTriangles.cpp
     src/utils.cpp src/utils.hpp  
     # src/LabelBMFont.cpp 
 
+    # UI Nodes
     src/helpers/CustomActions.hpp src/helpers/CustomActions.cpp 
     src/helpers/MouseEvent.hpp src/helpers/MouseEvent.cpp
     src/helpers/colors.hpp
@@ -22,6 +25,9 @@ add_library(${PROJECT_NAME} SHARED
     src/ui/DialogButton.hpp src/ui/DialogButton.cpp
 
     src/ui/deco/Triangles.hpp src/ui/deco/Triangles.cpp 
+
+    # Main modification
+    src/main/PauseLayer.hpp src/main/PauseLayer.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})

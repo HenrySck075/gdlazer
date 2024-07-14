@@ -1,6 +1,5 @@
 #include "IntroTriangles.hpp"
 #include "math.h"
-#include "iostream"
    // this line is requested by catto
 #define delayRepeat(duration, ...) CCSequence::create(__VA_ARGS__, CCDelayTime::create(duration), nullptr)
 
@@ -12,8 +11,9 @@ bool osuIntroTriangles::init() {
     auto label = CCLabelBMFont::create("","torus-light.fnt"_spr);
     //label->setFntFile("LazerFont.fnt"_spr);
     label->setID("welcomeText");
+#ifndef GEODE_IS_ANDROID
     label->setExtraKerning(5);
-
+#endif
     auto d = CCDirector::sharedDirector()->getWinSize();
     label->setAnchorPoint(CCPoint{0.5,0.5});
     label->setPosition(d / 2);
@@ -84,9 +84,11 @@ void osuIntroTriangles::text_3_func() {
 }
 void osuIntroTriangles::text_4_func() {
     static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome to osu!");
+#ifndef GEODE_IS_ANDROID
     auto a = osuCallFuncP::create(0,13,5,this, callfuncp_selector(osuIntroTriangles::text_4_set_spacing));
     a->setTag(7);
     this->runAction(a);
+#endif
 }
 void osuIntroTriangles::text_4_set_spacing(float spacing) {
     auto welcomeTextNode = static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"));

@@ -1,5 +1,6 @@
 #include "DialogButton.hpp"
 #include "../utils.hpp"
+#include "Geode/loader/Log.hpp"
 
 DialogButton* DialogButton::create(const char* label, ccColor3B color, const char* clickSfx) {
     auto ret = new DialogButton();
@@ -20,10 +21,14 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
 
 
     auto d = CCScale9Sprite::createWithSpriteFrameName("thisisasquare.png"_spr);
-    d->setID("dialogbutton-background");
-    d->setAnchorPoint(ccp(0.5, 0.5));
-    d->setContentHeight(height);
-    d->setColor(color);
+    if (d!=nullptr) {
+        d->setID("dialogbutton-background");
+        d->setAnchorPoint(ccp(0.5, 0.5));
+        d->setContentHeight(height);
+        d->setColor(color);
+    } else {
+        log::debug("what the fuck?");
+    }
 
     auto clipNode = CCClippingNode::create();
     clipNode->setID("dialogbutton-clipnode");
@@ -49,7 +54,7 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
 
     this->addChild(gradLeft);
     this->addChild(gradRight);
-    this->addChild(d);
+    if (d!=nullptr) this->addChild(d);
     //this->addChild(clipNode);
     this->addChild(j);
     this->setContentSize(CCSize{ 12.f,height });
@@ -80,9 +85,11 @@ void DialogButton::setOpacity(GLubyte opacity) {
 void DialogButton::setContentSize(const CCSize& size) {
     CCNode::setContentSize(size);
     this->getChildByID("dialogbutton-label")->setPosition(size/2);
-    auto j = this->getChildByID("dialogbutton-background");
-    j->setContentWidth(size.width * 0.8);
-    j->setPosition(size / 2);
+    auto d = this->getChildByID("dialogbutton-background");
+    if (d!=nullptr) {
+        d->setContentWidth(size.width * 0.8);
+        d->setPosition(size / 2);
+    }
 
     auto gradWidth = size.width * 0.125;
     

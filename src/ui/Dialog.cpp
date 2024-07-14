@@ -1,4 +1,5 @@
 #include "Dialog.hpp"
+#include "Geode/cocos/cocoa/CCString.h"
 
 bool osuDialog::setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -28,7 +29,6 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
     m_mainLayer->addChild(m_bgSpriteClip);
 
     m_bgSpriteClip->addChild(Triangles::create(contentSize,45,ccc3(30,23,30)));
-
     //m_title->limitLabelWidth(contentSize.width - 2.f, 1.f, .1f);
     
     m_title->setPositionY(m_title->getPositionY() - 71);
@@ -96,4 +96,8 @@ void osuDialog::onClose(cocos2d::CCObject*) {
     
     this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.5), CCRemoveSelf::create()));
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-out.wav"_spr);
+}
+
+void osuDialog::keyBackClicked() {
+    this->onClose(CCStringMake("mrow"));
 }
