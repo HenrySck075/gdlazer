@@ -29,6 +29,5 @@ CCRect flipRect(CCRect rect);
 \
     return ret
 
-CCSprite* drawNodeToSprite(CCDrawNode* node);
 
 #endif

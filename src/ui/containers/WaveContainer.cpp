@@ -3,8 +3,12 @@
 #include "ccTypes.h"
 #include <cstdlib>
 
-CCDrawNode* drawWave(ccColor3B color, float angle) {
+CCRenderTexture* drawWave(CCSize size, ccColor3B color, float angle) {
+  auto ren = CCRenderTexture::create(size.width, size.height);
+  ren->begin();
   CCDrawNode* node = CCDrawNode::create();
+  node->retain();
+  node->setContentSize(size);
   bool rotateLeft = angle<0;
   angle = abs(angle);
   auto h = node->getContentHeight();
@@ -25,9 +29,12 @@ CCDrawNode* drawWave(ccColor3B color, float angle) {
   CCPoint j[3] = {left, right, last};
   auto color4f = ccc4FFromccc3B(color);
   node->drawPolygon(j, 3, color4f,0,color4f);
-  node->drawRect(ccp(0,0), node->getContentSize(), color4f,0,color4f);
+  node->drawRect(ccp(0,0), size, color4f,0,color4f);
 
-  return node;
+  node->visit();
+  ren->end();
+  ren->retain();
+  return ren;
 }
 
 WaveContainer* WaveContainer::create(ccColor3B color, CCNode* body) {
@@ -36,11 +43,13 @@ WaveContainer* WaveContainer::create(ccColor3B color, CCNode* body) {
 
 bool WaveContainer::init(ccColor3B color, CCNode* pBody) {
   auto s = CCDirector::sharedDirector()->getWinSize();
-  this->setContentSize(CCSize{s.width*0.8f, s.height});
+  auto k = CCSize{s.width*0.8f, s.height};
+  this->setContentSize(k);
 
 #define createWave(id, col) \
-  wave##id = drawNodeToSprite(drawWave(col, angle##id)); \
-  wave##id->setAnchorPoint(ccp(s.width/2,0)); \
+  wave##id = drawWave(k, col, angle##id); \
+  wave##id->setAnchorPoint(ccp(0.5,0)); \
+  wave##id->setPosition(ccp(s.width/2,0)); \
   this->addChild(wave##id)
 
   createWave(1, color);
@@ -49,9 +58,10 @@ bool WaveContainer::init(ccColor3B color, CCNode* pBody) {
   createWave(4, color);
 
   body = pBody; // mb
-  body->setAnchorPoint(ccp(s.width/2,0));
+  body->setAnchorPoint(ccp(0.5,0));
+  body->setPosition(ccp(s.width/2, 0));
   this->addChild(body);
-  body->setContentSize(this->getContentSize());
+  body->setContentSize(k);
 
   return true;
 }

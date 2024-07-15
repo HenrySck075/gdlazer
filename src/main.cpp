@@ -2,7 +2,6 @@
  * Include the Geode headers.
  */
 #include <Geode/Geode.hpp>
-#include "ccTypes.h"
 #include "intro/IntroTriangles.hpp"
 #include "ui/Dialog.hpp"
 #include "helpers/MouseEvent.hpp"
@@ -156,11 +155,11 @@ class $modify(MyMenuLayer, MenuLayer) {
 			}
 		)->show();
     */
-    WaveContainer::create(ccc3(180, 180, 180),CCNode::create())->show();
+    WaveContainer::create(ccc3(255, 255, 255),CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
 
-#ifndef GEODE_IS_ANDROID
+#ifdef GEODE_IS_WINDOWS
 
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {

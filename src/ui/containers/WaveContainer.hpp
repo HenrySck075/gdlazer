@@ -4,12 +4,12 @@
 #include <Geode/Geode.hpp>
 using namespace cocos2d;
 
-class WaveContainer : public CCLayer {
+class WaveContainer : public CCLayerColor {
 private:
-  CCSprite* wave1;
-  CCSprite* wave2;
-  CCSprite* wave3;
-  CCSprite* wave4;
+  CCRenderTexture* wave1;
+  CCRenderTexture* wave2;
+  CCRenderTexture* wave3;
+  CCRenderTexture* wave4;
 
   CCNode* body;
 

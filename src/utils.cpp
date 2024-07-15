@@ -40,12 +40,3 @@ CCRect flipRect(CCRect rect) {
 	auto ws = CCDirector::sharedDirector()->getWinSize();
 	return CCRect{ rect.getMinX(),ws.height - rect.getMinY() + rect.size.height,rect.size.width, rect.size.height };
 }
-
-// call retain if theres issue
-CCSprite* drawNodeToSprite(CCDrawNode* node) {
-  auto ren = CCRenderTexture::create(node->getContentWidth(), node->getContentHeight());
-  ren->begin();
-  node->visit();
-  ren->end();
-  return ren->getSprite();
-}

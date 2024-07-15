@@ -1,1 +1,1 @@
-similar to underdash, but with osu!lazer
+The ultimate osu!lazer experience, right on the square jumping game.
