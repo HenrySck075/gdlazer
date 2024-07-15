@@ -1,7 +1,8 @@
 #ifndef __osulazer__utils__
 #define __osulazer__utils__
-
+// file in date ordee
 #include "Geode/Geode.hpp"
+#include "Geode/cocos/platform/CCPlatformMacros.h"
 using namespace geode::prelude;
 
 float randomFloat();
@@ -17,4 +18,17 @@ bool randomBool();
 CCRect boundingBoxFromContentSize(CCNode* node);
 // this mf uses ypos the other way
 CCRect flipRect(CCRect rect);
+
+#define create_class(classname, ...) \
+    classname* ret = new classname(); \
+    if (ret && ret->init(__VA_ARGS__)) { \
+      ret->autorelease(); \
+    } else { \
+      CC_SAFE_DELETE(ret); \
+    } \
+\
+    return ret
+
+CCSprite* drawNodeToSprite(CCDrawNode* node);
+
 #endif

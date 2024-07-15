@@ -25,6 +25,7 @@ add_library(${PROJECT_NAME} SHARED
     src/ui/DialogButton.hpp src/ui/DialogButton.cpp
 
     src/ui/deco/Triangles.hpp src/ui/deco/Triangles.cpp 
+    src/ui/containers/WaveContainer.hpp src/ui/containers/WaveContainer.cpp 
 
     # Main modification
     src/main/PauseLayer.hpp src/main/PauseLayer.cpp

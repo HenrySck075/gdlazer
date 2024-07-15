@@ -2,16 +2,51 @@
  * Include the Geode headers.
  */
 #include <Geode/Geode.hpp>
+#include "ccTypes.h"
 #include "intro/IntroTriangles.hpp"
 #include "ui/Dialog.hpp"
 #include "helpers/MouseEvent.hpp"
 #include "main/PauseLayer.hpp"
+#include "ui/containers/WaveContainer.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
  */
 using namespace geode::prelude;
 
+
+#include <Geode/modify/PauseLayer.hpp>
+class $modify(nPauseLayer,PauseLayer) {
+  void scheduleBGM() {
+    
+  }
+  void customSetup() {
+    PauseLayer::customSetup();
+
+    CCObject* obj;
+    CCARRAY_FOREACH(this->getChildren(), obj) {
+        auto n = static_cast<CCNode*>(obj);
+        //int oldOpacity = n->getOpacity();
+        n->setVisible(false);
+        //n->runAction(CCFadeTo::create(0.2, oldOpacity));
+    }
+    int opacity = this->getOpacity();
+    this->setOpacity(0);
+    this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.5), CCCallFunc::create(this, callfunc_selector(nPauseLayer::scheduleBGM))));
+    this->runAction(CCFadeTo::create(0.25,opacity));
+  }
+};
+
+#include <Geode/modify/UILayer.hpp>
+class $modify(UILayer) {
+  void onPause(CCObject* obj) {
+    UILayer::onPause(obj);
+    auto engine = FMODAudioEngine::sharedEngine();
+    engine->stopAllMusic();
+    engine->resumeMusic(1);
+    engine->playMusic("menuLoop.mp3",false,0.f,1);
+  }
+};
 /**
  * `$modify` lets you extend and modify GD's classes.
  * To hook a function in Geode, simply $modify the class
@@ -111,6 +146,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 		CCDirector::get()->pushScene(osuIntroTriangles::create());
 	}
 	void onMyButton2(CCObject*) {
+    /*
 		osuDialog::create(
 			"Are you sure you want to exit GD?", 
 			"Last chance to turn back", 
@@ -119,6 +155,8 @@ class $modify(MyMenuLayer, MenuLayer) {
 				DialogButton::create("clicked the wrong button mb", dialog_button_secondary, "dialog-cancel-select.wav"_spr) 
 			}
 		)->show();
+    */
+    WaveContainer::create(ccc3(180, 180, 180),CCNode::create())->show();
 	}
 };
 
