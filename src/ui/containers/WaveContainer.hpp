@@ -4,12 +4,12 @@
 #include <Geode/Geode.hpp>
 using namespace cocos2d;
 
-class WaveContainer : public CCLayerColor {
+class WaveContainer : public geode::Popup<ccColor3B, CCNode*> {
 private:
-  CCRenderTexture* wave1;
-  CCRenderTexture* wave2;
-  CCRenderTexture* wave3;
-  CCRenderTexture* wave4;
+  CCDrawNode* wave1;
+  CCDrawNode* wave2;
+  CCDrawNode* wave3;
+  CCDrawNode* wave4;
 
   CCNode* body;
 
@@ -20,10 +20,14 @@ private:
 
   float appearDuration = 0.8f;
   float disappearDuration = 0.5f;
+
+  CCDrawNode* createWave(CCSize size, float angle, ccColor3B col);
 public:
-  bool init(ccColor3B color, CCNode* body);
+  bool setup(ccColor3B color, CCNode* body) override;
+  // @note RobTop addition
+  bool customSetup(ccColor3B color, CCNode* body);
   static WaveContainer* create(ccColor3B color, CCNode* body);
-  void show();
+  void show() override;
 };
 
 #endif // !__osu_ui_containers_wave__

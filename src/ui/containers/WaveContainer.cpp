@@ -1,13 +1,13 @@
 #include "WaveContainer.hpp"
 #include "../../utils.hpp"
-#include "ccTypes.h"
 #include <cstdlib>
 
-CCRenderTexture* drawWave(CCSize size, ccColor3B color, float angle) {
+CCDrawNode* drawWave(CCSize size, ccColor3B color, float angle) {
+  /*
   auto ren = CCRenderTexture::create(size.width, size.height);
   ren->begin();
+  */
   CCDrawNode* node = CCDrawNode::create();
-  node->retain();
   node->setContentSize(size);
   bool rotateLeft = angle<0;
   angle = abs(angle);
@@ -18,7 +18,7 @@ CCRenderTexture* drawWave(CCSize size, ccColor3B color, float angle) {
   // i still have naming skill issues
   CCPoint last;
   if (rotateLeft) {
-    last = right.rotateByAngle(left, -angle);
+    last = right.rotateByAngle(left, angle);
     float remainingDistRatio = last.x/right.x;
     last = ccp(right.x,last.y*remainingDistRatio);
   } else {
@@ -31,33 +31,49 @@ CCRenderTexture* drawWave(CCSize size, ccColor3B color, float angle) {
   node->drawPolygon(j, 3, color4f,0,color4f);
   node->drawRect(ccp(0,0), size, color4f,0,color4f);
 
+  return node;
+  /*
   node->visit();
   ren->end();
   ren->retain();
   return ren;
+  */
+}
+
+CCDrawNode* WaveContainer::createWave(CCSize size, float angle, ccColor3B col) {
+  auto wave = drawWave(size, col, angle); 
+  wave->setAnchorPoint(ccp(0.5,0)); 
+  wave->setPosition(ccp(size.width/2,0));
+  return wave;
 }
 
 WaveContainer* WaveContainer::create(ccColor3B color, CCNode* body) {
-  create_class(WaveContainer, color, body);
+  auto s = CCDirector::sharedDirector()->getWinSize();
+  create_class(WaveContainer, initAnchored, s.width, s.height, color, body);
 }
 
-bool WaveContainer::init(ccColor3B color, CCNode* pBody) {
+bool WaveContainer::setup(ccColor3B color, CCNode* pBody) {
+  m_mainLayer->setVisible(false);
+  return customSetup(color, pBody);
+}
+
+bool WaveContainer::customSetup(ccColor3B color, CCNode* pBody) {
   auto s = CCDirector::sharedDirector()->getWinSize();
   auto k = CCSize{s.width*0.8f, s.height};
-  this->setContentSize(k);
+  this->setContentSize(s);
 
-#define createWave(id, col) \
-  wave##id = drawWave(k, col, angle##id); \
-  wave##id->setAnchorPoint(ccp(0.5,0)); \
-  wave##id->setPosition(ccp(s.width/2,0)); \
-  this->addChild(wave##id)
 
-  createWave(1, color);
-  createWave(2, color);
-  createWave(3, color);
-  createWave(4, color);
+  this->wave1 = createWave(k, angle1, color);
+  this->wave2 = createWave(k, angle2, color);
+  this->wave3 = createWave(k, angle3, color);
+  this->wave4 = createWave(k, angle4, color);
 
-  body = pBody; // mb
+  this->addChild(wave1);
+  this->addChild(wave2);
+  this->addChild(wave3);
+  this->addChild(wave4);
+
+  this->body = pBody; // mb
   body->setAnchorPoint(ccp(0.5,0));
   body->setPosition(ccp(s.width/2, 0));
   this->addChild(body);
@@ -70,11 +86,13 @@ bool WaveContainer::init(ccColor3B color, CCNode* pBody) {
 void WaveContainer::show() {
   CCDirector::sharedDirector()->getRunningScene()->addChild(this);
   auto h = this->getContentHeight();
-  wave1->runAction(CCMoveTo::create(appearDuration, ccp(0,h+(930/1366*h))));
-  wave2->runAction(CCMoveTo::create(appearDuration, ccp(0,h+(560/1366*h))));
-  wave3->runAction(CCMoveTo::create(appearDuration, ccp(0,h+(390/1366*h))));
-  wave4->runAction(CCMoveTo::create(appearDuration, ccp(0,h+(220/1366*h))));
-  body->runAction(CCMoveTo::create(appearDuration, ccp(0,h)));
+  
+#define j(id, dist) wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(wave##id->getPositionX(),h+(dist/1366*h)))))
+  j(1,930.f/1366*h);
+  j(2,560.f/1366*h);
+  j(3,390.f/1366*h);
+  j(4,220.f/1366*h);
+  body->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(body->getPositionX(),h))));
 
   FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
 }

@@ -19,9 +19,9 @@ CCRect boundingBoxFromContentSize(CCNode* node);
 // this mf uses ypos the other way
 CCRect flipRect(CCRect rect);
 
-#define create_class(classname, ...) \
+#define create_class(classname, initfunc, ...) \
     classname* ret = new classname(); \
-    if (ret && ret->init(__VA_ARGS__)) { \
+    if (ret && ret->initfunc(__VA_ARGS__)) { \
       ret->autorelease(); \
     } else { \
       CC_SAFE_DELETE(ret); \
