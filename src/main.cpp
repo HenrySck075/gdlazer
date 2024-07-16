@@ -3,7 +3,6 @@
  */
 #include <Geode/Geode.hpp>
 #include "intro/IntroTriangles.hpp"
-#include "ui/Dialog.hpp"
 #include "helpers/MouseEvent.hpp"
 #include "main/PauseLayer.hpp"
 #include "ui/containers/WaveContainer.hpp"

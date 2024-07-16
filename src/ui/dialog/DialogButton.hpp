@@ -1,9 +1,9 @@
 #ifndef __osu_ui_dialog_button__
 #define __osu_ui_dialog_button__
 
-#include "Geode/Geode.hpp"
-#include "../helpers/MouseEvent.hpp"
-#include "deco/Triangles.hpp"
+#include <Geode/Geode.hpp>
+#include "../../helpers/MouseEvent.hpp"
+#include "../deco/Triangles.hpp"
 
 using namespace geode::prelude;
 

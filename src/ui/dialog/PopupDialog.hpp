@@ -2,14 +2,14 @@
 #define __osu_ui_dialog__
 
 #include "Geode/Geode.hpp"
-#include "../utils.hpp"
-#include "../helpers/colors.hpp"
-#include "deco/Triangles.hpp"
+#include "../../utils.hpp"
+#include "../../helpers/colors.hpp"
+#include "../deco/Triangles.hpp"
 #include "DialogButton.hpp"
 
 using namespace geode::prelude;
 
-class osuDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<DialogButton*>> {
+class PopupDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<DialogButton*>> {
 private:
     CCClippingNode* m_bgSpriteClip;
     CCLayerRGBA* m_bodyLayout;
@@ -21,8 +21,8 @@ protected:
 
 public:
     void show() override;
-    static osuDialog* create(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
-        auto ret = new osuDialog();
+    static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
+        auto ret = new PopupDialog();
         if (ret->initAnchored(220.f, 200.f, title, content, buttons, "dialog.png"_spr)) {
             ret->autorelease();
             return ret;

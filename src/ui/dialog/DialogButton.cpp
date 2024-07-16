@@ -1,6 +1,5 @@
 #include "DialogButton.hpp"
-#include "../utils.hpp"
-#include "Geode/loader/Log.hpp"
+#include "../../utils.hpp"
 
 DialogButton* DialogButton::create(const char* label, ccColor3B color, const char* clickSfx) {
     auto ret = new DialogButton();

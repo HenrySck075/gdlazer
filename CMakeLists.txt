@@ -21,8 +21,8 @@ add_library(${PROJECT_NAME} SHARED
     src/helpers/MouseEvent.hpp src/helpers/MouseEvent.cpp
     src/helpers/colors.hpp
 
-    src/ui/Dialog.hpp src/ui/Dialog.cpp
-    src/ui/DialogButton.hpp src/ui/DialogButton.cpp
+    src/ui/dialog/PopupDialog.hpp src/ui/dialog/PopupDialog.cpp
+    src/ui/dialog/DialogButton.hpp src/ui/dialog/DialogButton.cpp
 
     src/ui/color/OverlayColorProvider.hpp src/ui/color/OverlayColorProvider.cpp
 

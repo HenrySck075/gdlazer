@@ -1,7 +1,6 @@
-#include "Dialog.hpp"
-#include "Geode/cocos/cocoa/CCString.h"
+#include "PopupDialog.hpp"
 
-bool osuDialog::setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
+bool PopupDialog::setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     // convenience function provided by Popup
@@ -70,7 +69,7 @@ bool osuDialog::setup(std::string const& title, std::string const& content, std:
     return true;
 }
 
-void osuDialog::show() {
+void PopupDialog::show() {
     FLAlertLayer::show();
     m_mainLayer->stopAllActions();
     m_mainLayer->setScale(0.7);
@@ -83,7 +82,7 @@ void osuDialog::show() {
 
 }
 
-void osuDialog::onClose(cocos2d::CCObject*) {
+void PopupDialog::onClose(cocos2d::CCObject*) {
     this->setKeypadEnabled(false);
     this->setTouchEnabled(false);
 
@@ -98,6 +97,6 @@ void osuDialog::onClose(cocos2d::CCObject*) {
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-out.wav"_spr);
 }
 
-void osuDialog::keyBackClicked() {
+void PopupDialog::keyBackClicked() {
     this->onClose(CCStringMake("mrow"));
 }
