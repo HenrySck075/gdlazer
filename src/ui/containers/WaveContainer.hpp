@@ -2,32 +2,61 @@
 #define __osu_ui_containers_wave__
 
 #include <Geode/Geode.hpp>
-using namespace cocos2d;
+#include "../color/OverlayColorProvider.hpp"
+using namespace geode::prelude;
 
-class WaveContainer : public geode::Popup<ccColor3B, CCNode*> {
-private:
-  CCDrawNode* wave1;
-  CCDrawNode* wave2;
-  CCDrawNode* wave3;
-  CCDrawNode* wave4;
+using ColorScheme = osu::Game::Overlays::OverlayColorScheme;
 
-  CCNode* body;
+namespace osu {
+  namespace Game {
+    namespace Graphics {
+      namespace Containers {
+        class WaveContainer : public geode::Popup<ColorScheme, CCNode*> {
+        private:
+          bool hiding = false;
 
-  float angle1 = 13;
-  float angle2 = -7;
-  float angle3 = 4;
-  float angle4 = -2;
+          Overlays::OverlayColorProvider* provider;
 
-  float appearDuration = 0.8f;
-  float disappearDuration = 0.5f;
+          CCPoint touchLoc = ccp(0,0);
+          CCRect touchBoundary;
 
-  CCDrawNode* createWave(CCSize size, float angle, ccColor3B col);
-public:
-  bool setup(ccColor3B color, CCNode* body) override;
-  // @note RobTop addition
-  bool customSetup(ccColor3B color, CCNode* body);
-  static WaveContainer* create(ccColor3B color, CCNode* body);
-  void show() override;
-};
+          CCDrawNode* wave1;
+          CCDrawNode* wave2;
+          CCDrawNode* wave3;
+          CCDrawNode* wave4;
+
+          CCNode* body;
+
+          float angle1 = 13;
+          float angle2 = -7;
+          float angle3 = 4;
+          float angle4 = -2;
+
+          float pos1;
+          float pos2;
+          float pos3;
+          float pos4;
+
+          float appearDuration = 0.8f;
+          float disappearDuration = 0.5f;
+
+          CCDrawNode* createWave(float w, CCSize size, float angle, ccColor4B col);
+          void onClose(cocos2d::CCObject*) override;
+          void keyBackClicked() override;
+
+          void ccTouchEnded(CCTouch* t, CCEvent* what) override;
+          bool ccTouchBegan(CCTouch* t, CCEvent* what) override;
+        public:
+          bool setup(ColorScheme color, CCNode* body) override;
+          // @note RobTop addition
+          bool customSetup(CCNode* body);
+          static WaveContainer* create(ColorScheme color, CCNode* body);
+          void show() override;
+          void hide();
+        };
+      }
+    }
+  }
+}
 
 #endif // !__osu_ui_containers_wave__

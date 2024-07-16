@@ -3,6 +3,7 @@
 // file in date ordee
 #include "Geode/Geode.hpp"
 #include "Geode/cocos/platform/CCPlatformMacros.h"
+#include <cmath>
 using namespace geode::prelude;
 
 float randomFloat();
@@ -29,5 +30,6 @@ CCRect flipRect(CCRect rect);
 \
     return ret
 
+#define degreeToRadius(deg) deg/360*M_PI
 
 #endif

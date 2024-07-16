@@ -24,7 +24,10 @@ add_library(${PROJECT_NAME} SHARED
     src/ui/Dialog.hpp src/ui/Dialog.cpp
     src/ui/DialogButton.hpp src/ui/DialogButton.cpp
 
+    src/ui/color/OverlayColorProvider.hpp src/ui/color/OverlayColorProvider.cpp
+
     src/ui/deco/Triangles.hpp src/ui/deco/Triangles.cpp 
+
     src/ui/containers/WaveContainer.hpp src/ui/containers/WaveContainer.cpp 
 
     # Main modification

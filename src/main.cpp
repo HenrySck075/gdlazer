@@ -7,11 +7,13 @@
 #include "helpers/MouseEvent.hpp"
 #include "main/PauseLayer.hpp"
 #include "ui/containers/WaveContainer.hpp"
+#include "ui/color/OverlayColorProvider.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
  */
 using namespace geode::prelude;
+using namespace osu::Game;
 
 
 #include <Geode/modify/PauseLayer.hpp>
@@ -155,7 +157,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 			}
 		)->show();
     */
-    WaveContainer::create(ccc3(255, 255, 255),CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
+    Graphics::Containers::WaveContainer::create(Overlays::OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
 
