@@ -1,9 +1,9 @@
-#ifndef __osulazer__utils__
-#define __osulazer__utils__
+#pragma once
 // file in date ordee
 #include "Geode/Geode.hpp"
 #include "Geode/cocos/platform/CCPlatformMacros.h"
 #include <cmath>
+#include <cstddef>
 using namespace geode::prelude;
 
 float randomFloat();
@@ -36,4 +36,8 @@ CCRect flipRect(CCRect rect);
 #define glPointHeight(w) w/768
 #define glPoint(w,h) glPointWidth(w), glPointHeight(h)
 
-#endif
+// use wisely
+template<typename interface, typename obj>
+bool didImplements(obj object) {
+  return dynamic_cast<interface*>(object) != nullptr;
+}

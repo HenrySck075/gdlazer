@@ -2,6 +2,10 @@
 using namespace cocos2d;
 
 class Interpolation {
+public:
+  // Returns the interpolated value
+  template<typename TValue>
+  static TValue valueAt(float time, TValue startValue, TValue endValue, float startTime, float endTime);
   template<typename TValue, typename TEasing>
-  TValue valueAt(double time, TValue startValue, TValue endValue, double startTime, double endTime, TEasing easing);
+  static TValue valueAtEasing(float time, TValue startValue, TValue endValue, float startTime, float endTime, TEasing easing);
 };

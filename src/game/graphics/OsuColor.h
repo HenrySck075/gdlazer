@@ -2,11 +2,13 @@
 
 #include <Geode/Geode.hpp>
 #include <cmath>
-#include "../../helpers/ColorHelper.hpp"
+#include "../../framework/graphics/Color4.hpp"
 #include "../scoring/ScoreRank.hpp"
 #include "../scoring/HitResult.hpp"
+#include "../beatmaps/BeatmapOnlineStatus.hpp"
+#include "../rulesets/mods/ModType.hpp"
+#include "../../framework/utils/Interpolation.hpp"
 using namespace geode::prelude;
-using Color4 = ccColor4B;
 
 struct GradientPoint {
   float position;
@@ -28,7 +30,7 @@ class Osucolor {
                 if (point >= endStop.position)
                     continue;
 
-                return Interpolation.ValueAt(point, startStop.color, endStop.color, startStop.position, endStop.position);
+                return Interpolation::valueAt(point, startStop.color, endStop.color, startStop.position, endStop.position);
             }
 
             return gradient[-1].color;
@@ -38,18 +40,18 @@ class Osucolor {
     /// </summary>
     Color4 forStarDifficulty(double starDifficulty) {return SampleFromLinearGradient(
     {
-        {0.1f, CCColorExtension::color4FromHex(0xaaaaaaff)},
-        {0.1f, CCColorExtension::color4FromHex(0x4290fbff)},
-        {1.25f, CCColorExtension::color4FromHex(0x4fc0ffff)},
-        {2.0f, CCColorExtension::color4FromHex(0x4fffd5ff)},
-        {2.5f, CCColorExtension::color4FromHex(0x7cff4fff)},
-        {3.3f, CCColorExtension::color4FromHex(0xf6f05cff)},
-        {4.2f, CCColorExtension::color4FromHex(0xff8068ff)},
-        {4.9f, CCColorExtension::color4FromHex(0xff4e6fff)},
-        {5.8f, CCColorExtension::color4FromHex(0xc645b8ff)},
-        {6.7f, CCColorExtension::color4FromHex(0x6563deff)},
-        {7.7f, CCColorExtension::color4FromHex(0x18158eff)},
-        {9.0f, ccc4(0, 0, 0, 1)}
+        {0.1f, Color4::fromHex("aaaaaa")},
+        {0.1f, Color4::fromHex("4290fb")},
+        {1.25f, Color4::fromHex("4fc0ff")},
+        {2.0f, Color4::fromHex("4fffd5")},
+        {2.5f, Color4::fromHex("7cff4f")},
+        {3.3f, Color4::fromHex("f6f05c")},
+        {4.2f, Color4::fromHex("ff8068")},
+        {4.9f, Color4::fromHex("ff4e6f")},
+        {5.8f, Color4::fromHex("c645b8")},
+        {6.7f, Color4::fromHex("6563de")},
+        {7.7f, Color4::fromHex("18158e")},
+        {9.0f, Color4Defined().Black}
     }, (float)ceil(starDifficulty));};
 
     /// <summary>
@@ -59,29 +61,29 @@ class Osucolor {
     {
         switch (rank)
         {
-            case ScoreRank.XH:
-            case ScoreRank.X:
-                return CCColorExtension::color4FromHex(0xde31aeff);
+            case ScoreRank::XH:
+            case ScoreRank::X:
+                return Color4::fromHex("de31ae");
 
-            case ScoreRank.SH:
-            case ScoreRank.S:
-                return CCColorExtension::color4FromHex(0x02b5c3ff);
+            case ScoreRank::SH:
+            case ScoreRank::S:
+                return Color4::fromHex("02b5c3");
 
-            case ScoreRank.A:
-                return CCColorExtension::color4FromHex(0x88da20ff);
+            case ScoreRank::A:
+                return Color4::fromHex("88da20");
 
-            case ScoreRank.B:
-                return CCColorExtension::color4FromHex(0xe3b130ff);
+            case ScoreRank::B:
+                return Color4::fromHex("e3b130");
 
-            case ScoreRank.C:
-                return CCColorExtension::color4FromHex(0xff8e5dff);
+            case ScoreRank::C:
+                return Color4::fromHex("ff8e5d");
 
-            case ScoreRank.D:
-                return CCColorExtension::color4FromHex(0xff5a5aff);
+            case ScoreRank::D:
+                return Color4::fromHex("ff5a5a");
 
-            case ScoreRank.F:
+            case ScoreRank::F:
             default:
-                return CCColorExtension::color4FromHex(0x3f3f3fff);
+                return Color4::fromHex("3f3f3f");
         }
     }
 
@@ -90,34 +92,35 @@ class Osucolor {
     /// </summary>
     Color4 forHitResult(HitResult result)
     {
+        Color4Defined c;
         switch (result)
         {
-            case HitResult.IgnoreMiss:
-            case HitResult.SmallTickMiss:
-                return Color4.Gray;
+            case HitResult::IgnoreMiss:
+            case HitResult::SmallTickMiss:
+                return c.Gray;
 
-            case HitResult.Miss:
-            case HitResult.LargeTickMiss:
-            case HitResult.ComboBreak:
-                return Red;
+            case HitResult::Miss:
+            case HitResult::LargeTickMiss:
+            case HitResult::ComboBreak:
+                return c.Red;
 
-            case HitResult.Meh:
-                return Yellow;
+            case HitResult::Meh:
+                return c.Yellow;
 
-            case HitResult.Ok:
-                return Green;
+            case HitResult::Ok:
+                return c.Green;
 
-            case HitResult.Good:
-                return GreenLight;
+            case HitResult::Good:
+                return c.LightGreen;
 
-            case HitResult.SmallTickHit:
-            case HitResult.LargeTickHit:
-            case HitResult.SliderTailHit:
-            case HitResult.Great:
-                return Blue;
+            case HitResult::SmallTickHit:
+            case HitResult::LargeTickHit:
+            case HitResult::SliderTailHit:
+            case HitResult::Great:
+                return c.Blue;
 
             default:
-                return BlueLight;
+                return c.LightBlue;
         }
     }
 
@@ -133,30 +136,30 @@ class Osucolor {
     {
         switch (status)
         {
-            case BeatmapOnlineStatus.LocallyModified:
-                return Color4.OrangeRed;
+            case BeatmapOnlineStatus::LocallyModified:
+                return Color4Defined().OrangeRed;
 
-            case BeatmapOnlineStatus.Ranked:
-            case BeatmapOnlineStatus.Approved:
-                return CCColorExtension::color4FromHex(0xb3ff66ff);
+            case BeatmapOnlineStatus::Ranked:
+            case BeatmapOnlineStatus::Approved:
+                return Color4::fromHex("b3ff66");
 
-            case BeatmapOnlineStatus.Loved:
-                return CCColorExtension::color4FromHex(0xff66abff);
+            case BeatmapOnlineStatus::Loved:
+                return Color4::fromHex("ff66ab");
 
-            case BeatmapOnlineStatus.Qualified:
-                return CCColorExtension::color4FromHex(0x66ccffff);
+            case BeatmapOnlineStatus::Qualified:
+                return Color4::fromHex("66ccff");
 
-            case BeatmapOnlineStatus.Pending:
-                return CCColorExtension::color4FromHex(0xffd966ff);
+            case BeatmapOnlineStatus::Pending:
+                return Color4::fromHex("ffd966");
 
-            case BeatmapOnlineStatus.WIP:
-                return CCColorExtension::color4FromHex(0xff9966ff);
+            case BeatmapOnlineStatus::WIP:
+                return Color4::fromHex("ff9966");
 
-            case BeatmapOnlineStatus.Graveyard:
-                return Color4.Black;
+            case BeatmapOnlineStatus::Graveyard:
+                return Color4Defined().Black;
 
             default:
-                return null;
+                return Color4Defined().Black;
         }
     }
 
@@ -167,26 +170,26 @@ class Osucolor {
     {
         switch (modType)
         {
-            case ModType.Automation:
+          case ModType::Automation:
                 return Blue1;
 
-            case ModType.DifficultyIncrease:
+          case ModType::DifficultyIncrease:
                 return Red1;
 
-            case ModType.DifficultyReduction:
+          case ModType::DifficultyReduction:
                 return Lime1;
 
-            case ModType.Conversion:
+          case ModType::Conversion:
                 return Purple1;
 
-            case ModType.Fun:
+          case ModType::Fun:
                 return Pink1;
 
-            case ModType.System:
+          case ModType::System:
                 return Yellow;
 
-            default:
-                throw new ArgumentOutOfRangeException(nameof(modType), modType, "Unknown mod type");
+          default:
+                throw "Unknown mod type";
         }
     }
 
@@ -195,17 +198,18 @@ class Osucolor {
     /// </summary>
     Color4 forRoomCategory(RoomCategory roomCategory)
     {
-        switch (roomCategory)
-        {
-            case RoomCategory.Spotlight:
-                return Spotlightcolor;
+      Color4Defined c;
+      switch (roomCategory)
+      {
+        case RoomCategory.Spotlight:
+          return SpotlightColor;
 
-            case RoomCategory.FeaturedArtist:
-                return FeaturedArtistcolor;
+        case RoomCategory.FeaturedArtist:
+          return FeaturedArtistColor;
 
-            default:
-                return null;
-        }
+        default:
+          return c.Black;
+      }
     }
 
     /// <summary>
@@ -218,28 +222,28 @@ class Osucolor {
         {
             default:
             case RankingTier.Iron:
-                return CCColorExtension::color4FromHex(0xBAB3ABff);
+                return Color4::fromHex("BAB3AB");
 
             case RankingTier.Bronze:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0xB88F7Aff), CCColorExtension::color4FromHex(0x855C47ff);
+                return colorInfo.GradientVertical(Color4::fromHex("B88F7Aff"), CCColorExtension::color4FromHex("855C47");
 
             case RankingTier.Silver:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0xE0E0EBff), CCColorExtension::color4FromHex(0xA3A3C2ff);
+                return colorInfo.GradientVertical(Color4.fromHex("E0E0EBff), CCColorExtension::color4FromHex(0xA3A3C2");
 
             case RankingTier.Gold:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0xF0E4A8ff), CCColorExtension::color4FromHex(0xE0C952ff);
+                return colorInfo.GradientVertical(Color4.fromHex("F0E4A8ff), CCColorExtension::color4FromHex(0xE0C952");
 
             case RankingTier.Platinum:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0xA8F0EFff), CCColorExtension::color4FromHex(0x52E0DFff);
+                return colorInfo.GradientVertical(Color4.fromHex("A8F0EFff), CCColorExtension::color4FromHex(0x52E0DF");
 
             case RankingTier.Rhodium:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0xD9F8D3ff), CCColorExtension::color4FromHex(0xA0CF96ff);
+                return colorInfo.GradientVertical(Color4.fromHex("D9F8D3ff), CCColorExtension::color4FromHex(0xA0CF96");
 
             case RankingTier.Radiant:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0x97DCFFff), CCColorExtension::color4FromHex(0xED82FFff);
+                return colorInfo.GradientVertical(Color4.fromHex("97DCFFff), CCColorExtension::color4FromHex(0xED82FF");
 
             case RankingTier.Lustrous:
-                return colorInfo.GradientVertical(CCColorExtension::color4FromHex(0xFFE600ff), CCColorExtension::color4FromHex(0xED82FFff);
+                return colorInfo.GradientVertical(Color4.fromHex("FFE600ff), CCColorExtension::color4FromHex(0xED82FF");
         }
     }
 
@@ -255,100 +259,100 @@ class Osucolor {
         return Gray(brightness > 0.5f ? 0.2f : 0.9f);
     }
 
-    Color4 TeamcolorRed = CCColorExtension::color4FromHex(0xAA1414ff);
-    Color4 TeamcolorBlue = CCColorExtension::color4FromHex(0x1462AAff);
+    Color4 TeamcolorRed = Color4::fromHex("AA1414");
+    Color4 TeamcolorBlue = Color4::fromHex("1462AA");
 
     // See https://github.com/ppy/osu-web/blob/master/resources/assets/less/colors.less
-    Color4 PurpleLighter = CCColorExtension::color4FromHex(0xeeeeffff);
-    Color4 PurpleLight = CCColorExtension::color4FromHex(0xaa88ffff);
-    Color4 PurpleLightAlternative = CCColorExtension::color4FromHex(0xcba4daff);
-    Color4 Purple = CCColorExtension::color4FromHex(0x8866eeff);
-    Color4 PurpleDark = CCColorExtension::color4FromHex(0x6644ccff);
-    Color4 PurpleDarkAlternative = CCColorExtension::color4FromHex(0x312436ff);
-    Color4 PurpleDarker = CCColorExtension::color4FromHex(0x441188ff);
+    Color4 PurpleLighter = Color4::fromHex("eeeeff");
+    Color4 PurpleLight = Color4::fromHex("aa88ff");
+    Color4 PurpleLightAlternative = Color4::fromHex("cba4da");
+    Color4 Purple = Color4::fromHex("8866ee");
+    Color4 PurpleDark = Color4::fromHex("6644cc");
+    Color4 PurpleDarkAlternative = Color4::fromHex("312436");
+    Color4 PurpleDarker = Color4::fromHex("441188");
 
-    Color4 PinkLighter = CCColorExtension::color4FromHex(0xffddeeff);
-    Color4 PinkLight = CCColorExtension::color4FromHex(0xff99ccff);
-    Color4 Pink = CCColorExtension::color4FromHex(0xff66aaff);
-    Color4 PinkDark = CCColorExtension::color4FromHex(0xcc5288ff);
-    Color4 PinkDarker = CCColorExtension::color4FromHex(0xbb1177ff);
+    Color4 PinkLighter = Color4::fromHex("ffddee");
+    Color4 PinkLight = Color4::fromHex("ff99cc");
+    Color4 Pink = Color4::fromHex("ff66aa");
+    Color4 PinkDark = Color4::fromHex("cc5288");
+    Color4 PinkDarker = Color4::fromHex("bb1177");
 
-    Color4 BlueLighter = CCColorExtension::color4FromHex(0xddffffff);
-    Color4 BlueLight = CCColorExtension::color4FromHex(0x99eeffff);
-    Color4 Blue = CCColorExtension::color4FromHex(0x66ccffff);
-    Color4 BlueDark = CCColorExtension::color4FromHex(0x44aaddff);
-    Color4 BlueDarker = CCColorExtension::color4FromHex(0x2299bbff);
+    Color4 BlueLighter = Color4::fromHex("ddffff");
+    Color4 BlueLight = Color4::fromHex("99eeff");
+    Color4 Blue = Color4::fromHex("66ccff");
+    Color4 BlueDark = Color4::fromHex("44aadd");
+    Color4 BlueDarker = Color4::fromHex("2299bb");
 
-    Color4 YellowLighter = CCColorExtension::color4FromHex(0xffffddff);
-    Color4 YellowLight = CCColorExtension::color4FromHex(0xffdd55ff);
-    Color4 Yellow = CCColorExtension::color4FromHex(0xffcc22ff);
-    Color4 YellowDark = CCColorExtension::color4FromHex(0xeeaa00ff);
-    Color4 YellowDarker = CCColorExtension::color4FromHex(0xcc6600ff);
+    Color4 YellowLighter = Color4::fromHex("ffffdd");
+    Color4 YellowLight = Color4::fromHex("ffdd55");
+    Color4 Yellow = Color4::fromHex("ffcc22");
+    Color4 YellowDark = Color4::fromHex("eeaa00");
+    Color4 YellowDarker = Color4::fromHex("cc6600");
 
-    Color4 GreenLighter = CCColorExtension::color4FromHex(0xeeffccff);
-    Color4 GreenLight = CCColorExtension::color4FromHex(0xb3d944ff);
-    Color4 Green = CCColorExtension::color4FromHex(0x88b300ff);
-    Color4 GreenDark = CCColorExtension::color4FromHex(0x668800ff);
-    Color4 GreenDarker = CCColorExtension::color4FromHex(0x445500ff);
+    Color4 GreenLighter = Color4::fromHex("eeffcc");
+    Color4 GreenLight = Color4::fromHex("b3d944");
+    Color4 Green = Color4::fromHex("88b300");
+    Color4 GreenDark = Color4::fromHex("668800");
+    Color4 GreenDarker = Color4::fromHex("445500");
 
-    Color4 Sky = CCColorExtension::color4FromHex(0x6bb5ffff);
-    Color4 GreySkyLighter = CCColorExtension::color4FromHex(0xc6e3f4ff);
-    Color4 GreySkyLight = CCColorExtension::color4FromHex(0x8ab3ccff);
-    Color4 GreySky = CCColorExtension::color4FromHex(0x405461ff);
-    Color4 GreySkyDark = CCColorExtension::color4FromHex(0x303d47ff);
-    Color4 GreySkyDarker = CCColorExtension::color4FromHex(0x21272cff);
+    Color4 Sky = Color4::fromHex("6bb5ff");
+    Color4 GreySkyLighter = Color4::fromHex("c6e3f4");
+    Color4 GreySkyLight = Color4::fromHex("8ab3cc");
+    Color4 GreySky = Color4::fromHex("405461");
+    Color4 GreySkyDark = Color4::fromHex("303d47");
+    Color4 GreySkyDarker = Color4::fromHex("21272c");
 
-    Color4 SeaFoam = CCColorExtension::color4FromHex(0x05ffa2ff);
-    Color4 GreySeaFoamLighter = CCColorExtension::color4FromHex(0x9ebab1ff);
-    Color4 GreySeaFoamLight = CCColorExtension::color4FromHex(0x4d7365ff);
-    Color4 GreySeaFoam = CCColorExtension::color4FromHex(0x33413cff);
-    Color4 GreySeaFoamDark = CCColorExtension::color4FromHex(0x2c3532ff);
-    Color4 GreySeaFoamDarker = CCColorExtension::color4FromHex(0x1e2422ff);
+    Color4 SeaFoam = Color4::fromHex("05ffa2");
+    Color4 GreySeaFoamLighter = Color4::fromHex("9ebab1");
+    Color4 GreySeaFoamLight = Color4::fromHex("4d7365");
+    Color4 GreySeaFoam = Color4::fromHex("33413c");
+    Color4 GreySeaFoamDark = Color4::fromHex("2c3532");
+    Color4 GreySeaFoamDarker = Color4::fromHex("1e2422");
 
-    Color4 Cyan = CCColorExtension::color4FromHex(0x05f4fdff);
-    Color4 GreyCyanLighter = CCColorExtension::color4FromHex(0x77b1b3ff);
-    Color4 GreyCyanLight = CCColorExtension::color4FromHex(0x436d6fff);
-    Color4 GreyCyan = CCColorExtension::color4FromHex(0x293d3eff);
-    Color4 GreyCyanDark = CCColorExtension::color4FromHex(0x243536ff);
-    Color4 GreyCyanDarker = CCColorExtension::color4FromHex(0x1e2929ff);
+    Color4 Cyan = Color4::fromHex("05f4fd");
+    Color4 GreyCyanLighter = Color4::fromHex("77b1b3");
+    Color4 GreyCyanLight = Color4::fromHex("436d6f");
+    Color4 GreyCyan = Color4::fromHex("293d3e");
+    Color4 GreyCyanDark = Color4::fromHex("243536");
+    Color4 GreyCyanDarker = Color4::fromHex("1e2929");
 
-    Color4 Lime = CCColorExtension::color4FromHex(0x82ff05ff);
-    Color4 GreyLimeLighter = CCColorExtension::color4FromHex(0xdeff87ff);
-    Color4 GreyLimeLight = CCColorExtension::color4FromHex(0x657259ff);
-    Color4 GreyLime = CCColorExtension::color4FromHex(0x3f443aff);
-    Color4 GreyLimeDark = CCColorExtension::color4FromHex(0x32352eff);
-    Color4 GreyLimeDarker = CCColorExtension::color4FromHex(0x2e302bff);
+    Color4 Lime = Color4::fromHex("82ff05");
+    Color4 GreyLimeLighter = Color4::fromHex("deff87");
+    Color4 GreyLimeLight = Color4::fromHex("657259");
+    Color4 GreyLime = Color4::fromHex("3f443a");
+    Color4 GreyLimeDark = Color4::fromHex("32352e");
+    Color4 GreyLimeDarker = Color4::fromHex("2e302b");
 
-    Color4 Violet = CCColorExtension::color4FromHex(0xbf04ffff);
-    Color4 GreyVioletLighter = CCColorExtension::color4FromHex(0xebb8feff);
-    Color4 GreyVioletLight = CCColorExtension::color4FromHex(0x685370ff);
-    Color4 GreyViolet = CCColorExtension::color4FromHex(0x46334dff);
-    Color4 GreyVioletDark = CCColorExtension::color4FromHex(0x2c2230ff);
-    Color4 GreyVioletDarker = CCColorExtension::color4FromHex(0x201823ff);
+    Color4 Violet = Color4::fromHex("bf04ff");
+    Color4 GreyVioletLighter = Color4::fromHex("ebb8fe");
+    Color4 GreyVioletLight = Color4::fromHex("685370");
+    Color4 GreyViolet = Color4::fromHex("46334d");
+    Color4 GreyVioletDark = Color4::fromHex("2c2230");
+    Color4 GreyVioletDarker = Color4::fromHex("201823");
 
-    Color4 Carmine = CCColorExtension::color4FromHex(0xff0542ff);
-    Color4 GreyCarmineLighter = CCColorExtension::color4FromHex(0xdeaab4ff);
-    Color4 GreyCarmineLight = CCColorExtension::color4FromHex(0x644f53ff);
-    Color4 GreyCarmine = CCColorExtension::color4FromHex(0x342b2dff);
-    Color4 GreyCarmineDark = CCColorExtension::color4FromHex(0x302a2bff);
-    Color4 GreyCarmineDarker = CCColorExtension::color4FromHex(0x241d1eff);
+    Color4 Carmine = Color4::fromHex("ff0542");
+    Color4 GreyCarmineLighter = Color4::fromHex("deaab4");
+    Color4 GreyCarmineLight = Color4::fromHex("644f53");
+    Color4 GreyCarmine = Color4::fromHex("342b2d");
+    Color4 GreyCarmineDark = Color4::fromHex("302a2b");
+    Color4 GreyCarmineDarker = Color4::fromHex("241d1e");
 
-    Color4 Gray0 = CCColorExtension::color4FromHex(0x000ff);
-    Color4 Gray1 = CCColorExtension::color4FromHex(0x111ff);
-    Color4 Gray2 = CCColorExtension::color4FromHex(0x222ff);
-    Color4 Gray3 = CCColorExtension::color4FromHex(0x333ff);
-    Color4 Gray4 = CCColorExtension::color4FromHex(0x444ff);
-    Color4 Gray5 = CCColorExtension::color4FromHex(0x555ff);
-    Color4 Gray6 = CCColorExtension::color4FromHex(0x666ff);
-    Color4 Gray7 = CCColorExtension::color4FromHex(0x777ff);
-    Color4 Gray8 = CCColorExtension::color4FromHex(0x888ff);
-    Color4 Gray9 = CCColorExtension::color4FromHex(0x999ff);
-    Color4 GrayA = CCColorExtension::color4FromHex(0xaaaff);
-    Color4 GrayB = CCColorExtension::color4FromHex(0xbbbff);
-    Color4 GrayC = CCColorExtension::color4FromHex(0xcccff);
-    Color4 GrayD = CCColorExtension::color4FromHex(0xdddff);
-    Color4 GrayE = CCColorExtension::color4FromHex(0xeeeff);
-    Color4 GrayF = CCColorExtension::color4FromHex(0xfffff);
+    Color4 Gray0 = Color4::fromHex("000");
+    Color4 Gray1 = Color4::fromHex("111");
+    Color4 Gray2 = Color4::fromHex("222");
+    Color4 Gray3 = Color4::fromHex("333");
+    Color4 Gray4 = Color4::fromHex("444");
+    Color4 Gray5 = Color4::fromHex("555");
+    Color4 Gray6 = Color4::fromHex("666");
+    Color4 Gray7 = Color4::fromHex("777");
+    Color4 Gray8 = Color4::fromHex("888");
+    Color4 Gray9 = Color4::fromHex("999");
+    Color4 GrayA = Color4::fromHex("aaa");
+    Color4 GrayB = Color4::fromHex("bbb");
+    Color4 GrayC = Color4::fromHex("ccc");
+    Color4 GrayD = Color4::fromHex("ddd");
+    Color4 GrayE = Color4::fromHex("eee");
+    Color4 GrayF = Color4::fromHex("fff");
 
 
     // Reference: https://www.figma.com/file/VIkXMYNPMtQem2RJg9k2iQ/Asset%2Fcolors?node-id=1838%3A3
@@ -358,63 +362,63 @@ class Osucolor {
     // If the color in question is supposed to always match the view in which it is displayed theme-wise, use `OverlaycolorProvider`.
     // If the color usage is special and in general differs from the surrounding view in choice of hue, use the `Osucolor` constants.
 
-    Color4 Pink0 = CCColorExtension::color4FromHex(0xff99c7ff);
-    Color4 Pink1 = CCColorExtension::color4FromHex(0xff66abff);
-    Color4 Pink2 = CCColorExtension::color4FromHex(0xeb4791ff);
-    Color4 Pink3 = CCColorExtension::color4FromHex(0xcc3378ff);
-    Color4 Pink4 = CCColorExtension::color4FromHex(0x6b2e49ff);
+    Color4 Pink0 = Color4::fromHex("ff99c7");
+    Color4 Pink1 = Color4::fromHex("ff66ab");
+    Color4 Pink2 = Color4::fromHex("eb4791");
+    Color4 Pink3 = Color4::fromHex("cc3378");
+    Color4 Pink4 = Color4::fromHex("6b2e49");
 
-    Color4 Purple0 = CCColorExtension::color4FromHex(0xb299ffff);
-    Color4 Purple1 = CCColorExtension::color4FromHex(0x8c66ffff);
-    Color4 Purple2 = CCColorExtension::color4FromHex(0x7047ebff);
-    Color4 Purple3 = CCColorExtension::color4FromHex(0x5933ccff);
-    Color4 Purple4 = CCColorExtension::color4FromHex(0x3d2e6bff);
+    Color4 Purple0 = Color4::fromHex("b299ff");
+    Color4 Purple1 = Color4::fromHex("8c66ff");
+    Color4 Purple2 = Color4::fromHex("7047eb");
+    Color4 Purple3 = Color4::fromHex("5933cc");
+    Color4 Purple4 = Color4::fromHex("3d2e6b");
 
-    Color4 Blue0 = CCColorExtension::color4FromHex(0x99ddffff);
-    Color4 Blue1 = CCColorExtension::color4FromHex(0x66ccffff);
-    Color4 Blue2 = CCColorExtension::color4FromHex(0x47b4ebff);
-    Color4 Blue3 = CCColorExtension::color4FromHex(0x3399ccff);
-    Color4 Blue4 = CCColorExtension::color4FromHex(0x2e576bff);
+    Color4 Blue0 = Color4::fromHex("99ddff");
+    Color4 Blue1 = Color4::fromHex("66ccff");
+    Color4 Blue2 = Color4::fromHex("47b4eb");
+    Color4 Blue3 = Color4::fromHex("3399cc");
+    Color4 Blue4 = Color4::fromHex("2e576b");
 
-    Color4 Green0 = CCColorExtension::color4FromHex(0x99ffa2ff);
-    Color4 Green1 = CCColorExtension::color4FromHex(0x66ff73ff);
-    Color4 Green2 = CCColorExtension::color4FromHex(0x47eb55ff);
-    Color4 Green3 = CCColorExtension::color4FromHex(0x33cc40ff);
-    Color4 Green4 = CCColorExtension::color4FromHex(0x2e6b33ff);
+    Color4 Green0 = Color4::fromHex("99ffa2");
+    Color4 Green1 = Color4::fromHex("66ff73");
+    Color4 Green2 = Color4::fromHex("47eb55");
+    Color4 Green3 = Color4::fromHex("33cc40");
+    Color4 Green4 = Color4::fromHex("2e6b33");
 
-    Color4 Lime0 = CCColorExtension::color4FromHex(0xccff99ff);
-    Color4 Lime1 = CCColorExtension::color4FromHex(0xb2ff66ff);
-    Color4 Lime2 = CCColorExtension::color4FromHex(0x99eb47ff);
-    Color4 Lime3 = CCColorExtension::color4FromHex(0x7fcc33ff);
-    Color4 Lime4 = CCColorExtension::color4FromHex(0x4c6b2eff);
+    Color4 Lime0 = Color4::fromHex("ccff99");
+    Color4 Lime1 = Color4::fromHex("b2ff66");
+    Color4 Lime2 = Color4::fromHex("99eb47");
+    Color4 Lime3 = Color4::fromHex("7fcc33");
+    Color4 Lime4 = Color4::fromHex("4c6b2e");
 
-    Color4 Orange0 = CCColorExtension::color4FromHex(0xffe699ff);
-    Color4 Orange1 = CCColorExtension::color4FromHex(0xffd966ff);
-    Color4 Orange2 = CCColorExtension::color4FromHex(0xebc247ff);
-    Color4 Orange3 = CCColorExtension::color4FromHex(0xcca633ff);
-    Color4 Orange4 = CCColorExtension::color4FromHex(0x6b5c2eff);
+    Color4 Orange0 = Color4::fromHex("ffe699");
+    Color4 Orange1 = Color4::fromHex("ffd966");
+    Color4 Orange2 = Color4::fromHex("ebc247");
+    Color4 Orange3 = Color4::fromHex("cca633");
+    Color4 Orange4 = Color4::fromHex("6b5c2e");
 
-    Color4 Red0 = CCColorExtension::color4FromHex(0xff9b9bff);
-    Color4 Red1 = CCColorExtension::color4FromHex(0xff6666ff);
-    Color4 Red2 = CCColorExtension::color4FromHex(0xeb4747ff);
-    Color4 Red3 = CCColorExtension::color4FromHex(0xcc3333ff);
-    Color4 Red4 = CCColorExtension::color4FromHex(0x6b2e2eff);
+    Color4 Red0 = Color4::fromHex("ff9b9b");
+    Color4 Red1 = Color4::fromHex("ff6666");
+    Color4 Red2 = Color4::fromHex("eb4747");
+    Color4 Red3 = Color4::fromHex("cc3333");
+    Color4 Red4 = Color4::fromHex("6b2e2e");
 
     // Content Background
-    Color4 B5 = CCColorExtension::color4FromHex(0x222a28ff);
+    Color4 B5 = Color4::fromHex("222a28");
 
-    Color4 RedLighter = CCColorExtension::color4FromHex(0xffededff);
-    Color4 RedLight = CCColorExtension::color4FromHex(0xed7787ff);
-    Color4 Red = CCColorExtension::color4FromHex(0xed1121ff);
-    Color4 RedDark = CCColorExtension::color4FromHex(0xba0011ff);
-    Color4 RedDarker = CCColorExtension::color4FromHex(0x870000ff);
+    Color4 RedLighter = Color4::fromHex("ffeded");
+    Color4 RedLight = Color4::fromHex("ed7787");
+    Color4 Red = Color4::fromHex("ed1121");
+    Color4 RedDark = Color4::fromHex("ba0011");
+    Color4 RedDarker = Color4::fromHex("870000");
 
-    Color4 ChatBlue = CCColorExtension::color4FromHex(0x17292eff);
+    Color4 ChatBlue = Color4::fromHex("17292e");
 
-    Color4 ContextMenuGray = CCColorExtension::color4FromHex(0x223034ff);
+    Color4 ContextMenuGray = Color4::fromHex("223034");
 
-    Color4 Spotlightcolor => Green2;
-    Color4 FeaturedArtistcolor => Blue2;
+    Color4 SpotlightColor = Green2;
+    Color4 FeaturedArtistColor = Blue2;
 
-    Color4 DangerousButtoncolor => Pink3;
+    Color4 DangerousButtonColor = Pink3;
 }
