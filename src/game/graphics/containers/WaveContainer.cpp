@@ -65,7 +65,7 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
 
   bool WaveContainer::setup(ColorScheme color, CCNode* pBody) {
     m_mainLayer->setVisible(false);
-    provider = Overlays::OverlayColorProvider::create(color);
+    provider = OverlayColorProvider::create(color);
     provider->retain();
     return customSetup(pBody);
   }

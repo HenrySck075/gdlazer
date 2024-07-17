@@ -9,29 +9,47 @@ project(osulazer VERSION 1.0.0)
 # Set up the mod binary
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
-    # Add any extra C++ source files here
-
-    # Intros
-    src/intro/IntroTriangles.hpp src/intro/IntroTriangles.cpp
-    src/utils.cpp src/utils.hpp  
-    # src/LabelBMFont.cpp 
-
-    # UI Nodes
-    src/helpers/CustomActions.hpp src/helpers/CustomActions.cpp 
-    src/helpers/MouseEvent.hpp src/helpers/MouseEvent.cpp
-    src/helpers/colors.hpp
-
-    src/ui/dialog/PopupDialog.hpp src/ui/dialog/PopupDialog.cpp
-    src/ui/dialog/DialogButton.hpp src/ui/dialog/DialogButton.cpp
-
-    src/ui/color/OverlayColorProvider.hpp src/ui/color/OverlayColorProvider.cpp
-
-    src/ui/deco/Triangles.hpp src/ui/deco/Triangles.cpp 
-
-    src/ui/containers/WaveContainer.hpp src/ui/containers/WaveContainer.cpp 
-
-    # Main modification
-    src/main/PauseLayer.hpp src/main/PauseLayer.cpp
+    # Fill start
+src/LabelBMFont.cpp
+src/LabelBMFont.hpp
+src/main.cpp
+src/utils.cpp
+src/utils.hpp
+src/helpers/CustomActions.cpp
+src/helpers/CustomActions.hpp
+src/helpers/MouseEvent.cpp
+src/helpers/MouseEvent.hpp
+src/helpers/colors.hpp
+src/helpers/ColorHelper.hpp
+src/helpers/sound/SoundManager.hpp
+src/helpers/sound/SoundManager.cpp
+src/framework/README.md
+src/framework/utils/Interpolation.hpp
+src/framework/utils/Interpolable.hpp
+src/main/PauseLayer.hpp
+src/main/PauseLayer.cpp
+src/game/README.md
+src/game/scoring/HitResult.hpp
+src/game/scoring/ScoreRank.hpp
+src/game/screens/menu/MenuLayer.cpp
+src/game/screens/menu/MenuLayer.hpp
+src/game/screens/menu/ButtonSystem.hpp
+src/game/screens/menu/ButtonSystem.cpp
+src/game/screens/menu/ButtonArea.hpp
+src/game/screens/menu/intro/IntroTriangles.cpp
+src/game/screens/menu/intro/IntroTriangles.hpp
+src/game/graphics/OsuColor.h
+src/game/graphics/ui/deco/Triangles.cpp
+src/game/graphics/ui/deco/Triangles.hpp
+src/game/graphics/containers/WaveContainer.cpp
+src/game/graphics/containers/WaveContainer.hpp
+src/game/overlays/OverlayColorProvider.cpp
+src/game/overlays/OverlayColorProvider.hpp
+src/game/overlays/dialog/PopupDialog.hpp
+src/game/overlays/dialog/DialogButton.cpp
+src/game/overlays/dialog/PopupDialog.cpp
+src/game/overlays/dialog/DialogButton.hpp
+    # Fill end
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})
@@ -43,7 +61,3 @@ endif()
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
 # android
-# target_link_libraries(${PROJECT_NAME} -L/data/data/com.termux/files/usr/lib/libGLESv2.so.2)
-
-# Set up dependencies, resources, and link Geode.
-setup_geode_mod(${PROJECT_NAME})

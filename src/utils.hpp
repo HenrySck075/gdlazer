@@ -32,4 +32,8 @@ CCRect flipRect(CCRect rect);
 
 #define degreeToRadius(deg) deg/360*M_PI
 
+#define glPointWidth(w) w/1366
+#define glPointHeight(w) w/768
+#define glPoint(w,h) glPointWidth(w), glPointHeight(h)
+
 #endif

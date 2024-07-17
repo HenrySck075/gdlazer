@@ -1,5 +1,5 @@
 #include "Triangles.hpp"
-#include "../../utils.hpp"
+#include "../../../../utils.hpp"
 
 Triangles* Triangles::create(CCSize size, int quantity, ccColor3B baseColor) {
     auto ret = new Triangles();

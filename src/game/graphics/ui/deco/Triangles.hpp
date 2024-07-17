@@ -3,7 +3,7 @@
 
 #include "Geode/Geode.hpp"
 using namespace geode::prelude;
-#include "../../helpers/CustomActions.hpp"
+#include "../../../../helpers/CustomActions.hpp"
 
 class Triangles : public CCLayerRGBA {
 private:

@@ -2,7 +2,7 @@
 #define __osu_ui_containers_wave__
 
 #include <Geode/Geode.hpp>
-#include "../color/OverlayColorProvider.hpp"
+#include "../../overlays/OverlayColorProvider.hpp"
 using namespace geode::prelude;
 
 using ColorScheme = OverlayColorScheme;

@@ -2,11 +2,13 @@
  * Include the Geode headers.
  */
 #include <Geode/Geode.hpp>
+#include "Geode/binding/FMODAudioEngine.hpp"
 #include "intro/IntroTriangles.hpp"
 #include "helpers/MouseEvent.hpp"
 #include "main/PauseLayer.hpp"
 #include "ui/containers/WaveContainer.hpp"
 #include "ui/color/OverlayColorProvider.hpp"
+#include "helpers/sound/SoundManager.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
@@ -18,10 +20,8 @@ using namespace geode::prelude;
 class $modify(nPauseLayer,PauseLayer) {
   void scheduleBGM() {
     auto engine = FMODAudioEngine::sharedEngine();
-    engine->stopAllMusic();
-    engine->resumeMusic(0);
-    engine->resumeMusic(1);
-    engine->playMusic("pause-loop.mp3"_spr,false,0.f,1);
+    engine->resumeAllMusic();
+    engine->playMusic("pause-loop.mp3"_spr,false,0,1);
   }
   void customSetup() {
     PauseLayer::customSetup();
