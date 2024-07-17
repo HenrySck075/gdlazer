@@ -49,7 +49,6 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
   */
 }
 
-namespace osu {namespace Game {namespace Graphics {namespace Containers {
   CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor4B col) {
     CCDrawNode* wave;
     float offset;
@@ -157,7 +156,6 @@ namespace osu {namespace Game {namespace Graphics {namespace Containers {
     return ret;
   }
   void WaveContainer::ccTouchEnded(CCTouch* t, CCEvent* what) {
-    if (!touchBoundary.containsPoint(touchLoc)) hide();
+    if (!touchBoundary.containsPoint(touchLoc) && !touchBoundary.containsPoint(t->getLocation())) hide();
   }
 
-}}}}

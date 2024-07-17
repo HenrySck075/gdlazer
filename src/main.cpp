@@ -12,17 +12,21 @@
  * Brings cocos2d and all Geode namespaces to the current scope.
  */
 using namespace geode::prelude;
-using namespace osu::Game;
 
 
 #include <Geode/modify/PauseLayer.hpp>
 class $modify(nPauseLayer,PauseLayer) {
   void scheduleBGM() {
-    
+    auto engine = FMODAudioEngine::sharedEngine();
+    engine->stopAllMusic();
+    engine->resumeMusic(0);
+    engine->resumeMusic(1);
+    engine->playMusic("pause-loop.mp3"_spr,false,0.f,1);
   }
   void customSetup() {
     PauseLayer::customSetup();
 
+    /*
     CCObject* obj;
     CCARRAY_FOREACH(this->getChildren(), obj) {
         auto n = static_cast<CCNode*>(obj);
@@ -30,6 +34,7 @@ class $modify(nPauseLayer,PauseLayer) {
         n->setVisible(false);
         //n->runAction(CCFadeTo::create(0.2, oldOpacity));
     }
+    */
     int opacity = this->getOpacity();
     this->setOpacity(0);
     this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.5), CCCallFunc::create(this, callfunc_selector(nPauseLayer::scheduleBGM))));
@@ -37,16 +42,6 @@ class $modify(nPauseLayer,PauseLayer) {
   }
 };
 
-#include <Geode/modify/UILayer.hpp>
-class $modify(UILayer) {
-  void onPause(CCObject* obj) {
-    UILayer::onPause(obj);
-    auto engine = FMODAudioEngine::sharedEngine();
-    engine->stopAllMusic();
-    engine->resumeMusic(1);
-    engine->playMusic("menuLoop.mp3",false,0.f,1);
-  }
-};
 /**
  * `$modify` lets you extend and modify GD's classes.
  * To hook a function in Geode, simply $modify the class
@@ -156,7 +151,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 			}
 		)->show();
     */
-    Graphics::Containers::WaveContainer::create(Overlays::OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
+    WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
 
