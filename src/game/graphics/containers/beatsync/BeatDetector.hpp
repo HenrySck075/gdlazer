@@ -43,6 +43,7 @@ public:
 		if (instance == nullptr)
 		{
 			instance = new BeatDetector();
+      instance->loadSystem(); 
 		}
 		return instance;
 	}

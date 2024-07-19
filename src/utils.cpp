@@ -46,7 +46,7 @@ CCRect flipRect(CCRect rect) {
 #include <cctype>
 #include <locale>
 
-std::string& trim( std::string& s, char c, bool reverse = false )
+std::string& trim( std::string& s, char c, bool reverse )
 {
   return reverse
     ? s.erase( s.find_last_not_of( c ) + 1 )

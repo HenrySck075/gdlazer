@@ -1,4 +1,4 @@
-enum ButtonSystemState
+enum class ButtonSystemState
 {
     Exit,
     Initial,

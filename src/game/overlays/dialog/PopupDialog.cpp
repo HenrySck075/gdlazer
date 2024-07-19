@@ -1,6 +1,7 @@
 #include "PopupDialog.hpp"
+#include "../../graphics/ui/deco/Triangles.hpp"
 
-bool PopupDialog::setup(std::string const& title, std::string const& content, std::initializer_list<DialogButton*> buttons) {
+bool PopupDialog::setup(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     // convenience function provided by Popup
@@ -83,6 +84,9 @@ void PopupDialog::show() {
 }
 
 void PopupDialog::onClose(cocos2d::CCObject*) {
+  hide();
+}
+void PopupDialog::hide() {
     this->setKeypadEnabled(false);
     this->setTouchEnabled(false);
 
@@ -98,5 +102,5 @@ void PopupDialog::onClose(cocos2d::CCObject*) {
 }
 
 void PopupDialog::keyBackClicked() {
-    this->onClose(CCStringMake("mrow"));
+    this->hide();
 }

@@ -23,7 +23,7 @@ CCRect flipRect(CCRect rect);
 #define create_class(classname, initfunc, ...) \
     classname* ret = new classname(); \
     if (ret && ret->initfunc(__VA_ARGS__)) { \
-      ret->autorelease(); \
+      ret->CCObject::autorelease(); \
     } else { \
       CC_SAFE_DELETE(ret); \
     } \

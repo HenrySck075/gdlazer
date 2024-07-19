@@ -28,15 +28,15 @@
     	}
     },
     "sprites": [
-      "resources/ui/dialog.png"
+      "resources/textures/ui/dialog.png"
     ],
     "spritesheets": {
       "UISheet": [
-        "resources/ui/thisisasquare.png"
+        "resources/textures/ui/thisisasquare.png"
       ],
     	"IntroSheet": [
-        "resources/iconset/*.png",
-        "resources/triangle/*.png"
+        "resources/textures/iconset/*.png",
+        "resources/textures/triangle/*.png"
     	]
     },
     "files": [

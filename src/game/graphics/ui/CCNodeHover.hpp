@@ -5,11 +5,13 @@
 
 using namespace geode::prelude;
 
-class CCNodeHover : public CCNodeRGBA {
+class CCNodeHover : virtual public CCNodeRGBA {
 private:
+
 	EventListenerProtocol* m_listener;
-	void onMouseEnter();
-	void onMouseExit();
+	virtual void onMouseEnter() = 0;
+	virtual void onMouseExit() = 0;
 public:
+  bool m_entered = false;
   bool init();
 };

@@ -9,7 +9,6 @@ using OsuLogo = CCNode*;
 class ButtonSystem : public CCMenu
 {
   public:
-    float BUTTON_WIDTH = 140.f;
     float WEDGE_WIDTH = 20;
 
     //Action<ButtonSystemState>? StateChanged;
@@ -22,7 +21,7 @@ class ButtonSystem : public CCMenu
     SEL_MenuHandler onSettings;
     SEL_MenuHandler onMultiplayer;
     SEL_MenuHandler onPlaylists;
-    SEL_MenuHandler OnDailyChallenge;
+    SEL_MenuHandler onDailyChallenge;
 
   private:
     OsuLogo logo;

@@ -5,7 +5,7 @@ using namespace geode::prelude;
 // the j
 //
 // Note: one must make the create function themselves
-class BeatSyncedContainer : public CCNode {
+class BeatSyncedContainer : virtual public CCNode {
 private:
   EventListener<EventFilter<BeatEvent>> m_listener = {&BeatSyncedContainer::onBeatInternal};
   void onBeatInternal(float elapsed) {this->onBeat(elapsed);};

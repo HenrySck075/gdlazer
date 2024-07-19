@@ -6,6 +6,8 @@
 #include "Geode/cocos/cocoa/CCObject.h"
 #include "game/screens/menu/intro/IntroTriangles.hpp"
 #include "helpers/MouseEvent.hpp"
+#include "game/overlays/dialog/PopupDialog.hpp"
+#include "game/overlays/dialog/DialogButton.hpp"
 #include "main/PauseLayer.hpp"
 #include "game/graphics/containers/WaveContainer.hpp"
 #include "game/overlays/OverlayColorProvider.hpp"
@@ -145,8 +147,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 		CCDirector::get()->pushScene(osuIntroTriangles::create());
 	}
 	void onMyButton2(CCObject*) {
-    /*
-		osuDialog::create(
+		PopupDialog::create(
 			"Are you sure you want to exit GD?", 
 			"Last chance to turn back", 
 			{ 
@@ -154,8 +155,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 				DialogButton::create("clicked the wrong button mb", dialog_button_secondary, "dialog-cancel-select.wav"_spr) 
 			}
 		)->show();
-    */
-    WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
+    //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
 
@@ -176,10 +176,23 @@ class $modify(CCEGLView) {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
 };
+#endif
+#ifdef GEODE_IS_ANDROID
+#include <Geode/modify/CCTouchDispatcher.hpp>
+class $modify(CCTouchDispatcher) {
+  void broadcastPos(CCPoint pos) {
+    MouseEvent(pos).post();
+  };
+  void touches(CCSet* t, CCEvent* e, uint i) {
+    CCTouchDispatcher::touches(t, e, i);
+    broadcastPos(static_cast<CCTouch*>(t->anyObject())->getLocation());
+  }
+};
+
 #endif // DEBUG
        //
 
-
+/*
 class BeatUpdater : public CCNode {
 private:
   BeatDetector* instance;
@@ -213,3 +226,5 @@ public:
 $execute {
   SceneManager::get()->keepAcrossScenes(BeatUpdater::create());
 }
+
+*/

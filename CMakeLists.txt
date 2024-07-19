@@ -23,16 +23,13 @@ src/helpers/colors.hpp
 src/helpers/ColorHelper.hpp
 src/helpers/sound/SoundManager.hpp
 src/helpers/sound/SoundManager.cpp
-src/framework/README.md
 src/framework/utils/Interpolation.hpp
 src/framework/utils/IInterpolable.hpp
 src/framework/utils/Interpolation.cpp
 src/framework/graphics/Color4.hpp
 src/framework/graphics/color/ColorInfo.hpp
-src/framework/io/stores/FontStores.hpp
 src/main/PauseLayer.hpp
 src/main/PauseLayer.cpp
-src/game/README.md
 src/game/scoring/HitResult.hpp
 src/game/scoring/ScoreRank.hpp
 src/game/scoring/RankingTier.hpp
@@ -46,19 +43,20 @@ src/game/screens/menu/ButtonSystemState.hpp
 src/game/screens/menu/MainMenuButton.cpp
 src/game/screens/menu/intro/IntroTriangles.cpp
 src/game/screens/menu/intro/IntroTriangles.hpp
-src/game/graphics/OsuColor.h
+src/game/graphics/OsuColor.hpp
 src/game/graphics/OsuIcon.hpp
 src/game/graphics/CCResizableSprite.hpp
 src/game/graphics/CCResizableSprite.cpp
 src/game/graphics/ui/CCNodeHover.hpp
 src/game/graphics/ui/CCNodeHover.cpp
+src/game/graphics/ui/ButtonBase.cpp
+src/game/graphics/ui/ButtonBase.hpp
 src/game/graphics/ui/deco/Triangles.cpp
 src/game/graphics/ui/deco/Triangles.hpp
 src/game/graphics/containers/WaveContainer.cpp
 src/game/graphics/containers/WaveContainer.hpp
 src/game/graphics/containers/BeatSyncedContainer.hpp
 src/game/graphics/containers/beatsync/BeatDetector.hpp
-src/game/graphics/containers/beatsync/README.md
 src/game/graphics/containers/beatsync/TimeStamp.hpp
 src/game/graphics/containers/beatsync/BeatDetector.cpp
 src/game/graphics/containers/beatsync/TimeStamp.cpp
@@ -66,9 +64,9 @@ src/game/graphics/containers/beatsync/BeatEvent.hpp
 src/game/overlays/OverlayColorProvider.cpp
 src/game/overlays/OverlayColorProvider.hpp
 src/game/overlays/dialog/PopupDialog.hpp
-src/game/overlays/dialog/DialogButton.cpp
 src/game/overlays/dialog/PopupDialog.cpp
-src/game/overlays/dialog/DialogButton.hpp
+src/game/overlays/dialog/PopupDialogButton.cpp
+src/game/overlays/dialog/PopupDialogButton.hpp
 src/game/beatmaps/BeatmapOnlineStatus.hpp
 src/game/rulesets/mods/ModType.hpp
 src/game/online/rooms/RoomCategory.hpp
@@ -78,4 +76,13 @@ src/game/online/rooms/RoomCategory.hpp
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")
 else()
-    message(STATUS "Found Geode: $ENV{GEODE_SDK}")
+  message(STATUS "Found Geode: $ENV{GEODE_SDK}")
+endif()
+
+add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+
+# android
+# target_link_libraries(${PROJECT_NAME} -L/data/data/com.termux/files/usr/lib/libGLESv2.so.2)
+
+# Set up dependencies, resources, and link Geode.
+setup_geode_mod(${PROJECT_NAME})

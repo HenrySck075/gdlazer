@@ -1,9 +1,10 @@
-#include "DialogButton.hpp"
+#include "PopupDialogButton.hpp"
 #include "../../../utils.hpp"
+#include "../../graphics/ui/deco/Triangles.hpp"
 
-DialogButton* DialogButton::create(const char* label, ccColor3B color, const char* clickSfx) {
-    auto ret = new DialogButton();
-    if (ret && ret->init(label, color, clickSfx)) {
+PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
+    auto ret = new PopupDialogButton();
+    if (ret && ret->init(label, color, clickSfx, clickCb)) {
         ret->autorelease();
     }
     else {
@@ -13,7 +14,7 @@ DialogButton* DialogButton::create(const char* label, ccColor3B color, const cha
     return ret;
 }
 
-bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx) {
+bool PopupDialogButton::init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
     m_color = color;
     m_sfx = clickSfx;
     this->setZOrder(3);
@@ -61,19 +62,19 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
 
     this->setCascadeOpacityEnabled(true);
 
-    CCNodeHover::init();
+    ButtonBase::init(clickCb);
 
     return true;
 
 }
 
-void DialogButton::setOpacity(GLubyte opacity) {
+void PopupDialogButton::setOpacity(GLubyte opacity) {
     CCNodeRGBA::setOpacity(opacity); 
     getChildOfType<CCLayerGradient>(this, 0)->setOpacity(opacity);
     getChildOfType<CCLayerGradient>(this, 1)->setOpacity(opacity);
 }
 
-void DialogButton::setContentSize(const CCSize& size) {
+void PopupDialogButton::setContentSize(const CCSize& size) {
     CCNode::setContentSize(size);
     this->getChildByID("dialogbutton-label")->setPosition(size/2);
     auto d = this->getChildByID("dialogbutton-background");
@@ -92,26 +93,26 @@ void DialogButton::setContentSize(const CCSize& size) {
 }
 
 /*
-void DialogButton::setContentWidth(float width) {
+void PopupDialogButton::setContentWidth(float width) {
     this->setContentSize(CCSize{width,this->getContentHeight()});
 }
 */
 // no
-void DialogButton::setContentHeight(float height) {
+void PopupDialogButton::setContentHeight(float height) {
 }
 
-void DialogButton::setParent(CCNode* parent) {
+void PopupDialogButton::setParent(CCNode* parent) {
     CCNode::setParent(parent);
     this->setContentWidth(parent->getContentWidth());
 }
 
-void DialogButton::onMouseEnter() {
+void PopupDialogButton::onMouseEnter() {
     FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
     this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f,m_pParent->getParent()->getContentWidth()*0.9, height)));
     this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
     this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
 }
-void DialogButton::onMouseExit() {
+void PopupDialogButton::onMouseExit() {
     this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f, m_pParent->getParent()->getContentWidth()*0.8,height)));
     this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
     this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
