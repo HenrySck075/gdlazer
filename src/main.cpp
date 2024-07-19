@@ -3,12 +3,16 @@
  */
 #include <Geode/Geode.hpp>
 #include "Geode/binding/FMODAudioEngine.hpp"
-#include "intro/IntroTriangles.hpp"
+#include "Geode/cocos/cocoa/CCObject.h"
+#include "game/screens/menu/intro/IntroTriangles.hpp"
 #include "helpers/MouseEvent.hpp"
 #include "main/PauseLayer.hpp"
-#include "ui/containers/WaveContainer.hpp"
-#include "ui/color/OverlayColorProvider.hpp"
-#include "helpers/sound/SoundManager.hpp"
+#include "game/graphics/containers/WaveContainer.hpp"
+#include "game/overlays/OverlayColorProvider.hpp"
+//#include "helpers/sound/SoundManager.hpp"
+#include "game/graphics/containers/beatsync/BeatDetector.hpp"
+#include "game/graphics/containers/beatsync/BeatEvent.hpp"
+#include "utils.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
@@ -173,3 +177,39 @@ class $modify(CCEGLView) {
 	}
 };
 #endif // DEBUG
+       //
+
+
+class BeatUpdater : public CCNode {
+private:
+  BeatDetector* instance;
+  TimeStamp* lastBeat;
+  void m() {
+    if (instance->isPlaying()) {
+      instance->update();
+      auto lastBeatNew = instance->getLastBeat();
+      if (lastBeat!=lastBeatNew) {
+        float dist = lastBeatNew->getMilliseconds()/1000;
+        if (lastBeat!=nullptr) dist-=lastBeat->getMilliseconds()/1000;
+        BeatEvent(dist).post();
+      }
+    }
+  }
+
+public:
+  static BeatUpdater* create() {
+    create_class(BeatUpdater, init);
+  };
+  bool init() {
+    instance = BeatDetector::Instance();
+    this->runAction(CCRepeatForever::create(CCSequence::createWithTwoActions(
+      CCDelayTime::create(0.1),
+      CCCallFunc::create(this, callfunc_selector(BeatUpdater::m)))
+    ));
+    return true;
+  }
+};
+
+$execute {
+  SceneManager::get()->keepAcrossScenes(BeatUpdater::create());
+}

@@ -41,3 +41,6 @@ template<typename interface, typename obj>
 bool didImplements(obj object) {
   return dynamic_cast<interface*>(object) != nullptr;
 }
+
+
+std::string& trim( std::string& s, char c, bool reverse = false );

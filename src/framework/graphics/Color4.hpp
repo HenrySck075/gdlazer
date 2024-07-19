@@ -4,6 +4,7 @@ using namespace geode::prelude;
 // the 0-255 range one
 #include <algorithm>
 #include <cstdio>
+
 struct Color4 {
   int r;
   int g;

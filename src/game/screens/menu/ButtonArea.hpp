@@ -1,4 +1,4 @@
-#include "Geode/cocos/cocoa/CCGeometry.h"
+#include "Geode/cocos/actions/CCActionInterval.h"
 #include <Geode/Geode.hpp>
 using namespace cocos2d;
 
@@ -49,9 +49,19 @@ class ButtonArea : public CCNodeRGBA {
         };
         */
     }
-    void hide() => State = Visibility.Hidden;
+    void hide() {
+      buttonAreaBackground->runAction(CCSpawn::createWithTwoActions(
+        CCFadeOut::create(0.3),
+        CCScaleTo::create(0.3,1,0)
+      ));
+    };
 
-    void show() => State = Visibility.Visible;
+    void show() {
+      buttonAreaBackground->runAction(CCSpawn::createWithTwoActions(
+        CCFadeIn::create(0.3),
+        CCScaleTo::create(0.3,1,1)
+      ));
+    };
 };
 /*
     public ButtonSystemState ButtonSystemState
@@ -76,82 +86,8 @@ class ButtonArea : public CCNodeRGBA {
         }
     }
     */
-
-    public Visibility State
-    {
-        get => state;
-        set
-        {
-            if (value == state) return;
-
-            state = value;
-            InternalChild.FadeTo(state == Visibility.Hidden ? 0 : 1, 300);
-            StateChanged?.Invoke(state);
-        }
-    }
-
-private partial class ButtonAreaBackground : Box, IStateful<ButtonAreaBackgroundState>
-{
-    private ButtonAreaBackgroundState state;
-
-    public ButtonAreaBackground()
-    {
-        RelativeSizeAxes = Axes.Both;
-        Size = new Vector2(2, 1);
-        Colour = OsuColour.Gray(50);
-        Anchor = Anchor.Centre;
-        Origin = Anchor.Centre;
-    }
-
-    public ButtonAreaBackgroundState State
-    {
-        get => state;
-        set
-        {
-            if (value == state) return;
-
-            state = value;
-
-            switch (state)
-            {
-                case ButtonAreaBackgroundState.Flat:
-                    this.ScaleTo(new Vector2(2, 0), 300, Easing.InSine);
-                    break;
-
-                case ButtonAreaBackgroundState.Normal:
-                    this.ScaleTo(Vector2.One, 400, Easing.OutQuint);
-                    break;
-            }
-
-            StateChanged?.Invoke(state);
-        }
-    }
-
-    public ButtonSystemState ButtonSystemState
-    {
-        set
-        {
-            switch (value)
-            {
-                default:
-                    State = ButtonAreaBackgroundState.Normal;
-                    break;
-
-                case ButtonSystemState.Initial:
-                case ButtonSystemState.Exit:
-                case ButtonSystemState.EnteringMode:
-                    State = ButtonAreaBackgroundState.Flat;
-                    break;
-            }
-        }
-    }
-
-    [CanBeNull]
-    public event Action<ButtonAreaBackgroundState> StateChanged;
-}
-
-public enum ButtonAreaBackgroundState
+enum ButtonAreaBackgroundState
 {
     Normal,
     Flat
-}
+};

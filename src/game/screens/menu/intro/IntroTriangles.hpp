@@ -1,8 +1,9 @@
 #ifndef __osulazer_intro_triangles__
 #define __osulazer_intro_triangles__
 
-#include "../utils.hpp"
-#include "../helpers/CustomActions.hpp"
+#include "../../../../utils.hpp"
+
+#include "../../../../helpers/CustomActions.hpp"
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;

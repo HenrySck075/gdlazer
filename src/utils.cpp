@@ -40,3 +40,15 @@ CCRect flipRect(CCRect rect) {
 	auto ws = CCDirector::sharedDirector()->getWinSize();
 	return CCRect{ rect.getMinX(),ws.height - rect.getMinY() + rect.size.height,rect.size.width, rect.size.height };
 }
+
+
+#include <algorithm> 
+#include <cctype>
+#include <locale>
+
+std::string& trim( std::string& s, char c, bool reverse = false )
+{
+  return reverse
+    ? s.erase( s.find_last_not_of( c ) + 1 )
+    : s.erase( 0, s.find_first_not_of( c ) );
+}

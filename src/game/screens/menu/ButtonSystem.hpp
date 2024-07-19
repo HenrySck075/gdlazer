@@ -1,5 +1,7 @@
 #pragma once
 #include <Geode/Geode.hpp>
+#include <vector>
+#include "ButtonArea.hpp"
 using namespace geode::prelude;
 
 using OsuLogo = CCNode*;
@@ -7,7 +9,7 @@ using OsuLogo = CCNode*;
 class ButtonSystem : public CCMenu
 {
   public:
-    float BUTTON_WIDTH = 140f;
+    float BUTTON_WIDTH = 140.f;
     float WEDGE_WIDTH = 20;
 
     //Action<ButtonSystemState>? StateChanged;
@@ -37,12 +39,12 @@ class ButtonSystem : public CCMenu
 
     /*priv read*/ MainMenuButton backButton;
 
-    /*priv read*/ List<MainMenuButton> buttonsTopLevel = new List<MainMenuButton>();
-    /*priv read*/ List<MainMenuButton> buttonsPlay = new List<MainMenuButton>();
-    /*priv read*/ List<MainMenuButton> buttonsEdit = new List<MainMenuButton>();
+    /*priv read*/ std::vector<MainMenuButton> buttonsTopLevel = {};
+    /*priv read*/ std::vector<MainMenuButton> buttonsPlay = {};
+    /*priv read*/ std::vector<MainMenuButton> buttonsEdit = {};
 
-    private Sample? sampleBackToLogo;
-    private Sample? sampleLogoSwoosh;
+    const char* sampleBackToLogo = "idk.wav";
+    const char* sampleLogoSwoosh = "me too.wav";
 
     /*priv read*/ LogoTrackingContainer logoTrackingContainer;
 
@@ -404,12 +406,4 @@ class ButtonSystem : public CCMenu
     }
 };
 
-enum ButtonSystemState
-{
-    Exit,
-    Initial,
-    TopLevel,
-    Play,
-    Edit,
-    EnteringMode,
-}
+

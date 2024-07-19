@@ -2,12 +2,12 @@
 #define __osu_ui_dialog_button__
 
 #include <Geode/Geode.hpp>
-#include "../../helpers/MouseEvent.hpp"
-#include "../deco/Triangles.hpp"
+#include "../../graphics/ui/CCNodeHover.hpp"
+#include "../../graphics/ui/deco/Triangles.hpp"
 
 using namespace geode::prelude;
 
-class DialogButton : public CCNodeRGBA {
+class DialogButton : public CCNodeHover {
 private:
 	EventListenerProtocol* m_listener;
 

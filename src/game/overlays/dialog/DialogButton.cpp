@@ -1,5 +1,5 @@
 #include "DialogButton.hpp"
-#include "../../utils.hpp"
+#include "../../../utils.hpp"
 
 DialogButton* DialogButton::create(const char* label, ccColor3B color, const char* clickSfx) {
     auto ret = new DialogButton();
@@ -61,15 +61,7 @@ bool DialogButton::init(const char* label, ccColor3B color, const char* clickSfx
 
     this->setCascadeOpacityEnabled(true);
 
-    m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
-        if (type == MouseType::Enter) {
-            this->onMouseEnter();
-            return;
-        }
-        if (type == MouseType::Exit) {
-            this->onMouseExit();
-        }
-    }, false);
+    CCNodeHover::init();
 
     return true;
 

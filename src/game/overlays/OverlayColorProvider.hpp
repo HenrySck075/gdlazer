@@ -3,8 +3,6 @@
 #define __osu_ui_color_overlay_provider__
 
 
-#include "Geode/cocos/platform/CCPlatformMacros.h"
-#include "ccTypes.h"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 

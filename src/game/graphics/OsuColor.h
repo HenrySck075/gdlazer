@@ -3,10 +3,15 @@
 #include <Geode/Geode.hpp>
 #include <cmath>
 #include "../../framework/graphics/Color4.hpp"
+#include "../../framework/graphics/color/ColorInfo.hpp"
+
 #include "../scoring/ScoreRank.hpp"
 #include "../scoring/HitResult.hpp"
+#include "../scoring/RankingTier.hpp"
 #include "../beatmaps/BeatmapOnlineStatus.hpp"
 #include "../rulesets/mods/ModType.hpp"
+#include "../online/rooms/RoomCategory.hpp"
+
 #include "../../framework/utils/Interpolation.hpp"
 using namespace geode::prelude;
 
@@ -201,10 +206,10 @@ class Osucolor {
       Color4Defined c;
       switch (roomCategory)
       {
-        case RoomCategory.Spotlight:
+        case RoomCategory::Spotlight:
           return SpotlightColor;
 
-        case RoomCategory.FeaturedArtist:
+        case RoomCategory::FeaturedArtist:
           return FeaturedArtistColor;
 
         default:
@@ -216,34 +221,34 @@ class Osucolor {
     /// Retrieves color for a <see cref="RankingTier"/>.
     /// See https://www.figma.com/file/YHWhp9wZ089YXgB7pe6L1k/Tier-colors
     /// </summary>
-    colorInfo forRankingTier(RankingTier tier)
+    ColorInfo forRankingTier(RankingTier tier)
     {
         switch (tier)
         {
             default:
-            case RankingTier.Iron:
-                return Color4::fromHex("BAB3AB");
+            case RankingTier::Iron:
+                return ColorInfo::singleColor(Color4::fromHex("BAB3AB"));
 
-            case RankingTier.Bronze:
-                return colorInfo.GradientVertical(Color4::fromHex("B88F7Aff"), CCColorExtension::color4FromHex("855C47");
+            case RankingTier::Bronze:
+                return ColorInfo::gradientVertical(Color4::fromHex("B88F7A"), Color4::fromHex("855C47"));
 
-            case RankingTier.Silver:
-                return colorInfo.GradientVertical(Color4.fromHex("E0E0EBff), CCColorExtension::color4FromHex(0xA3A3C2");
+            case RankingTier::Silver:
+                return ColorInfo::gradientVertical(Color4::fromHex("E0E0EB"), Color4::fromHex("A3A3C2"));
 
-            case RankingTier.Gold:
-                return colorInfo.GradientVertical(Color4.fromHex("F0E4A8ff), CCColorExtension::color4FromHex(0xE0C952");
+            case RankingTier::Gold:
+                return ColorInfo::gradientVertical(Color4::fromHex("F0E4A8"), Color4::fromHex("E0C952"));
 
-            case RankingTier.Platinum:
-                return colorInfo.GradientVertical(Color4.fromHex("A8F0EFff), CCColorExtension::color4FromHex(0x52E0DF");
+            case RankingTier::Platinum:
+                return ColorInfo::gradientVertical(Color4::fromHex("A8F0EF"), Color4::fromHex("52E0DF"));
 
-            case RankingTier.Rhodium:
-                return colorInfo.GradientVertical(Color4.fromHex("D9F8D3ff), CCColorExtension::color4FromHex(0xA0CF96");
+            case RankingTier::Rhodium:
+                return ColorInfo::gradientVertical(Color4::fromHex("D9F8D3"), Color4::fromHex("A0CF96"));
 
-            case RankingTier.Radiant:
-                return colorInfo.GradientVertical(Color4.fromHex("97DCFFff), CCColorExtension::color4FromHex(0xED82FF");
+            case RankingTier::Radiant:
+                return ColorInfo::gradientVertical(Color4::fromHex("97DCFF"), Color4::fromHex("ED82FF"));
 
-            case RankingTier.Lustrous:
-                return colorInfo.GradientVertical(Color4.fromHex("FFE600ff), CCColorExtension::color4FromHex(0xED82FF");
+            case RankingTier::Lustrous:
+                return ColorInfo::gradientVertical(Color4::fromHex("FFE600"), Color4::fromHex("ED82FF"));
         }
     }
 
@@ -255,7 +260,7 @@ class Osucolor {
     {
         // formula taken from the RGB->YIQ conversions: https://en.wikipedia.org/wiki/YIQ
         // brightness here is equivalent to the Y component in the above color model, which is a rough estimate of lightness.
-        float brightness = 0.299f * backgroundcolor.R + 0.587f * backgroundcolor.G + 0.114f * backgroundcolor.B;
+        float brightness = 0.299f * backgroundcolor.r + 0.587f * backgroundcolor.g + 0.114f * backgroundcolor.b;
         return Gray(brightness > 0.5f ? 0.2f : 0.9f);
     }
 
@@ -421,4 +426,4 @@ class Osucolor {
     Color4 FeaturedArtistColor = Blue2;
 
     Color4 DangerousButtonColor = Pink3;
-}
+};
