@@ -5,7 +5,7 @@
 #include <cmath>
 #include <cstddef>
 using namespace geode::prelude;
-
+#undef interface // whoever does this should till yhemselves
 float randomFloat();
 bool randomBool();
 
@@ -25,7 +25,7 @@ CCRect flipRect(CCRect rect);
     if (ret && ret->initfunc(__VA_ARGS__)) { \
       ret->CCObject::autorelease(); \
     } else { \
-      CC_SAFE_DELETE(ret); \
+      delete ret; \
     } \
 \
     return ret

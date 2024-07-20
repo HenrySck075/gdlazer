@@ -28,7 +28,8 @@
     	}
     },
     "sprites": [
-      "resources/textures/ui/dialog.png"
+      "resources/textures/ui/dialog.png",
+      "resources/textures/menu/logo.png"
     ],
     "spritesheets": {
       "UISheet": [

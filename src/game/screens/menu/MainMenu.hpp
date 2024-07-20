@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
-#include "ButtonSystem.hpp"
+//#include "ButtonSystem.hpp"
+#include "../../../utils.hpp"
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer*;
 
@@ -11,13 +12,18 @@ public:
 
   float FADE_OUT_DURATION = 400;
 
-  bool hideOverlaysOnEnter = buttons == nullptr;// || Buttons.State == ButtonSystemState.Initial;
+  bool hideOverlaysOnEnter = false;//buttons == nullptr;// || Buttons.State == ButtonSystemState.Initial;
 
+  static MainMenu* create(bool flash) {
+	  create_class(MainMenu, init, flash);
+  }
+  bool init(bool flash);
 private:
   CCLayer* songSelect;
 
   MenuSideFlashes sideFlashes;
 
 protected:
-  ButtonSystem buttons;
+	int idkTho = 0;
+  //ButtonSystem buttons;
 };

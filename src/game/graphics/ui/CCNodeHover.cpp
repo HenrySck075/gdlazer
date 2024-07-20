@@ -2,6 +2,7 @@
 
 bool CCNodeHover::init() {
     m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
+        if (!this->m_hoverEnabled) return;
         if (type == MouseType::Enter) {
             m_entered = true;
             this->onMouseEnter();
@@ -12,5 +13,6 @@ bool CCNodeHover::init() {
             this->onMouseExit();
         }
     }, false);
+
     return true;
 }

@@ -20,7 +20,7 @@ public:
 	int getMinutes();
 	int getMilliseconds();
 	float getFrequency();
-	char* getMetaData();
+	const char* getMetaData();
 
 	void setTimeWithMetaData(int, int, int, char*);
 	void setTimeWithFrequency(int, int, int, float);
@@ -28,7 +28,7 @@ private:
 	int minutes;
 	int seconds;
 	int milliseconds;
-	char* metaData;
+	std::string metaData;
 	float beatFrequency;
 };
 

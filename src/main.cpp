@@ -9,6 +9,7 @@
 #include "game/overlays/dialog/PopupDialog.hpp"
 #include "game/overlays/dialog/PopupDialogButton.hpp"
 #include "main/PauseLayer.hpp"
+#include "game/screens/menu/MainMenu.hpp"
 #include "game/graphics/containers/WaveContainer.hpp"
 #include "game/overlays/OverlayColorProvider.hpp"
 //#include "helpers/sound/SoundManager.hpp"
@@ -147,22 +148,28 @@ class $modify(MyMenuLayer, MenuLayer) {
 		CCDirector::get()->pushScene(osuIntroTriangles::create());
 	}
 	void onMyButton2(CCObject*) {
-		PopupDialog::create(
-			"Are you sure you want to exit GD?", 
-			"Last chance to turn back", 
-			{ 
-				PopupDialogButton::create("my mom called me for dinner", dialog_button_primary, "dialog-ok-select.wav"_spr,[this](CCNode* s){this->willClose();}),
-				PopupDialogButton::create("clicked the wrong button mb", dialog_button_secondary, "dialog-cancel-select.wav"_spr,[](CCNode* s){getParentOfType<PopupDialog>(s)->hide();}) 
-			}
-		)->show();
+		/*
+		PopupDialog* b = PopupDialog::createSimpleDialog(
+			"Are you sure you want to exit GD?",
+			"Last chance to turn back",
+			"my mom called me for dinner",
+			"clicked the wrong button mb", [this](CCNode* s) {this->onQuit(this); }
+		);
+		b->show();
+		*/
+		auto the = CCScene::create();
+		the->addChild(MainMenu::create(false));
+		CCDirector::sharedDirector()->replaceScene(the);
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
 
 #ifdef GEODE_IS_WINDOWS
-
+// fields does not work on non-CCNode :pensive:
+bool m_click = false;
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
+
 	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
 		int w; int h;
@@ -172,8 +179,16 @@ class $modify(CCEGLView) {
 		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
 		MouseEvent(CCPoint{ (float)p.x, (float)p.y }).post();
 	};
-	void onGLFWMouseCallback(GLFWwindow* window, int button, int action, int mods) {
+	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+			m_click = true;
+			return;
+		}
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
+			MouseEvent(ccp(-1, -1)).post();
+			m_click = false;
+		}
 	}
 };
 #endif
@@ -191,7 +206,27 @@ class $modify(CCTouchDispatcher) {
 
 #endif // DEBUG
        //
-
+/*
+#include <Geode/modify/CCTouchDelegate.hpp>
+class $modify(CCTouchDelegate) {
+	bool ccTouchBegan(CCTouch * t, CCEvent * e) {
+		log::debug("[hook: CCTouchDelegate]: ccTouchBegan");
+		return CCTouchDelegate::ccTouchBegan(t, e);
+	}
+	void ccTouchEnded(CCTouch * t, CCEvent * e) {
+		log::debug("[hook: CCTouchDelegate]: ccTouchEnded");
+		CCTouchDelegate::ccTouchEnded(t, e);
+	}
+	void ccTouchesBegan(CCSet * t, CCEvent * e) {
+		log::debug("[hook: CCTouchDelegate]: ccTouchesBegan");
+		CCTouchDelegate::ccTouchesBegan(t, e);
+	}
+	void ccTouchesEnded(CCSet * t, CCEvent * e) {
+		log::debug("[hook: CCTouchDelegate]: ccTouchesEnded");
+		CCTouchDelegate::ccTouchesEnded(t, e);
+	}
+};
+*/
 /*
 class BeatUpdater : public CCNode {
 private:

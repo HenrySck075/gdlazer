@@ -10,18 +10,21 @@ using ButtonCallback = geode::utils::MiniFunction<void(CCNode*)> ;
 // button base
 class ButtonBase : public CCNodeHover, public CCTouchDelegate {
 private:
-  ButtonCallback clickCallback;
+	
+	MiniFunction<void(CCNode*)> clickCallback;
 
-  bool touchStartInBounds = false;
-  bool holding = false;
+	bool touchStartInBounds = false;
+	bool holding = false;
 
-	EventListenerProtocol* m_listener;
+	EventListenerProtocol* m_clickListener;
 
-
-  bool ccTouchBegan(CCTouch* t, CCEvent* idc) override;
-  void ccTouchEnded(CCTouch* t, CCEvent* idc) override;
+	//bool ccTouchBegan(CCTouch* t, CCEvent* idc) override;
+	//void ccTouchEnded(CCTouch* t, CCEvent* idc) override;
 
 public: 
-	bool init(ButtonCallback clickCb);
+
+	/// <param name="clickCb">| the</param>
+	/// <param name="self">| the node to be used as the clickCb parameter</param>
+	bool init(ButtonCallback clickCb, CCNode* self);
 };
 

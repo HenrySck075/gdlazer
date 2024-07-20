@@ -1,9 +1,12 @@
 #include "PopupDialog.hpp"
 #include "../../graphics/ui/deco/Triangles.hpp"
 
+float PopupDialog::width = 250.f;
+float PopupDialog::height = 230.f;
+
 bool PopupDialog::setup(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-
+    m_buttons = buttons;
     // convenience function provided by Popup
     // for adding/setting a title to the popup
     this->setTitle(title);
@@ -87,18 +90,25 @@ void PopupDialog::onClose(cocos2d::CCObject*) {
   hide();
 }
 void PopupDialog::hide() {
-    this->setKeypadEnabled(false);
-    this->setTouchEnabled(false);
+    //if (hiding) return;
+    //hiding = true;
+    //this->setKeypadEnabled(false);
+    //this->setTouchEnabled(false);
+    log::debug("[PopupDialog]: popup your dialog: {}", typeid(this).name());
 
-    m_mainLayer->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f),2));
     CCObject* obj;
-    CCARRAY_FOREACH(m_mainLayer->getChildren(), obj) {
+    auto gay = m_mainLayer->getChildren();
+    CCARRAY_FOREACH(gay, obj) {
         static_cast<CCNode*>(obj)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
     }
+    m_mainLayer->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
     getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
     
-    this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.5), CCRemoveSelf::create()));
     FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-out.wav"_spr);
+    this->runAction(CCSequence::createWithTwoActions(
+        CCDelayTime::create(0.5), 
+        CCRemoveSelf::create()
+    ));
 }
 
 void PopupDialog::keyBackClicked() {

@@ -8,10 +8,6 @@ TimeStamp::TimeStamp()
 	metaData = "";
 }
 
-TimeStamp::~TimeStamp()
-{
-	delete metaData;
-}
 
 TimeStamp::TimeStamp(int m ,int s,int mil)
 {
@@ -101,7 +97,7 @@ float TimeStamp::getFrequency()
 	return beatFrequency;
 }
 
-char* TimeStamp::getMetaData()
+const char* TimeStamp::getMetaData()
 {
-	return metaData;
+	return metaData.c_str();
 }

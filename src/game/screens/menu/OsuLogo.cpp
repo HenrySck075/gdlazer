@@ -8,10 +8,27 @@ float lin2dB(float linear)
     return -(clamp(log10(linear) * 20.0f, -80.f, 1.0f));
 }
 bool OsuLogo::init() {
-  ButtonBase::init(&OsuLogo::onClick);
+    ButtonBase::init([this](CCNode* idk) {
+        FMODAudioEngine::sharedEngine()->playEffect("osu-logo-select.wav"_spr);
+    },this);
+    /*
+    m_listener = this->template addEventListener<EventFilter<BeatEvent>>([this](float elapsed) {
+        const char* sfxName;
+        if (beatCount == 3) {
+            sfxName = "osu-logo-heartbeat.wav"_spr;
+        }
+        else {
+            sfxName = "osu-logo-downbeat.wav"_spr;
+        }
+        FMODAudioEngine::sharedEngine()->playEffect(sfxName);
+        beatCount++;
+        if (beatCount == 4) { beatCount = 0; };
+        return ListenerResult::Propagate;
+    });
+    */
   instance = BeatDetector::Instance();
-  auto logoSprite = CCResizableSprite::createWithSpriteFrameName("logo.png"_spr);
-  logoSprite->setID("m"_spr);
+  auto logoSprite = CCSprite::createWithSpriteFrameName("logo.png"_spr);
+  logoSprite->setID("m");
   this->ButtonBase::setContentSize(logoSprite->getContentSize());
   logoSprite->setPosition(logoSprite->getContentSize()/2);
   this->addChild(logoSprite);

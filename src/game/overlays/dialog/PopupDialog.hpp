@@ -1,46 +1,43 @@
-#ifndef __osu_ui_dialog__
-#define __osu_ui_dialog__
+#pragma once
 
 #include <Geode/Geode.hpp>
 #include "PopupDialogButton.hpp"
 #include "../../../helpers/colors.hpp"
+#include "../../../utils.hpp"
 
 using namespace geode::prelude;
 
 class PopupDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<PopupDialogButton*>> {
 private:
+    bool hiding = false;
     CCClippingNode* m_bgSpriteClip;
     CCLayerRGBA* m_bodyLayout;
+    std::vector<PopupDialogButton*> m_buttons;
+
+
 protected:
     bool setup(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) override;
-
-
     void onClose(cocos2d::CCObject*) override;
 
 public:
+    static float width;
+    static float height;
+
     void show() override;
     void hide();
-    void hideCb(CCNode*j){hide();};
+    void hideCb(CCObject*j){hide();};
+    void hidee(CCNode* e) { hide(); };
+    bool init2(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, ButtonCallback confirmCallback) {
+        return initAnchored(width, height, title, content, {
+            PopupDialogButton::create(confirmButtonText.c_str(), dialog_button_primary, "dialog-ok-select.wav"_spr, confirmCallback),
+            PopupDialogButton::create(cancelButtonText.c_str(), dialog_button_secondary, "dialog-cancel-select.wav"_spr, [this](CCNode* self) {hide(); })
+        }, "dialog.png"_spr);
+    }
     static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
-        auto ret = new PopupDialog();
-        if (ret->initAnchored(250.f, 230.f, title, content, buttons, "dialog.png"_spr)) {
-            ret->autorelease();
-            return ret;
-        }
-
-        delete ret;
-        return nullptr;
+        create_class(PopupDialog, initAnchored, PopupDialog::width, PopupDialog::height, title, content, buttons, "dialog.png"_spr);
     }
     static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, ButtonCallback confirmCallback) {
-      PopupDialog* b = PopupDialog::create(
-          title, 
-          content, 
-          {
-            PopupDialogButton::create(confirmButtonText.c_str(), dialog_button_primary, "idk.wav", confirmCallback),
-            PopupDialogButton::create(cancelButtonText.c_str(), dialog_button_secondary, "h", [b](CCNode*m){b->hide();})
-          });
-      return b;
+        create_class(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
     }
     void keyBackClicked() override;
 };
-#endif

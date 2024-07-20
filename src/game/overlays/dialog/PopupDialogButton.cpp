@@ -62,7 +62,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     this->setCascadeOpacityEnabled(true);
 
-    ButtonBase::init(clickCb);
+    ButtonBase::init(clickCb, this);
 
     return true;
 
@@ -107,12 +107,14 @@ void PopupDialogButton::setParent(CCNode* parent) {
 }
 
 void PopupDialogButton::onMouseEnter() {
+    if (!getHoverEnabled()) return;
     FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
     this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f,m_pParent->getParent()->getContentWidth()*0.9, height)));
     this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
     this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
 }
 void PopupDialogButton::onMouseExit() {
+    if (!getHoverEnabled()) return;
     this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f, m_pParent->getParent()->getContentWidth()*0.8,height)));
     this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
     this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
