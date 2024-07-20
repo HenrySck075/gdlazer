@@ -47,6 +47,8 @@ public:
 		}
 		return instance;
 	}
+
+  int getSampleSize() {return sampleSize;};
 	
 private:
 	BeatDetector(){};

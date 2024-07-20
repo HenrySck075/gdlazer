@@ -44,3 +44,19 @@ bool didImplements(obj object) {
 
 
 std::string& trim( std::string& s, char c, bool reverse = false );
+
+/*
+template<typename TargetType, typename ComparingType>
+bool isType(ComparingType obj);
+*/
+template<class ParentType = CCNode>
+ParentType* getParentOfType(CCNode* node){
+  CCNode* parent = node->getParent();
+  while (parent!=nullptr) {
+    if (std::is_same_v<ParentType*,decltype(parent)>) {
+      return static_cast<ParentType*>(parent);
+    };
+    parent = parent->getParent();
+  }
+  return nullptr;
+}

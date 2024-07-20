@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <type_traits>
 
 float randomFloat() {
 	return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -52,3 +53,10 @@ std::string& trim( std::string& s, char c, bool reverse )
     ? s.erase( s.find_last_not_of( c ) + 1 )
     : s.erase( 0, s.find_first_not_of( c ) );
 }
+
+template<typename TargetType, typename ComparingType>
+bool isType(ComparingType obj) {
+  return std::is_same_v<TargetType, ComparingType>;
+};
+
+

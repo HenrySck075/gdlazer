@@ -171,15 +171,9 @@ float* BeatDetector::getCurrentSpectrum()
 	spectrumDsp->getParameterFloat(params, specLeft, "", 0);
 
 	//Average spectrum for stereo song channel, Divided by 2 cause Nyquist
-	for (int i = 0; i < sampleSize / 2; i++)
-	{
-		tempSpec[i] = specLeft[i];
-		//std::cout << specStereo[i] << std::endl;
-	}
 
-	delete[] spec;
 
-	return tempSpec;
+	return spec;
 }
 
 //This function calculates a Spectral Flux based

@@ -8,7 +8,7 @@ using namespace geode::prelude;
 class PopupDialogButton : public ButtonBase {
 private:
 
-	float height = 12;
+	float height = 16;
 	ccColor3B m_color;
 	const char* m_sfx;
 

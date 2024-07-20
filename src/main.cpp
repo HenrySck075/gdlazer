@@ -7,7 +7,7 @@
 #include "game/screens/menu/intro/IntroTriangles.hpp"
 #include "helpers/MouseEvent.hpp"
 #include "game/overlays/dialog/PopupDialog.hpp"
-#include "game/overlays/dialog/DialogButton.hpp"
+#include "game/overlays/dialog/PopupDialogButton.hpp"
 #include "main/PauseLayer.hpp"
 #include "game/graphics/containers/WaveContainer.hpp"
 #include "game/overlays/OverlayColorProvider.hpp"
@@ -151,8 +151,8 @@ class $modify(MyMenuLayer, MenuLayer) {
 			"Are you sure you want to exit GD?", 
 			"Last chance to turn back", 
 			{ 
-				DialogButton::create("my mom called me for dinner", dialog_button_primary, "dialog-ok-select.wav"_spr),
-				DialogButton::create("clicked the wrong button mb", dialog_button_secondary, "dialog-cancel-select.wav"_spr) 
+				PopupDialogButton::create("my mom called me for dinner", dialog_button_primary, "dialog-ok-select.wav"_spr,[this](CCNode* s){this->willClose();}),
+				PopupDialogButton::create("clicked the wrong button mb", dialog_button_secondary, "dialog-cancel-select.wav"_spr,[](CCNode* s){getParentOfType<PopupDialog>(s)->hide();}) 
 			}
 		)->show();
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();

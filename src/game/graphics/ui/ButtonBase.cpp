@@ -22,5 +22,5 @@ bool ButtonBase::ccTouchBegan(CCTouch* t, CCEvent* idc) {
 }
 void ButtonBase::ccTouchEnded(CCTouch* t, CCEvent* idc) {
   if (touchStartInBounds!=m_entered) return;
-  (this->*clickCallback)(this);
+  clickCallback(this);
 }

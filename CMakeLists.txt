@@ -33,14 +33,6 @@ src/main/PauseLayer.cpp
 src/game/scoring/HitResult.hpp
 src/game/scoring/ScoreRank.hpp
 src/game/scoring/RankingTier.hpp
-src/game/screens/menu/MainMenu.hpp
-src/game/screens/menu/ButtonSystem.hpp
-src/game/screens/menu/ButtonSystem.cpp
-src/game/screens/menu/ButtonArea.hpp
-src/game/screens/menu/MainMenuButton.hpp
-src/game/screens/menu/MainMenu.cpp
-src/game/screens/menu/ButtonSystemState.hpp
-src/game/screens/menu/MainMenuButton.cpp
 src/game/screens/menu/intro/IntroTriangles.cpp
 src/game/screens/menu/intro/IntroTriangles.hpp
 src/game/graphics/OsuColor.hpp

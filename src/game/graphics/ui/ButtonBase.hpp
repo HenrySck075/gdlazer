@@ -5,7 +5,7 @@
 #include "Geode/utils/MiniFunction.hpp"
 
 using namespace geode::prelude;
-typedef geode::utils::MiniFunction<void(CCNode*)> ButtonCallback;
+using ButtonCallback = geode::utils::MiniFunction<void(CCNode*)> ;
 
 // button base
 class ButtonBase : public CCNodeHover, public CCTouchDelegate {
@@ -17,8 +17,6 @@ private:
 
 	EventListenerProtocol* m_listener;
 
-	void onMouseEnter() override;
-	void onMouseExit() override;
 
   bool ccTouchBegan(CCTouch* t, CCEvent* idc) override;
   void ccTouchEnded(CCTouch* t, CCEvent* idc) override;

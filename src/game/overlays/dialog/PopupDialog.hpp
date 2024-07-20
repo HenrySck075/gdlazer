@@ -20,9 +20,10 @@ protected:
 public:
     void show() override;
     void hide();
+    void hideCb(CCNode*j){hide();};
     static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
         auto ret = new PopupDialog();
-        if (ret->initAnchored(330.f, 300.f, title, content, buttons, "dialog.png"_spr)) {
+        if (ret->initAnchored(250.f, 230.f, title, content, buttons, "dialog.png"_spr)) {
             ret->autorelease();
             return ret;
         }
@@ -31,12 +32,12 @@ public:
         return nullptr;
     }
     static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, ButtonCallback confirmCallback) {
-      auto b = PopupDialog::create(
+      PopupDialog* b = PopupDialog::create(
           title, 
           content, 
           {
             PopupDialogButton::create(confirmButtonText.c_str(), dialog_button_primary, "idk.wav", confirmCallback),
-            PopupDialogButton::create(cancelButtonText.c_str(), dialog_button_secondary, "h", &PopupDialog::hide)
+            PopupDialogButton::create(cancelButtonText.c_str(), dialog_button_secondary, "h", [b](CCNode*m){b->hide();})
           });
       return b;
     }
