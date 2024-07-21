@@ -116,15 +116,6 @@ class $modify(MyMenuLayer, MenuLayer) {
 		menu->addChild(introButton);
 		menu->addChild(dialogButton);
 
-		auto d = static_cast<CCMenuItemSpriteExtra*>(this->getChildByIDRecursive("close-button"));
-
-    if (d!=nullptr) {
-      auto replaceBtn = CCMenuItemSpriteExtra::create(d->getNormalImage(), this, menu_selector(MyMenuLayer::onMyButton2));
-      replaceBtn->setPosition(d->getPosition());
-      this->getChildByID("close-menu")->addChild(replaceBtn);
-      d->removeFromParent();
-    }
-
 		/**
 		 * We update the layout of the menu to ensure that our button is properly placed.
 		 * This is yet another Geode feature, see this page for more info about it:
@@ -147,16 +138,16 @@ class $modify(MyMenuLayer, MenuLayer) {
 	void onMyButton(CCObject*) {
 		CCDirector::get()->pushScene(osuIntroTriangles::create());
 	}
-	void onMyButton2(CCObject*) {
-		/*
+	void onQuit(CCObject*) {
 		PopupDialog* b = PopupDialog::createSimpleDialog(
 			"Are you sure you want to exit GD?",
 			"Last chance to turn back",
 			"my mom called me for dinner",
-			"clicked the wrong button mb", [this](CCNode* s) {this->onQuit(this); }
+			"clicked the wrong button mb", [this](CCNode* s) {this->endGame(); }
 		);
 		b->show();
-		*/
+	}
+	void onMyButton2(CCObject*) {
 		auto the = CCScene::create();
 		the->addChild(MainMenu::create(false));
 		CCDirector::sharedDirector()->replaceScene(the);
@@ -227,7 +218,6 @@ class $modify(CCTouchDelegate) {
 	}
 };
 */
-/*
 class BeatUpdater : public CCNode {
 private:
   BeatDetector* instance;
@@ -235,12 +225,6 @@ private:
   void m() {
     if (instance->isPlaying()) {
       instance->update();
-      auto lastBeatNew = instance->getLastBeat();
-      if (lastBeat!=lastBeatNew) {
-        float dist = lastBeatNew->getMilliseconds()/1000;
-        if (lastBeat!=nullptr) dist-=lastBeat->getMilliseconds()/1000;
-        BeatEvent(dist).post();
-      }
     }
   }
 
@@ -258,8 +242,17 @@ public:
   }
 };
 
-$execute {
-  SceneManager::get()->keepAcrossScenes(BeatUpdater::create());
+$execute{
+	SceneManager::get()->keepAcrossScenes(BeatUpdater::create());
+
 }
 
-*/
+#include <Geode/modify/FMODAudioEngine.hpp>
+class $modify(FMODAudioEngine) {
+	void playMusic(gd::string path, bool shouldLoop, float fadeInTime, int channel) {
+		FMODAudioEngine::playMusic(path, shouldLoop, fadeInTime, channel);
+		auto instance = BeatDetector::Instance();
+		if (!instance->systemLoaded()) instance->loadSystem();
+		instance->LoadSongFromSystem();
+	}
+};

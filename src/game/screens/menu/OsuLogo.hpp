@@ -1,12 +1,13 @@
 #pragma once
 
 #include "../../graphics/containers/beatsync/BeatDetector.hpp"
+#include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../graphics/containers/beatsync/BeatEvent.hpp"
 #include "../../graphics/ui/ButtonBase.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-class OsuLogo : public ButtonBase {
+class OsuLogo : public BeatSyncedContainer, public ButtonBase {
 private:
   BeatDetector* instance;
   EventListenerProtocol* m_listener;
@@ -14,7 +15,7 @@ private:
 public:  
     void onMouseEnter() override {};
     void onMouseExit() override {};
-    MiniFunction<void(float)> onBeat();
+    void onBeat(float delta) override;
   void update(float delta);
   static OsuLogo* create() {
     OsuLogo *ret = new OsuLogo();

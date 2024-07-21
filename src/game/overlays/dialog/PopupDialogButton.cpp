@@ -16,7 +16,6 @@ PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color,
 
 bool PopupDialogButton::init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
     m_color = color;
-    m_sfx = clickSfx;
     this->setZOrder(3);
 
 
@@ -62,7 +61,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     this->setCascadeOpacityEnabled(true);
 
-    ButtonBase::init(clickCb, this);
+    ButtonBase::init(clickSfx, clickCb, this);
 
     return true;
 
@@ -70,8 +69,8 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
 void PopupDialogButton::setOpacity(GLubyte opacity) {
     CCNodeRGBA::setOpacity(opacity); 
-    getChildOfType<CCLayerGradient>(this, 0)->setOpacity(opacity);
-    getChildOfType<CCLayerGradient>(this, 1)->setOpacity(opacity);
+    static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"))->setOpacity(opacity);
+    static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"))->setOpacity(opacity);
 }
 
 void PopupDialogButton::setContentSize(const CCSize& size) {

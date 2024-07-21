@@ -1,7 +1,8 @@
 #include "ButtonBase.hpp"
 
-bool ButtonBase::init(ButtonCallback clickCb, CCNode* self) {
+bool ButtonBase::init(const char* clickSfx, ButtonCallback clickCb, CCNode* self) {
     clickCallback = clickCb;
+    this->clickSfx = clickSfx;
 
     this->setZOrder(3);
     //this->setCascadeOpacityEnabled(true);
@@ -10,6 +11,7 @@ bool ButtonBase::init(ButtonCallback clickCb, CCNode* self) {
     //CCDirector::sharedDirector()->getTouchDispatcher()->addStandardDelegate(this, -4566);
     m_clickListener = this->template addEventListener<MouseFilter>([this,self](MouseType type, CCPoint location) {
         if (type == MouseType::Click) {
+            FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
             this->clickCallback(self);
         }
     },false);

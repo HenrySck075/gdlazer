@@ -25,11 +25,9 @@ public:
 
     void show() override;
     void hide();
-    void hideCb(CCObject*j){hide();};
-    void hidee(CCNode* e) { hide(); };
     bool init2(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, ButtonCallback confirmCallback) {
         return initAnchored(width, height, title, content, {
-            PopupDialogButton::create(confirmButtonText.c_str(), dialog_button_primary, "dialog-ok-select.wav"_spr, confirmCallback),
+            PopupDialogButton::create(confirmButtonText.c_str(), dialog_button_primary, "dialog-ok-select.wav"_spr,[this,confirmCallback](CCNode* the) {confirmCallback(the); hide(); }),
             PopupDialogButton::create(cancelButtonText.c_str(), dialog_button_secondary, "dialog-cancel-select.wav"_spr, [this](CCNode* self) {hide(); })
         }, "dialog.png"_spr);
     }

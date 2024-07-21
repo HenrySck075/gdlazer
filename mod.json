@@ -1,5 +1,5 @@
 {
-	"geode": "3.2.0",
+	"geode": "3.3.0",
 	"gd": {
     "win": "2.206",
     "android": "2.206",
@@ -28,22 +28,26 @@
     	}
     },
     "sprites": [
-      "resources/textures/ui/dialog.png",
-      "resources/textures/menu/logo.png"
+      "resources/textures/ui/dialog.png"
     ],
     "spritesheets": {
+      "Sayori": [
+        "resources/textures/menu/*.png"
+      ],
       "UISheet": [
         "resources/textures/ui/thisisasquare.png"
       ],
-    	"IntroSheet": [
+      "IntroSheet": [
         "resources/textures/iconset/*.png",
         "resources/textures/triangle/*.png"
-    	]
+      ]
     },
     "files": [
-    	"resources/triangles.mp3",
-    	"resources/sfx/**/*.wav",
-      "resources/sfx/gameplay/pause-loop.mp3"
+      "resources/triangles.mp3",
+      "resources/sfx/**/*.wav",
+      "resources/sfx/gameplay/pause-loop.mp3",
+
+      "resources/libs/aubio/win64/bin/*.dll"
     ]
 	}
 }
