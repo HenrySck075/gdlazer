@@ -1,3 +1,4 @@
+#pragma once
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 #include "beatsync/BeatEvent.hpp"
@@ -9,7 +10,7 @@ class BeatSyncedContainer {
 private:
 	EventListener<EventFilter<BeatEvent>> m_listener = { [this](BeatEvent* n) {
 			log::info("beat");
-			this->onBeat(n->m_elapsed);
+			this->onBeat(n->getElapsed());
 			return ListenerResult::Propagate;
 		} };
 public:

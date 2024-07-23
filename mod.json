@@ -31,11 +31,12 @@
       "resources/textures/ui/dialog.png"
     ],
     "spritesheets": {
-      "Sayori": [
-        "resources/textures/menu/*.png"
+      "MainMenuSheet": [
+        "resources/textures/menu/*.png",
+        "resources/textures/menu/*.jpg"
       ],
       "UISheet": [
-        "resources/textures/ui/thisisasquare.png"
+        "resources/textures/ui/popupdialogbtn.png"
       ],
       "IntroSheet": [
         "resources/textures/iconset/*.png",
@@ -46,8 +47,8 @@
       "resources/triangles.mp3",
       "resources/sfx/**/*.wav",
       "resources/sfx/gameplay/pause-loop.mp3",
-
-      "resources/libs/aubio/win64/bin/*.dll"
+      "resources/osuFont.fnt",
+      "resources/osuFont_0.png"
     ]
 	}
 }

@@ -38,7 +38,7 @@ CCRect flipRect(CCRect rect);
 
 // use wisely
 template<typename interface, typename obj>
-bool didImplements(obj object) {
+inline bool didImplements(obj object) {
   return dynamic_cast<interface*>(object) != nullptr;
 }
 
@@ -53,7 +53,7 @@ template<class ParentType = CCNode>
 ParentType* getParentOfType(CCNode* node){
   CCNode* parent = node->getParent();
   while (parent!=nullptr) {
-    if (std::is_same_v<ParentType*,decltype(parent)>) {
+    if (didImplements<ParentType>(parent)) {
       return static_cast<ParentType*>(parent);
     };
     parent = parent->getParent();

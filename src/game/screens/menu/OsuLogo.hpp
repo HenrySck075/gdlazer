@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../graphics/containers/beatsync/BeatDetector.hpp"
+//#include "../../graphics/containers/beatsync/BeatDetector.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../graphics/containers/beatsync/BeatEvent.hpp"
 #include "../../graphics/ui/ButtonBase.hpp"
@@ -9,7 +9,7 @@ using namespace geode::prelude;
 
 class OsuLogo : public BeatSyncedContainer, public ButtonBase {
 private:
-  BeatDetector* instance;
+  //BeatDetector* instance;
   EventListenerProtocol* m_listener;
   int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  

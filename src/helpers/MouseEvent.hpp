@@ -20,7 +20,7 @@ public:
 };
 
 enum MouseType {
-    Enter, Exit, Click
+    Enter, Exit, Click, Move
 };
 
 class MouseFilter : public EventFilter<MouseEvent> {

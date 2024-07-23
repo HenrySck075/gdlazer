@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 //#include "ButtonSystem.hpp"
-#include "../../graphics/containers/beatsync/BeatDetector.hpp"
+//#include "../../graphics/containers/beatsync/BeatDetector.hpp"
 #include "../../../utils.hpp"
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer*;
@@ -19,8 +19,11 @@ public:
 		create_class(MainMenu, init, flash);
 	}
 	bool init(bool flash);
+
+	// open the menu
+	void onLogoClickIdle();
 private:
-	BeatDetector* detector;
+	//BeatDetector* detector;
 
 	CCLayer* songSelect;
 

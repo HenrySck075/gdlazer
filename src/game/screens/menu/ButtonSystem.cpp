@@ -1,9 +1,9 @@
 #include "ButtonSystem.hpp"
 
-void ButtonSystem::setOsuLogo(OsuLogo logo) {
+void ButtonSystem::setOsuLogo(OsuLogo* logo) {
         this->logo = logo;
-
-        if (this->logo != null)
+        /*
+        if (this->logo != nullptr)
         {
             this->logo.Action = onOsuLogo;
 
@@ -15,6 +15,8 @@ void ButtonSystem::setOsuLogo(OsuLogo logo) {
         else
         {
             // We should stop tracking as the facade is now out of scope.
-            logoTrackingContainer.StopTracking();
+          
+          logoTrackingContainer.StopTracking();
         }
+        */
     }

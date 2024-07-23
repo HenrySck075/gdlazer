@@ -24,6 +24,7 @@ private:
 
 public:
 	void setClickSFX(const char* sfx) { clickSfx = sfx; };
+	void setCallback(MiniFunction<void(CCNode*)> clickCb) { clickCallback = clickCb; };
 	/// <param name="clickCb">| the</param>
 	/// <param name="self">| the node to be used as the clickCb parameter</param>
 	bool init(const char* clickSfx, ButtonCallback clickCb, CCNode* self);

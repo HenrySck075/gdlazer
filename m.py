@@ -1,12 +1,19 @@
 import os
 
+blacklist = [
+"ButtonArea.hpp",
+"BeatDetector.hpp",
+"BeatDetector.cpp",
+]
+
 f = open("CMakeLists.txt").readlines()
 d = []
 
 for r,idc,files in os.walk("src"):
     if files.__len__() == 0: continue 
+    if "external" in r: continue
 
-    d.extend(os.path.join(r,file).replace("\\","/")+"\n" for file in files if file.endswith(".cpp") or file.endswith(".hpp"))
+    d.extend(os.path.join(r,file).replace("\\","/")+"\n" for file in files if (file.endswith(".cpp") or file.endswith(".hpp")) and file not in blacklist)
 
 b, e = f.index("    # Fill start\n"), f.index("    # Fill end\n")
 

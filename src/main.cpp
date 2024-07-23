@@ -13,7 +13,7 @@
 #include "game/graphics/containers/WaveContainer.hpp"
 #include "game/overlays/OverlayColorProvider.hpp"
 //#include "helpers/sound/SoundManager.hpp"
-#include "game/graphics/containers/beatsync/BeatDetector.hpp"
+//#include "game/graphics/containers/beatsync/BeatDetector.hpp"
 #include "game/graphics/containers/beatsync/BeatEvent.hpp"
 #include "utils.hpp"
 
@@ -217,7 +217,6 @@ class $modify(CCTouchDelegate) {
 		CCTouchDelegate::ccTouchesEnded(t, e);
 	}
 };
-*/
 class BeatUpdater : public CCNode {
 private:
   BeatDetector* instance;
@@ -256,3 +255,4 @@ class $modify(FMODAudioEngine) {
 		instance->LoadSongFromSystem();
 	}
 };
+*/

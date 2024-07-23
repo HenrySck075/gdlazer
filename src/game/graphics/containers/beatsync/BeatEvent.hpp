@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Geode/loader/Event.hpp>
 #include <Geode/cocos/cocoa/CCObject.h>
 

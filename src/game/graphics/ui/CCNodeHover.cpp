@@ -12,7 +12,7 @@ bool CCNodeHover::init() {
             m_entered = false;
             this->onMouseExit();
         }
-    }, false);
+    }, true);
 
     return true;
 }
