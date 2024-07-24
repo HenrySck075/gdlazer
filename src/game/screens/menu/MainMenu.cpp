@@ -12,12 +12,14 @@ bool MainMenu::init(bool flash) {
 	logo->setCallback([this](CCNode* j) {onLogoClickIdle(); });
 	this->addChild(logo);
 	*/
-	this->addChild(MainMenuButton::create("g","button-play-select.wav"_spr, OsuIcon));
+    auto g = MainMenuButton::create("g","button-play-select.wav"_spr, OsuIcon().Logo, Color4Defined::Green, [this](CCNode* idk) {});
+	g->setPosition(CCDirector::sharedDirector()->getWinSize()/2);
+	this->addChild(g);
 	//detector = BeatDetector::Instance();
 	//detector->LoadSongFromSystem();
 	int bgIndex = (int)(randomFloat() * 7) + 1;
 	gd::string the;
-	// this is not yandere behaviour
+	// this is not yandere behaviour, simply because of _spr
 	switch (bgIndex) {
 	case 1:
 		the = "menu-background-1.png"_spr;
@@ -55,6 +57,12 @@ bool MainMenu::init(bool flash) {
 	auto paral = ParallaxContainer::create();
 	paral->addChild(d);
 	this->addChild(paral);
+
+	auto back = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this, menu_selector(MainMenu::debugReturn));
+	auto j = CCMenu::create();
+	j->addChild(back);
+	this->addChildAtPosition(j, Anchor::TopLeft);
+
 	return true;
 }
 

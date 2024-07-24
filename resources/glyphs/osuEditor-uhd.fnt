@@ -1,0 +1,14 @@
+info face="osu!editor" size=100 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=4 padding=0,0,0,0 spacing=4,4 outline=0
+common lineHeight=100 base=83 scaleW=1024 scaleH=1024 pages=1 packed=0 alphaChnl=0 redChnl=4 greenChnl=4 blueChnl=4
+page id=0 file="osuEditor-uhd.png"
+chars count=10
+char id=56101 x=100 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56102 x=200 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56103 x=300 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56104 x=400 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56105 x=500 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56106 x=600 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56107 x=700 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56108 x=800 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56109 x=900 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15
+char id=56110 x=1000 y=0 width=100 height=100 xoffset=0 yoffset=0 xadvance=0 page=0 chnl=15

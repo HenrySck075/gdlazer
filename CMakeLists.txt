@@ -15,6 +15,7 @@ src/LabelBMFont.hpp
 src/main.cpp
 src/utils.cpp
 src/utils.hpp
+src/framework/graphics/Color4.cpp
 src/framework/graphics/Color4.hpp
 src/framework/graphics/color/ColorInfo.hpp
 src/framework/utils/IInterpolable.hpp

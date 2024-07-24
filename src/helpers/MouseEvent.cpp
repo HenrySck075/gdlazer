@@ -3,8 +3,9 @@
 
 ListenerResult MouseFilter::handle(MiniFunction<MouseFilter::Callback> fn, MouseEvent* event) {
 	auto mouseloc = event->getLocation();
-	fn(MouseType::Move, mouseloc);
-	if (mouseloc.equals(ccp(-1, -1)) && m_entered) {
+	bool clicking = mouseloc.equals(ccp(-2, -2));
+	if (!clicking) fn(MouseType::Move, mouseloc);
+	if (clicking && m_entered) {
 		fn(MouseType::Click, mouseloc);
 		return m_keepPropangating ? ListenerResult::Propagate : ListenerResult::Stop;
 	}

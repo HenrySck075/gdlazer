@@ -16,5 +16,5 @@ public:
 		create_class(ParallaxContainer, init, parallaxAmount, scale);
 	}
 	bool init(float parallaxAmount, bool scale);
-	void updateParallax(CCPoint& cursorPos);
+	void updateParallax(const CCPoint& cursorPos);
 };

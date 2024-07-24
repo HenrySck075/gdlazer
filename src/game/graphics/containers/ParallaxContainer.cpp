@@ -13,10 +13,11 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
 		// iykyk
 		if (type == MouseType::Move) { updateParallax(location); }
 	}, false);
+	//updateParallax(director->convertToGL(director->getOpenGLView()->getMousePosition()));
 	return true;
 }
 
-void ParallaxContainer::updateParallax(CCPoint& cursorPos) {
+void ParallaxContainer::updateParallax(const CCPoint& cursorPos) {
 	auto ws = director->getWinSize()/2;
 	auto dist = (cursorPos - ws) * m_parallaxAmount;
 	this->setPosition(ws + dist);

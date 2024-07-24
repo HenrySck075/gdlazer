@@ -36,7 +36,7 @@
         "resources/textures/menu/*.jpg"
       ],
       "UISheet": [
-        "resources/textures/ui/popupdialogbtn.png"
+        "resources/textures/ui/square.png"
       ],
       "IntroSheet": [
         "resources/textures/iconset/*.png",
@@ -47,8 +47,8 @@
       "resources/triangles.mp3",
       "resources/sfx/**/*.wav",
       "resources/sfx/gameplay/pause-loop.mp3",
-      "resources/osuFont.fnt",
-      "resources/osuFont_0.png"
+      "resources/glyphs/*.fnt",
+      "resources/glyphs/*.png"
     ]
 	}
 }

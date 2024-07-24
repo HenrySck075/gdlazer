@@ -23,6 +23,9 @@ public:
 	// open the menu
 	void onLogoClickIdle();
 private:
+	void debugReturn(CCObject* t) {
+		CCDirector::sharedDirector()->popSceneWithTransition(0.5,PopTransition::kPopTransitionFade);
+	}
 	//BeatDetector* detector;
 
 	CCLayer* songSelect;

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Geode/cocos/include/cocos2d.h>
+#include <Geode/Geode.hpp>
 #include "ButtonSystemState.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
 #include "../../graphics/ui/ButtonBase.hpp"
 
-using namespace cocos2d;
+using namespace geode::prelude;
 
 /// <summary>
 /// Button designed specifically for the osu!next main menu.
@@ -54,8 +54,8 @@ protected:
 
 
 private:
-    void onMouseEnter() override;
-    void onMouseExit() override;
+    void onMouseEnter() override {};
+    void onMouseExit() override {};
     ButtonCallback clickAction;
 
     CCNode* background;
@@ -72,9 +72,10 @@ private:
 
     public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => background.ReceivePositionalInputAt(screenSpacePos);
 */
-    static MainMenuButton* create(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAction) {
+public:
+    static MainMenuButton* create(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction) {
         create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction);
     };
-    bool init(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAction);
+    bool init(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction);
     void setContentSize(const CCSize& s) override;
 };

@@ -19,12 +19,13 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     this->setZOrder(3);
 
 
-    auto d = CCScale9Sprite::createWithSpriteFrameName("popupdialogbtn.png"_spr);
+    auto d = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
     if (d!=nullptr) {
         d->setID("dialogbutton-background");
         d->setAnchorPoint(ccp(0.5, 0.5));
         d->setContentHeight(height);
         d->setColor(color);
+        d->setSkewX(7);
     } else {
         log::debug("what the fuck?");
     }

@@ -150,7 +150,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 	void onMyButton2(CCObject*) {
 		auto the = CCScene::create();
 		the->addChild(MainMenu::create(false));
-		CCDirector::sharedDirector()->replaceScene(the);
+		CCDirector::sharedDirector()->pushScene(the);
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
@@ -177,7 +177,7 @@ class $modify(CCEGLView) {
 			return;
 		}
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
-			MouseEvent(ccp(-1, -1)).post();
+			MouseEvent(ccp(-2, -2)).post();
 			m_click = false;
 		}
 	}
