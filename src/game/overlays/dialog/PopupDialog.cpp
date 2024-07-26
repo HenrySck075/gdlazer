@@ -93,8 +93,8 @@ void PopupDialog::onClose(cocos2d::CCObject*) {
   hide();
 }
 void PopupDialog::hide() {
-    //if (hiding) return;
-    //hiding = true;
+    if (hiding) return;
+    hiding = true;
     //this->setKeypadEnabled(false);
     //this->setTouchEnabled(false);
     log::debug("[PopupDialog]: popup your dialog: {}", typeid(this).name());

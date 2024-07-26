@@ -4,14 +4,17 @@
 #include "../../../helpers/CustomActions.hpp"
 
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction) {
-    ButtonBase::init(sampleClick.c_str(), clickAction, this);
-    ReactiveNode::init();
+    //this->addListener(reactive_listener(updateReactive));
+
+    auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
 
     auto the = CCLayer::create();
     the->setID("ui");
     symbol->setScale(0.3);
     the->setLayout(ColumnLayout::create()->setGap(3)->setAutoScale(false)->setAxisReverse(true));
     the->addChild(symbol);
+    the->setAnchorPoint(ccp(0.5,0.5));
+    the->setPosition(m/2);
     auto label = OsuText(text.c_str(), FontType::Regular);
     label->setScale(0.6);
     the->addChild(label);
@@ -20,25 +23,34 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     s9->setID("background");
     s9->setColor(color);
     s9->setSkewX(7);
-    s9->setContentSize(CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT));
+    s9->setContentSize(m);
+    s9->setAnchorPoint(ccp(0.5,0.5));
+    s9->setPosition(m/2);
     this->addChild(s9);
     this->addChild(the);
+    
+    ButtonBase::init(sampleClick.c_str(), clickAction, this);
+    ButtonBase::setContentSize(m);
+    this->setAnchorPoint(ccp(0.5,0.5));
     return true;
 }
 
+
 void MainMenuButton::setContentSize(const CCSize& s) {
-    ReactiveNode::setContentSize(s);
+    ButtonBase::setContentSize(s);
     this->getChildByID("background")->setContentSize(s);
-    this->getChildByID("ui")->setContentSize(s);
+    this->getChildByID("background")->setPosition(s/2);
+    this->getChildByID("ui")->setPosition(s/2);
+    m_pParent->updateLayout(false);
 }
 
 void MainMenuButton::onMouseEnter() {
-    this->getChildByID("background")->runAction(CCEaseElasticOut::create(
+    this->runAction(CCEaseElasticOut::create(
         CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT)
     ));
 }
 void MainMenuButton::onMouseExit() {
-    this->getChildByID("background")->runAction(CCEaseElasticOut::create(
+    this->runAction(CCEaseElasticOut::create(
         CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
     ));
 }

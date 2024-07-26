@@ -25,13 +25,26 @@ using namespace geode::prelude;
 
 #include <Geode/modify/PauseLayer.hpp>
 class $modify(nPauseLayer,PauseLayer) {
-  void scheduleBGM() {
-    auto engine = FMODAudioEngine::sharedEngine();
-    engine->resumeAllMusic();
-    engine->playMusic("pause-loop.mp3"_spr,false,0,1);
-  }
-  void customSetup() {
-    PauseLayer::customSetup();
+    struct Fields {
+        FMOD::Channel* c;
+        FMOD::Sound* s;
+    };
+    void scheduleBGM() {
+        auto engine = FMODAudioEngine::sharedEngine();
+        engine->m_backgroundMusicChannel->setPaused(false);
+        //engine->pauseMusic(1);
+        auto sys = engine->m_system;
+        sys->createSound("pause-loop.mp3"_spr, FMOD_LOOP_NORMAL, nullptr, &(m_fields->s));
+        engine->m_system->playSound(m_fields->s, nullptr, false, &(m_fields->c));
+        m_fields->c->setVolume(1);
+    }
+    void onResume(CCObject* c) {
+        auto engine = FMODAudioEngine::sharedEngine();
+        engine->pauseMusic(4761);
+        PauseLayer::onResume(c);
+    }
+    void customSetup() {
+        PauseLayer::customSetup();
 
     /*
     CCObject* obj;
@@ -42,11 +55,11 @@ class $modify(nPauseLayer,PauseLayer) {
         //n->runAction(CCFadeTo::create(0.2, oldOpacity));
     }
     */
-    int opacity = this->getOpacity();
-    this->setOpacity(0);
-    this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.5), CCCallFunc::create(this, callfunc_selector(nPauseLayer::scheduleBGM))));
-    this->runAction(CCFadeTo::create(0.25,opacity));
-  }
+        int opacity = this->getOpacity();
+        this->setOpacity(0);
+        this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.05), CCCallFunc::create(this, callfunc_selector(nPauseLayer::scheduleBGM))));
+        this->runAction(CCFadeTo::create(0.25,opacity));
+    }
 };
 
 /**

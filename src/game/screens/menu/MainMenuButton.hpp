@@ -12,7 +12,7 @@ using namespace geode::prelude;
 /// <summary>
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public ButtonBase, public ReactiveNode
+class MainMenuButton : public ButtonBase
 {
     float const BOUNCE_COMPRESSION = 0.9f;
     float const HOVER_SCALE = 1.2f;

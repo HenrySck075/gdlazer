@@ -15,7 +15,7 @@
   "dependencies": [
     {
       "id": "henrysck075.cocosutils",
-      "version": ">=v0.0.7-osuinternal",
+      "version": ">=v0.0.7",
       "importance": "required"
     },
     {

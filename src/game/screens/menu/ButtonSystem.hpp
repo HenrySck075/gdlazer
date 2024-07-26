@@ -1,9 +1,9 @@
 #pragma once
 #include <Geode/Geode.hpp>
 #include <vector>
-#include "ButtonArea.hpp"
 #include "OsuLogo.hpp"
 #include "MainMenuButton.hpp"
+#include "ButtonConstants.hpp"
 using namespace geode::prelude;
 
 
@@ -34,17 +34,16 @@ class ButtonSystem : public CCLayer
     /// <param name="logo">The instance of the logo to be assigned. If null, we are suspending from the screen that uses this ButtonSystem.</param>
     void setOsuLogo(OsuLogo* logo); 
 
-    static ButtonSystem* create() {
-        create_class(ButtonSystem, init);
+    static ButtonSystem* create(OsuLogo* logo) {
+        create_class(ButtonSystem, init, logo);
     }
-    bool init();
+    bool init(OsuLogo* logo);
 
   private:
-      // those with leftAnchor being false will be placed before the logo
-      MainMenuButton* postButtonSetup(MainMenuButton* btn, bool leftAnchor = true);
-      void resize(ReactiveNode* calledNode);
-
-    ButtonArea* buttonArea;
+    CCLayer* constructButtons(CCArrayExt<MainMenuButton*> buttons);
+    // those with leftAnchor being false will be placed before the logo
+    MainMenuButton* postButtonSetup(MainMenuButton* btn, bool leftAnchor = true);
+    void resize(ReactiveNode* calledNode, Property props);
 
     /*priv read*/ MainMenuButton* backButton;
 
