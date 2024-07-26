@@ -5,14 +5,14 @@
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
 #include "../../graphics/ui/ButtonBase.hpp"
+#include <henrysck075.cocosutils/include/ReactiveNode.hpp>
 
 using namespace geode::prelude;
 
 /// <summary>
-/// Button designed specifically for the osu!next main menu.
-/// In order to correctly flow, we have to use a negative margin on the parent container (due to the parallelogram shape).
+/// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public ButtonBase
+class MainMenuButton : public ButtonBase, public ReactiveNode
 {
     float const BOUNCE_COMPRESSION = 0.9f;
     float const HOVER_SCALE = 1.2f;
@@ -54,8 +54,8 @@ protected:
 
 
 private:
-    void onMouseEnter() override {};
-    void onMouseExit() override {};
+    void onMouseEnter() override;
+    void onMouseExit() override;
     ButtonCallback clickAction;
 
     CCNode* background;

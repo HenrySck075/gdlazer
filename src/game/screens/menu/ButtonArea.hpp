@@ -1,5 +1,6 @@
 #include "Geode/cocos/actions/CCActionInterval.h"
 #include <Geode/Geode.hpp>
+#include "ButtonConstants.hpp"
 using namespace cocos2d;
 
 class ButtonArea : public CCNodeRGBA {
@@ -10,7 +11,6 @@ class ButtonArea : public CCNodeRGBA {
     CCNodeRGBA* buttonAreaBackground;
 
   public:
-    float BUTTON_AREA_HEIGHT = 100;
 
     bool init()
     {
@@ -19,7 +19,7 @@ class ButtonArea : public CCNodeRGBA {
       button->setAnchorPoint(ccp(0.5,0.5));
       auto ws = CCDirector::sharedDirector()->getWinSize();
       button->setPosition(ws/2);
-      button->setContentSize(CCSizeMake(ws.width, BUTTON_AREA_HEIGHT));
+      button->setContentSize(CCSize(ws.width, BUTTON_AREA_HEIGHT));
       button->setOpacity(0);
 
       this->addChild(buttonAreaBackground);

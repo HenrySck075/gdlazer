@@ -34,19 +34,27 @@ class ButtonSystem : public CCLayer
     /// <param name="logo">The instance of the logo to be assigned. If null, we are suspending from the screen that uses this ButtonSystem.</param>
     void setOsuLogo(OsuLogo* logo); 
 
+    static ButtonSystem* create() {
+        create_class(ButtonSystem, init);
+    }
+    bool init();
+
   private:
-    ButtonArea buttonArea;
+      // those with leftAnchor being false will be placed before the logo
+      MainMenuButton* postButtonSetup(MainMenuButton* btn, bool leftAnchor = true);
+      void resize(ReactiveNode* calledNode);
 
-    /*priv read*/ MainMenuButton backButton;
+    ButtonArea* buttonArea;
 
-    /*priv read*/ std::vector<MainMenuButton> buttonsTopLevel = {};
-    /*priv read*/ std::vector<MainMenuButton> buttonsPlay = {};
-    /*priv read*/ std::vector<MainMenuButton> buttonsEdit = {};
+    /*priv read*/ MainMenuButton* backButton;
 
-    const char* sampleBackToLogo = "idk.wav";
-    const char* sampleLogoSwoosh = "me too.wav";
+    /*priv read*/ CCArrayExt<MainMenuButton*> buttonsTopLevel = {};
+    /*priv read*/ CCArrayExt<MainMenuButton*> buttonsPlay = {};
+    /*priv read*/ CCArrayExt<MainMenuButton*> buttonsEdit = {};
 
-    /*priv read*/ //LogoTrackingContainer logoTrackingContainer;
+    const char* sampleBackToLogo = "back-to-logo.wav"_spr;
+    const char* sampleLogoSwoosh = "osu-logo-swoosh.wav"_spr;
+
 
 
 };

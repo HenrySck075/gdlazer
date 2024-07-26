@@ -9,6 +9,7 @@ using namespace geode::prelude;
 
 class PopupDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<PopupDialogButton*>> {
 private:
+    float volume;   
     bool hiding = false;
     CCClippingNode* m_bgSpriteClip;
     CCLayerRGBA* m_bodyLayout;

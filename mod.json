@@ -12,6 +12,18 @@
 	"developer": "Nico Yazawa",
 	"description": "nico nico niii",
 	"early-load": true,
+  "dependencies": [
+    {
+      "id": "henrysck075.cocosutils",
+      "version": ">=v0.0.7-osuinternal",
+      "importance": "required"
+    },
+    {
+      "id": "spaghettdev.betterinputs",
+      "version": ">=4.2.0-beta.1",
+      "importance": "recommended"
+    }
+  ],
 	"resources": {
     "fonts": {
     	"torus-regular": {

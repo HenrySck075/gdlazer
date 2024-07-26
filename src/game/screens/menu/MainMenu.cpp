@@ -6,8 +6,8 @@
 #include "../../graphics/containers/ParallaxContainer.hpp"
 
 bool MainMenu::init(bool flash) {
-	auto logo = OsuLogo::create();
 	/*
+	auto logo = OsuLogo::create();
 	logo->setPosition(CCDirector::sharedDirector()->getWinSize() / 2);
 	logo->setCallback([this](CCNode* j) {onLogoClickIdle(); });
 	this->addChild(logo);

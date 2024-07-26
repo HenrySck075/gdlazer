@@ -5,7 +5,7 @@
 
 using namespace geode::prelude;
 
-class CCNodeHover : public CCNodeRGBA {
+class CCNodeHover : virtual public CCNodeRGBA {
 private:
 	bool m_hoverEnabled = true;
 	EventListenerProtocol* m_listener;

@@ -26,6 +26,7 @@ src/game/graphics/CCResizableSprite.cpp
 src/game/graphics/CCResizableSprite.hpp
 src/game/graphics/OsuColor.hpp
 src/game/graphics/OsuIcon.hpp
+src/game/graphics/OsuIcon.cpp
 src/game/graphics/containers/BeatSyncedContainer.hpp
 src/game/graphics/containers/ParallaxContainer.cpp
 src/game/graphics/containers/ParallaxContainer.hpp

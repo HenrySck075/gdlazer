@@ -35,20 +35,20 @@ struct Color4 {
     int c = hex.length();
     switch (c) {
       case 3:
-        sscanf(hex.c_str(), "%01x%01x%01x", &r,&g,&b);
+        sscanf_s(hex.c_str(), "%01x%01x%01x", &r,&g,&b);
       case 4:
-        if (hex.c_str()[0]=='#') sscanf(hex.c_str(), "#%01x%01x%01x", &r,&g,&b);
-        else sscanf(hex.c_str(), "%01x%01x%01x%01x", &r,&g,&b,&a);
+        if (hex.c_str()[0]=='#') sscanf_s(hex.c_str(), "#%01x%01x%01x", &r,&g,&b);
+        else sscanf_s(hex.c_str(), "%01x%01x%01x%01x", &r,&g,&b,&a);
       case 5:
-        sscanf(hex.c_str(), "#%01x%01x%01x%01x", &r,&g,&b,&a);
+        sscanf_s(hex.c_str(), "#%01x%01x%01x%01x", &r,&g,&b,&a);
       case 6:
-        sscanf(hex.c_str(), "%02x%02x%02x", &r,&g,&b);
+        sscanf_s(hex.c_str(), "%02x%02x%02x", &r,&g,&b);
       case 7:
-        sscanf(hex.c_str(), "#%02x%02x%02x", &r,&g,&b);
+        sscanf_s(hex.c_str(), "#%02x%02x%02x", &r,&g,&b);
       case 8:
-        sscanf(hex.c_str(), "%02x%02x%02x%02x", &r,&g,&b,&a);
+        sscanf_s(hex.c_str(), "%02x%02x%02x%02x", &r,&g,&b,&a);
       case 9:
-        sscanf(hex.c_str(), "#%02x%02x%02x%02x", &r,&g,&b,&a);
+        sscanf_s(hex.c_str(), "#%02x%02x%02x%02x", &r,&g,&b,&a);
     }
     if (c<5) {
       r*=17;

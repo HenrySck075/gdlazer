@@ -69,7 +69,6 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
 
 
     this->setOpacity(0);
-    FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-in.wav"_spr);
     return true;
 }
 
@@ -84,6 +83,10 @@ void PopupDialog::show() {
     m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
     m_bgSprite->runAction(CCEaseOutQuint(CCFadeIn::create(0.2)));
 
+    auto en = FMODAudioEngine::sharedEngine();
+    en->playEffect("dialog-pop-in.wav"_spr);
+    volume = en->getBackgroundMusicVolume();
+    en->setBackgroundMusicVolume(volume*0.3);
 }
 
 void PopupDialog::onClose(cocos2d::CCObject*) {
@@ -104,7 +107,9 @@ void PopupDialog::hide() {
     m_mainLayer->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
     getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
     
-    FMODAudioEngine::sharedEngine()->playEffect("dialog-pop-out.wav"_spr);
+    auto en = FMODAudioEngine::sharedEngine();
+    en->playEffect("dialog-pop-out.wav"_spr);
+    en->setBackgroundMusicVolume(volume);
     this->runAction(CCSequence::createWithTwoActions(
         CCDelayTime::create(0.5), 
         CCRemoveSelf::create()
