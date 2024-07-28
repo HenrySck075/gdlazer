@@ -25,11 +25,12 @@ src/game/beatmaps/BeatmapOnlineStatus.hpp
 src/game/graphics/CCResizableSprite.cpp
 src/game/graphics/CCResizableSprite.hpp
 src/game/graphics/OsuColor.hpp
-src/game/graphics/OsuIcon.hpp
 src/game/graphics/OsuIcon.cpp
+src/game/graphics/OsuIcon.hpp
 src/game/graphics/containers/BeatSyncedContainer.hpp
 src/game/graphics/containers/ParallaxContainer.cpp
 src/game/graphics/containers/ParallaxContainer.hpp
+src/game/graphics/containers/SizeReactiveContainer.cpp
 src/game/graphics/containers/WaveContainer.cpp
 src/game/graphics/containers/WaveContainer.hpp
 src/game/graphics/containers/beatsync/BeatEvent.hpp
@@ -51,6 +52,8 @@ src/game/rulesets/mods/ModType.hpp
 src/game/scoring/HitResult.hpp
 src/game/scoring/RankingTier.hpp
 src/game/scoring/ScoreRank.hpp
+src/game/screens/menu/ButtonArea.cpp
+src/game/screens/menu/ButtonArea.hpp
 src/game/screens/menu/ButtonConstants.hpp
 src/game/screens/menu/ButtonSystem.cpp
 src/game/screens/menu/ButtonSystem.hpp

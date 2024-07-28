@@ -52,7 +52,7 @@ char id=57396 x=94    y=290   width=90    height=90    xoffset=0     yoffset=8  
 char id=57397 x=482   y=196   width=90    height=90    xoffset=0     yoffset=8     xadvance=89    page=0  chnl=15
 char id=57398 x=530   y=98    width=53    height=94    xoffset=23    yoffset=6     xadvance=100   page=0  chnl=15
 char id=57399 x=945   y=380   width=58    height=68    xoffset=21    yoffset=19    xadvance=100   page=0  chnl=15
-char id=57400 x=196   y=472   width=94    height=68    xoffset=3     yoffset=19    xadvance=100   page=0  chnl=15
+char id=57300 x=196   y=472   width=94    height=68    xoffset=3     yoffset=19    xadvance=100   page=0  chnl=15
 char id=57401 x=490   y=0     width=93    height=94    xoffset=3     yoffset=6     xadvance=100   page=0  chnl=15
 char id=57402 x=282   y=290   width=90    height=90    xoffset=5     yoffset=8     xadvance=100   page=0  chnl=15
 char id=57403 x=188   y=384   width=90    height=84    xoffset=5     yoffset=11    xadvance=100   page=0  chnl=15

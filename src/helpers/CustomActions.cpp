@@ -187,3 +187,55 @@ void CCResizeTo::update(float time)
         m_pTarget->setContentHeight(m_fStartContentHeight + m_fDeltaY * time);
     }
 }
+
+
+//
+// CallFuncL
+//
+CCCallFuncL * CCCallFuncL::create(SEL_CallFuncL selector) 
+{
+    CCCallFuncL *pRet = new CCCallFuncL();
+
+    if (pRet) {
+        pRet->m_pCallFunc = selector;
+        pRet->autorelease();
+        return pRet;
+    }
+
+    CC_SAFE_DELETE(pRet);
+    return NULL;
+}
+
+CCCallFuncL::~CCCallFuncL(void)
+{
+    if (m_nScriptHandler)
+    {
+        cocos2d::CCScriptEngineManager::sharedManager()->getScriptEngine()->removeScriptHandler(m_nScriptHandler);
+    }
+}
+
+CCObject * CCCallFuncL::copyWithZone(CCZone *pZone) {
+    CCZone* pNewZone = NULL;
+    CCCallFuncL* pRet = NULL;
+
+    if (pZone && pZone->m_pCopyObject) {
+        //in case of being called at sub class
+        pRet = (CCCallFuncL*) (pZone->m_pCopyObject);
+    } else {
+        pRet = new CCCallFuncL();
+        pZone = pNewZone = new CCZone(pRet);
+    }
+
+    CCActionInstant::copyWithZone(pZone);
+    pRet->m_pCallFunc = m_pCallFunc;
+    if (m_nScriptHandler > 0 ) {
+        pRet->m_nScriptHandler = cocos2d::CCScriptEngineManager::sharedManager()->getScriptEngine()->reallocateScriptHandler(m_nScriptHandler);
+    }
+    CC_SAFE_DELETE(pNewZone);
+    return pRet;
+}
+
+void CCCallFuncL::update(float time) {
+    CC_UNUSED_PARAM(time);
+    m_pCallFunc();
+}

@@ -1,7 +1,6 @@
 import os
 
 blacklist = [
-"ButtonArea.hpp",
 "BeatDetector.hpp",
 "BeatDetector.cpp",
 ]

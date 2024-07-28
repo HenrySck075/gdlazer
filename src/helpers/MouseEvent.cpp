@@ -7,7 +7,7 @@ ListenerResult MouseFilter::handle(MiniFunction<MouseFilter::Callback> fn, Mouse
 	if (!clicking) fn(MouseType::Move, mouseloc);
 	if (clicking && m_entered) {
 		fn(MouseType::Click, mouseloc);
-		return m_keepPropangating ? ListenerResult::Propagate : ListenerResult::Stop;
+		return ListenerResult::Propagate;
 	}
 	if (boundingBoxFromContentSize(m_target).containsPoint(mouseloc)) {
 		if (!m_entered) {

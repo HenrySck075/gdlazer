@@ -85,4 +85,51 @@ protected:
 #define CCEaseOutQuad(action) CCEaseOut::create(action, 4)
 #define CCEaseOutQuint(action) CCEaseOut::create(action, 5)
 
+typedef std::function<void()> SEL_CallFuncL;
+
+/** @brief Calls a 'callback'
+*/
+class CC_DLL CCCallFuncL : public CCActionInstant //<NSCopying>
+{
+public:
+    /**
+     *  @js ctor
+     */
+    CCCallFuncL()
+		: m_nScriptHandler(0)
+        , m_pCallFunc(NULL)
+    {
+    }
+    /**
+     * @js NA
+     * @lua NA
+     */
+    virtual ~CCCallFuncL();
+
+    /** creates the action with the callback 
+
+    * typedef void (CCObject::*SEL_CallFunc)();
+    * @lua NA
+    */
+    static CCCallFuncL * create(SEL_CallFuncL selector);
+
+    /** super methods
+     * @lua NA
+     */
+    virtual void update(float time);
+    /**
+     * @js  NA
+     * @lua NA
+     */
+    CCObject * copyWithZone(CCZone *pZone);
+    /**
+     * @lua NA
+     */
+    inline int getScriptHandler() { return m_nScriptHandler; };
+protected:
+    SEL_CallFuncL m_pCallFunc;
+	int m_nScriptHandler;
+
+};
+
 #endif

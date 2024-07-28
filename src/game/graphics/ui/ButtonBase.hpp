@@ -13,6 +13,7 @@ private:
 
 	MiniFunction<void(CCNode*)> clickCallback;
 	const char* clickSfx;
+	bool haveSfx = true;
 
 	bool touchStartInBounds = false;
 	bool holding = false;

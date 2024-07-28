@@ -4,9 +4,10 @@
 #include "../../../helpers/CustomActions.hpp"
 
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction) {
-    //this->addListener(reactive_listener(updateReactive));
-
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
+    ButtonBase::init(sampleClick.c_str(), clickAction, this);
+    ButtonBase::setContentSize(m);
+    //this->addListener(reactive_listener(updateReactive));
 
     auto the = CCLayer::create();
     the->setID("ui");
@@ -16,7 +17,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     the->setAnchorPoint(ccp(0.5,0.5));
     the->setPosition(m/2);
     auto label = OsuText(text.c_str(), FontType::Regular);
-    label->setScale(0.6);
+    label->setScale(0.4);
     the->addChild(label);
     the->updateLayout();
     auto s9 = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
@@ -29,8 +30,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     this->addChild(s9);
     this->addChild(the);
     
-    ButtonBase::init(sampleClick.c_str(), clickAction, this);
-    ButtonBase::setContentSize(m);
+    setCascadeOpacityEnabled(true);
     this->setAnchorPoint(ccp(0.5,0.5));
     return true;
 }
@@ -41,13 +41,14 @@ void MainMenuButton::setContentSize(const CCSize& s) {
     this->getChildByID("background")->setContentSize(s);
     this->getChildByID("background")->setPosition(s/2);
     this->getChildByID("ui")->setPosition(s/2);
-    m_pParent->updateLayout(false);
+    m_pParent->updateLayout();
 }
 
 void MainMenuButton::onMouseEnter() {
     this->runAction(CCEaseElasticOut::create(
         CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT)
     ));
+    FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav"_spr);
 }
 void MainMenuButton::onMouseExit() {
     this->runAction(CCEaseElasticOut::create(

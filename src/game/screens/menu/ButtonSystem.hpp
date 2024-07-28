@@ -40,21 +40,19 @@ class ButtonSystem : public CCLayer
     bool init(OsuLogo* logo);
 
   private:
-    CCLayer* constructButtons(CCArrayExt<MainMenuButton*> buttons);
+    MenuLayer* m_menuLayerPtr;
     // those with leftAnchor being false will be placed before the logo
-    MainMenuButton* postButtonSetup(MainMenuButton* btn, bool leftAnchor = true);
+    MainMenuButton* postButtonSetup(MainMenuButton* btn);
     void resize(ReactiveNode* calledNode, Property props);
 
     /*priv read*/ MainMenuButton* backButton;
 
-    /*priv read*/ CCArrayExt<MainMenuButton*> buttonsTopLevel = {};
-    /*priv read*/ CCArrayExt<MainMenuButton*> buttonsPlay = {};
-    /*priv read*/ CCArrayExt<MainMenuButton*> buttonsEdit = {};
+    /*priv read*/ std::vector<MainMenuButton*> buttonsTopLevel = {};
+    /*priv read*/ std::vector<MainMenuButton*> buttonsPlay = {};
+    /*priv read*/ std::vector<MainMenuButton*> buttonsEdit = {};
 
     const char* sampleBackToLogo = "back-to-logo.wav"_spr;
     const char* sampleLogoSwoosh = "osu-logo-swoosh.wav"_spr;
-
-
 
 };
 
