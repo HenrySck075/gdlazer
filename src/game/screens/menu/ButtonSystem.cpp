@@ -67,7 +67,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
                 "button-default-select.wav"_spr, 
                 icons.Beatmap, 
                 Color4(165, 204, 0, 255), 
-                [](CCNode* j) {}
+                [](CCNode* j) {log::debug("g");}
             )
         )
     );
@@ -75,12 +75,12 @@ bool ButtonSystem::init(OsuLogo* logo) {
         postButtonSetup(
             MainMenuButton::create(
                 "Exit", 
-                "osu-logo-downbeat.wav"_spr, 
+                "", 
                 icons.CrossCircle, 
                 Color4(238, 51, 153, 255), 
                 [this](CCNode* j) {
                     this->m_menuLayerPtr = static_cast<MenuLayer*>(MenuLayer::create());
-                    m_menuLayerPtr->onExit();
+                    m_menuLayerPtr->onQuit(this);
                 }
             )
         )

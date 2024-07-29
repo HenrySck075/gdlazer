@@ -11,8 +11,8 @@ using ButtonCallback = geode::utils::MiniFunction<void(CCNode*)> ;
 class ButtonBase : public CCNodeHover, public CCTouchDelegate {
 private:
 
-	MiniFunction<void(CCNode*)> clickCallback;
-	const char* clickSfx;
+	ButtonCallback clickCallback;
+	std::string clickSfx = "";
 	bool haveSfx = true;
 
 	bool touchStartInBounds = false;
@@ -24,10 +24,10 @@ private:
 	//void ccTouchEnded(CCTouch* t, CCEvent* idc) override;
 
 public:
-	void setClickSFX(const char* sfx) { clickSfx = sfx; };
+	void setClickSFX(std::string sfx) { clickSfx = sfx; };
 	void setCallback(MiniFunction<void(CCNode*)> clickCb) { clickCallback = clickCb; };
 	/// <param name="clickCb">| the</param>
 	/// <param name="self">| the node to be used as the clickCb parameter</param>
-	bool init(const char* clickSfx, ButtonCallback clickCb, CCNode* self);
+	bool init(std::string clickSfx, ButtonCallback clickCb, CCNode* self);
 };
 

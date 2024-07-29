@@ -3,9 +3,9 @@
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
-bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction) {
+bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
-    ButtonBase::init(sampleClick.c_str(), clickAction, this);
+    ButtonBase::init(sampleClick, clickAct, this);
     ButtonBase::setContentSize(m);
     //this->addListener(reactive_listener(updateReactive));
 

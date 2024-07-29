@@ -11,7 +11,11 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
 
     m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
 		// iykyk
-		if (type == MouseType::Move) { updateParallax(location); }
+		if (type == MouseType::Move) { 
+			updateParallax(location); 
+			return true;
+		}
+		return false;
 	}, false);
 	//updateParallax(director->convertToGL(director->getOpenGLView()->getMousePosition()));
 	return true;

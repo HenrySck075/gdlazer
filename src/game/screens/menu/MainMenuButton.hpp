@@ -56,7 +56,6 @@ protected:
 private:
     void onMouseEnter() override;
     void onMouseExit() override;
-    ButtonCallback clickAction;
 
     CCNode* background;
     CCNode* boxHoverLayer; // ?

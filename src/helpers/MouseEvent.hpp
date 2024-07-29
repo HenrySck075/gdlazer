@@ -30,13 +30,13 @@ protected:
     bool m_keepPropangating;
 public:
 
-    using Callback = void(MouseType, CCPoint);
+    using Callback = bool(MouseType, CCPoint);
 
     ListenerResult handle(MiniFunction<Callback> fn, MouseEvent* event);
     MouseFilter(CCNode* target, bool keepPropangating) {
         m_target = target;
         m_keepPropangating = keepPropangating;
-        log::debug("[MouseFilter]: {} | {}", CCDirector::sharedDirector()->getVisibleSize(), CCDirector::sharedDirector()->getWinSizeInPixels());
+        //log::debug("[MouseFilter]: {} | {}", CCDirector::sharedDirector()->getVisibleSize(), CCDirector::sharedDirector()->getWinSizeInPixels());
     };
 };
 
