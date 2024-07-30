@@ -1,4 +1,5 @@
 #include "ParallaxContainer.hpp"
+#include "../../../helpers/MouseEvent.hpp"
 
 bool ParallaxContainer::init(float parallaxAmount, bool scale) {
 	CCLayer::init();

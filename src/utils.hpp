@@ -1,7 +1,6 @@
 #pragma once
 // file in date ordee
 #include "Geode/Geode.hpp"
-#include "Geode/cocos/platform/CCPlatformMacros.h"
 #include <cmath>
 #include <cstddef>
 using namespace geode::prelude;

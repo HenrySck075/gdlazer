@@ -3,12 +3,13 @@
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
-bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct) {
+bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
     ButtonBase::init(sampleClick, clickAct, this);
     ButtonBase::setContentSize(m);
     //this->addListener(reactive_listener(updateReactive));
 
+    this->activationKeys = activa;
     auto the = CCLayer::create();
     the->setID("ui");
     symbol->setScale(0.3);

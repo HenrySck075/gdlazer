@@ -1,13 +1,12 @@
 #pragma once
 
-#include "../../../helpers/MouseEvent.hpp"
 #include "../../../utils.hpp"
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 
 // why are they using ease out quint just for parallax am i dumb
-class ParallaxContainer : public CCLayer {
+class ParallaxContainer final : public CCLayer {
 private:
 	// used to determine the center position
 	CCDirector* director;

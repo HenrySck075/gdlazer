@@ -1,5 +1,5 @@
 {
-	"geode": "3.3.1",
+	"geode": "3.4.0",
 	"gd": {
     "win": "2.206",
     "android": "2.206",
@@ -13,16 +13,7 @@
 	"description": "nico nico niii",
 	"early-load": true,
   "dependencies": [
-    {
-      "id": "henrysck075.cocosutils",
-      "version": ">=v0.0.7",
-      "importance": "required"
-    },
-    {
-      "id": "spaghettdev.betterinputs",
-      "version": ">=4.2.0-beta.1",
-      "importance": "recommended"
-    }
+    
   ],
 	"resources": {
     "fonts": {

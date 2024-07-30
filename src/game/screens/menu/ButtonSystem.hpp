@@ -43,13 +43,10 @@ class ButtonSystem : public CCLayer
     MenuLayer* m_menuLayerPtr;
     // those with leftAnchor being false will be placed before the logo
     MainMenuButton* postButtonSetup(MainMenuButton* btn);
-    void resize(ReactiveNode* calledNode, Property props);
+    //void resize(ReactiveNode* calledNode, Property props);
 
     /*priv read*/ MainMenuButton* backButton;
 
-    /*priv read*/ std::vector<MainMenuButton*> buttonsTopLevel = {};
-    /*priv read*/ std::vector<MainMenuButton*> buttonsPlay = {};
-    /*priv read*/ std::vector<MainMenuButton*> buttonsEdit = {};
 
     const char* sampleBackToLogo = "back-to-logo.wav"_spr;
     const char* sampleLogoSwoosh = "osu-logo-swoosh.wav"_spr;

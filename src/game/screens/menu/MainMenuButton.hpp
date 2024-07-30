@@ -5,7 +5,6 @@
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
 #include "../../graphics/ui/ButtonBase.hpp"
-#include <henrysck075.cocosutils/include/ReactiveNode.hpp>
 
 using namespace geode::prelude;
 
@@ -63,7 +62,8 @@ private:
     CCSize initialSize = CCSize(0,0);//baseSize + content->getContentSize();
 
     const char* sampleHover = "button-hover.wav"_spr;
-
+    // list of key that causes the click event
+    std::vector<enumKeyCodes> activationKeys = {};
     /*
     public override bool IsPresent => base.IsPresent
                                         // Allow keyboard interaction based on state rather than waiting for delayed animations.
@@ -72,9 +72,9 @@ private:
     public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => background.ReceivePositionalInputAt(screenSpacePos);
 */
 public:
-    static MainMenuButton* create(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction) {
-        create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction);
+    static MainMenuButton* create(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
+        create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
     };
-    bool init(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction);
+    bool init(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
     void setContentSize(const CCSize& s) override;
 };
