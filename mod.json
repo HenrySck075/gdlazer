@@ -8,8 +8,8 @@
 	},
 	"id": "henrysck075.osulazer",
 	"name": "osu!lazer",
-	"version": "v1.0.0",
-	"developer": "Nico Yazawa",
+	"version": "v0.0.7-prealpha.1",
+	"developer": "Henry Spheria",
 	"description": "nico nico niii",
 	"early-load": true,
   "dependencies": [

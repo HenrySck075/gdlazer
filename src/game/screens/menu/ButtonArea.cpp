@@ -16,7 +16,7 @@ void ButtonArea::setParent(CCNode* parent) {
     this->setPosition(parent->getContentSize()/2);
 }
 
-void ButtonArea::constructButtons(std::vector<MainMenuButton*>& buttons, std::string tag) {
+void ButtonArea::constructButtons(std::vector<MainMenuButton*> buttons, std::string tag) {
     auto b = CCLayer::create();
     auto gap = ccp(20,0);
     b->ignoreAnchorPointForPosition(true);
@@ -50,11 +50,16 @@ void ButtonArea::constructButtons(std::vector<MainMenuButton*>& buttons, std::st
 
 void ButtonArea::show(std::string tag) {
     auto _cur = getCurrent();
+    // just for comparison
     auto shownIndex = ranges::indexOf(tagsStack, [_cur](std::string t){return t==_cur;}).value_or(-1);
     auto index = ranges::indexOf(tagsStack, [tag](std::string t){return t==tag;}).value_or(-1);
     if (index==-1) {
-        log::error("[ButtonArea]: \"{}\" is not a registered menu.", tag);
-        return;
+        if (buttonsMenus.find(tag)==buttonsMenus.end()) {
+            log::error("[ButtonArea]: \"{}\" is not a registered menu.", tag);
+            return;
+        }
+        index = tagsStack.size();
+        tagsStack.push_back(tag);
     }
     if (shownIndex != -1) hide(_cur);
     if (shownIndex==index) return;
@@ -94,6 +99,8 @@ void ButtonArea::show(std::string tag) {
             ));
         }
         // the node is still there so we dont need to add them
+        // however
+        while (tagsStack.back()!=tag) {tagsStack.pop_back();}
     }
 }
 

@@ -23,13 +23,13 @@ public:
     /// The first button will be placed at the left, the rest goes to the right.
     /// @param buttons 
     /// @param index the index to insert generated layers in. set to -1 to append
-    void constructButtons(std::vector<MainMenuButton*>& buttons, std::string tag = "");
+    void constructButtons(std::vector<MainMenuButton*> buttons, std::string tag = "");
 
     void updateLayout(bool jweuioghvfweuigiweuhgiloweughiwe = true) {}
     void show(std::string tag);
     void hide(std::string tag);
     // convenient function to show the previous menu
-    void pop();
+    void pop() {show(getBefore());};
     std::string getCurrent() {return tagsStack.back();}
     // just the one before getCurrent
     std::string getBefore() {return tagsStack.at(tagsStack.size()-2);}

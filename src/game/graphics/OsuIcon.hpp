@@ -5,7 +5,7 @@ using namespace geode::prelude;
 
 std::string unicode_to_utf8(int unicode);
 
-#define iconFont(name, charid, fontname) const CCLabelBMFont* name = CCLabelBMFont::create(unicode_to_utf8(charid).c_str(),fontname)
+#define iconFont(name, charid, fontname) CCLabelBMFont* name = CCLabelBMFont::create(unicode_to_utf8(charid).c_str(),fontname)
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)
 #define iconOsuIcon(name, charid) iconFont(name,charid,"osuIcon.fnt"_spr)
 #define iconOsuEditor(name, charid) iconFont(name,charid,"osuEditor.fnt"_spr)
