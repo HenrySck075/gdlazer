@@ -18,6 +18,10 @@ src/utils.hpp
 src/framework/graphics/Color4.cpp
 src/framework/graphics/Color4.hpp
 src/framework/graphics/color/ColorInfo.hpp
+src/framework/graphics/containers/Container.hpp
+src/framework/graphics/containers/Event.hpp
+src/framework/graphics/containers/Node.cpp
+src/framework/graphics/containers/Node.hpp
 src/framework/utils/IInterpolable.hpp
 src/framework/utils/Interpolation.cpp
 src/framework/utils/Interpolation.hpp
