@@ -4,18 +4,21 @@
 #include "ButtonSystemState.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
-#include "../../graphics/ui/ButtonBase.hpp"
+#include "../../graphics/ui/CCMenuItemHover.hpp"
+#include "../../../utils.hpp"
 
 using namespace geode::prelude;
 
 /// <summary>
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public ButtonBase
+class MainMenuButton : public CCMenuItemHover
 {
+    Color4 m_color = Color4(0,0,0,0);
     float const BOUNCE_COMPRESSION = 0.9f;
     float const HOVER_SCALE = 1.2f;
     float const BOUNCE_ROTATION = 8;
+    bool m_askForUpdate = false;
 /*
     public readonly Key[] TriggerKeys;
 
@@ -47,6 +50,7 @@ public:
         set => Content.Padding = value;
     }
     */
+   void askForUpdate(bool e) {m_askForUpdate = e;}
 
 protected:
     CCSize BaseSize = CCSize(0,0);//CCSize(ButtonSystem.BUTTON_WIDTH, ButtonArea.BUTTON_AREA_HEIGHT);
@@ -55,6 +59,9 @@ protected:
 private:
     void onMouseEnter() override;
     void onMouseExit() override;
+    void onMouseDown() override;
+    void onMouseUp() override;
+    void onClick() override;
 
     CCNode* background;
     CCNode* boxHoverLayer; // ?

@@ -2,6 +2,7 @@
 #include "../../utils.hpp"
 using namespace cocos2d;
 
+// Scale9Sprite without the 9 sprites part
 class CCResizableSprite : public CCSprite {
 private:
   CCSize baseSize = CCSize(0,0);

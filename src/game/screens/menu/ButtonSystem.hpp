@@ -4,6 +4,7 @@
 #include "OsuLogo.hpp"
 #include "MainMenuButton.hpp"
 #include "ButtonConstants.hpp"
+#include "../../../helpers/CustomActions.hpp"
 using namespace geode::prelude;
 
 
@@ -41,6 +42,7 @@ class ButtonSystem : public CCLayer
 
   private:
     MenuLayer* m_menuLayerPtr;
+    CreatorLayer* m_creatorLayerPtr;
     // those with leftAnchor being false will be placed before the logo
     MainMenuButton* postButtonSetup(MainMenuButton* btn);
     //void resize(ReactiveNode* calledNode, Property props);

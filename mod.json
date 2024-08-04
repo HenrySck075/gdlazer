@@ -8,12 +8,21 @@
 	},
 	"id": "henrysck075.osulazer",
 	"name": "osu!lazer",
-	"version": "v0.0.7-prealpha.1",
+	"version": "v0.0.7",
 	"developer": "Henry Spheria",
 	"description": "nico nico niii",
 	"early-load": true,
   "dependencies": [
-    
+    {
+      "id": "henrysck075.cocosutils",
+      "version": ">=v0.0.7",
+      "importance": "required"
+    },
+    {
+      "id": "henrysck075.reactiveui",
+      "version": ">=v0.2.206",
+      "importance": "required"
+    }
   ],
 	"resources": {
     "fonts": {

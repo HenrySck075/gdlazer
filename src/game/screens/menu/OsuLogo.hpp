@@ -3,11 +3,11 @@
 //#include "../../graphics/containers/beatsync/BeatDetector.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../graphics/containers/beatsync/BeatEvent.hpp"
-#include "../../graphics/ui/ButtonBase.hpp"
+#include "../../graphics/ui/CCMenuItemHover.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-class OsuLogo : public BeatSyncedContainer, public ButtonBase {
+class OsuLogo : public BeatSyncedContainer, public CCMenuItemHover {
 private:
   //BeatDetector* instance;
   EventListenerProtocol* m_listener;
@@ -16,11 +16,14 @@ public:
     void onMouseEnter() override {};
     void onMouseExit() override {};
     void onBeat(float delta) override;
+    void onMouseUp() override {};
+    void onMouseDown() override {};
+    void onClick() override {};
   void update(float delta);
   static OsuLogo* create() {
     OsuLogo *ret = new OsuLogo();
     if (ret && ret->init()) {
-      ret->ButtonBase::autorelease();
+      ret->CCMenuItemHover::autorelease();
     } else {
       if (ret) {
         delete (ret);

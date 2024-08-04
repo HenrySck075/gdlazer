@@ -1,6 +1,7 @@
 #include "ButtonSystem.hpp"
 #include "ButtonArea.hpp"
 #include "../../graphics/OsuIcon.hpp"
+#include "../../overlays/dialog/PopupDialog.hpp"
 
 void ButtonSystem::setOsuLogo(OsuLogo* logo) {
         this->logo = logo;
@@ -26,80 +27,108 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
 bool ButtonSystem::init(OsuLogo* logo) {
     auto icons = OsuIcon();
     setOsuLogo(logo);
+    this->m_menuLayerPtr = getChildOfType<MenuLayer>(MenuLayer::scene(true),0);
+    if (m_menuLayerPtr == nullptr) {log::info("[ButtonSystem]: nope doesnt work");}
+    this->m_creatorLayerPtr = CreatorLayer::create();
 
     float w = CCDirector::sharedDirector()->getWinSize().width;
     auto an = ccp(w/2-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2);
     auto area = ButtonArea::create(an);
     this->addChild(area);
 
-    auto backBtn = MainMenuButton::create(
-        "Back", 
-        "back-to_top.wav"_spr, 
-        icons.PrevCircle, 
-        Color4(51, 58, 94, 255),
-        [area](CCNode*j){area->pop();}
-    );
-
-    // play    
-    area->constructButtons({
-        backBtn,
+    // because cocos2d-x does not allows a node to be in multiple parent (everyone knows that)
+    #define backBtnCreate MainMenuButton::create( \
+        "Back",                                   \
+        "back-to-top.wav"_spr,                    \
+        icons.PrevCircle,                         \
+        Color4(51, 58, 94, 255),                  \
+        [area](CCNode*j){area->pop();}            \
+    )
+    #define $cca(...) CCArray::create(__VA_ARGS__, nullptr)
+    // daily/weekly levels
+    area->constructButtons($cca(
+        backBtnCreate,
         MainMenuButton::create(
-            "Solo", 
+            "Daily", 
+            "button-default-select.wav"_spr, 
+            icons.ModRelax, 
+            Color4(102, 68, 204, 255),
+            [this](CCNode*j){this->m_creatorLayerPtr->onDailyLevel(this);}
+        ),
+        MainMenuButton::create(
+            "Weekly",
+            "button-default-select.wav"_spr, 
+            icons.ModSuddenDeath,
+            Color4(94, 63, 186, 255), 
+            [this](CCNode*j){this->m_creatorLayerPtr->onWeeklyLevel(this);}
+        )
+    ), "challenges");
+    // play    
+    area->constructButtons($cca(
+        backBtnCreate,
+        MainMenuButton::create(
+            "Main levels", 
             "button-default-select.wav"_spr, 
             icons.Player, 
             Color4(102, 68, 204, 255),
-            [](CCNode*j){}
+            [this](CCNode*j){this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);}
         ),
         MainMenuButton::create(
-            "Multi", 
+            "Saved levels", 
             "button-default-select.wav"_spr, 
             icons.Online, 
             Color4(94, 63, 186, 255), 
-            onMultiplayer
+            [this](CCNode*j){this->m_creatorLayerPtr->onSavedLevels(this);}
         ),
         MainMenuButton::create(
             "Playlists", // this is lists
             "button-default-select.wav"_spr, 
             icons.Tournament, 
             Color4(94, 63, 186, 255), 
-            onPlaylists
+            [](CCNode*j){PopupDialog::createSimpleDialog(
+                "hey guys robtopgames here", "geometry dash pdb in bio", 
+                "yipee", "nuh uh", 
+                [](CCNode*wfhuio){log::info("https://www.pixiv.net/en/artworks/120777141");}
+            )->show();}
         ),
         MainMenuButton::create(
             "Challenges", // daily/weekly levels
-            "button-play-select", 
+            "button-play-select.wav"_spr, 
             icons.DailyChallenge,
             Color4(94, 63, 186, 255), 
-            [](CCNode*j) {}
+            [area](CCNode*j) {area->show("challenges");}
         )
-    }, "play");
+    ), "play");
 
     // edit
-    area->constructButtons({
-        backBtn,
+    area->constructButtons($cca(
+        backBtnCreate,
         MainMenuButton::create(
             "New", 
             "button-default-select.wav"_spr, 
-            icons.Beatmap, 
+            icons.ChangelogA, 
             Color4(238, 170, 0, 255), 
-            onEditBeatmap
+            [](CCNode*fowehui) {
+                LevelBrowserLayer::create(GJSearchObject::create(SearchType::MyLevels))->onNew(fowehui);                
+            }
         ),
         MainMenuButton::create(
-            "Created", 
+            "Created levels", 
             "button-default-select.wav"_spr, 
             icons.Collections, 
             Color4(220, 160, 0, 255), 
-            onEditSkin
+            [this](CCNode*j){this->m_creatorLayerPtr->onMyLevels(this);}
         )
-    }, "edit");
+    ), "edit");
     
     // toplevel
-    area->constructButtons({
+    area->constructButtons($cca(
         MainMenuButton::create(
             "Settings", 
             "osu-logo-downbeat.wav"_spr, 
             icons.Settings, 
             Color4(85, 85, 85, 255), 
-            [area](CCNode* j) {}
+            [this](CCNode*j){this->m_menuLayerPtr->openOptions(false);}
         ),
         MainMenuButton::create(
             "Play", 
@@ -128,18 +157,21 @@ bool ButtonSystem::init(OsuLogo* logo) {
             icons.CrossCircle, 
             Color4(238, 51, 153, 255), 
             [this](CCNode* j) {
-                this->m_menuLayerPtr = static_cast<MenuLayer*>(MenuLayer::create());
                 m_menuLayerPtr->onQuit(this);
             }
         )
-    }, "toplevel");
+    ), "toplevel");
+
+    area->show("toplevel");
     
     this->setContentSize(CCSize(w,BUTTON_AREA_HEIGHT));
     this->logo->setZOrder(1);
     logo->setPosition(an);
     logo->setScale(0.4);
     this->setPositionX(0);
-    this->addChild(logo);
+    auto me = CCMenu::createWithItem(logo);
+    me->setPosition(ccp(0,0));
+    this->addChild(me);
 
     this->ignoreAnchorPointForPosition(false);
     return true;

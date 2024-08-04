@@ -1,6 +1,6 @@
 #pragma once
 // file in date ordee
-#include "Geode/Geode.hpp"
+#include <Geode/Geode.hpp>
 #include <cmath>
 #include <cstddef>
 using namespace geode::prelude;
@@ -20,13 +20,12 @@ CCRect boundingBoxFromContentSize(CCNode* node);
 CCRect flipRect(CCRect rect);
 
 #define create_class(classname, initfunc, ...) \
-    classname* ret = new classname(); \
-    if (ret && ret->initfunc(__VA_ARGS__)) { \
-      ret->CCObject::autorelease(); \
-    } else { \
-      delete ret; \
-    } \
-\
+    classname* ret = new classname();          \
+    if (ret && ret->initfunc(__VA_ARGS__)) {   \
+      ret->autorelease();                      \
+    } else {                                   \
+      CC_SAFE_RELEASE_NULL(ret);               \
+    };                                         \
     return ret
 
 #define degreeToRadius(deg) deg/360*M_PI
@@ -56,3 +55,6 @@ ParentType* getParentOfType(CCNode* node){
   }
   return nullptr;
 }
+
+float uiWidthToGL(float length);
+float uiHeightToGL(float length);

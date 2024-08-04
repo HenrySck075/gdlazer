@@ -16,6 +16,7 @@
 //#include "game/graphics/containers/beatsync/BeatDetector.hpp"
 #include "game/graphics/containers/beatsync/BeatEvent.hpp"
 #include "utils.hpp"
+#include "game/OsuGame.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
@@ -155,15 +156,13 @@ class $modify(MyMenuLayer, MenuLayer) {
 		PopupDialog* b = PopupDialog::createSimpleDialog(
 			"Are you sure you want to exit GD?",
 			"Last chance to turn back",
-			"my mom called me for dinner",
-			"clicked the wrong button mb", [this](CCNode* s) {this->endGame(); }
+			"lemme out i need to take a bath",
+			"nvm the 20-20-20 rule sucks", [this](CCNode* s) {this->endGame(); }
 		);
 		b->show();
 	}
 	void onMyButton2(CCObject*) {
-		auto the = CCScene::create();
-		the->addChild(MainMenu::create(false));
-		CCDirector::sharedDirector()->pushScene(the);
+		CCDirector::sharedDirector()->pushScene(OsuGame::create());
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
@@ -187,6 +186,7 @@ class $modify(CCEGLView) {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 			m_click = true;
+			MouseEvent(ccp(-4, -4)).post();
 			return;
 		}
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
@@ -269,3 +269,26 @@ class $modify(FMODAudioEngine) {
 	}
 };
 */
+
+
+#include <Geode/modify/CCNodeRGBA.hpp>
+class $modify(CCNodeRGBA) {
+	virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
+		_displayedOpacity = _realOpacity * parentOpacity/255.0;
+		
+		if (_cascadeOpacityEnabled)
+		{
+			CCObject* pObj;
+			CCARRAY_FOREACH(m_pChildren, pObj)
+			{
+				CCRGBAProtocol* item = dynamic_cast<CCRGBAProtocol*>(pObj);
+				if (item)
+				{
+					CCBool* _b = static_cast<CCBool*>(dynamic_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+					
+					if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
+				}
+			}
+		}
+	}
+};

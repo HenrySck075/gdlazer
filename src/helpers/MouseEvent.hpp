@@ -20,24 +20,29 @@ public:
 };
 
 enum MouseType {
-    Enter, Exit, Click, Move
+    Enter, Exit, Click, MouseDown, MouseUp, Move
 };
 
 class MouseFilter : public EventFilter<MouseEvent> {
 protected:
     bool m_entered = false;
     CCNode* m_target;
-    bool m_keepPropangating;
+    bool m_keepPropagating;
 public:
 
     using Callback = bool(MouseType, CCPoint);
 
     ListenerResult handle(MiniFunction<Callback> fn, MouseEvent* event);
-    MouseFilter(CCNode* target, bool keepPropangating) {
+    MouseFilter(CCNode* target, bool keepPropagating) {
         m_target = target;
-        m_keepPropangating = keepPropangating;
+        auto j = static_cast<CCBool*>(m_target->getUserObject("clicking"_spr));
+        if (j == nullptr) {
+            m_target->setUserObject("clicking"_spr, CCBool::create(false));
+        }
+        m_keepPropagating = keepPropagating;
         //log::debug("[MouseFilter]: {} | {}", CCDirector::sharedDirector()->getVisibleSize(), CCDirector::sharedDirector()->getWinSizeInPixels());
     };
 };
+
 
 #endif

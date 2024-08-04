@@ -1,6 +1,7 @@
 #include "PopupDialogButton.hpp"
 #include "../../../utils.hpp"
 #include "../../graphics/ui/deco/Triangles.hpp"
+#include "../../../helpers/CustomActions.hpp"
 
 PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
     auto ret = new PopupDialogButton();
@@ -17,7 +18,6 @@ PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color,
 bool PopupDialogButton::init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
     m_color = color;
     this->setZOrder(3);
-
 
     auto d = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
     if (d!=nullptr) {
@@ -62,7 +62,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     this->setCascadeOpacityEnabled(true);
 
-    ButtonBase::init(clickSfx, clickCb, this);
+    CCMenuItemHover::init(clickSfx, clickCb, this);
 
     return true;
 
@@ -109,13 +109,56 @@ void PopupDialogButton::setParent(CCNode* parent) {
 void PopupDialogButton::onMouseEnter() {
     if (!getHoverEnabled()) return;
     FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
-    this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f,m_pParent->getParent()->getContentWidth()*0.9, height)));
-    this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
-    this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeIn::create(0.1f)));
+    this->getChildByID("dialogbutton-background")->runAction(
+        CCEaseOutQuint::create(
+            CCResizeTo::create(
+                0.1f,
+                m_pParent->getParent()->getContentWidth()*hover_width, 
+                height
+            )
+        )
+    );
+    #define gradAct CCEaseOutQuint::create(CCFadeOut::create(0.1f))
+    this->getChildByID("gradientLeft")->runAction(gradAct);
+    this->getChildByID("gradientRight")->runAction(gradAct);
+    #undef gradAct
 }
 void PopupDialogButton::onMouseExit() {
     if (!getHoverEnabled()) return;
-    this->getChildByID("dialogbutton-background")->runAction(CCEaseOutQuint(CCResizeTo::create(0.1f, m_pParent->getParent()->getContentWidth()*0.8,height)));
-    this->getChildByID("gradientLeft")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
-    this->getChildByID("gradientRight")->runAction(CCEaseOutQuint(CCFadeOut::create(0.1f)));
+    this->getChildByID("dialogbutton-background")->runAction(
+        CCEaseOutQuint::create(
+            CCResizeTo::create(
+                0.1f, 
+                m_pParent->getParent()->getContentWidth()*idle_width,
+                height
+            )
+        )
+    );
+    #define gradAct CCEaseOutQuint::create(CCFadeOut::create(0.1f))
+    this->getChildByID("gradientLeft")->runAction(gradAct);
+    this->getChildByID("gradientRight")->runAction(gradAct);
+    #undef gradAct
+}
+void PopupDialogButton::onMouseDown() {
+    this->getChildByID("dialogbutton-background")->runAction(
+        CCEaseOutQuad::create(
+            CCResizeTo::create(
+                click_duration*4, 
+                m_pParent->getParent()->getContentWidth()*hover_width*0.98f,
+                height
+            )
+        )
+    );
+}
+void PopupDialogButton::onMouseUp() {
+    this->getChildByID("dialogbutton-background")->runAction(
+        CCEaseIn::create(
+            CCResizeTo::create(
+                click_duration, 
+                m_pParent->getParent()->getContentWidth()*hover_width,
+                height
+            ),
+            1
+        )
+    );
 }

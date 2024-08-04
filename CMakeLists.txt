@@ -21,6 +21,8 @@ src/framework/graphics/color/ColorInfo.hpp
 src/framework/utils/IInterpolable.hpp
 src/framework/utils/Interpolation.cpp
 src/framework/utils/Interpolation.hpp
+src/game/OsuGame.cpp
+src/game/OsuGame.hpp
 src/game/beatmaps/BeatmapOnlineStatus.hpp
 src/game/graphics/CCResizableSprite.cpp
 src/game/graphics/CCResizableSprite.hpp
@@ -34,10 +36,8 @@ src/game/graphics/containers/SizeReactiveContainer.cpp
 src/game/graphics/containers/WaveContainer.cpp
 src/game/graphics/containers/WaveContainer.hpp
 src/game/graphics/containers/beatsync/BeatEvent.hpp
-src/game/graphics/ui/ButtonBase.cpp
-src/game/graphics/ui/ButtonBase.hpp
-src/game/graphics/ui/CCNodeHover.cpp
-src/game/graphics/ui/CCNodeHover.hpp
+src/game/graphics/ui/CCMenuItemHover.cpp
+src/game/graphics/ui/CCMenuItemHover.hpp
 src/game/graphics/ui/OsuText.hpp
 src/game/graphics/ui/deco/Triangles.cpp
 src/game/graphics/ui/deco/Triangles.hpp
@@ -48,6 +48,8 @@ src/game/overlays/dialog/PopupDialog.cpp
 src/game/overlays/dialog/PopupDialog.hpp
 src/game/overlays/dialog/PopupDialogButton.cpp
 src/game/overlays/dialog/PopupDialogButton.hpp
+src/game/overlays/toolbar/Toolbar.cpp
+src/game/overlays/toolbar/Toolbar.hpp
 src/game/rulesets/mods/ModType.hpp
 src/game/scoring/HitResult.hpp
 src/game/scoring/RankingTier.hpp
@@ -86,7 +88,9 @@ else()
 endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
-
+if(MSVC)
+  #target_compile_options(${PROJECT_NAME} PUBLIC "/fsanitize=address")
+endif()
 # android
 # target_link_libraries(${PROJECT_NAME} -L/data/data/com.termux/files/usr/lib/libGLESv2.so.2)
 

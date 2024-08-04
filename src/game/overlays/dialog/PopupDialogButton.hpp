@@ -1,26 +1,35 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
-#include "../../graphics/ui/ButtonBase.hpp"
+#include "../../graphics/ui/CCMenuItemHover.hpp"
+#include "../../../helpers/CustomActions.hpp"
 
 using namespace geode::prelude;
 
-class PopupDialogButton : public ButtonBase {
+class PopupDialogButton : public CCMenuItemHover {
 private:
 
-	float height = 16;
-	ccColor3B m_color;
-	const char* m_sfx;
+    const float idle_width = 0.8f;
+    const float hover_width = 0.9f;
 
-	void onMouseEnter() override;
-	void onMouseExit() override;
-	bool init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
+    const float hover_duration = 0.3f;
+    const float click_duration = 0.2f;
 
+    float height = 16;
+    ccColor3B m_color;
+    const char* m_sfx;
+
+    void onMouseEnter() override;
+    void onMouseExit() override;
+    bool init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
+    void onMouseDown() override;
+    void onMouseUp() override;
+    void onClick() override {};
 public:
-	void setOpacity(GLubyte opacity) override;
-	void setContentSize(const CCSize& size) override;
-	static PopupDialogButton* create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
-	void setContentHeight(float height);
-	void setParent(CCNode* parent) override;
+    void setOpacity(GLubyte opacity) override;
+    void setContentSize(const CCSize& size) override;
+    static PopupDialogButton* create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
+    void setContentHeight(float height);
+    void setParent(CCNode* parent) override;
 };
 

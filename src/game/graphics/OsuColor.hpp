@@ -20,7 +20,8 @@ struct GradientPoint {
   Color4 color;
 };
 
-class Osucolor {
+class OsuColor {
+public:
     static Color4 Gray(GLubyte amt) {return Color4(amt, amt, amt, 255);};
     Color4 SampleFromLinearGradient(std::vector<GradientPoint> gradient, float point)
         {
@@ -264,8 +265,8 @@ class Osucolor {
         return Gray(brightness > 0.5f ? 0.2f : 0.9f);
     }
 
-    Color4 TeamcolorRed = Color4::fromHex("AA1414");
-    Color4 TeamcolorBlue = Color4::fromHex("1462AA");
+    Color4 TeamColorRed = Color4::fromHex("AA1414");
+    Color4 TeamColorBlue = Color4::fromHex("1462AA");
 
     // See https://github.com/ppy/osu-web/blob/master/resources/assets/less/colors.less
     Color4 PurpleLighter = Color4::fromHex("eeeeff");

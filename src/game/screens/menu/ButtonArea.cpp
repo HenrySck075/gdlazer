@@ -1,7 +1,10 @@
+// compilers are happy, im not
+
 #include "ButtonArea.hpp"
 #include "../../../helpers/CustomActions.hpp"
 #include "Geode/loader/Log.hpp"
 #include <Geode/utils/ranges.hpp>
+#include "ButtonConstants.hpp"
 
 bool ButtonArea::init(const CCPoint& anchorPos) {
     anchorPosition = anchorPos;
@@ -16,8 +19,8 @@ void ButtonArea::setParent(CCNode* parent) {
     this->setPosition(parent->getContentSize()/2);
 }
 
-void ButtonArea::constructButtons(std::vector<MainMenuButton*> buttons, std::string tag) {
-    auto b = CCLayer::create();
+void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
+    auto b = CCMenu::create();
     auto gap = ccp(20,0);
     b->ignoreAnchorPointForPosition(true);
     b->setAnchorPoint(ccp(0,0.5));
@@ -29,9 +32,9 @@ void ButtonArea::constructButtons(std::vector<MainMenuButton*> buttons, std::str
         buttons[i]->setZOrder(buttonsCount-i);
     };
     b->updateLayout();
-    b->setID(tag+"_2");
+    b->setTag(2);
     
-    auto t = CCLayer::create();
+    auto t = CCMenu::create();
     t->ignoreAnchorPointForPosition(false);
     t->setAnchorPoint(ccp(1,0.5));
     t->setPosition(anchorPosition-gap);
@@ -39,79 +42,158 @@ void ButtonArea::constructButtons(std::vector<MainMenuButton*> buttons, std::str
     buttons[0]->setAnchorPoint(ccp(1,0.5));
     t->setLayout(RowLayout::create()->setGap(-1)->setAutoScale(false)->setAxisAlignment(AxisAlignment::End)->setAxisReverse(true));
     t->updateLayout();
-    t->setID(tag+"_1");
+    t->setTag(1);
 
-    std::tuple<CCLayer*, CCLayer*> j = std::make_tuple(t,b);
-        buttonsMenus[tag] = j;
-        _buttons[tag] = buttons;
-
-    if (buttonsMenus.size() == 1) {show(tag);}
+    // root node
+    auto j = CCLayer::create();
+    j->addChild(t);
+    j->addChild(b);
+    j->setID("buttonarea_"+tag);
+    buttonsMenus[tag] = j;
+    _buttons[tag] = buttons.inner();
+    log::info("[ButtonArea]: Button menu \"{}\" registered.", tag);
 }
 
 void ButtonArea::show(std::string tag) {
     auto _cur = getCurrent();
+    log::debug("[ButtonArea]: Current menu: {}", _cur);
+    int shownIndex, index;
+    if (_cur.has_value()) {
     // just for comparison
-    auto shownIndex = ranges::indexOf(tagsStack, [_cur](std::string t){return t==_cur;}).value_or(-1);
-    auto index = ranges::indexOf(tagsStack, [tag](std::string t){return t==tag;}).value_or(-1);
-    if (index==-1) {
-        if (buttonsMenus.find(tag)==buttonsMenus.end()) {
-            log::error("[ButtonArea]: \"{}\" is not a registered menu.", tag);
-            return;
+        shownIndex = ranges::indexOf(tagsStack, [_cur](std::string t){return t==_cur;}).value_or(-1);
+        index = ranges::indexOf(tagsStack, [tag](std::string t){return t==tag;}).value_or(-1);
+        if (index==-1) {
+            if (!buttonsMenus.contains(tag)) {
+                log::error("[ButtonArea]: \"{}\" is not a registered menu.", tag);
+                return;
+            }
+            index = tagsStack.size();
         }
-        index = tagsStack.size();
-        tagsStack.push_back(tag);
+        if (shownIndex != -1) hide(_cur.value(), shownIndex>index);
+        if (shownIndex==index) return;
+    } else {
+        shownIndex = 0;
+        index = 1;
     }
-    if (shownIndex != -1) hide(_cur);
-    if (shownIndex==index) return;
-    
     // expand
-    auto j = _buttons[tag];
+    CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
+    /*
+    auto menuLayout = buttonsMenus[tag]->getLayout();
+    buttonsMenus[tag]->setLayout(nullptr);
+    */
+    log::debug("[ButtonArea]: showing tag {} by {}", tag, shownIndex<index?"expanding from the logo":"going from offscreen");
+
     if (shownIndex<index) {
         for (int idx = 0; idx<j.size(); idx++) {
             auto i = j[idx];
+            if (i->retainCount() == 0) {
+                log::debug("[ButtonArea]: the button at index {} has nothing retaining gg", idx);
+            }
             auto pos = i->getPosition();
-            if (idx!=0) {i->setPositionX(-15);}
-            else {i->setPositionX(pos.x+15);}
             i->runAction(CCSequence::createWithTwoActions(
-                CCEaseSineOut::create(CCSpawn::createWithTwoActions(
-                    CCMoveTo::create(0.25, pos),
-                    CCFadeIn::create(0.25)
+                EasingEffect::create(CCSpawn::createWithTwoActions(
+                    CCMoveFromTo::create(animationSpeed, CCPoint(idx!=0?-15:pos.x+15,i->getPositionY()), pos),
+                    CCFadeIn::create(animationSpeed)
                 )),
-                CCCallFuncL::create([i](){i->setHoverEnabled(true);})
+                CCCallFuncL::create([i](){
+                    i->setHoverEnabled(true);
+                    i->setClickEnabled(true);
+                    i->askForUpdate(true);
+                })
             ));
         }
-        this->addChild(get<0>(buttonsMenus[tag]));
-        this->addChild(get<1>(buttonsMenus[tag]));
+        this->addChild(buttonsMenus[tag]);
+        tagsStack.push_back(tag);
     }
     // return
     else {
         for (int idx = 0; idx<j.size(); idx++) {
             auto i = j[idx];
             auto pos = i->getPosition();
-            if (idx!=0) {i->setPositionX(-15);}
-            else {i->setPositionX(pos.x+15);}
             i->runAction(CCSequence::createWithTwoActions(
-                CCEaseSineOut::create(CCSpawn::createWithTwoActions(
-                    CCMoveTo::create(0.25, pos),
-                    CCFadeIn::create(0.25)
+                EasingEffect::create(CCSpawn::createWithTwoActions(
+                    CCResizeTo::create(animationSpeed, BUTTON_WIDTH, BUTTON_AREA_HEIGHT),
+                    CCFadeIn::create(animationSpeed)
                 )),
-                CCCallFuncL::create([i](){i->setHoverEnabled(true);})
+                CCCallFuncL::create([i](){
+                    i->setHoverEnabled(true);
+                    i->setClickEnabled(true);
+                    i->askForUpdate(true);
+                })
             ));
         }
         // the node is still there so we dont need to add them
         // however
+        auto gap = ccp(20,0);
+
+        auto btnLayer = buttonsMenus[tag];
+        auto btnL1 = btnLayer->getChildByTag(1);
+        auto btnL2 = btnLayer->getChildByTag(2);
+        btnL1->runAction(EasingEffect::create(
+            CCMoveTo::create(animationSpeed, anchorPosition-gap)
+        ));
+        btnL2->runAction(EasingEffect::create(
+            CCMoveTo::create(animationSpeed, anchorPosition+gap)
+        ));
+
         while (tagsStack.back()!=tag) {tagsStack.pop_back();}
     }
 }
 
-void ButtonArea::hide(std::string tag) {
-    for (auto* i : _buttons[tag]) {
-        auto pos = i->getPosition();
-        i->runAction(CCEaseSineOut::create(
-            CCSpawn::createWithTwoActions(
-                CCMoveTo::create(0.5, anchorPosition),
-                CCFadeOut::create(0.5)
-            )
-        ));
+void ButtonArea::hide(std::string tag, bool collapse) {
+    if (buttonsMenus.contains(tag)) {
+        log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
+        CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
+        if (collapse) {
+            for (int idx = 0; idx<j.size(); idx++) {
+                auto i = j[idx];
+                i->setHoverEnabled(false);
+                i->setClickEnabled(false);
+                auto pos = i->getPosition();
+                i->runAction(
+                    EasingEffect::create(
+                        CCSpawn::createWithTwoActions(
+                            CCMoveTo::create(animationSpeed, ccp(idx!=0?-15:pos.x+15,pos.y)),
+                            CCFadeOut::create(animationSpeed)
+                        )
+                    )
+                );
+            }
+            this->runAction(
+                CCSequence::createWithTwoActions(
+                    CCDelayTime::create(animationSpeed),
+                    CCCallFuncL::create([this,tag](){
+                        buttonsMenus[tag]->getChildByTag(1)->updateLayout();
+                        buttonsMenus[tag]->getChildByTag(2)->updateLayout();
+                        this->removeChild(buttonsMenus[tag]);
+                    })
+                )
+            );
+        } else {
+            for (int idx = 0; idx<j.size(); idx++) {
+                auto i = j[idx];
+                i->setHoverEnabled(false);
+                i->setClickEnabled(false);
+                auto pos = i->getPosition();
+                i->runAction(
+                    EasingEffect::create(
+                        CCSpawn::createWithTwoActions(
+                            CCResizeTo::create(animationSpeed, BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT),
+                            CCFadeOut::create(animationSpeed)
+                        )
+                    )
+                );
+            };
+            auto btnLayer = buttonsMenus[tag];
+            auto btnL1 = btnLayer->getChildByTag(1);
+            auto btnL2 = btnLayer->getChildByTag(2);
+            auto w = CCDirector::sharedDirector()->getWinSize().width;
+            btnL1->runAction(EasingEffect::create(
+                CCMoveTo::create(animationSpeed, ccp(0,btnL1->getPositionY()))
+            ));
+            btnL2->runAction(EasingEffect::create(
+                CCMoveTo::create(animationSpeed, ccp(w,btnL2->getPositionY()))
+            ));
+        }
     }
 }

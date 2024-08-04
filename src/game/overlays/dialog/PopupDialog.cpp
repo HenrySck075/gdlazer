@@ -1,6 +1,7 @@
 #include "PopupDialog.hpp"
 #include "../../graphics/ui/deco/Triangles.hpp"
 
+
 float PopupDialog::width = 250.f;
 float PopupDialog::height = 230.f;
 
@@ -48,7 +49,7 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
-    auto btnLayer = CCLayerRGBA::create();
+    auto btnLayer = CCMenu::create();
     btnLayer->setLayout(
         ColumnLayout::create()
         ->setAutoScale(false)
@@ -60,8 +61,13 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
     btnLayer->setPosition(ccp(contentSize.width/2,55));
     btnLayer->setCascadeOpacityEnabled(true);
 
-    for (auto& btn : buttons) { btnLayer->addChild(btn); }
+    for (auto& btn : buttons) { 
+        btn->setHoverEnabled(false);
+        btn->setClickEnabled(false);
+        btnLayer->addChild(btn); 
+    }
     btnLayer->updateLayout();
+    btnLayer->setID("buttonLayer");
     m_mainLayer->addChild(btnLayer);
 
     m_bodyLayout->updateLayout();
@@ -81,8 +87,17 @@ void PopupDialog::show() {
     m_buttonMenu->setVisible(false);
 
     m_mainLayer->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
-    m_bgSprite->runAction(CCEaseOutQuint(CCFadeIn::create(0.2)));
+    m_bgSprite->runAction(CCEaseOutQuint::create(CCFadeIn::create(0.2)));
 
+    for (auto* btn : CCArrayExt<PopupDialogButton*>(m_mainLayer->getChildByID("buttonLayer")->getChildren())) {
+        btn->runAction(CCSequence::createWithTwoActions(
+            CCDelayTime::create(0.75),
+            CCCallFuncL::create([btn]() {
+                btn->setHoverEnabled(true);
+                btn->setClickEnabled(true);
+            })
+        ));
+    }
     auto en = FMODAudioEngine::sharedEngine();
     en->playEffect("dialog-pop-in.wav"_spr);
     volume = en->getBackgroundMusicVolume();
@@ -97,15 +112,15 @@ void PopupDialog::hide() {
     hiding = true;
     //this->setKeypadEnabled(false);
     //this->setTouchEnabled(false);
-    log::debug("[PopupDialog]: popup your dialog: {}", typeid(this).name());
-
-    CCObject* obj;
-    auto gay = m_mainLayer->getChildren();
-    CCARRAY_FOREACH(gay, obj) {
-        static_cast<CCNode*>(obj)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
+    for (auto* btn : CCArrayExt<PopupDialogButton*>(m_mainLayer->getChildByID("buttonLayer")->getChildren())) {
+        btn->setHoverEnabled(false);
+        btn->setClickEnabled(false);
+    }
+    for (auto* obj : CCArrayExt<CCNode*>(m_mainLayer->getChildren())) {
+        obj->runAction(CCEaseOutQuint::create(CCFadeOut::create(0.4)));
     }
     m_mainLayer->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
-    getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(CCEaseOutQuint(CCFadeOut::create(0.4)));
+    getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(CCEaseOutQuint::create(CCFadeOut::create(0.4)));
     
     auto en = FMODAudioEngine::sharedEngine();
     en->playEffect("dialog-pop-out.wav"_spr);

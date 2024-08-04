@@ -5,12 +5,19 @@
 
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
-    ButtonBase::init(sampleClick, clickAct, this);
-    ButtonBase::setContentSize(m);
+    m_color = color;
+    CCMenuItemHover::init(sampleClick, clickAct, this);
+    CCMenuItemHover::setContentSize(m);
     //this->addListener(reactive_listener(updateReactive));
 
+    std::transform(text.begin(), text.end(), text.begin(), [](char in) -> char {
+        if (in <= 'Z' && in >= 'A')
+            return in - ('Z' - 'z');
+        return in;
+    });
     this->activationKeys = activa;
-    auto the = CCLayer::create();
+    auto the = CCLayerRGBA::create();
+    the->setCascadeOpacityEnabled(true);
     the->setID("ui");
     symbol->setScale(0.3);
     the->setLayout(ColumnLayout::create()->setGap(3)->setAutoScale(false)->setAxisReverse(true));
@@ -18,31 +25,43 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     the->setAnchorPoint(ccp(0.5,0.5));
     the->setPosition(m/2);
     auto label = OsuText(text.c_str(), FontType::Regular);
-    label->setScale(0.4);
+    label->setScale(0.3);
     the->addChild(label);
     the->updateLayout();
-    auto s9 = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
-    s9->setID("background");
-    s9->setColor(color);
-    s9->setSkewX(7);
-    s9->setContentSize(m);
-    s9->setAnchorPoint(ccp(0.5,0.5));
-    s9->setPosition(m/2);
+    
+    #define bgSetup(var, id, col)                                           \
+    auto var = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr); \
+    var->setID(id);                                                         \
+    var->setColor(col);                                                     \
+    var->setSkewX(7);                                                       \
+    var->setContentSize(m);                                                 \
+    var->setAnchorPoint(CCPoint(0.5,0.5));                                  \
+    var->setPosition(m/2)
+
+    bgSetup(s9, "background", color);
+    bgSetup(s9hover, "hover", ccc3(255,255,255));
+    s9hover->setUserObject("opacityCascadeBlacklist", CCBool::create(true));
+    s9hover->setOpacity(0);
     this->addChild(s9);
+    this->addChild(s9hover);
     this->addChild(the);
     
-    setCascadeOpacityEnabled(true);
     this->setAnchorPoint(ccp(0.5,0.5));
+    this->setCascadeOpacityEnabled(true);
+    setHoverEnabled(false);
+    setClickEnabled(false);
     return true;
 }
 
 
 void MainMenuButton::setContentSize(const CCSize& s) {
-    ButtonBase::setContentSize(s);
+    CCMenuItemHover::setContentSize(s);
     this->getChildByID("background")->setContentSize(s);
     this->getChildByID("background")->setPosition(s/2);
+    this->getChildByID("hover")->setContentSize(s);
+    this->getChildByID("hover")->setPosition(s/2);
     this->getChildByID("ui")->setPosition(s/2);
-    m_pParent->updateLayout();
+    if (m_askForUpdate) m_pParent->updateLayout();
 }
 
 void MainMenuButton::onMouseEnter() {
@@ -54,5 +73,26 @@ void MainMenuButton::onMouseEnter() {
 void MainMenuButton::onMouseExit() {
     this->runAction(CCEaseElasticOut::create(
         CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
+    ));
+}
+void MainMenuButton::onMouseDown() {
+    auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
+    n->runAction(CCEaseOutQuint::create(
+        CCFadeTo::create(1,255*0.1)
+    ));
+}
+void MainMenuButton::onMouseUp() {
+    //if (!static_cast<CCBool*>(this->getUserObject("clicking"_spr))) return;
+    auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
+    n->runAction(CCEaseOutQuint::create(
+        CCFadeTo::create(1,0)
+    ));
+}
+void MainMenuButton::onClick() {
+    auto node = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
+    node->stopAllActions();
+    node->setOpacity(255*0.9);
+    node->runAction(CCEaseExponentialOut::create(
+        CCFadeTo::create(0.8,0)
     ));
 }

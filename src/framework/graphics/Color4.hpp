@@ -12,12 +12,8 @@ struct Color4 {
   int a;
 
   Color4 clamp() {
-#define c(v) v=v<0?0:(v>255?255:v)
-    c(r);
-    c(g);
-    c(b);
-    c(a);
-    return {r,g,b,a};
+#define c(v) std::max(std::min(v,255),0)
+    return {c(r),c(g),c(b),c(a)};
   }
   Color4 lighten(int amount) {
     int scalar = std::max(255,255+amount);
@@ -67,6 +63,10 @@ struct Color4 {
     return {r,g,b,a};
   }
 
+  Color4 operator+(Color4 c) {
+    return Color4(r+c.r,g+c.g,b+c.b,a+c.a).clamp();
+  }
+
 
   // convert to cocos2d color because we're making this for cocos2d ofc
   operator ccColor3B() const {
@@ -77,6 +77,21 @@ struct Color4 {
   }
   operator ccColor4F() const {
     return ccc4f(r/255,g/255,b/255,a/255);
+  }
+
+  Color4(int red, int green, int blue, int alpha) : r(red), g(green), b(blue), a(alpha) {};
+  Color4(ccColor3B c) : r(c.r), g(c.g), b(c.b), a(255) {};
+  Color4(ccColor4B c) : r(c.r), g(c.g), b(c.b), a(c.a) {};
+
+  // @note my addition
+  // currently doing additive
+  Color4 blend(Color4 c) {
+    return Color4(
+      r+(int)(c.r*(c.a/255)), 
+      g+(int)(c.g*(c.a/255)), 
+      b+(int)(c.b*(c.a/255)), 
+      a+c.a
+    ).clamp();
   }
 };
 struct Color4Defined {

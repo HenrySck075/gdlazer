@@ -59,4 +59,11 @@ bool isType(ComparingType obj) {
   return std::is_same_v<TargetType, ComparingType>;
 };
 
-
+float uiWidthToGL(float length) {
+  auto d = CCDirector::sharedDirector();
+  return length / d->getOpenGLView()->getDisplaySize().width * d->getWinSize().width;
+}
+float uiHeightToGL(float length) {
+  auto d = CCDirector::sharedDirector();
+  return length / d->getOpenGLView()->getDisplaySize().height * d->getWinSize().height;
+}

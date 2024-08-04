@@ -5,7 +5,19 @@ using namespace geode::prelude;
 
 std::string unicode_to_utf8(int unicode);
 
-#define iconFont(name, charid, fontname) CCLabelBMFont* name = CCLabelBMFont::create(unicode_to_utf8(charid).c_str(),fontname)
+// j
+struct IconConstructor {
+    std::string glyphChar;
+    std::string fontName;
+
+    IconConstructor(std::string glyph, std::string font) : glyphChar(glyph), fontName(font) {};
+
+    operator CCLabelBMFont*() {
+        return CCLabelBMFont::create(glyphChar.c_str(), fontName.c_str());
+    }
+};
+
+#define iconFont(name, charid, fontname) IconConstructor name = IconConstructor{unicode_to_utf8(charid).c_str(),fontname}
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)
 #define iconOsuIcon(name, charid) iconFont(name,charid,"osuIcon.fnt"_spr)
 #define iconOsuEditor(name, charid) iconFont(name,charid,"osuEditor.fnt"_spr)
@@ -126,10 +138,10 @@ struct OsuIcon {
     iconOsuIcon(Notification, 58039);
     iconOsuIcon(Online, 58040);
     iconOsuIcon(Play, 58041);
-    iconOsuIcon(Player, 58042);
-    iconOsuIcon(PlayerFollow, 58043);
-    iconOsuIcon(Prev, 58044);
-    iconOsuIcon(PrevCircle, 58045);
+    iconOsuIcon(Player, 58043);
+    iconOsuIcon(PlayerFollow, 58042);
+    iconOsuIcon(Prev, 58045);
+    iconOsuIcon(PrevCircle, 58044);
     iconOsuIcon(Ranking, 58046);
     iconOsuIcon(Rulesets, 58047);
     iconOsuIcon(Search, 58048);

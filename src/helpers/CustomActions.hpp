@@ -1,7 +1,7 @@
-#ifndef __osu_callfunc_percentage__
-#define __osu_callfunc_percentage__
+#pragma once
 
 #include <Geode/Geode.hpp>
+#include "../utils.hpp"
 
 using namespace geode::prelude;
 
@@ -82,8 +82,18 @@ protected:
     float m_fDeltaY;
 };
 
-#define CCEaseOutQuad(action) CCEaseOut::create(action, 4)
-#define CCEaseOutQuint(action) CCEaseOut::create(action, 5)
+class CCEaseOutQuad : public CCEaseOut {
+public:
+    static CCEaseOutQuad* create(CCActionInterval* action) {
+        create_class(CCEaseOutQuad, initWithAction, action, 4);
+    }
+};
+class CCEaseOutQuint : public CCEaseOut {
+public:
+    static CCEaseOutQuint* create(CCActionInterval* action) {
+        create_class(CCEaseOutQuint, initWithAction, action, 5);
+    }
+};
 
 typedef std::function<void()> SEL_CallFuncL;
 
@@ -132,4 +142,33 @@ protected:
 
 };
 
-#endif
+// MoveFromTo
+
+/// @brief CCMoveTo but with the starting position manually defined.
+///
+/// Used in ButtonArea because idk how the heck did i break it
+class CCMoveFromTo : public CCMoveTo {
+public:
+    bool initWithDuration(float duration, const CCPoint& startPos, const CCPoint& endPos) {
+        if (!CCMoveTo::initWithDuration(duration, endPos)) return false;
+        m_startPosition = startPos;
+        return true;
+    };
+    static CCMoveFromTo* create(float duration, const CCPoint& startPos, const CCPoint& endPos) {
+        create_class(CCMoveFromTo, initWithDuration, duration, startPos, endPos);
+    }
+    void update(float t)
+    {
+        if (m_pTarget)
+        {
+            m_pTarget->setPosition(m_startPosition + (m_positionDelta * t));
+        }
+    }
+    void startWithTarget(CCNode *pTarget)
+    {
+        CCActionInterval::startWithTarget(pTarget);
+        m_previousPosition = m_startPosition;
+        m_positionDelta = ccpSub( m_endPosition, m_startPosition );
+        log::debug("[CCMoveFromTo]: target: {} | posDelta: {} | start: {} | end: {}", pTarget,m_positionDelta,m_startPosition,m_endPosition);
+    }
+};
