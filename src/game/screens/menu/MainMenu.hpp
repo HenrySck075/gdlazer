@@ -8,7 +8,7 @@
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer*;
 
-class MainMenu : public Node {
+class MainMenu : public Container {
 public:
 	float FADE_IN_DURATION = 300;
 

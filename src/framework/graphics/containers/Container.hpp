@@ -21,28 +21,32 @@ public:
 };
 
 /// @brief CCNode(Container) that implements local Event system (like javascript EventTarget)
-class Container : public CCNodeContainer {
+class Container : public CCLayer {
 private:
     using Callback = std::function<void(NodeEvent*)>;
     std::map<std::string, std::vector<Callback>> m_listeners;
 public:
     void addEventListener(std::string eventName, Callback listener);
     void removeEventListener(std::string eventName, Callback listener);
-    void dispatchEvent(ContainerEvent* event);
-    void dispatchToChild(ContainerEvent* event);
+    void dispatchEvent(NodeEvent* event);
+    void dispatchToChild(NodeEvent* event);
 
-
+    bool init() override {
+        auto e = CCLayer::init();
+        ignoreAnchorPointForPosition(false);
+        return e;
+    }
     // overrides
     void setContentSize(CCSize& const size) {
-        CCNodeContainer::setContentSize(size);
+        CCLayer::setContentSize(size);
         dispatchToChild(new NodeUIEvent("nodesizechanged"));
     }
     void setContentWidth(float width) {
-        CCNodeContainer::setContentWidth(width);
+        CCLayer::setContentWidth(width);
         dispatchToChild(new NodeUIEvent("nodesizechanged"));
     }
     void setContentHeight(float height) {
-        CCNodeContainer::setContentHeight(height);
+        CCLayer::setContentHeight(height);
         dispatchToChild(new NodeUIEvent("nodesizechanged"));
     }
 };
