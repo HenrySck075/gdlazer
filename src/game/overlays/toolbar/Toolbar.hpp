@@ -2,15 +2,13 @@
 
 #include <Geode/Geode.hpp>
 #include "../../../utils.hpp"
+#include "../../../framework/graphics/containers/Container.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "../../graphics/CCResizableSprite.hpp"
-#include <henrysck075.reactiveui/include/style.hpp>
-#include <henrysck075.reactiveui/include/enum.hpp>
 using namespace geode::prelude;
 
-class Toolbar : public CCLayer {
+class Toolbar : public Container {
 public:
-    Style* toolbarStyle;
     float const HEIGHT = 40;
     float const TOOLTIP_HEIGHT = 30;
 

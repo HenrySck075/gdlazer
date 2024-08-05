@@ -2,6 +2,7 @@
 
 #include <Geode/cocos/include/cocos2d.h>
 #include "../utils.hpp"
+#include "../framework/graphics/containers/Container.hpp"
 using namespace cocos2d;
 
 // widgets

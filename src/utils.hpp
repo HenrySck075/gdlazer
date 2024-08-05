@@ -56,5 +56,6 @@ ParentType* getParentOfType(CCNode* node){
   return nullptr;
 }
 
+
 float uiWidthToGL(float length);
 float uiHeightToGL(float length);

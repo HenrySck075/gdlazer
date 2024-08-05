@@ -5,7 +5,7 @@ class Container;
 // Event with event name (yea)
 //
 // For use in Node
-class NodeEvent : public Event {
+class NodeEvent {
 protected:
     std::string m_eventName = "";
 public:
@@ -15,4 +15,18 @@ public:
     void eventName(std::string newName) {m_eventName = newName;};
 
     friend class Container;
+};
+
+// wrapper for geode events
+//
+// event name is "geode_{classname}"
+template<is_event T>
+class GeodeEvent : public NodeEvent {
+private:
+    T m_event;
+public:
+    GeodeEvent(std::string name) = delete;
+    GeodeEvent(T event) : m_event(event) {
+        NodeEvent("geode_"+typeid(event).name());
+    }
 };
