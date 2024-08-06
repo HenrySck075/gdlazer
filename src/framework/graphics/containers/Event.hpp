@@ -9,7 +9,9 @@ class NodeEvent {
 protected:
     std::string m_eventName = "";
 public:
-    NodeEvent() : m_eventName(typeid(this).name()) {};
+    NodeEvent() {
+        throw "kill yourself";
+    }; // provide a name you moron
     NodeEvent(std::string name) : m_eventName(name) {};
     std::string eventName() {return m_eventName;};
     void eventName(std::string newName) {m_eventName = newName;};

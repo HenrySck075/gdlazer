@@ -17,28 +17,9 @@ private:
         return name;
     }
 public:
-    NodeUIEvent(std::string name) {
-        NodeEvent(validate(name));
-    };
+    NodeUIEvent(std::string name) : NodeEvent(validate(name)) {};
 };
 
-
-enum class ah {Left, Center, Right};
-enum class av {Top, Center, Bottom};
-
-std::map<Anchor, std::tuple<ah,av>> m_anchors = {
-    {Anchor::TopLeft, std::make_tuple(ah::Left, av::Top)},
-    {Anchor::Top, std::make_tuple(ah::Center, av::Top)},
-    {Anchor::TopRight, std::make_tuple(ah::Right, av::Top)},
-
-    {Anchor::Left, std::make_tuple(ah::Left, av::Center)},
-    {Anchor::Center, std::make_tuple(ah::Center, av::Center)},
-    {Anchor::Right, std::make_tuple(ah::Right, av::Center)},
-
-    {Anchor::BottomLeft, std::make_tuple(ah::Left, av::Bottom)},
-    {Anchor::Bottom, std::make_tuple(ah::Center, av::Bottom)},
-    {Anchor::BottomRight, std::make_tuple(ah::Right, av::Bottom)} 
-};
 
 
 enum class Unit {
@@ -54,6 +35,36 @@ enum class Unit {
 
 /// @brief CCLayer that implements local Event system (like javascript EventTarget) + some more shit
 class Container : public CCLayer {
+private:
+    enum class ah {Left, Center, Right};
+    enum class av {Top, Center, Bottom};
+
+    std::map<Anchor, std::pair<ah,av>> m_anchors = {
+        {Anchor::TopLeft, std::make_pair(ah::Left, av::Top)},
+        {Anchor::Top, std::make_pair(ah::Center, av::Top)},
+        {Anchor::TopRight, std::make_pair(ah::Right, av::Top)},
+
+        {Anchor::Left, std::make_pair(ah::Left, av::Center)},
+        {Anchor::Center, std::make_pair(ah::Center, av::Center)},
+        {Anchor::Right, std::make_pair(ah::Right, av::Center)},
+
+        {Anchor::BottomLeft, std::make_pair(ah::Left, av::Bottom)},
+        {Anchor::Bottom, std::make_pair(ah::Center, av::Bottom)},
+        {Anchor::BottomRight, std::make_pair(ah::Right, av::Bottom)} 
+    };
+    std::map<Anchor, std::string> m_anchorDebugLabel = {
+        {Anchor::TopLeft, "top left"},
+        {Anchor::Top, "top center"},
+        {Anchor::TopRight, "top right"},
+
+        {Anchor::Left, "center left"},
+        {Anchor::Center, "center*2"},
+        {Anchor::Right, "center right"},
+
+        {Anchor::BottomLeft, "bottom left"},
+        {Anchor::Bottom, "bottom center"},
+        {Anchor::BottomRight, "bottom right"} 
+    };
 protected:
     Anchor m_anchor = Anchor::BottomLeft;
     
@@ -61,15 +72,19 @@ protected:
     // @param unit The unit in question
     // @returns The value in OpenGL unit
     float processUnit(float value, Unit unit, bool width) {
+        if (m_pParent == nullptr && unit == Unit::Percent) {
+            // does not have a parent
+            return value;
+        }
         switch (unit) {
-            case Unit::OpenGL: return value;
+            case Unit::OpenGL: 
+                return value;
             case Unit::UIKit: 
-                // any value works
                 return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getDisplaySize().width); 
             case Unit::Viewport:
                 return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
             case Unit::Percent:
-                return value / 100 * (width ? m_pParent->getContentSize().width : m_pParent->getContentSize().height);
+                return value / 100 * (width ? m_pParent->getContentWidth() : m_pParent->getContentHeight());
         }
     }
 
@@ -83,6 +98,7 @@ private:
 
     // first: hori | second: verti
     std::pair<Unit, Unit> m_sizeUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
+    std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
     virtual void onParentSizeChanged();
 
 public:
@@ -94,13 +110,7 @@ public:
     // breaking change (not)
     void setLayout(Layout* l) {}
 
-    bool init() override {
-        auto e = CCLayer::init();
-        ignoreAnchorPointForPosition(false);
-
-        addEventListener("nodeSizeChanged", [this](NodeEvent*j){onParentSizeChanged();});
-        return e;
-    }
+    bool init() override;
 
     static Container* create() {
         create_class(Container, init);
@@ -110,7 +120,7 @@ public:
     auto getSizeUnits() {return m_sizeUnit;}
 
     // set a new content size while also providing the unit that will be parsed
-    void setContentSize(CCSize const& size, Unit sizeUnitHorizontal, Unit sizeUnitVertical) {
+    void setContentSizeWithUnit(CCSize const& size, Unit sizeUnitHorizontal, Unit sizeUnitVertical) {
         m_sizeUnit.first = sizeUnitHorizontal;
         m_sizeUnit.second = sizeUnitVertical;
         setContentSize(size);
@@ -120,19 +130,40 @@ public:
         m_size = size;
         auto unit = getSizeUnits();
         CCLayer::setContentSize(CCSize(
-            processUnit(size.width, unit.first, true),
-            processUnit(size.height, unit.second, false)
+            processUnit(size.width, m_sizeUnit.first, true),
+            processUnit(size.height,m_sizeUnit.second, false)
         ));
-        dispatchToChild(new NodeUIEvent("nodeSizeChanged"));
+        dispatchToChild(new NodeUIEvent("nodeLayoutUpdate"));
     }
     void setContentWidth(float width) {
         CCLayer::setContentWidth(width);
-        dispatchToChild(new NodeUIEvent("nodeSizeChanged"));
+        dispatchToChild(new NodeUIEvent("nodeLayoutUpdate"));
     }
     void setContentHeight(float height) {
         CCLayer::setContentHeight(height);
-        dispatchToChild(new NodeUIEvent("nodeSizeChanged"));
+        dispatchToChild(new NodeUIEvent("nodeLayoutUpdate"));
     }
+
+    void setPositionWithUnit(CCPoint const& position, Unit posUnitHorizontal, Unit posUnitVertical) {
+        m_positionUnit.first = posUnitHorizontal;
+        m_positionUnit.second = posUnitVertical;
+        setPosition(position);
+        dispatchEvent(new NodeUIEvent("nodeLayoutUpdated"));
+    }
+    void setPosition(CCPoint const& position) override {
+        m_position = position;
+        CCLayer::setPosition(CCPoint(
+            processUnit(position.x, m_positionUnit.first, true),
+            processUnit(position.y, m_positionUnit.second, false)
+        ));
+    }
+
+    void setParent(CCNode* parent) override {
+        CCLayer::setParent(parent);
+        log::debug("[Container]: im not fine.");
+        dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
+        setContentSizeWithUnit(m_size,m_sizeUnit.first,m_sizeUnit.second);
+    };
 };
 
 template<class T>
@@ -149,9 +180,14 @@ public:
     bool init(CCNode* node);
 
     void setContentSize(CCSize const& size) override {
-        m_node->setContentSize(size);
         Container::setContentSize(size);
+        m_node->setContentSize(getContentSize());
     }
 
     void dispatchToChild(NodeEvent* event) override;
+
+    ~ContainerNodeWrapper() {
+        m_node->release();
+        Container::~Container();
+    }
 };

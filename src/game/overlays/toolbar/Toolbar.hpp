@@ -15,5 +15,5 @@ public:
     static Toolbar* create() {
         create_class(Toolbar, init);
     }
-    bool init();
+    bool init() override;
 };
