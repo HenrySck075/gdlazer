@@ -12,7 +12,7 @@ class CCMenuItemHover : public CCMenuItem {
 private:
     ButtonCallback clickCallback;
     std::string clickSfx = "";
-    bool clickEnabled = true;
+    bool m_clickEnabled = true;
 	bool m_hoverEnabled = true;
 	EventListenerProtocol* m_listener;
 
@@ -35,8 +35,8 @@ public:
     /// <param name="clickCb">| the</param>
     /// <param name="self">| the node to be used as the clickCb parameter</param>
     bool init(std::string clickSfx, ButtonCallback clickCb, CCNode* self = nullptr);
-    void setClickEnabled(bool e) {clickEnabled = e;}
-    bool getClickEnabled() {return clickEnabled;}
+    void setClickEnabled(bool e) {m_clickEnabled = e;}
+    bool getClickEnabled() {return m_clickEnabled;}
     void setHoverEnabled(bool state) { 
 		m_hoverEnabled = state; 
 		if (!m_hoverEnabled) {onMouseExit();}
@@ -58,6 +58,7 @@ public:
     
     // redirecting functions
     void activate() override {
+        if (!m_clickEnabled) return;
         onClick();
         FMODAudioEngine::sharedEngine()->playEffect(clickSfx);
         clickCallback(this);
@@ -72,5 +73,10 @@ public:
         m_bSelected = false;
         onMouseUp();
     };
+
+    ~CCMenuItemHover() {
+        m_listener->disable();
+        CCMenuItem::~CCMenuItem();
+    }
 };
 

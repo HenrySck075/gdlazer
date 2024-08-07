@@ -4,10 +4,11 @@
 #include "../../../utils.hpp"
 #include "../../../framework/graphics/containers/Container.hpp"
 #include "../../graphics/OsuColor.hpp"
-#include "../../graphics/CCResizableSprite.hpp"
 using namespace geode::prelude;
 
 class Toolbar : public Container {
+private:
+    double const transition_time = 0.5;
 public:
     float const HEIGHT = 40;
     float const TOOLTIP_HEIGHT = 30;
@@ -16,4 +17,7 @@ public:
         create_class(Toolbar, init);
     }
     bool init() override;
+
+    void show();
+    void hide();
 };

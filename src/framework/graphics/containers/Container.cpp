@@ -2,10 +2,10 @@
 
 bool Container::init() {
     auto e = CCLayer::init();
+    addEventListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
 
-    addEventListener("nodeLayoutUpdate", [this](NodeEvent*j){onParentSizeChanged();});
     return e;
 }
 
@@ -42,40 +42,39 @@ void Container::dispatchToChild(NodeEvent* event) {
     }
 };
 
-void Container::onParentSizeChanged() {
+void Container::onLayoutUpdate() {
+    if (m_pParent == nullptr) return;
     CCPoint res = ccp(0,0);
     auto anchor = m_anchors[m_anchor];
+    auto openglPos = CCPoint(
+        processUnit(m_position.x,m_positionUnit.first,true),
+        processUnit(m_position.y,m_positionUnit.second,false)
+    );
+    log::debug("[Container]: OpenGL position: {}", openglPos);
     switch(anchor.first) {
         case ah::Left:
-            log::debug("left!");
-            res.x = m_position.x; 
+            res.x = openglPos.x; 
             break;
         case ah::Center:
-            log::debug("center!");
-            res.x = m_pParent->getContentSize().width/2+m_position.x; 
+            res.x = m_pParent->getContentSize().width/2+openglPos.x; 
             break;
         case ah::Right:
-            log::debug("right!");
-            res.x = m_pParent->getContentSize().width-m_position.x; 
+            res.x = m_pParent->getContentSize().width-openglPos.x; 
             break;
     };
     switch(anchor.second) {
         case av::Top:
-            log::debug("top!");
-            res.y = m_pParent->getContentHeight()-m_position.y; 
+            res.y = m_pParent->getContentHeight()-openglPos.y; 
             break;
         case av::Center:
-            log::debug("center(h)!");
-            res.y = m_pParent->getContentHeight()/2-m_position.y; 
+            res.y = m_pParent->getContentHeight()/2-openglPos.y; 
             break;
         case av::Bottom:
-            log::debug("bottom!");
-            res.y = m_position.y; 
+            res.y = openglPos.y; 
             break;
     }
     //res.x = 129;
     CCNode::setPosition(res);
-    log::debug("[Container]: {}", CCLayer::getPosition());
 };
 
 

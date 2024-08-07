@@ -121,6 +121,34 @@ bool ButtonSystem::init(OsuLogo* logo) {
         )
     ), "edit");
     
+    area->constructButtons($cca(
+        backBtnCreate,
+        MainMenuButton::create(
+            "Open toolbar", 
+            "button-default-select.wav"_spr, 
+            icons.Beatmap, 
+            Color4(165, 204, 0, 255), 
+            [](CCNode* j) {
+                auto s = dynamic_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
+                if (s == nullptr) return;
+                s->showToolbar();
+                //->setUserObject("osugame.show-toolbar"_spr, CCBool::create(true));
+            }
+        ),
+        MainMenuButton::create(
+            "Close toolbar", 
+            "button-default-select.wav"_spr, 
+            icons.Beatmap, 
+            Color4(154, 198, 0, 255), 
+            [](CCNode* j) {
+                auto s = dynamic_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
+                if (s == nullptr) return;
+                s->hideToolbar();
+                //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
+            }
+        )
+    ), "debug");
+
     // toplevel
     area->constructButtons($cca(
         MainMenuButton::create(
@@ -146,10 +174,10 @@ bool ButtonSystem::init(OsuLogo* logo) {
         ),
         MainMenuButton::create(
             "Browse", 
-            "button-default-select.wav"_spr, 
+            "button-play-select.wav"_spr, 
             icons.Beatmap, 
             Color4(165, 204, 0, 255), 
-            [](CCNode* j) {log::debug("g");}
+            [area](CCNode* j) {area->show("debug");}
         ),
         MainMenuButton::create(
             "Exit", 

@@ -34,6 +34,7 @@ enum class Unit {
 };
 
 /// @brief CCLayer that implements local Event system (like javascript EventTarget) + some more shit
+/// @warning Crashes on this mfs dtor
 class Container : public CCLayer {
 private:
     enum class ah {Left, Center, Right};
@@ -77,21 +78,23 @@ protected:
             return value;
         }
         switch (unit) {
-            case Unit::OpenGL: 
-                return value;
-            case Unit::UIKit: 
-                return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getDisplaySize().width); 
-            case Unit::Viewport:
-                return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
-            case Unit::Percent:
-                return value / 100 * (width ? m_pParent->getContentWidth() : m_pParent->getContentHeight());
-        }
+        case Unit::OpenGL:
+            return value;
+        case Unit::UIKit:
+            return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getDisplaySize().width);
+        case Unit::Viewport:
+            return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
+        case Unit::Percent:
+            return value / 100 * (width ? m_pParent->getContentWidth() : m_pParent->getContentHeight());
+        };
+        return value;
     }
 
 private:
-    using Callback = std::function<void(NodeEvent*)>;
+    using Callback = geode::utils::MiniFunction<void(NodeEvent*)>;
     std::map<std::string, std::vector<Callback>> m_listeners;
-    
+protected:
+    virtual void onLayoutUpdate();
     CCPoint m_position = CCPoint(0,0);
     // the size that is affected by m_sizeUnit
     CCSize m_size = CCSize(0,0);
@@ -99,7 +102,6 @@ private:
     // first: hori | second: verti
     std::pair<Unit, Unit> m_sizeUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
-    virtual void onParentSizeChanged();
 
 public:
     void addEventListener(std::string eventName, const Callback& listener);
@@ -115,20 +117,31 @@ public:
     static Container* create() {
         create_class(Container, init);
     }
-
+    void setAnchor(Anchor anchor) {
+        m_anchor = anchor;
+        dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
+    }
+    Anchor getAnchor() {
+        return m_anchor;
+    }
     // get the j
-    auto getSizeUnits() {return m_sizeUnit;}
+    auto getSizeUnit() {return m_sizeUnit;}
+
+    // set the size unit that will be used to calculate the result size on the next `setContentSize` call
+    void setSizeUnit(Unit sizeUnitHorizontal, Unit sizeUnitVertical) {
+        m_sizeUnit.first = sizeUnitHorizontal;
+        m_sizeUnit.second = sizeUnitVertical;
+    }
 
     // set a new content size while also providing the unit that will be parsed
     void setContentSizeWithUnit(CCSize const& size, Unit sizeUnitHorizontal, Unit sizeUnitVertical) {
-        m_sizeUnit.first = sizeUnitHorizontal;
-        m_sizeUnit.second = sizeUnitVertical;
+        setSizeUnit(sizeUnitHorizontal, sizeUnitVertical);
         setContentSize(size);
     };
 
     void setContentSize(CCSize const& size) override {
         m_size = size;
-        auto unit = getSizeUnits();
+        auto unit = getSizeUnit();
         CCLayer::setContentSize(CCSize(
             processUnit(size.width, m_sizeUnit.first, true),
             processUnit(size.height,m_sizeUnit.second, false)
@@ -143,24 +156,42 @@ public:
         CCLayer::setContentHeight(height);
         dispatchToChild(new NodeUIEvent("nodeLayoutUpdate"));
     }
+    CCSize const& getContentSizeWithUnit() {
+        return m_size;
+    }
 
-    void setPositionWithUnit(CCPoint const& position, Unit posUnitHorizontal, Unit posUnitVertical) {
+    // set the position unit that will be used to calculate the result position on the next `setPosition` call
+    void setPositionUnit(Unit posUnitHorizontal, Unit posUnitVertical) {
         m_positionUnit.first = posUnitHorizontal;
         m_positionUnit.second = posUnitVertical;
+    }
+
+    void setPositionWithUnit(CCPoint const& position, Unit posUnitHorizontal, Unit posUnitVertical) {
+        setPositionUnit(posUnitHorizontal, posUnitVertical);
         setPosition(position);
-        dispatchEvent(new NodeUIEvent("nodeLayoutUpdated"));
     }
     void setPosition(CCPoint const& position) override {
         m_position = position;
+        dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
+        /*
         CCLayer::setPosition(CCPoint(
             processUnit(position.x, m_positionUnit.first, true),
             processUnit(position.y, m_positionUnit.second, false)
         ));
+        */
+    }
+    void setPositionY(float pos) override {
+        setPosition(ccp(m_position.x,pos));
+    }
+    void setPositionX(float pos) override {
+        setPosition(ccp(pos,m_position.y));
+    }
+    CCPoint const& getPositionWithUnit(){
+        return m_position;
     }
 
     void setParent(CCNode* parent) override {
         CCLayer::setParent(parent);
-        log::debug("[Container]: im not fine.");
         dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
         setContentSizeWithUnit(m_size,m_sizeUnit.first,m_sizeUnit.second);
     };
@@ -184,10 +215,14 @@ public:
         m_node->setContentSize(getContentSize());
     }
 
+    CCNode* getWrappingNode() {return m_node;}
+
     void dispatchToChild(NodeEvent* event) override;
 
+    /*
     ~ContainerNodeWrapper() {
         m_node->release();
         Container::~Container();
     }
+    */
 };

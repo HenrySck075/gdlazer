@@ -7,6 +7,7 @@
 #include "../../graphics/containers/ParallaxContainer.hpp"
 
 bool MainMenu::init(bool flash) {
+    Container::init();
     auto logo = OsuLogo::create();
     //logo->setPosition(CCDirector::sharedDirector()->getWinSize() / 2);
     //logo->setCallback([this](CCNode* j) {onLogoClickIdle(); });
@@ -64,6 +65,10 @@ bool MainMenu::init(bool flash) {
     g->setPosition(CCDirector::sharedDirector()->getWinSize()/2);
 	btnParal->addChild(g);
     this->addChild(btnParal);
+    this->setAnchorPoint(ccp(0.5,0.5));
+    this->setAnchor(Anchor::Center);
+    //this->setPositionWithUnit(ccp(50,50),Unit::Percent,Unit::Percent);
+    this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
 
     return true;
 }

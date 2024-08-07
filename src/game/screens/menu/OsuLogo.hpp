@@ -9,9 +9,8 @@ using namespace geode::prelude;
 
 class OsuLogo : public BeatSyncedContainer, public CCMenuItemHover {
 private:
-  //BeatDetector* instance;
-  EventListenerProtocol* m_listener;
-  int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
+    //BeatDetector* instance;
+    int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  
     void onMouseEnter() override {};
     void onMouseExit() override {};
@@ -19,17 +18,19 @@ public:
     void onMouseUp() override {};
     void onMouseDown() override {};
     void onClick() override {};
-  void update(float delta);
-  static OsuLogo* create() {
-    OsuLogo *ret = new OsuLogo();
-    if (ret && ret->init()) {
-      ret->CCMenuItemHover::autorelease();
-    } else {
-      if (ret) {
-        delete (ret);
-      }
+    void update(float delta);
+
+    static OsuLogo* create() {
+        OsuLogo *ret = new OsuLogo();
+        if (ret && ret->init()) {
+            ret->CCMenuItemHover::autorelease();
+        } else {
+            if (ret) {
+                delete (ret);
+            }
+        }
+        return ret;
     }
-    return ret;
-  }
-  bool init();
+    bool init();
+
 };

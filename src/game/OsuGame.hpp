@@ -13,9 +13,33 @@ using namespace cocos2d;
 //
 // funny
 class OsuGame : public CCScene {
+private:
+    Toolbar* toolbar;
+    Container* main;
 public:
     static OsuGame* create() {
-        create_class(OsuGame, init);
+        OsuGame* ret = new OsuGame(); 
+        if (ret && ret->init()) { ret->autorelease(); } 
+        else { 
+            do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
+        }; 
+        return ret;
     }
+
     bool init();
+
+    void showToolbar();
+    void hideToolbar();
 };
+
+/*
+$execute {
+    new EventListener<AttributeSetFilter>(
+        +[](AttributeSetEvent* event) {
+            auto osuGame = OsuGame::sharedScene();
+            osuGame->
+        },
+        AttributeSetFilter()
+    );
+}
+*/

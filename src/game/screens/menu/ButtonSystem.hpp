@@ -7,6 +7,8 @@
 #include "../../../helpers/CustomActions.hpp"
 using namespace geode::prelude;
 
+class OsuGame;
+#include "../../OsuGame.hpp"
 
 class ButtonSystem : public CCLayer
 {

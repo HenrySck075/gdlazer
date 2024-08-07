@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Geode/cocos/include/cocos2d.h>
 #include "../../utils.hpp"
 using namespace cocos2d;
