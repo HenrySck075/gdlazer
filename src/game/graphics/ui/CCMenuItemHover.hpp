@@ -74,9 +74,11 @@ public:
         onMouseUp();
     };
 
+    /*
     ~CCMenuItemHover() {
         m_listener->disable();
         CCMenuItem::~CCMenuItem();
     }
+    */
 };
 
