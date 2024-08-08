@@ -62,12 +62,11 @@ bool MainMenu::init(bool flash) {
     
     auto btnParal = ParallaxContainer::create(0.01f);
     auto g = ButtonSystem::create(logo);
-    g->setPosition(CCDirector::sharedDirector()->getWinSize()/2);
 	btnParal->addChild(g);
     this->addChild(btnParal);
     this->setAnchorPoint(ccp(0.5,0.5));
     this->setAnchor(Anchor::Center);
-    //this->setPositionWithUnit(ccp(50,50),Unit::Percent,Unit::Percent);
+    this->setPositionWithUnit(ccp(50,50),Unit::Percent,Unit::Percent);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
 
     return true;

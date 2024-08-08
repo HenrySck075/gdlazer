@@ -2,17 +2,17 @@
 
 bool Container::init() {
     auto e = CCLayer::init();
-    addEventListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
+    addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
 
     return e;
 }
 
-void Container::addEventListener(std::string eventName, const Callback& listener) {
+void Container::addListener(std::string eventName, const Callback& listener) {
     m_listeners[eventName].push_back(listener);
 };
-void Container::removeEventListener(std::string eventName, const Callback& listener) {
+void Container::removeListener(std::string eventName, const Callback& listener) {
     /*
     auto the = m_listeners[eventName];
     auto it = std::find(the.begin(),the.end(), listener);
@@ -27,7 +27,6 @@ void Container::dispatchEvent(NodeEvent* event) {
         log::warn("[Container]: Event {} not in list.",event->eventName());
         return;
     }
-    log::debug("[Container]: Dispatching event {} for {}.",event->eventName(),this);
     for (auto i : m_listeners[event->eventName()]) {
         i(event);
     }
@@ -44,7 +43,7 @@ void Container::dispatchToChild(NodeEvent* event) {
 
 void Container::onLayoutUpdate() {
     if (m_pParent == nullptr) return;
-    CCPoint res = ccp(0,0);
+    CCPoint resP = ccp(0,0);
     auto anchor = m_anchors[m_anchor];
     auto openglPos = CCPoint(
         processUnit(m_position.x,m_positionUnit.first,true),
@@ -53,28 +52,28 @@ void Container::onLayoutUpdate() {
     log::debug("[Container]: OpenGL position: {}", openglPos);
     switch(anchor.first) {
         case ah::Left:
-            res.x = openglPos.x; 
+            resP.x = openglPos.x; 
             break;
         case ah::Center:
-            res.x = m_pParent->getContentSize().width/2+openglPos.x; 
+            resP.x = m_pParent->getContentWidth()/2+openglPos.x; 
             break;
         case ah::Right:
-            res.x = m_pParent->getContentSize().width-openglPos.x; 
+            resP.x = m_pParent->getContentWidth()-openglPos.x; 
             break;
     };
     switch(anchor.second) {
         case av::Top:
-            res.y = m_pParent->getContentHeight()-openglPos.y; 
+            resP.y = m_pParent->getContentHeight()-openglPos.y; 
             break;
         case av::Center:
-            res.y = m_pParent->getContentHeight()/2-openglPos.y; 
+            resP.y = m_pParent->getContentHeight()/2-openglPos.y; 
             break;
         case av::Bottom:
-            res.y = openglPos.y; 
+            resP.y = openglPos.y; 
             break;
     }
-    //res.x = 129;
-    CCNode::setPosition(res);
+    CCNode::setPosition(resP);
+    resetContentSize();
 };
 
 

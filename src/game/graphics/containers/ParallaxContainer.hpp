@@ -2,11 +2,12 @@
 
 #include "../../../utils.hpp"
 #include <Geode/Geode.hpp>
+#include "../../../framework/graphics/containers/Container.hpp"
 
 using namespace geode::prelude;
 
 // why are they using ease out quint just for parallax am i dumb
-class ParallaxContainer final : public CCLayer {
+class ParallaxContainer final : public Container {
 private:
 	// used to determine the center position
 	CCDirector* director;

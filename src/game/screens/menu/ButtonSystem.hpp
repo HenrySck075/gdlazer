@@ -5,27 +5,18 @@
 #include "MainMenuButton.hpp"
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
+#include "../../../framework/graphics/containers/Container.hpp"
 using namespace geode::prelude;
 
 class OsuGame;
 #include "../../OsuGame.hpp"
 
-class ButtonSystem : public CCLayer
+class ButtonSystem : public Container
 {
   public:
     float WEDGE_WIDTH = 20;
 
     //Action<ButtonSystemState>? StateChanged;
-
-    ButtonCallback onEditBeatmap;
-    ButtonCallback onEditSkin;
-    ButtonCallback onExit;
-    ButtonCallback onBeatmapListing;
-    ButtonCallback onSolo;
-    ButtonCallback onSettings;
-    ButtonCallback onMultiplayer;
-    ButtonCallback onPlaylists;
-    ButtonCallback onDailyChallenge;
 
   private:
     OsuLogo* logo;
@@ -45,8 +36,6 @@ class ButtonSystem : public CCLayer
   private:
     MenuLayer* m_menuLayerPtr;
     CreatorLayer* m_creatorLayerPtr;
-    // those with leftAnchor being false will be placed before the logo
-    MainMenuButton* postButtonSetup(MainMenuButton* btn);
     //void resize(ReactiveNode* calledNode, Property props);
 
     /*priv read*/ MainMenuButton* backButton;

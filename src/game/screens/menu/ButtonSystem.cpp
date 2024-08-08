@@ -31,8 +31,8 @@ bool ButtonSystem::init(OsuLogo* logo) {
     if (m_menuLayerPtr == nullptr) {log::info("[ButtonSystem]: nope doesnt work");}
     this->m_creatorLayerPtr = CreatorLayer::create();
 
-    float w = CCDirector::sharedDirector()->getWinSize().width;
-    auto an = ccp(w/2-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2);
+    //float w = CCDirector::sharedDirector()->getWinSize().width;
+    auto an = ccp(-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2);
     auto area = ButtonArea::create(an);
     this->addChild(area);
 
@@ -192,16 +192,17 @@ bool ButtonSystem::init(OsuLogo* logo) {
 
     area->show("toplevel");
     
-    this->setContentSize(CCSize(w,BUTTON_AREA_HEIGHT));
+    this->setAnchor(Anchor::Center);
+    this->setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
     this->logo->setZOrder(1);
     logo->setPosition(an);
     logo->setScale(0.4);
-    this->setPositionX(0);
+    //this->setPositionX(0);
     auto me = CCMenu::createWithItem(logo);
     me->setPosition(ccp(0,0));
     this->addChild(me);
+    //setAnchorPoint(ccp(0.5,0.5));
 
-    this->ignoreAnchorPointForPosition(false);
     return true;
 }
 

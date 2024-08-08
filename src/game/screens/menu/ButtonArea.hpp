@@ -3,11 +3,12 @@
 #include <Geode/Geode.hpp>
 #include "../../../utils.hpp"
 #include "../../../helpers/CustomActions.hpp"
+#include "../../../framework/graphics/containers/Container.hpp"
 #include "MainMenuButton.hpp"
 
 using namespace cocos2d;
 
-class ButtonArea : public CCLayer {
+class ButtonArea : public Container {
 private:
     CCDictionaryExt<std::string, CCLayer*> buttonsMenus;
     CCDictionaryExt<std::string, CCArray*> _buttons;
@@ -20,7 +21,6 @@ public:
         create_class(ButtonArea, init, anchorPos);
     }
     bool init(const CCPoint& anchorPos);
-    void setParent(CCNode* parent) override;
 
     /// @brief Creates the buttons layers and optionally place them at a specific index.
     /// The first button will be placed at the left, the rest goes to the right.

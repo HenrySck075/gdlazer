@@ -56,6 +56,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
 
 void MainMenuButton::setContentSize(const CCSize& s) {
     CCMenuItemHover::setContentSize(s);
+    // todo: move to container
     this->getChildByID("background")->setContentSize(s);
     this->getChildByID("background")->setPosition(s/2);
     this->getChildByID("hover")->setContentSize(s);

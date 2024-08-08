@@ -7,16 +7,12 @@
 #include "ButtonConstants.hpp"
 
 bool ButtonArea::init(const CCPoint& anchorPos) {
+    Container::init();
     anchorPosition = anchorPos;
-    ignoreAnchorPointForPosition(false); 
     setAnchorPoint(ccp(0.5,0.5));
+    this->setAnchor(Anchor::Center);
+    this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     return true;
-}
-
-void ButtonArea::setParent(CCNode* parent) {
-    CCLayer::setParent(parent);
-    this->setContentSize(parent->getContentSize());
-    this->setPosition(parent->getContentSize()/2);
 }
 
 void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
