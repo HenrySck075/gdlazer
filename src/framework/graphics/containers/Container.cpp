@@ -5,6 +5,7 @@ bool Container::init() {
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
+    setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
 
     return e;
 }
@@ -49,7 +50,6 @@ void Container::onLayoutUpdate() {
         processUnit(m_position.x,m_positionUnit.first,true),
         processUnit(m_position.y,m_positionUnit.second,false)
     );
-    log::debug("[Container]: OpenGL position: {}", openglPos);
     switch(anchor.first) {
         case ah::Left:
             resP.x = openglPos.x; 
@@ -76,12 +76,15 @@ void Container::onLayoutUpdate() {
     resetContentSize();
 };
 
-
 bool ContainerNodeWrapper::init(CCNode* node)  {
+    if (!dynamic_cast<Container*>(node)) {
+        log::error("[ContainerNodeWrapper]: The node passed does not meet the candidate to be a node: it is a {}", node);
+        return false;
+    }
+    Container::init();
     m_node = node;
     m_node->retain();
     this->addChild(m_node);
-    Container::init();
     setContentSize(node->getContentSize());
     setPosition(node->getPosition());
     setAnchorPoint(node->getAnchorPoint());

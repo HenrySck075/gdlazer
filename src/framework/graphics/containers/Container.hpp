@@ -84,7 +84,7 @@ protected:
         case Unit::Viewport:
             return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
         case Unit::Percent:
-            return (value / 100) * (width ? m_pParent->getContentWidth() : m_pParent->getContentHeight());
+            return (value / 100) * (width ? m_pParent->CCNode::getContentWidth() : m_pParent->CCNode::getContentHeight());
         };
         return value;
     }
@@ -159,11 +159,11 @@ public:
     void setContentHeight(float height) {
         setContentSize(CCSize(getContentWidth(),height));
     }
-    CCSize const& getContentSize() {
+    const CCSize& getContentSize() const override {
         return m_size;
     }
 
-    CCSize const& getRealContentSize() {
+    const CCSize& getRealContentSize() {
         return CCLayer::getContentSize();
     }
 
@@ -178,8 +178,6 @@ public:
         setPosition(position);
     }
     void setPosition(CCPoint const& position) override {
-        // concerning (devtools)
-        if (position == getPosition()) return;
         if (position == m_position) return;
         m_position = position;
         dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
@@ -196,8 +194,14 @@ public:
     void setPositionX(float pos) override {
         setPosition(ccp(pos,m_position.y));
     }
-    CCPoint const& getPosition() {
+    const CCPoint& getPosition() override {
         return m_position;
+    }
+    float getPositionX() override {
+        return m_position.x;
+    }
+    float getPositionY() override {
+        return m_position.y;
     }
     CCPoint const& getRealPosition() {
         return CCLayer::getPosition();
@@ -213,6 +217,7 @@ public:
 template<class T>
 concept is_node = std::is_base_of_v<CCNode, T> && !std::is_base_of_v<Container, T>;
 
+// wraps a node inside a container
 class ContainerNodeWrapper : public Container {
 private:
     CCNode* m_node;

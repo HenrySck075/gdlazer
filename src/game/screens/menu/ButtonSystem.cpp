@@ -25,6 +25,7 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
     }
 
 bool ButtonSystem::init(OsuLogo* logo) {
+    Container::init();
     auto icons = OsuIcon();
     setOsuLogo(logo);
     this->m_menuLayerPtr = getChildOfType<MenuLayer>(MenuLayer::scene(true),0);
@@ -194,7 +195,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
-    this->logo->setZOrder(1);
+    logo->setZOrder(1);
     logo->setPosition(an);
     logo->setScale(0.4);
     //this->setPositionX(0);

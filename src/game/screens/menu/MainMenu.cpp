@@ -66,14 +66,12 @@ bool MainMenu::init(bool flash) {
     this->addChild(btnParal);
     this->setAnchorPoint(ccp(0.5,0.5));
     this->setAnchor(Anchor::Center);
-    this->setPositionWithUnit(ccp(50,50),Unit::Percent,Unit::Percent);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
 
     return true;
 }
 
-void MainMenu::onLogoClickIdle()
-{
+void MainMenu::onLogoClickIdle() {
     auto logo = getChildOfType<OsuLogo>(this, 0);
     //auto btns = ButtonSystem
 }

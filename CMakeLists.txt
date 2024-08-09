@@ -35,7 +35,6 @@ src/game/graphics/OsuIcon.hpp
 src/game/graphics/containers/BeatSyncedContainer.hpp
 src/game/graphics/containers/ParallaxContainer.cpp
 src/game/graphics/containers/ParallaxContainer.hpp
-src/game/graphics/containers/SizeReactiveContainer.cpp
 src/game/graphics/containers/WaveContainer.cpp
 src/game/graphics/containers/WaveContainer.hpp
 src/game/graphics/containers/beatsync/BeatEvent.hpp
@@ -97,5 +96,7 @@ endif()
 # android
 # target_link_libraries(${PROJECT_NAME} -L/data/data/com.termux/files/usr/lib/libGLESv2.so.2)
 
+# include("${CMAKE_CURRENT_SOURCE_DIR}/src/devtools/CMakeLists.txt")
+# setupCustomDevtools()
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})
