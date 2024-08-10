@@ -3,12 +3,12 @@
 #include <Geode/Geode.hpp>
 //#include "ButtonSystem.hpp"
 //#include "../../graphics/containers/beatsync/BeatDetector.hpp"
-#include "../../../framework/graphics/containers/Container.hpp"
+#include "../../../framework/screens/Screen.hpp"
 #include "../../../utils.hpp"
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer*;
 
-class MainMenu : public Container {
+class MainMenu : public Screen {
 public:
 	float FADE_IN_DURATION = 300;
 

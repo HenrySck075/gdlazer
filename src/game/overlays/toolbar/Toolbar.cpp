@@ -12,12 +12,11 @@ bool Toolbar::init() {
     this->setPositionUnit(Unit::OpenGL,Unit::UIKit);
     this->setPositionY(-HEIGHT);
 
-    auto bg = ContainerNodeWrapper::create(
-        CCScale9Sprite::createWithSpriteFrameName("square.png"_spr)
-    );
+    auto bg = Container::create();
     bg->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     bg->setAnchorPoint(ccp(0,0));
-    static_cast<CCScale9Sprite*>(bg->getWrappingNode())->setColor(bgColor);
+    bg->setColor(bgColor);
+    bg->setOpacity(255);
 
     this->addChild(bg);
     return true;

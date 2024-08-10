@@ -10,7 +10,7 @@ using namespace cocos2d;
 
 class ButtonArea : public Container {
 private:
-    CCDictionaryExt<std::string, CCLayer*> buttonsMenus;
+    CCDictionaryExt<std::string, Container*> buttonsMenus;
     CCDictionaryExt<std::string, CCArray*> _buttons;
     std::vector<std::string> tagsStack;
     CCPoint anchorPosition = ccp(0,0);

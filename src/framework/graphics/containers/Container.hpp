@@ -1,7 +1,6 @@
 #pragma once
 
 // we javascripting
-// @note Not on osu-framework. But if you are going to argue, this is Container
 
 #include <Geode/Geode.hpp>
 #include "Event.hpp"
@@ -34,7 +33,7 @@ enum class Unit {
 };
 
 /// @brief CCLayer that implements local Event system (like javascript EventTarget) + some more shit
-class Container : public CCLayer {
+class Container : public CCLayerRGBA {
 private:
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
@@ -84,9 +83,8 @@ protected:
         case Unit::Viewport:
             return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
         case Unit::Percent:
-            return (value / 100) * (width ? m_pParent->CCNode::getContentWidth() : m_pParent->CCNode::getContentHeight());
+            return (value / 100) * (width ? m_pParent->CCNode::getContentSize().width : m_pParent->CCNode::getContentSize().height);
         };
-        return value;
     }
 
 private:
@@ -140,16 +138,15 @@ public:
 
 private:
     void resetContentSize() {
-        if (m_size == m_sizeP) return;
         CCLayer::setContentSize(CCSize(
             processUnit(m_size.width, m_sizeUnit.first, true),
             processUnit(m_size.height,m_sizeUnit.second, false)
         ));
         dispatchToChild(new NodeUIEvent("nodeLayoutUpdate"));
+        m_sizeP = m_size;
     }
 public:
     void setContentSize(CCSize const& size) override {
-        m_sizeP = m_size;
         m_size = size;
         resetContentSize();
     }
@@ -210,7 +207,6 @@ public:
     void setParent(CCNode* parent) override {
         CCLayer::setParent(parent);
         dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
-        setContentSizeWithUnit(m_size,m_sizeUnit.first,m_sizeUnit.second);
     };
 };
 
@@ -229,8 +225,11 @@ public:
     bool init(CCNode* node);
 
     void setContentSize(CCSize const& size) override {
+        m_node->setContentSize(CCSize(
+            processUnit(size.width, m_sizeUnit.first, true),
+            processUnit(size.height, m_sizeUnit.second, false)
+        ));
         Container::setContentSize(size);
-        m_node->setContentSize(getContentSize());
     }
 
     CCNode* getWrappingNode() {return m_node;}

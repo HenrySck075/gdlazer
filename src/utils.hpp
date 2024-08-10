@@ -59,3 +59,9 @@ ParentType* getParentOfType(CCNode* node){
 
 float uiWidthToGL(float length);
 float uiHeightToGL(float length);
+
+template<class T>
+T* postconfig(T* node, std::function<void(T*)> func) {
+  func(node);
+  return node;
+}

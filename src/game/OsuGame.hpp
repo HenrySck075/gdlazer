@@ -9,6 +9,10 @@ using namespace cocos2d;
 #include "screens/menu/MainMenu.hpp"
 #include "overlays/toolbar/Toolbar.hpp"
 
+// the
+#include "../framework/screens/Screen.hpp"
+#include "../framework/screens/ScreenTransitionEvent.hpp"
+
 // the grand dad
 //
 // funny
@@ -16,6 +20,8 @@ class OsuGame : public CCScene {
 private:
     Toolbar* toolbar;
     Container* main;
+
+    CCArrayExt<Screen*> screenStack;
 public:
     static OsuGame* create() {
         OsuGame* ret = new OsuGame(); 
@@ -30,6 +36,9 @@ public:
 
     void showToolbar();
     void hideToolbar();
+
+    void pushScreen(Screen* s);
+    void popScreen();
 };
 
 /*

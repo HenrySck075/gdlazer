@@ -9,6 +9,7 @@
 bool ButtonArea::init(const CCPoint& anchorPos) {
     Container::init();
     anchorPosition = anchorPos;
+    this->setOpacity(255);
     setAnchorPoint(ccp(0.5,0.5));
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
@@ -36,15 +37,22 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
     t->setPosition(anchorPosition-gap);
     t->addChild(buttons[0]);
     buttons[0]->setAnchorPoint(ccp(1,0.5));
-    t->setLayout(RowLayout::create()->setGap(-1)->setAutoScale(false)->setAxisAlignment(AxisAlignment::End)->setAxisReverse(true));
+    t->setLayout(RowLayout::create()
+        ->setGap(-1)
+        ->setAutoScale(false)
+        ->setAxisAlignment(AxisAlignment::End)
+        ->setAxisReverse(true)
+    );
     t->updateLayout();
     t->setTag(1);
 
     // root node
-    auto j = CCLayer::create();
+    auto j = Container::create();
     j->addChild(t);
     j->addChild(b);
     j->setID("buttonarea_"+tag);
+    j->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
+    j->setPositionWithUnit(ccp(50,0),Unit::Percent,Unit::OpenGL);
     buttonsMenus[tag] = j;
     _buttons[tag] = buttons.inner();
     log::info("[ButtonArea]: Button menu \"{}\" registered.", tag);
@@ -185,10 +193,10 @@ void ButtonArea::hide(std::string tag, bool collapse) {
             auto btnL2 = btnLayer->getChildByTag(2);
             auto w = CCDirector::sharedDirector()->getWinSize().width;
             btnL1->runAction(EasingEffect::create(
-                CCMoveTo::create(animationSpeed, ccp(0,btnL1->getPositionY()))
+                CCMoveTo::create(animationSpeed, ccp(-w/2,btnL1->getPositionY()))
             ));
             btnL2->runAction(EasingEffect::create(
-                CCMoveTo::create(animationSpeed, ccp(w,btnL2->getPositionY()))
+                CCMoveTo::create(animationSpeed, ccp(w/2,btnL2->getPositionY()))
             ));
         }
     }

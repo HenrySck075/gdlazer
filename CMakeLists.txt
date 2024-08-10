@@ -21,6 +21,8 @@ src/framework/graphics/color/ColorInfo.hpp
 src/framework/graphics/containers/Container.cpp
 src/framework/graphics/containers/Container.hpp
 src/framework/graphics/containers/Event.hpp
+src/framework/screens/Screen.hpp
+src/framework/screens/ScreenTransitionEvent.hpp
 src/framework/utils/IInterpolable.hpp
 src/framework/utils/Interpolation.cpp
 src/framework/utils/Interpolation.hpp

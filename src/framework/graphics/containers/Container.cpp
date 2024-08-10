@@ -55,18 +55,18 @@ void Container::onLayoutUpdate() {
             resP.x = openglPos.x; 
             break;
         case ah::Center:
-            resP.x = m_pParent->getContentWidth()/2+openglPos.x; 
+            resP.x = m_pParent->CCNode::getContentSize().width/2+openglPos.x; 
             break;
         case ah::Right:
-            resP.x = m_pParent->getContentWidth()-openglPos.x; 
+            resP.x = m_pParent->CCNode::getContentSize().width-openglPos.x; 
             break;
     };
     switch(anchor.second) {
         case av::Top:
-            resP.y = m_pParent->getContentHeight()-openglPos.y; 
+            resP.y = m_pParent->CCNode::getContentSize().height-openglPos.y; 
             break;
         case av::Center:
-            resP.y = m_pParent->getContentHeight()/2-openglPos.y; 
+            resP.y = m_pParent->CCNode::getContentSize().height/2-openglPos.y; 
             break;
         case av::Bottom:
             resP.y = openglPos.y; 
@@ -77,13 +77,15 @@ void Container::onLayoutUpdate() {
 };
 
 bool ContainerNodeWrapper::init(CCNode* node)  {
+    /*
     if (!dynamic_cast<Container*>(node)) {
         log::error("[ContainerNodeWrapper]: The node passed does not meet the candidate to be a node: it is a {}", node);
         return false;
     }
-    Container::init();
+    */
     m_node = node;
-    m_node->retain();
+    Container::init();
+    //log::debug("[ContainerNodeWrapper]: {}", node);
     this->addChild(m_node);
     setContentSize(node->getContentSize());
     setPosition(node->getPosition());
@@ -95,7 +97,9 @@ bool ContainerNodeWrapper::init(CCNode* node)  {
 
 void ContainerNodeWrapper::dispatchToChild(NodeEvent* event) {
     CCObject* obj;
-    CCARRAY_FOREACH(m_node->getChildren(), obj) {
+    log::debug("[ContainerNodeWrapper]: {} {}", this, m_node);
+    auto c = m_node->getChildren();
+    CCARRAY_FOREACH(c, obj) {
         if (auto node = dynamic_cast<Container*>(obj)) {
             node->dispatchEvent(event);
         }

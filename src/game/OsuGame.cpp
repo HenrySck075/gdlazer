@@ -26,3 +26,30 @@ void OsuGame::hideToolbar() {
         CCResizeTo::create(0.5,main->getContentWidth(),getContentHeight())
     ));
 }
+
+void OsuGame::pushScreen(Screen* s) {
+    Screen* ls;
+    if (screenStack.size()!=0) {
+        ls = screenStack[screenStack.size()-1];
+    }
+    s->onEntering(ScreenTransitionEvent(ls,s));
+    screenStack.push_back(s);
+    main->addChild(s);
+}
+
+void OsuGame::popScreen() {
+    if (screenStack.size()==0) {
+        log::error("[OsuGame]: nice >:]");
+        return;
+    }
+    auto s = screenStack[screenStack.size()-1];
+    Screen* ps;
+    if (screenStack.size()>1) {
+        ps = screenStack[screenStack.size()-2];
+    }
+    
+    ScreenTransitionEvent event = {s,ps};
+    s->onExiting(event);
+    if (ps!=nullptr) ps->onEntering(event);
+    screenStack.pop_back();
+}
