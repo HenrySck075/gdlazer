@@ -7,81 +7,10 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 project(osulazer VERSION 1.0.0)
 add_definitions(-w)
 # Set up the mod binary
+file(GLOB_RECURSE src src/*.cpp src/*.hpp)
 add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
+    ${src}
     # Fill start
-src/LabelBMFont.cpp
-src/LabelBMFont.hpp
-src/main.cpp
-src/utils.cpp
-src/utils.hpp
-src/framework/graphics/Color4.cpp
-src/framework/graphics/Color4.hpp
-src/framework/graphics/color/ColorInfo.hpp
-src/framework/graphics/containers/Container.cpp
-src/framework/graphics/containers/Container.hpp
-src/framework/graphics/containers/Event.hpp
-src/framework/screens/Screen.hpp
-src/framework/screens/ScreenTransitionEvent.hpp
-src/framework/utils/IInterpolable.hpp
-src/framework/utils/Interpolation.cpp
-src/framework/utils/Interpolation.hpp
-src/game/OsuGame.cpp
-src/game/OsuGame.hpp
-src/game/beatmaps/BeatmapOnlineStatus.hpp
-src/game/graphics/CCResizableSprite.cpp
-src/game/graphics/CCResizableSprite.hpp
-src/game/graphics/OsuColor.hpp
-src/game/graphics/OsuIcon.cpp
-src/game/graphics/OsuIcon.hpp
-src/game/graphics/containers/BeatSyncedContainer.hpp
-src/game/graphics/containers/ParallaxContainer.cpp
-src/game/graphics/containers/ParallaxContainer.hpp
-src/game/graphics/containers/WaveContainer.cpp
-src/game/graphics/containers/WaveContainer.hpp
-src/game/graphics/containers/beatsync/BeatEvent.hpp
-src/game/graphics/ui/CCMenuItemHover.cpp
-src/game/graphics/ui/CCMenuItemHover.hpp
-src/game/graphics/ui/OsuText.hpp
-src/game/graphics/ui/deco/Triangles.cpp
-src/game/graphics/ui/deco/Triangles.hpp
-src/game/online/rooms/RoomCategory.hpp
-src/game/overlays/OverlayColorProvider.cpp
-src/game/overlays/OverlayColorProvider.hpp
-src/game/overlays/dialog/PopupDialog.cpp
-src/game/overlays/dialog/PopupDialog.hpp
-src/game/overlays/dialog/PopupDialogButton.cpp
-src/game/overlays/dialog/PopupDialogButton.hpp
-src/game/overlays/toolbar/Toolbar.cpp
-src/game/overlays/toolbar/Toolbar.hpp
-src/game/rulesets/mods/ModType.hpp
-src/game/scoring/HitResult.hpp
-src/game/scoring/RankingTier.hpp
-src/game/scoring/ScoreRank.hpp
-src/game/screens/menu/ButtonArea.cpp
-src/game/screens/menu/ButtonArea.hpp
-src/game/screens/menu/ButtonConstants.hpp
-src/game/screens/menu/ButtonSystem.cpp
-src/game/screens/menu/ButtonSystem.hpp
-src/game/screens/menu/ButtonSystemState.hpp
-src/game/screens/menu/MainMenu.cpp
-src/game/screens/menu/MainMenu.hpp
-src/game/screens/menu/MainMenuButton.cpp
-src/game/screens/menu/MainMenuButton.hpp
-src/game/screens/menu/OsuLogo.cpp
-src/game/screens/menu/OsuLogo.hpp
-src/game/screens/menu/intro/IntroTriangles.cpp
-src/game/screens/menu/intro/IntroTriangles.hpp
-src/helpers/ColorHelper.hpp
-src/helpers/colors.hpp
-src/helpers/CustomActions.cpp
-src/helpers/CustomActions.hpp
-src/helpers/MouseEvent.cpp
-src/helpers/MouseEvent.hpp
-src/helpers/sound/SoundManager.cpp
-src/helpers/sound/SoundManager.hpp
-src/main/PauseLayer.cpp
-src/main/PauseLayer.hpp
     # Fill end
 )
 
@@ -102,3 +31,5 @@ endif()
 # setupCustomDevtools()
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})
+
+#execute_process(COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/src/game/check_commit.py)

@@ -1,6 +1,36 @@
 #include "OsuGame.hpp"
 #include "../helpers/CustomActions.hpp"
 
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+LONG_PTR oWindowProc;
+bool newWindowProcSet = false;
+
+LRESULT CALLBACK nWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+    switch (msg) {
+    case WM_SIZE:
+    case WM_MOVE:
+    case WM_KILLFOCUS:
+        if (OsuGame* mainGame = dynamic_cast<OsuGame*>(OsuGame::get())) {
+            mainGame->onLoseFocus();
+        }
+        break;
+    case WM_SETFOCUS:
+        if (OsuGame* mainGame = dynamic_cast<OsuGame*>(OsuGame::get())) {
+            mainGame->onFocus();
+        }
+        break;
+    }
+
+    return CallWindowProc((WNDPROC)oWindowProc, hwnd, msg, wparam, lparam);
+}
+
+HWND getWindowHandle() {
+    return WindowFromDC(wglGetCurrentDC());
+}
+
 bool OsuGame::init() {
     CCScene::init();
     main = Container::create();
@@ -9,7 +39,10 @@ bool OsuGame::init() {
     main->addChild(MainMenu::create(false));
     toolbar = Toolbar::create();
     this->addChild(toolbar);
-
+    if (!newWindowProcSet) {
+        oWindowProc = SetWindowLongPtrA(getWindowHandle(), -4, (LONG_PTR)nWindowProc);
+        newWindowProcSet = true;
+    }
     return true;
 }
 
@@ -27,8 +60,8 @@ void OsuGame::hideToolbar() {
     ));
 }
 
-void OsuGame::pushScreen(Screen* s) {
-    Screen* ls;
+void OsuGame::pushScreen(OsuScreen* s) {
+    OsuScreen* ls;
     if (screenStack.size()!=0) {
         ls = screenStack[screenStack.size()-1];
     }
@@ -43,13 +76,20 @@ void OsuGame::popScreen() {
         return;
     }
     auto s = screenStack[screenStack.size()-1];
-    Screen* ps;
-    if (screenStack.size()>1) {
-        ps = screenStack[screenStack.size()-2];
-    }
+    auto ps = screenStack.pop_back();
     
     ScreenTransitionEvent event = {s,ps};
     s->onExiting(event);
     if (ps!=nullptr) ps->onEntering(event);
-    screenStack.pop_back();
+}
+
+void OsuGame::onLoseFocus() {
+    auto engine = FMODAudioEngine::sharedEngine();
+    engine->setBackgroundMusicVolume(engine->getBackgroundMusicVolume()*0.6);
+    engine->setEffectsVolume(engine->getEffectsVolume()*0.6);
+}
+void OsuGame::onFocus() {
+    auto engine = FMODAudioEngine::sharedEngine();
+    engine->setBackgroundMusicVolume(engine->getBackgroundMusicVolume()/0.6);
+    engine->setEffectsVolume(engine->getEffectsVolume()/0.6);
 }

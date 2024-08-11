@@ -4,6 +4,7 @@
 
 #include <Geode/Geode.hpp>
 #include "Event.hpp"
+#include "EventTarget.hpp"
 #include "../../../utils.hpp"
 using namespace geode::prelude;
 
@@ -33,7 +34,7 @@ enum class Unit {
 };
 
 /// @brief CCLayer that implements local Event system (like javascript EventTarget) + some more shit
-class Container : public CCLayerRGBA {
+class Container : public CCLayerColor, public EventTarget {
 private:
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
@@ -87,9 +88,7 @@ protected:
         };
     }
 
-private:
-    using Callback = geode::utils::MiniFunction<void(NodeEvent*)>;
-    std::map<std::string, std::vector<Callback>> m_listeners;
+
 protected:
     virtual void onLayoutUpdate();
     CCPoint m_position = CCPoint(0,0);
@@ -101,9 +100,7 @@ protected:
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
 
 public:
-    void addListener(std::string eventName, const Callback& listener);
-    void removeListener(std::string eventName, const Callback& listener);
-    virtual void dispatchEvent(NodeEvent* event);
+    // dispatchEvent(event, true) but does not dispatch the event for the calling node
     virtual void dispatchToChild(NodeEvent* event);
 
     // breaking change (not)

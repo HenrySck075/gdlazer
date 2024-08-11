@@ -3,6 +3,7 @@
 #include <Geode/cocos/include/cocos2d.h>
 #include "../utils.hpp"
 #include "../framework/graphics/containers/Container.hpp"
+#include "../framework/graphics/containers/EventTarget.hpp"
 using namespace cocos2d;
 
 // widgets
@@ -10,18 +11,19 @@ using namespace cocos2d;
 #include "overlays/toolbar/Toolbar.hpp"
 
 // the
-#include "../framework/screens/Screen.hpp"
+class OsuScreen;
+#include "../game/screens/OsuScreen.hpp"
 #include "../framework/screens/ScreenTransitionEvent.hpp"
 
 // the grand dad
 //
 // funny
-class OsuGame : public CCScene {
+class OsuGame : public CCScene, public EventTarget {
 private:
     Toolbar* toolbar;
     Container* main;
 
-    CCArrayExt<Screen*> screenStack;
+    CCArrayExt<OsuScreen*> screenStack;
 public:
     static OsuGame* create() {
         OsuGame* ret = new OsuGame(); 
@@ -37,8 +39,11 @@ public:
     void showToolbar();
     void hideToolbar();
 
-    void pushScreen(Screen* s);
+    void pushScreen(OsuScreen* s);
     void popScreen();
+
+    void onLoseFocus();
+    void onFocus();
 };
 
 /*

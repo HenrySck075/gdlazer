@@ -1,11 +1,21 @@
+#pragma once
+
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
 class Container;
+class EventTarget;
 // Event with event name (yea)
 //
 // For use in Node
+
+enum class DispatchingFlow {Up, Down};
+
 class NodeEvent {
+private:
+    bool m_stopPropagate = false;
+    bool m_stopImmediatePropagate = false;
+    DispatchingFlow m_dispatchingFlow = DispatchingFlow::Up;
 protected:
     std::string m_eventName = "";
 public:
@@ -16,7 +26,11 @@ public:
     std::string eventName() {return m_eventName;};
     void eventName(std::string newName) {m_eventName = newName;};
 
+    void stopPropagate() {m_stopPropagate = true;}
+    void stopImmediatePropagate() {m_stopImmediatePropagate = true;}
+
     friend class Container;
+    friend class EventTarget;
 };
 
 // wrapper for geode events

@@ -24,4 +24,9 @@ idk
 * [Geode CLI](https://github.com/geode-sdk/cli)
 * [Bindings](https://github.com/geode-sdk/bindings/)
 * [Dev Tools](https://github.com/geode-sdk/DevTools)
-* [osu!lazer source](https://github.com/ppy/osu), which is where most of the code (the complex ones) are taken from. Those files will have a source link at the start of the file
+* [osu!lazer source](https://github.com/ppy/osu)
+
+
+
+
+to anyone verifying the mod, im sorry

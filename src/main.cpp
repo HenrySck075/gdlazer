@@ -168,6 +168,8 @@ class $modify(MyMenuLayer, MenuLayer) {
 };
 
 #ifdef GEODE_IS_WINDOWS
+
+
 // fields does not work on non-CCNode :pensive:
 bool m_click = false;
 #include <Geode/modify/CCEGLView.hpp>
