@@ -5,11 +5,23 @@ bool Container::init() {
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
-    setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
+    //setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
 
     return e;
 }
 
+void Container::dispatchEventUnsafe(NodeEvent* event) {
+    for (auto i : m_listeners[event->eventName()]) {
+        if (tryDispatch(i,event)) break;
+    }
+    if (event->m_stopPropagate) return;
+    switch (event->m_dispatchingFlow) {
+      case DispatchingFlow::Up:
+        if (auto p = typeinfo_cast<Container*>(m_pParent)) p->dispatchEvent(event);
+      case DispatchingFlow::Down:
+        dispatchToChild(event);
+    }
+}
 
 void Container::dispatchToChild(NodeEvent* event) {
     CCObject* obj;
@@ -28,6 +40,7 @@ void Container::onLayoutUpdate() {
         processUnit(m_position.x,m_positionUnit.first,true),
         processUnit(m_position.y,m_positionUnit.second,false)
     );
+    // getContentWidth/Height get its values from getContentSize so like
     switch(anchor.first) {
         case ah::Left:
             resP.x = openglPos.x; 

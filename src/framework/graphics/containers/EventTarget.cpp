@@ -18,7 +18,7 @@ bool EventTarget::tryDispatch(Callback& cb, NodeEvent* event) {
     cb(event);
     return 
       // stop immediate propagation
-      (event->m_stopImmediatePropagate && event->m_dispatchingFlow == DispatchingFlow::Down) ||
+      (event->m_stopImmediatePropagate) ||
       // or being a victim on twitter
       event->m_cancelled;
 }
@@ -29,7 +29,11 @@ void EventTarget::dispatchEvent(NodeEvent* event) {
         log::warn("[EventTarget]: Event {} not in list.",event->eventName());
         return;
     }
+    dispatchEventUnsafe(event);
+};
+
+void EventTarget::dispatchEventUnsafe(NodeEvent* event) {
     for (auto i : m_listeners[event->eventName()]) {
         if (tryDispatch(i,event)) break;
     }
-};
+}

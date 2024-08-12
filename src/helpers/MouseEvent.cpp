@@ -1,6 +1,6 @@
 #include "MouseEvent.hpp"
 
-ListenerResult MouseFilter::handle(MiniFunction<MouseFilter::Callback> fn, MouseEvent* event) {
+ListenerResult MouseFilter::handle(MiniFunction<MouseFilter::Callback> fn, MouseEventOld* event) {
 	if (!m_target->isRunning()) return ListenerResult::Propagate;
 	auto mouseloc = event->getLocation();
 	bool clicking = mouseloc.equals(ccp(-2, -2));

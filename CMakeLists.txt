@@ -111,3 +111,6 @@ endif()
 setup_geode_mod(${PROJECT_NAME})
 
 #execute_process(COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/src/game/check_commit.py)
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copy_to_framework.py") 
+  execute_process(COMMAND python "${CMAKE_CURRENT_SOURCE_DIR}/copy_to_framework.py")
+endif()

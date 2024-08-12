@@ -6,13 +6,13 @@
 
 using namespace geode::prelude;
 
-class MouseEvent : public Event {
+class MouseEventOld : public Event {
 
 protected:
     CCPoint m_location;
 
 public:
-    MouseEvent(CCPoint const& location) {
+    MouseEventOld(CCPoint const& location) {
         m_location = location;
     };
 
@@ -23,7 +23,7 @@ enum MouseType {
     Enter, Exit, Click, MouseDown, MouseUp, Move
 };
 
-class MouseFilter : public EventFilter<MouseEvent> {
+class MouseFilter : public EventFilter<MouseEventOld> {
 protected:
     bool m_entered = false;
     CCNode* m_target;
@@ -32,7 +32,7 @@ public:
 
     using Callback = bool(MouseType, CCPoint);
 
-    ListenerResult handle(MiniFunction<Callback> fn, MouseEvent* event);
+    ListenerResult handle(MiniFunction<Callback> fn, MouseEventOld* event);
     MouseFilter(CCNode* target, bool keepPropagating) {
         m_target = target;
         auto j = static_cast<CCBool*>(m_target->getUserObject("clicking"_spr));

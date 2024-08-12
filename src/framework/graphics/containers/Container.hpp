@@ -100,6 +100,9 @@ protected:
     std::pair<Unit, Unit> m_sizeUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
 
+    bool tryDispatch(Callback& cb, NodeEvent* event) override;
+
+    void dispatchEventUnsafe(NodeEvent* event) override;
 public:
     // Dispatches the event to the child. 
     virtual void dispatchToChild(NodeEvent* event);
@@ -112,6 +115,7 @@ public:
     static Container* create() {
         create_class(Container, init);
     }
+    // Sets the position anchor
     void setAnchor(Anchor anchor) {
         m_anchor = anchor;
         dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
@@ -157,7 +161,7 @@ public:
     const CCSize& getContentSize() const override {
         return m_size;
     }
-
+    // Get the actual node content size
     const CCSize& getRealContentSize() {
         return CCLayer::getContentSize();
     }
@@ -198,6 +202,7 @@ public:
     float getPositionY() override {
         return m_position.y;
     }
+    // Get the actual node position
     CCPoint const& getRealPosition() {
         return CCLayer::getPosition();
     }
@@ -212,6 +217,7 @@ template<class T>
 concept is_node = std::is_base_of_v<CCNode, T> && !std::is_base_of_v<Container, T>;
 
 // wraps a node inside a container
+// @warning this currently does not work for some reason. So if you dont need to also resize the node, wrap it in a Container instead.
 class ContainerNodeWrapper : public Container {
 private:
     CCNode* m_node;

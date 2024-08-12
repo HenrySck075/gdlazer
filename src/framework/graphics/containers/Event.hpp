@@ -6,11 +6,12 @@ using namespace geode::prelude;
 class Container;
 class EventTarget;
 
+// nonsensical name but i hope you guys get it :pleading_face:
 enum class DispatchingFlow {Up, Down};
 
 // Event with event name (yea)
 //
-// For use in Container
+// For use in EventTarget
 class NodeEvent {
 private:
     bool m_stopPropagate = false;
