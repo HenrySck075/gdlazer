@@ -5,23 +5,24 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
     this->clickSfx = clickSfx;
 
     if (self == nullptr) {self = this;}
-    m_bEnabled = true;
     this->setZOrder(3);
     //this->setCascadeOpacityEnabled(true);
-    m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
-        if (!(this->m_hoverEnabled && isRunning())) return false;
-        if (type == MouseType::Enter) {
+    addListener("mouseEvent",[this](NodeEvent* e) {
+        auto event = static_cast<MouseEvent*>(e);
+        auto type = event->eventType;
+        if (!(this->m_hoverEnabled && isRunning())) return;
+        if (type == MouseEventType::Enter) {
             //m_entered = true;
             this->onMouseEnter();
-            return true;
+            event->stopImmediatePropagation();
         }
-        if (type == MouseType::Exit) {
+        if (type == MouseEventType::Exit) {
             //m_entered = false;
             this->onMouseExit();
-            return true;
+            event->stopImmediatePropagation();
         }
-        return false;
-    }, true);
+        return;
+    });
     //CCNodeHover::init();
     /*
     //CCDirector::sharedDirector()->getTouchDispatcher()->addStandardDelegate(this, -4566);

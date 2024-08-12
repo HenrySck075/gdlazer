@@ -67,8 +67,6 @@ add_library(${PROJECT_NAME} SHARED
   src/game/graphics/OsuIcon.hpp
   src/game/graphics/CCResizableSprite.hpp
   src/game/graphics/CCResizableSprite.cpp
-  src/game/graphics/ui/CCMenuItemHover.cpp
-  src/game/graphics/ui/CCMenuItemHover.hpp
   src/game/graphics/ui/OsuText.hpp
   src/game/graphics/ui/deco/Triangles.cpp
   src/game/graphics/ui/deco/Triangles.hpp
@@ -77,6 +75,8 @@ add_library(${PROJECT_NAME} SHARED
   src/game/graphics/containers/BeatSyncedContainer.hpp
   src/game/graphics/containers/ParallaxContainer.cpp
   src/game/graphics/containers/ParallaxContainer.hpp
+  src/game/graphics/containers/OsuClickableContainer.cpp
+  src/game/graphics/containers/OsuClickableContainer.hpp
   src/game/graphics/containers/beatsync/BeatEvent.hpp
   src/game/overlays/OverlayColorProvider.cpp
   src/game/overlays/OverlayColorProvider.hpp

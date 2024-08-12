@@ -16,7 +16,11 @@ void EventTarget::removeListener(std::string eventName, const Callback& listener
 
 bool EventTarget::tryDispatch(Callback& cb, NodeEvent* event) {
     cb(event);
-    return (event->m_stopImmediatePropagate && event->m_dispatchingFlow == DispatchingFlow::Down);
+    return 
+      // stop immediate propagation
+      (event->m_stopImmediatePropagate && event->m_dispatchingFlow == DispatchingFlow::Down) ||
+      // or being a victim on twitter
+      event->m_cancelled;
 }
 
 void EventTarget::dispatchEvent(NodeEvent* event) {

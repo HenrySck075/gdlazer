@@ -4,6 +4,7 @@
 
 using namespace geode::prelude;
 
+// The base implementation for a class (preferably in a node tree) that receives events
 class EventTarget {
 public:
     using Callback = geode::utils::MiniFunction<void(NodeEvent*)>;

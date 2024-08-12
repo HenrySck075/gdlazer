@@ -33,7 +33,8 @@ enum class Unit {
     UIKit
 };
 
-/// @brief CCLayer that implements local Event system (like javascript EventTarget) + some more shit
+/// @brief CCLayer that implements some more shit
+/// The way event works on this is rather different from Javascript (and the Geode Event system); instead of calling in added order, it calls in children list order
 class Container : public CCLayerColor, public EventTarget {
 private:
     enum class ah {Left, Center, Right};
@@ -100,7 +101,7 @@ protected:
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
 
 public:
-    // dispatchEvent(event, true) but does not dispatch the event for the calling node
+    // Dispatches the event to the child. 
     virtual void dispatchToChild(NodeEvent* event);
 
     // breaking change (not)
