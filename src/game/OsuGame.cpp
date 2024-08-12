@@ -1,6 +1,7 @@
 #include "OsuGame.hpp"
 #include "../helpers/CustomActions.hpp"
 
+#ifdef GEODE_IS_WINDOWS
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -13,12 +14,12 @@ LRESULT CALLBACK nWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
     case WM_SIZE:
     case WM_MOVE:
     case WM_KILLFOCUS:
-        if (OsuGame* mainGame = dynamic_cast<OsuGame*>(OsuGame::get())) {
+        if (OsuGame* mainGame = typeinfo_cast<OsuGame*>(OsuGame::get())) {
             mainGame->onLoseFocus();
         }
         break;
     case WM_SETFOCUS:
-        if (OsuGame* mainGame = dynamic_cast<OsuGame*>(OsuGame::get())) {
+        if (OsuGame* mainGame = typeinfo_cast<OsuGame*>(OsuGame::get())) {
             mainGame->onFocus();
         }
         break;
@@ -30,6 +31,7 @@ LRESULT CALLBACK nWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 HWND getWindowHandle() {
     return WindowFromDC(wglGetCurrentDC());
 }
+#endif
 
 bool OsuGame::init() {
     CCScene::init();
@@ -39,10 +41,12 @@ bool OsuGame::init() {
     main->addChild(MainMenu::create(false));
     toolbar = Toolbar::create();
     this->addChild(toolbar);
+#ifdef GEODE_IS_WINDOWS
     if (!newWindowProcSet) {
         oWindowProc = SetWindowLongPtrA(getWindowHandle(), -4, (LONG_PTR)nWindowProc);
         newWindowProcSet = true;
     }
+#endif
     return true;
 }
 

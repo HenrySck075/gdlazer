@@ -66,9 +66,9 @@ bool isType(ComparingType obj) {
 
 float uiWidthToGL(float length) {
   auto d = CCDirector::sharedDirector();
-  return length / d->getOpenGLView()->getDisplaySize().width * d->getWinSize().width;
+  return length / d->getOpenGLView()->getFrameSize().width * d->getWinSize().width;
 }
 float uiHeightToGL(float length) {
   auto d = CCDirector::sharedDirector();
-  return length / d->getOpenGLView()->getDisplaySize().height * d->getWinSize().height;
+  return length / d->getOpenGLView()->getFrameSize().height * d->getWinSize().height;
 }

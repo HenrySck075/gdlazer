@@ -27,7 +27,7 @@ public:
 		return instance;
 	}
 
-  void playMusic(gd::string path, bool loop) {
+  void playMusic(std::string path, bool loop) {
     system->createSound((path).c_str(), FMOD_LOOP_NORMAL, nullptr, &(sound));
 		sound->setLoopCount(-1);
 		system->playSound((sound), nullptr, false, &(channel));

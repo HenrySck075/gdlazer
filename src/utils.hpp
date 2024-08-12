@@ -34,7 +34,7 @@ CCRect flipRect(CCRect rect);
 // use wisely
 template<typename interface, typename obj>
 inline bool didImplements(obj object) {
-  return dynamic_cast<interface*>(object) != nullptr;
+  return typeinfo_cast<interface*>(object) != nullptr;
 }
 
 

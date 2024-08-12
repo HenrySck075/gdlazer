@@ -62,7 +62,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     this->setCascadeOpacityEnabled(true);
 
-    CCMenuItemHover::init(clickSfx, clickCb, this);
+    OsuClickableContainer::init(clickSfx, clickCb, this);
 
     return true;
 

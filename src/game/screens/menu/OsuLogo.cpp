@@ -7,7 +7,7 @@ float lin2dB(float linear)
     return -(clamp(log10(linear) * 20.0f, -80.f, 1.0f));
 }
 bool OsuLogo::init() {
-    CCMenuItemHover::init("osu-logo-select.wav"_spr, [this](CCNode* idk) {
+    OsuClickableContainer::init("osu-logo-select.wav"_spr, [this](CCNode* idk) {
         //FMODAudioEngine::sharedEngine()->playEffect();
     },this);
     /*
@@ -30,7 +30,7 @@ bool OsuLogo::init() {
 
   if (logoSprite != nullptr) {
       logoSprite->setID("m");
-      this->CCMenuItemHover::setContentSize(logoSprite->getContentSize());
+      this->OsuClickableContainer::setContentSize(logoSprite->getContentSize());
       logoSprite->setPosition(logoSprite->getContentSize() / 2);
       logoSprite->setScale(0.8);
       this->addChild(logoSprite);

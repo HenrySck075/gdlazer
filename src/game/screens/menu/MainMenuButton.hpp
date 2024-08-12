@@ -4,7 +4,7 @@
 #include "ButtonSystemState.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
-#include "../../graphics/ui/CCMenuItemHover.hpp"
+#include "../../graphics/ui/OsuClickableContainer.hpp"
 #include "../../../utils.hpp"
 
 using namespace geode::prelude;
@@ -12,7 +12,7 @@ using namespace geode::prelude;
 /// <summary>
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public CCMenuItemHover
+class MainMenuButton : public OsuClickableContainer
 {
     Color4 m_color = Color4(0,0,0,0);
     float const BOUNCE_COMPRESSION = 0.9f;
@@ -79,9 +79,9 @@ private:
     public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => background.ReceivePositionalInputAt(screenSpacePos);
 */
 public:
-    static MainMenuButton* create(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
+    static MainMenuButton* create(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
         create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
     };
-    bool init(gd::string text, gd::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
+    bool init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
     void setContentSize(const CCSize& s) override;
 };

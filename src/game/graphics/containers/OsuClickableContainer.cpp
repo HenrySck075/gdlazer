@@ -1,6 +1,6 @@
-#include "CCMenuItemHover.hpp"
+#include "OsuClickableContainer.hpp"
 
-bool CCMenuItemHover::init(std::string clickSfx, ButtonCallback clickCb, CCNode* self) {
+bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, CCNode* self) {
     this->clickCallback = clickCb;
     this->clickSfx = clickSfx;
 
@@ -50,7 +50,7 @@ bool CCMenuItemHover::init(std::string clickSfx, ButtonCallback clickCb, CCNode*
 
 
 /*
-bool CCMenuItemHover::ccTouchBegan(CCTouch* t, CCEvent* idc) {
+bool OsuClickableContainer::ccTouchBegan(CCTouch* t, CCEvent* idc) {
     bool ret = CCTouchDelegate::ccTouchBegan(t, idc);
     if (ret) {
         log::debug("[CCNodeHover]: {}", touchStartInBounds != m_entered);
@@ -60,7 +60,7 @@ bool CCMenuItemHover::ccTouchBegan(CCTouch* t, CCEvent* idc) {
     return ret;
 }
 
-void CCMenuItemHover::ccTouchEnded(CCTouch* t, CCEvent* idc) {
+void OsuClickableContainer::ccTouchEnded(CCTouch* t, CCEvent* idc) {
     if (touchStartInBounds!=m_entered) return;
 }
 

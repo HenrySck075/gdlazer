@@ -14,7 +14,7 @@ bool Container::init() {
 void Container::dispatchToChild(NodeEvent* event) {
     CCObject* obj;
     CCARRAY_FOREACH(m_pChildren, obj) {
-        if (auto node = dynamic_cast<Container*>(obj)) {
+        if (auto node = typeinfo_cast<Container*>(obj)) {
             node->dispatchEvent(event);
         }
     }
@@ -56,7 +56,7 @@ void Container::onLayoutUpdate() {
 
 bool ContainerNodeWrapper::init(CCNode* node)  {
     /*
-    if (!dynamic_cast<Container*>(node)) {
+    if (!typeinfo_cast<Container*>(node)) {
         log::error("[ContainerNodeWrapper]: The node passed does not meet the candidate to be a node: it is a {}", node);
         return false;
     }
@@ -78,7 +78,7 @@ void ContainerNodeWrapper::dispatchToChild(NodeEvent* event) {
     log::debug("[ContainerNodeWrapper]: {} {}", this, m_node);
     auto c = m_node->getChildren();
     CCARRAY_FOREACH(c, obj) {
-        if (auto node = dynamic_cast<Container*>(obj)) {
+        if (auto node = typeinfo_cast<Container*>(obj)) {
             node->dispatchEvent(event);
         }
     }

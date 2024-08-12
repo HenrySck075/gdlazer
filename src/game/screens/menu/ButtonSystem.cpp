@@ -130,7 +130,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             icons.Beatmap, 
             Color4(165, 204, 0, 255), 
             [](CCNode* j) {
-                auto s = dynamic_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
+                auto s = typeinfo_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
                 if (s == nullptr) return;
                 s->showToolbar();
                 //->setUserObject("osugame.show-toolbar"_spr, CCBool::create(true));
@@ -142,7 +142,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             icons.Beatmap, 
             Color4(154, 198, 0, 255), 
             [](CCNode* j) {
-                auto s = dynamic_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
+                auto s = typeinfo_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
                 if (s == nullptr) return;
                 s->hideToolbar();
                 //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));

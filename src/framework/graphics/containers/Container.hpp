@@ -80,7 +80,7 @@ protected:
         case Unit::OpenGL:
             return value;
         case Unit::UIKit:
-            return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getDisplaySize().width);
+            return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getFrameSize().width);
         case Unit::Viewport:
             return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
         case Unit::Percent:
@@ -139,7 +139,7 @@ private:
             processUnit(m_size.width, m_sizeUnit.first, true),
             processUnit(m_size.height,m_sizeUnit.second, false)
         ));
-        dispatchToChild(new NodeUIEvent("nodeLayoutUpdate"));
+        dispatchToChild(new NodeEvent("nodeLayoutUpdate"));
         m_sizeP = m_size;
     }
 public:

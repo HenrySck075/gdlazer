@@ -42,7 +42,5 @@ private:
     T m_event;
 public:
     GeodeEvent(std::string name) = delete;
-    GeodeEvent(T event) : m_event(event) {
-        NodeEvent("geode_"+typeid(event).name());
-    }
+    GeodeEvent(T event, std::string name) : NodeEvent(name), m_event(event) {}
 };

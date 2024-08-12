@@ -15,7 +15,7 @@ bool MainMenu::init(bool flash) {
     //detector = BeatDetector::Instance();
     //detector->LoadSongFromSystem();
     int bgIndex = (int)(randomFloat() * 7) + 1;
-    gd::string the;
+    std::string the;
     // this is not yandere behaviour, simply because of _spr
     switch (bgIndex) {
     case 1:

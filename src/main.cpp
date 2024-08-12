@@ -263,7 +263,7 @@ $execute{
 
 #include <Geode/modify/FMODAudioEngine.hpp>
 class $modify(FMODAudioEngine) {
-	void playMusic(gd::string path, bool shouldLoop, float fadeInTime, int channel) {
+	void playMusic(std::string path, bool shouldLoop, float fadeInTime, int channel) {
 		FMODAudioEngine::playMusic(path, shouldLoop, fadeInTime, channel);
 		auto instance = BeatDetector::Instance();
 		if (!instance->systemLoaded()) instance->loadSystem();
@@ -283,10 +283,10 @@ class $modify(CCNodeRGBA) {
 			CCObject* pObj;
 			CCARRAY_FOREACH(m_pChildren, pObj)
 			{
-				CCRGBAProtocol* item = dynamic_cast<CCRGBAProtocol*>(pObj);
+				CCRGBAProtocol* item = typeinfo_cast<CCRGBAProtocol*>(pObj);
 				if (item)
 				{
-					CCBool* _b = static_cast<CCBool*>(dynamic_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+					CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
 					
 					if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
 				}

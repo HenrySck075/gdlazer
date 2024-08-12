@@ -6,8 +6,8 @@
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
     m_color = color;
-    CCMenuItemHover::init(sampleClick, clickAct, this);
-    CCMenuItemHover::setContentSize(m);
+    OsuClickableContainer::init(sampleClick, clickAct, this);
+    OsuClickableContainer::setContentSize(m);
     //this->addListener(reactive_listener(updateReactive));
 
     std::transform(text.begin(), text.end(), text.begin(), [](char in) -> char {
@@ -55,7 +55,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
 
 
 void MainMenuButton::setContentSize(const CCSize& s) {
-    CCMenuItemHover::setContentSize(s);
+    OsuClickableContainer::setContentSize(s);
     // todo: move to container
     this->getChildByID("background")->setContentSize(s);
     this->getChildByID("background")->setPosition(s/2);
