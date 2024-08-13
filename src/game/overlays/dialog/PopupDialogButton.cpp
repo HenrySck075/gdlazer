@@ -69,7 +69,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 }
 
 void PopupDialogButton::setOpacity(GLubyte opacity) {
-    CCNodeRGBA::setOpacity(opacity); 
+    CCLayerColor::setOpacity(opacity); 
     static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"))->setOpacity(opacity);
     static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"))->setOpacity(opacity);
 }

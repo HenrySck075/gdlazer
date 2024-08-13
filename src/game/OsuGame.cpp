@@ -33,12 +33,14 @@ HWND getWindowHandle() {
 }
 #endif
 
+OsuGame* OsuGame::instance = nullptr;
+
 bool OsuGame::init() {
     CCScene::init();
     main = Container::create();
     main->setContentSize(getContentSize());
     this->addChild(main);
-    main->addChild(MainMenu::create(false));
+    main->addChild(SongSelect::create());
     toolbar = Toolbar::create();
     this->addChild(toolbar);
 #ifdef GEODE_IS_WINDOWS

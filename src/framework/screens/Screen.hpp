@@ -11,7 +11,10 @@ public:
     static Screen* create() {
         create_class(Screen, init);
     };
-    bool init() {};
+    bool init() {
+        setContentSizeWithUnit(CCSize(1,1),Unit::Viewport,Unit::Viewport);
+        return true;
+    };
     virtual void onEntering(ScreenTransitionEvent e) {};
     virtual void onExiting(ScreenTransitionEvent e) {};
 

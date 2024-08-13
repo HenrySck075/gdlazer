@@ -7,7 +7,7 @@
 using namespace cocos2d;
 
 // widgets
-#include "screens/menu/MainMenu.hpp"
+#include "screens/select/SongSelect.hpp"
 #include "overlays/toolbar/Toolbar.hpp"
 
 // the
@@ -20,18 +20,26 @@ class OsuScreen;
 // funny
 class OsuGame : public CCScene, public EventTarget {
 private:
+    static OsuGame* instance;
+
     Toolbar* toolbar;
     Container* main;
 
     CCArrayExt<OsuScreen*> screenStack;
 public:
-    static OsuGame* create() {
-        OsuGame* ret = new OsuGame(); 
-        if (ret && ret->init()) { ret->autorelease(); } 
-        else { 
-            do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
-        }; 
-        return ret;
+    // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
+    // (its not scary most users dont leave their pc overnight anyways)
+    static OsuGame* get() {
+        if (instance == nullptr) {
+            OsuGame* ret = new OsuGame(); 
+            if (ret && ret->init()) { ret->autorelease(); } 
+            else { 
+                do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
+            }; 
+            instance = ret;
+            instance->retain();
+        }
+        return instance;
     }
 
     bool init();

@@ -100,7 +100,7 @@ protected:
     std::pair<Unit, Unit> m_sizeUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
 
-    bool tryDispatch(Callback& cb, NodeEvent* event) override;
+    //bool tryDispatch(Callback& cb, NodeEvent* event) override;
 
     void dispatchEventUnsafe(NodeEvent* event) override;
 public:

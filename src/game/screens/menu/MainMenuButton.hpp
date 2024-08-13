@@ -4,7 +4,7 @@
 #include "ButtonSystemState.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
-#include "../../graphics/ui/OsuClickableContainer.hpp"
+#include "../../graphics/containers/OsuClickableContainer.hpp"
 #include "../../../utils.hpp"
 
 using namespace geode::prelude;

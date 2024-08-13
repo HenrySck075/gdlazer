@@ -199,9 +199,9 @@ bool ButtonSystem::init(OsuLogo* logo) {
     logo->setPosition(an);
     logo->setScale(0.4);
     //this->setPositionX(0);
-    auto me = CCMenu::createWithItem(logo);
-    me->setPosition(ccp(0,0));
-    this->addChild(me);
+    //auto me = CCMenu::createWithItem(logo);
+    //me->setPosition(ccp(0,0));
+    this->addChild(logo);
     setAnchorPoint(ccp(0.5,0.5));
 
     return true;

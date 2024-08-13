@@ -11,15 +11,21 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
         auto event = static_cast<MouseEvent*>(e);
         auto type = event->eventType;
         if (!(this->m_hoverEnabled && isRunning())) return;
-        if (type == MouseEventType::Enter) {
-            //m_entered = true;
-            this->onMouseEnter();
-            event->stopImmediatePropagation();
-        }
-        if (type == MouseEventType::Exit) {
-            //m_entered = false;
-            this->onMouseExit();
-            event->stopImmediatePropagation();
+        switch (type) {
+            case MouseEventType::Enter:
+                //m_entered = true;
+                this->onMouseEnter();
+            case MouseEventType::Exit:
+                //m_entered = false;
+                this->onMouseExit();
+            case MouseEventType::MouseUp:
+                this->onMouseUp();
+            case MouseEventType::MouseDown:
+                this->onMouseDown();
+            case MouseEventType::Click:
+                this->onClick();
+                FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
+                this->clickCallback(this);
         }
         return;
     });

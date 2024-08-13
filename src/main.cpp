@@ -5,7 +5,7 @@
 #include "Geode/binding/FMODAudioEngine.hpp"
 #include "Geode/cocos/cocoa/CCObject.h"
 #include "game/screens/menu/intro/IntroTriangles.hpp"
-#include "helpers/MouseEvent.hpp"
+#include "game/MouseEvent.hpp"
 #include "game/overlays/dialog/PopupDialog.hpp"
 #include "game/overlays/dialog/PopupDialogButton.hpp"
 #include "main/PauseLayer.hpp"
@@ -162,7 +162,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 		b->show();
 	}
 	void onMyButton2(CCObject*) {
-		CCDirector::sharedDirector()->pushScene(OsuGame::create());
+		CCDirector::sharedDirector()->pushScene(OsuGame::get());
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
 	}
 };
@@ -182,17 +182,18 @@ class $modify(CCEGLView) {
 		h = m_obScreenSize.height;
 		auto st = CCDirector::sharedDirector()->getVisibleSize();
 		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
-		MouseEvent(CCPoint{ (float)p.x, (float)p.y }).post();
+		OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move, CCPoint{ (float)p.x, (float)p.y }));
 	};
 	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
+		auto o = OsuGame::get();
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 			m_click = true;
-			MouseEvent(ccp(-4, -4)).post();
+			o->dispatchEvent(new MouseEvent(MouseEventType::MouseDown, ccp(-4, -4)));
 			return;
 		}
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
-			MouseEvent(ccp(-2, -2)).post();
+			o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, ccp(-2, -2)));
 			m_click = false;
 		}
 	}

@@ -23,6 +23,7 @@ void Container::dispatchEventUnsafe(NodeEvent* event) {
     }
 }
 
+
 void Container::dispatchToChild(NodeEvent* event) {
     CCObject* obj;
     CCARRAY_FOREACH(m_pChildren, obj) {

@@ -29,10 +29,9 @@ protected:
     virtual void onMouseEnter() = 0;
     virtual void onMouseExit() = 0;
 
-
 public:
     void setClickSFX(std::string sfx) { clickSfx = sfx; };
-    void setCallback(MiniFunction<void(CCNode*)> clickCb) { clickCallback = clickCb; };
+    void setCallback(ButtonCallback clickCb) { clickCallback = clickCb; };
     /// <param name="clickCb">| the</param>
     /// <param name="self">| the node to be used as the clickCb parameter</param>
     bool init(std::string clickSfx, ButtonCallback clickCb, CCNode* self = nullptr);
@@ -53,7 +52,7 @@ public:
             ((realSize.height-pos.y) / realSize.height * winSize.height)
         );
 
-        MouseEvent(p).post(); 
+        dispatchEvent(new MouseEvent(MouseEventType::Move, p));
 #endif
     }
 	};
