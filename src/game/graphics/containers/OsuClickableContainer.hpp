@@ -14,8 +14,9 @@ private:
     ButtonCallback clickCallback;
     std::string clickSfx = "";
     bool m_clickEnabled = true;
-	bool m_hoverEnabled = true;
-	EventListenerProtocol* m_listener;
+    bool m_hoverEnabled = true;
+    bool m_entered = false;
+    EventListenerProtocol* m_listener;
 
     bool holding = false;
 
@@ -38,8 +39,8 @@ public:
     void setClickEnabled(bool e) {m_clickEnabled = e;}
     bool getClickEnabled() {return m_clickEnabled;}
     void setHoverEnabled(bool state) { 
-		m_hoverEnabled = state; 
-		if (!m_hoverEnabled) {onMouseExit();}
+        m_hoverEnabled = state; 
+        if (!m_hoverEnabled) {onMouseExit();}
     else {
 #ifdef GEODE_IS_WINDOWS
         auto director = CCDirector::sharedDirector();
@@ -55,8 +56,8 @@ public:
         dispatchEvent(new MouseEvent(MouseEventType::Move, p));
 #endif
     }
-	};
-	bool getHoverEnabled() { return m_hoverEnabled; }
+    };
+    bool getHoverEnabled() { return m_hoverEnabled; }
     
   /*
     // redirecting functions

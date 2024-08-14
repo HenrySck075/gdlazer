@@ -54,14 +54,19 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
 }
 
 
-void MainMenuButton::setContentSize(const CCSize& s) {
-    OsuClickableContainer::setContentSize(s);
+void MainMenuButton::setContentSize(const CCSize& size) {
+    OsuClickableContainer::setContentSize(size);
+    auto s = getRealContentSize();
     // todo: move to container
-    this->getChildByID("background")->setContentSize(s);
-    this->getChildByID("background")->setPosition(s/2);
-    this->getChildByID("hover")->setContentSize(s);
-    this->getChildByID("hover")->setPosition(s/2);
-    this->getChildByID("ui")->setPosition(s/2);
+    if (auto bg = this->getChildByID("background")) {
+        bg->setContentSize(s);
+        bg->setPosition(s/2);
+    }
+    if (auto bgh = this->getChildByID("hover")) {
+        bgh->setContentSize(s);
+        this->getChildByID("hover")->setPosition(s/2);
+    }
+    if (auto ui = this->getChildByID("ui")) ui->setPosition(s/2);
     if (m_askForUpdate) m_pParent->updateLayout();
 }
 

@@ -10,28 +10,28 @@ using namespace geode::prelude;
 class SoundManager {
 
 protected:
-	static SoundManager* instance;
+    static SoundManager* instance;
 public:
-	
-	FMOD::Sound* sound;
-	FMOD::Channel* channel;
-	FMOD::System* system = FMODAudioEngine::sharedEngine()->m_system;
-	
-	std::string path = "";
+    
+    FMOD::Sound* sound;
+    FMOD::Channel* channel;
+    FMOD::System* system = FMODAudioEngine::sharedEngine()->m_system;
+    
+    std::string path = "";
 
-	static SoundManager* sharedManager(){
+    static SoundManager* sharedManager(){
 
-		if (!instance) {
-			instance = new SoundManager();
-		};
-		return instance;
-	}
+        if (!instance) {
+            instance = new SoundManager();
+        };
+        return instance;
+    }
 
   void playMusic(std::string path, bool loop) {
     system->createSound((path).c_str(), FMOD_LOOP_NORMAL, nullptr, &(sound));
-		sound->setLoopCount(-1);
-		system->playSound((sound), nullptr, false, &(channel));
-		channel->setVolume(1);
+        sound->setLoopCount(-1);
+        system->playSound((sound), nullptr, false, &(channel));
+        channel->setVolume(1);
     channel->addFadePoint(0, 0);
     channel->addFadePoint(1, 1);
   }

@@ -1,13 +1,18 @@
 #include "Container.hpp"
 
 bool Container::init() {
-    auto e = CCLayer::init();
+    if (!CCLayerRGBA::init()) return false;
+    colorBg = CCLayerColor::create(ccc4(255,255,255,0));
+    addChild(colorBg);
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
+    updateAnchorLabel();
+    updateSizeUnitLabel();
+    updatePositionUnitLabel();
     //setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
 
-    return e;
+    return true;
 }
 
 void Container::dispatchEventUnsafe(NodeEvent* event) {
@@ -18,6 +23,7 @@ void Container::dispatchEventUnsafe(NodeEvent* event) {
     switch (event->m_dispatchingFlow) {
       case DispatchingFlow::Up:
         if (auto p = typeinfo_cast<Container*>(m_pParent)) p->dispatchEvent(event);
+        break;
       case DispatchingFlow::Down:
         dispatchToChild(event);
     }
@@ -25,6 +31,7 @@ void Container::dispatchEventUnsafe(NodeEvent* event) {
 
 
 void Container::dispatchToChild(NodeEvent* event) {
+    event->m_dispatchingFlow = DispatchingFlow::Down;
     CCObject* obj;
     CCARRAY_FOREACH(m_pChildren, obj) {
         if (auto node = typeinfo_cast<Container*>(obj)) {

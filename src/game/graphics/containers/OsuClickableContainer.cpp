@@ -1,6 +1,7 @@
 #include "OsuClickableContainer.hpp"
 
 bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, CCNode* self) {
+    Container::init();
     this->clickCallback = clickCb;
     this->clickSfx = clickSfx;
 
@@ -13,19 +14,29 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
         if (!(this->m_hoverEnabled && isRunning())) return;
         switch (type) {
             case MouseEventType::Enter:
-                //m_entered = true;
+                m_entered = true;
                 this->onMouseEnter();
+                break;
             case MouseEventType::Exit:
-                //m_entered = false;
+                m_entered = false;
                 this->onMouseExit();
+                break;
             case MouseEventType::MouseUp:
-                this->onMouseUp();
+                if (m_entered) {
+                    this->onMouseUp();
+                    event->preventDefault();
+                }
+                break;
             case MouseEventType::MouseDown:
                 this->onMouseDown();
+                break;
             case MouseEventType::Click:
-                this->onClick();
-                FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
-                this->clickCallback(this);
+                if (m_entered) {
+                    this->onClick();
+                    FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
+                    this->clickCallback(this);
+                    event->preventDefault();
+                }
         }
         return;
     });

@@ -61,7 +61,6 @@ add_library(${PROJECT_NAME} SHARED
   src/game/scoring/HitResult.hpp
   src/game/scoring/RankingTier.hpp
   src/game/scoring/ScoreRank.hpp
-  src/game/screens/OsuScreen.hpp
   src/game/screens/menu/ButtonArea.cpp
   src/game/screens/menu/ButtonArea.hpp
   src/game/screens/menu/ButtonConstants.hpp

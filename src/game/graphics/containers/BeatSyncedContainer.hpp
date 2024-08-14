@@ -8,11 +8,11 @@ using namespace geode::prelude;
 // Note: one must make the create function themselves
 class BeatSyncedContainer {
 private:
-	EventListener<EventFilter<BeatEvent>> m_listener = { [this](BeatEvent* n) {
-			log::info("beat");
-			this->onBeat(n->getElapsed());
-			return ListenerResult::Propagate;
-		} };
+    EventListener<EventFilter<BeatEvent>> m_listener = { [this](BeatEvent* n) {
+            log::info("beat");
+            this->onBeat(n->getElapsed());
+            return ListenerResult::Propagate;
+        } };
 public:
-	virtual void onBeat(float elapsed) = 0;
+    virtual void onBeat(float elapsed) = 0;
 };

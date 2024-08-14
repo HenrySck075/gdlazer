@@ -3,6 +3,9 @@
 #include "../../graphics/OsuIcon.hpp"
 #include "../../overlays/dialog/PopupDialog.hpp"
 
+class SongSelect;
+#include "../select/SongSelect.hpp"
+
 void ButtonSystem::setOsuLogo(OsuLogo* logo) {
         this->logo = logo;
         /*
@@ -72,7 +75,10 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-default-select.wav"_spr, 
             icons.Player, 
             Color4(102, 68, 204, 255),
-            [this](CCNode*j){this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);}
+            [this](CCNode*j){
+                //this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);
+                OsuGame::get()->pushScreen(SongSelect::create());
+            }
         ),
         MainMenuButton::create(
             "Saved levels", 

@@ -7,12 +7,11 @@
 using namespace cocos2d;
 
 // widgets
-#include "screens/select/SongSelect.hpp"
 #include "overlays/toolbar/Toolbar.hpp"
 
 // the
-class OsuScreen;
-#include "../game/screens/OsuScreen.hpp"
+class Screen;
+#include "../framework/screens/Screen.hpp"
 #include "../framework/screens/ScreenTransitionEvent.hpp"
 
 // the grand dad
@@ -25,7 +24,7 @@ private:
     Toolbar* toolbar;
     Container* main;
 
-    CCArrayExt<OsuScreen*> screenStack;
+    CCArrayExt<Screen*> screenStack;
 public:
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
@@ -42,12 +41,25 @@ public:
         return instance;
     }
 
+    void dispatchEvent(NodeEvent* event) override {
+        EventTarget::dispatchEvent(event);
+        if (event->eventName() == "mouseEvent") {
+            updateDispatchFlow(event, DispatchingFlow::Down);
+            auto mPtr = getChildren();
+            if (mPtr==nullptr) return;
+            CCObject* obj;
+            CCARRAY_FOREACH(mPtr, obj) {
+                if (auto c = typeinfo_cast<Container*>(obj)) c->dispatchEvent(event);
+            }
+        }
+    }
+
     bool init();
 
     void showToolbar();
     void hideToolbar();
 
-    void pushScreen(OsuScreen* s);
+    void pushScreen(Screen* s);
     void popScreen();
 
     void onLoseFocus();

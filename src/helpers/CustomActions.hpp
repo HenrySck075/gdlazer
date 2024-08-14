@@ -106,7 +106,7 @@ public:
      *  @js ctor
      */
     CCCallFuncL()
-		: m_nScriptHandler(0)
+        : m_nScriptHandler(0)
         , m_pCallFunc(NULL)
     {
     }
@@ -138,7 +138,7 @@ public:
     inline int getScriptHandler() { return m_nScriptHandler; };
 protected:
     SEL_CallFuncL m_pCallFunc;
-	int m_nScriptHandler;
+    int m_nScriptHandler;
 
 };
 

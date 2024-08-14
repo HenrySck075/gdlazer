@@ -32,6 +32,7 @@ public:
     void stopPropagation() {m_stopPropagate = true;}
     // Stop any further event dispatchs further in the tree AND the current child list
     void stopImmediatePropagation() {m_stopImmediatePropagate = true;}
+    // Cancels the event
     void preventDefault() {m_cancelled = true;}
 
     friend class Container;

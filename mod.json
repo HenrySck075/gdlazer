@@ -1,31 +1,31 @@
 {
-	"geode": "3.4.0",
-	"gd": {
+    "geode": "3.4.0",
+    "gd": {
     "win": "2.206",
     "android": "2.206",
     "mac": "2.206",
     "ios": "2.206"
-	},
-	"id": "henrysck075.osulazer",
-	"name": "osu!lazer",
-	"version": "v0.0.7",
-	"developer": "Henry Spheria",
-	"description": "nico nico niii",
-	"early-load": true,
-	"resources": {
+    },
+    "id": "henrysck075.osulazer",
+    "name": "osu!lazer",
+    "version": "v0.0.7",
+    "developer": "Henry Spheria",
+    "description": "nico nico niii",
+    "early-load": true,
+    "resources": {
     "fonts": {
-    	"torus-regular": {
+        "torus-regular": {
         "path": "resources/torus/regular.ttf",
         "size": 80
-    	},
-    	"torus-light": {
+        },
+        "torus-light": {
         "path": "resources/torus/light.ttf",
         "size": 80
-    	},
-    	"torus-bold": {
+        },
+        "torus-bold": {
         "path": "resources/torus/bold.ttf",
         "size": 80
-    	}
+        }
     },
     "sprites": [
       "resources/textures/ui/dialog.png"
@@ -50,5 +50,5 @@
       "resources/glyphs/*.fnt",
       "resources/glyphs/*.png"
     ]
-	}
+    }
 }

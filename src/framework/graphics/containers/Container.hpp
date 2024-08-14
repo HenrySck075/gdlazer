@@ -34,8 +34,9 @@ enum class Unit {
 };
 
 /// @brief CCLayer that implements some more shit
+///
 /// The way event works on this is rather different from Javascript (and the Geode Event system); instead of calling in added order, it calls in children list order
-class Container : public CCLayerColor, public EventTarget {
+class Container : public CCLayerRGBA, public EventTarget {
 private:
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
@@ -66,6 +67,33 @@ private:
         {Anchor::Bottom, "bottom center"},
         {Anchor::BottomRight, "bottom right"} 
     };
+    CCLayerColor* colorBg;
+
+    std::string getUnitLabel(Unit unit) {
+        std::string l;
+        switch (unit) {
+            case Unit::OpenGL: l = "OpenGL Points";
+            case Unit::UIKit: l = "UIKit Points";
+            case Unit::Percent: l = "Parent's percentage";
+            case Unit::Viewport: l = "Viewport";
+        }
+        return l;
+    }
+    void updateAnchorLabel() {
+        setUserObject("of/anchor", CCString::create(m_anchorDebugLabel[m_anchor]));
+    }
+    void updateSizeUnitLabel() {
+        setUserObject("of/su", CCString::create(
+            "W: "+getUnitLabel(m_sizeUnit.first)+" | "
+            "H: "+getUnitLabel(m_sizeUnit.second)
+        ));
+    }
+    void updatePositionUnitLabel() {
+        setUserObject("of/pu", CCString::create(
+            "X: "+getUnitLabel(m_positionUnit.first)+" | "
+            "Y: "+getUnitLabel(m_positionUnit.second)
+        ));
+    }
 protected:
     Anchor m_anchor = Anchor::BottomLeft;
     
@@ -107,10 +135,15 @@ public:
     // Dispatches the event to the child. 
     virtual void dispatchToChild(NodeEvent* event);
 
+    void addChild(CCNode* e) override {
+        e->setParent(nullptr);
+        CCNode::addChild(e);
+    }
+
     // breaking change (not)
     void setLayout(Layout* l) {}
 
-    bool init() override;
+    bool init();
 
     static Container* create() {
         create_class(Container, init);
@@ -118,6 +151,7 @@ public:
     // Sets the position anchor
     void setAnchor(Anchor anchor) {
         m_anchor = anchor;
+        updateAnchorLabel();
         dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
     }
     Anchor getAnchor() {
@@ -130,6 +164,7 @@ public:
     void setSizeUnit(Unit sizeUnitHorizontal, Unit sizeUnitVertical) {
         m_sizeUnit.first = sizeUnitHorizontal;
         m_sizeUnit.second = sizeUnitVertical;
+        updateSizeUnitLabel();
     }
 
     // set a new content size while also providing the unit that will be parsed
@@ -170,6 +205,7 @@ public:
     void setPositionUnit(Unit posUnitHorizontal, Unit posUnitVertical) {
         m_positionUnit.first = posUnitHorizontal;
         m_positionUnit.second = posUnitVertical;
+        updatePositionUnitLabel();
     }
 
     void setPositionWithUnit(CCPoint const& position, Unit posUnitHorizontal, Unit posUnitVertical) {

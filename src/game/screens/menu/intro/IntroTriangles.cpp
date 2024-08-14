@@ -4,9 +4,9 @@
 #define delayRepeat(duration, ...) CCSequence::create(__VA_ARGS__, CCDelayTime::create(duration), nullptr)
 
 bool osuIntroTriangles::init() {
-	// Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
-	// Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
-	// osu! logo: ji
+    // Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
+    // Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
+    // osu! logo: ji
 
     auto label = CCLabelBMFont::create("","torus-light.fnt"_spr);
     //label->setFntFile("LazerFont.fnt"_spr);

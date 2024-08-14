@@ -5,9 +5,10 @@
 #include "../../graphics/OsuIcon.hpp"
 #include "../../graphics/CCResizableSprite.hpp"
 #include "../../graphics/containers/ParallaxContainer.hpp"
+#include "../select/SongSelect.hpp"
 
 bool MainMenu::init(bool flash) {
-    Container::init();
+    Screen::init();
     auto logo = OsuLogo::create();
     //logo->setPosition(CCDirector::sharedDirector()->getWinSize() / 2);
     //logo->setCallback([this](CCNode* j) {onLogoClickIdle(); });
@@ -62,11 +63,8 @@ bool MainMenu::init(bool flash) {
     
     auto btnParal = ParallaxContainer::create(0.01f);
     auto g = ButtonSystem::create(logo);
-	btnParal->addChild(g);
+    btnParal->addChild(g);
     this->addChild(btnParal);
-    this->setAnchorPoint(ccp(0.5,0.5));
-    this->setAnchor(Anchor::Center);
-    this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
 
     return true;
 }

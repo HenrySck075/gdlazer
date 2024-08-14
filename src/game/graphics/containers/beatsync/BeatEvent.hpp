@@ -5,11 +5,11 @@
 
 class BeatEvent : public geode::Event {
 private:
-	float m_elapsed;
+    float m_elapsed;
 public:
-	BeatEvent(cocos2d::CCObject* the, float elapsed) {
-		m_elapsed = elapsed;
-	}
+    BeatEvent(cocos2d::CCObject* the, float elapsed) {
+        m_elapsed = elapsed;
+    }
 
-	float getElapsed() { return m_elapsed; }
+    float getElapsed() { return m_elapsed; }
 };

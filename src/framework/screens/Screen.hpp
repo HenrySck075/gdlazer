@@ -12,6 +12,7 @@ public:
         create_class(Screen, init);
     };
     bool init() {
+        Container::init();
         setContentSizeWithUnit(CCSize(1,1),Unit::Viewport,Unit::Viewport);
         return true;
     };

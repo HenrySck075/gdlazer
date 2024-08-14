@@ -40,7 +40,6 @@ bool OsuGame::init() {
     main = Container::create();
     main->setContentSize(getContentSize());
     this->addChild(main);
-    main->addChild(SongSelect::create());
     toolbar = Toolbar::create();
     this->addChild(toolbar);
 #ifdef GEODE_IS_WINDOWS
@@ -66,14 +65,15 @@ void OsuGame::hideToolbar() {
     ));
 }
 
-void OsuGame::pushScreen(OsuScreen* s) {
-    OsuScreen* ls;
+void OsuGame::pushScreen(Screen* s) {
+    Screen* ls;
     if (screenStack.size()!=0) {
         ls = screenStack[screenStack.size()-1];
     }
     s->onEntering(ScreenTransitionEvent(ls,s));
     screenStack.push_back(s);
     main->addChild(s);
+    
 }
 
 void OsuGame::popScreen() {
@@ -99,3 +99,13 @@ void OsuGame::onFocus() {
     engine->setBackgroundMusicVolume(engine->getBackgroundMusicVolume()/0.6);
     engine->setEffectsVolume(engine->getEffectsVolume()/0.6);
 }
+
+#include <Geode/modify/AppDelegate.hpp>
+
+class $modify(AppDelegate) {
+    void platformShutdown() {
+        log::info("[hook: AppDelegate]: shutdown app");
+        OsuGame::get()->release();
+        AppDelegate::platformShutdown();
+    }
+};

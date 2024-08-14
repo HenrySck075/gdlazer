@@ -7,20 +7,20 @@ using namespace geode::prelude;
 
 class Triangles : public CCLayerRGBA {
 private:
-	ccColor3B m_color;
+    ccColor3B m_color;
 
-	bool init(CCSize size, int quantity, ccColor3B color);
+    bool init(CCSize size, int quantity, ccColor3B color);
 
-	// TODO: tweak this because cocos2d space is not based on real window size
-	float triangle_size = 100;
-	float base_velocity = 50;
+    // TODO: tweak this because cocos2d space is not based on real window size
+    float triangle_size = 100;
+    float base_velocity = 50;
 
-	CCSprite* makeTriangle();
-	void spawnTriangle();
-	// mf crashes when the node does not have a parent :laugh:
-	void assignAction(CCNode* node, float startTime);
+    CCSprite* makeTriangle();
+    void spawnTriangle();
+    // mf crashes when the node does not have a parent :laugh:
+    void assignAction(CCNode* node, float startTime);
 public:
-	static Triangles* create(CCSize size, int quantity, ccColor3B baseColor);
+    static Triangles* create(CCSize size, int quantity, ccColor3B baseColor);
 };
 
 #endif

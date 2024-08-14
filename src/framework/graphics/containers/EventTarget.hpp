@@ -25,6 +25,10 @@ protected:
     //
     // trust me its better than reloadAllStep5
     virtual void dispatchEventUnsafe(NodeEvent* event);
+
+    void updateDispatchFlow(NodeEvent* event, DispatchingFlow flow) {
+        event->m_dispatchingFlow = flow;
+    }
 public:
     void addListener(std::string eventName, const Callback& listener);
     void removeListener(std::string eventName, const Callback& listener);

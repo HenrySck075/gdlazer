@@ -87,7 +87,7 @@ std::string unicode_to_utf8(int unicode)
 }
 /*
 CCSprite* extractSpriteFromLabel(CCLabelBMFont* label) {
-	return CCSprite::createWithTexture(static_cast<CCSprite*>(label->getChildren()->objectAtIndex(0))->getTexture());
+    return CCSprite::createWithTexture(static_cast<CCSprite*>(label->getChildren()->objectAtIndex(0))->getTexture());
 }
 
 #define iconFont(name, charid, fontname) CCLabelBMFont* OsuIcon::name = CCLabelBMFont::create(std::to_string(charid).c_str(),fontname)

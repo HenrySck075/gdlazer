@@ -82,89 +82,91 @@ class $modify(nPauseLayer,PauseLayer) {
 
 #include <Geode/modify/LoadingLayer.hpp>
 class $modify(LoadingLayer) {
-	bool init(bool idk) {
-		bool res = LoadingLayer::init(idk);
-		this->setVisible(false);
-		return res;
-	}
+    bool init(bool idk) {
+        bool res = LoadingLayer::init(idk);
+        this->setVisible(false);
+        return res;
+    }
 };
 
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
-	/**
-	 * Typically classes in GD are initialized using the `init` function, (though not always!),
-	 * so here we use it to add our own button to the bottom menu.
-	 *
-	 * Note that for all hooks, your signature has to *match exactly*,
-	 * `void init()` would not place a hook!
-	*/
-	bool init() {
-		/**
-		 * We call the original init function so that the
-		 * original class is properly initialized.
-		 */
-		if (!MenuLayer::init()) {
-			return false;
-		}
+    /**
+     * Typically classes in GD are initialized using the `init` function, (though not always!),
+     * so here we use it to add our own button to the bottom menu.
+     *
+     * Note that for all hooks, your signature has to *match exactly*,
+     * `void init()` would not place a hook!
+    */
+    bool init() {
+        /**
+         * We call the original init function so that the
+         * original class is properly initialized.
+         */
+        if (!MenuLayer::init()) {
+            return false;
+        }
 
-		auto introButton = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			/**
-			 * Here we use the name we set earlier for our modify class.
-			*/
-			menu_selector(MyMenuLayer::onMyButton)
-		);
+        auto introButton = CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+            this,
+            /**
+             * Here we use the name we set earlier for our modify class.
+            */
+            menu_selector(MyMenuLayer::onMyButton)
+        );
 
 
-		auto dialogButton = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			/**
-			 * Here we use the name we set earlier for our modify class.
-			*/
-			menu_selector(MyMenuLayer::onMyButton2)
-		);
+        auto dialogButton = CCMenuItemSpriteExtra::create(
+            CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+            this,
+            /**
+             * Here we use the name we set earlier for our modify class.
+            */
+            menu_selector(MyMenuLayer::onMyButton2)
+        );
 
-		auto menu = this->getChildByID("bottom-menu");
-		menu->addChild(introButton);
-		menu->addChild(dialogButton);
+        auto menu = this->getChildByID("bottom-menu");
+        menu->addChild(introButton);
+        menu->addChild(dialogButton);
 
-		/**
-		 * We update the layout of the menu to ensure that our button is properly placed.
-		 * This is yet another Geode feature, see this page for more info about it:
-		 * https://docs.geode-sdk.org/tutorials/layouts
-		*/
-		menu->updateLayout();
+        /**
+         * We update the layout of the menu to ensure that our button is properly placed.
+         * This is yet another Geode feature, see this page for more info about it:
+         * https://docs.geode-sdk.org/tutorials/layouts
+        */
+        menu->updateLayout();
 
-		//glfwSetWindowFocusCallback();
-		/**
-		 * We return `true` to indicate that the class was properly initialized.
-		 */
-		return true;
-	}
+        //glfwSetWindowFocusCallback();
+        /**
+         * We return `true` to indicate that the class was properly initialized.
+         */
+        return true;
+    }
 
-	/**
-	 * This is the callback function for the button we created earlier.
-	 * The signature for button callbacks must always be the same,
-	 * return type `void` and taking a `CCObject*`.
-	*/
-	void onMyButton(CCObject*) {
-		CCDirector::get()->pushScene(osuIntroTriangles::create());
-	}
-	void onQuit(CCObject*) {
-		PopupDialog* b = PopupDialog::createSimpleDialog(
-			"Are you sure you want to exit GD?",
-			"Last chance to turn back",
-			"lemme out i need to take a bath",
-			"nvm the 20-20-20 rule sucks", [this](CCNode* s) {this->endGame(); }
-		);
-		b->show();
-	}
-	void onMyButton2(CCObject*) {
-		CCDirector::sharedDirector()->pushScene(OsuGame::get());
+    /**
+     * This is the callback function for the button we created earlier.
+     * The signature for button callbacks must always be the same,
+     * return type `void` and taking a `CCObject*`.
+    */
+    void onMyButton(CCObject*) {
+        CCDirector::get()->pushScene(osuIntroTriangles::create());
+    }
+    void onQuit(CCObject*) {
+        PopupDialog* b = PopupDialog::createSimpleDialog(
+            "Are you sure you want to exit GD?",
+            "Last chance to turn back",
+            "lemme out i need to take a bath",
+            "nvm the 20-20-20 rule sucks", [this](CCNode* s) {this->endGame(); }
+        );
+        b->show();
+    }
+    void onMyButton2(CCObject*) {
+        auto o = OsuGame::get();
+        CCDirector::sharedDirector()->pushScene(o);
+        o->pushScreen(MainMenu::create(false));
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
-	}
+    }
 };
 
 #ifdef GEODE_IS_WINDOWS
@@ -175,28 +177,28 @@ bool m_click = false;
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
 
-	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
-		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
-		int w; int h;
-		w = m_obScreenSize.width;
-		h = m_obScreenSize.height;
-		auto st = CCDirector::sharedDirector()->getVisibleSize();
-		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
-		OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move, CCPoint{ (float)p.x, (float)p.y }));
-	};
-	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
-		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
-		auto o = OsuGame::get();
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-			m_click = true;
-			o->dispatchEvent(new MouseEvent(MouseEventType::MouseDown, ccp(-4, -4)));
-			return;
-		}
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
-			o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, ccp(-2, -2)));
-			m_click = false;
-		}
-	}
+    void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
+        CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
+        int w; int h;
+        w = m_obScreenSize.width;
+        h = m_obScreenSize.height;
+        auto st = CCDirector::sharedDirector()->getVisibleSize();
+        auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
+        OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move, CCPoint{ (float)p.x, (float)p.y }));
+    };
+    void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
+        CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
+        auto o = OsuGame::get();
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+            m_click = true;
+            o->dispatchEvent(new MouseEvent(MouseEventType::MouseDown, ccp(-4, -4)));
+            return;
+        }
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
+            o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, ccp(-2, -2)));
+            m_click = false;
+        }
+    }
 };
 #endif
 #ifdef GEODE_IS_ANDROID
@@ -216,22 +218,22 @@ class $modify(CCTouchDispatcher) {
 /*
 #include <Geode/modify/CCTouchDelegate.hpp>
 class $modify(CCTouchDelegate) {
-	bool ccTouchBegan(CCTouch * t, CCEvent * e) {
-		log::debug("[hook: CCTouchDelegate]: ccTouchBegan");
-		return CCTouchDelegate::ccTouchBegan(t, e);
-	}
-	void ccTouchEnded(CCTouch * t, CCEvent * e) {
-		log::debug("[hook: CCTouchDelegate]: ccTouchEnded");
-		CCTouchDelegate::ccTouchEnded(t, e);
-	}
-	void ccTouchesBegan(CCSet * t, CCEvent * e) {
-		log::debug("[hook: CCTouchDelegate]: ccTouchesBegan");
-		CCTouchDelegate::ccTouchesBegan(t, e);
-	}
-	void ccTouchesEnded(CCSet * t, CCEvent * e) {
-		log::debug("[hook: CCTouchDelegate]: ccTouchesEnded");
-		CCTouchDelegate::ccTouchesEnded(t, e);
-	}
+    bool ccTouchBegan(CCTouch * t, CCEvent * e) {
+        log::debug("[hook: CCTouchDelegate]: ccTouchBegan");
+        return CCTouchDelegate::ccTouchBegan(t, e);
+    }
+    void ccTouchEnded(CCTouch * t, CCEvent * e) {
+        log::debug("[hook: CCTouchDelegate]: ccTouchEnded");
+        CCTouchDelegate::ccTouchEnded(t, e);
+    }
+    void ccTouchesBegan(CCSet * t, CCEvent * e) {
+        log::debug("[hook: CCTouchDelegate]: ccTouchesBegan");
+        CCTouchDelegate::ccTouchesBegan(t, e);
+    }
+    void ccTouchesEnded(CCSet * t, CCEvent * e) {
+        log::debug("[hook: CCTouchDelegate]: ccTouchesEnded");
+        CCTouchDelegate::ccTouchesEnded(t, e);
+    }
 };
 class BeatUpdater : public CCNode {
 private:
@@ -258,40 +260,39 @@ public:
 };
 
 $execute{
-	SceneManager::get()->keepAcrossScenes(BeatUpdater::create());
+    SceneManager::get()->keepAcrossScenes(BeatUpdater::create());
 
 }
 
 #include <Geode/modify/FMODAudioEngine.hpp>
 class $modify(FMODAudioEngine) {
-	void playMusic(std::string path, bool shouldLoop, float fadeInTime, int channel) {
-		FMODAudioEngine::playMusic(path, shouldLoop, fadeInTime, channel);
-		auto instance = BeatDetector::Instance();
-		if (!instance->systemLoaded()) instance->loadSystem();
-		instance->LoadSongFromSystem();
-	}
+    void playMusic(std::string path, bool shouldLoop, float fadeInTime, int channel) {
+        FMODAudioEngine::playMusic(path, shouldLoop, fadeInTime, channel);
+        auto instance = BeatDetector::Instance();
+        if (!instance->systemLoaded()) instance->loadSystem();
+        instance->LoadSongFromSystem();
+    }
 };
 */
 
 
 #include <Geode/modify/CCNodeRGBA.hpp>
 class $modify(CCNodeRGBA) {
-	virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-		_displayedOpacity = _realOpacity * parentOpacity/255.0;
-		
-		if (_cascadeOpacityEnabled)
-		{
-			CCObject* pObj;
-			CCARRAY_FOREACH(m_pChildren, pObj)
-			{
-				CCRGBAProtocol* item = typeinfo_cast<CCRGBAProtocol*>(pObj);
-				if (item)
-				{
-					CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
-					
-					if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
-				}
-			}
-		}
-	}
+    virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
+        _displayedOpacity = _realOpacity * parentOpacity/255.0;
+        
+        if (_cascadeOpacityEnabled)
+        {
+            CCObject* pObj;
+            CCARRAY_FOREACH(m_pChildren, pObj)
+            {
+                if (CCRGBAProtocol* item = dynamic_cast<CCRGBAProtocol*>(pObj))
+                {
+                    CCBool* _b = static_cast<CCBool*>(dynamic_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+                    
+                    if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
+                }
+            }
+        }
+    }
 };
