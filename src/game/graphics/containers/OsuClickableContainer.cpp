@@ -1,4 +1,5 @@
 #include "OsuClickableContainer.hpp"
+#include "../../../utils.hpp"
 
 bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, CCNode* self) {
     Container::init();
@@ -38,6 +39,23 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
                     event->preventDefault();
                 }
         }
+        MouseEventType type2 = type;
+        if (type == MouseEventType::MouseUp && m_entered) type2 == MouseEventType::Click;
+        if (type == MouseEventType::Move) {
+            bool containsCursor = boundingBoxFromContentSize(this).containsPoint(event->position);
+            if (
+                containsCursor
+                && 
+                !m_entered
+            ) type2 = MouseEventType::Enter;
+            if (
+                !containsCursor
+                && 
+                m_entered
+            ) type2 = MouseEventType::Exit;
+        }
+        // redispatch without calling child
+        if (type2 != type) EventTarget::dispatchEventUnsafe(new MouseEvent(type2, event->position));
         return;
     });
     //CCNodeHover::init();

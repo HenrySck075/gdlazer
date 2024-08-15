@@ -25,6 +25,7 @@ private:
     Container* main;
 
     CCArrayExt<Screen*> screenStack;
+    Screen* currentScreen;
 public:
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
@@ -42,16 +43,13 @@ public:
     }
 
     void dispatchEvent(NodeEvent* event) override {
-        EventTarget::dispatchEvent(event);
         if (event->eventName() == "mouseEvent") {
             updateDispatchFlow(event, DispatchingFlow::Down);
-            auto mPtr = getChildren();
-            if (mPtr==nullptr) return;
-            CCObject* obj;
-            CCARRAY_FOREACH(mPtr, obj) {
-                if (auto c = typeinfo_cast<Container*>(obj)) c->dispatchEvent(event);
-            }
+            toolbar->dispatchEvent(event);
+            if (currentScreen) currentScreen->dispatchEvent(event);
+            return;
         }
+        EventTarget::dispatchEvent(event);
     }
 
     bool init();

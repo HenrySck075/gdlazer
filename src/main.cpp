@@ -195,7 +195,7 @@ class $modify(CCEGLView) {
             return;
         }
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
-            o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, ccp(-2, -2)));
+            o->dispatchEvent(new MouseEvent(MouseEventType::Click, ccp(-2, -2)));
             m_click = false;
         }
     }

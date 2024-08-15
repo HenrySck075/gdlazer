@@ -3,7 +3,7 @@
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
     colorBg = CCLayerColor::create(ccc4(255,255,255,0));
-    addChild(colorBg);
+    //addChild(colorBg);
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
@@ -15,9 +15,33 @@ bool Container::init() {
     return true;
 }
 
+
+#ifndef GEODE_IS_WINDOWS
+#include <cxxabi.h>
+#endif
+std::string getNodeName(CCObject* node) {
+#ifdef GEODE_IS_WINDOWS
+    return typeid(*node).name() + 6;
+#else 
+    {
+        std::string ret;
+
+        int status = 0;
+        auto demangle = abi::__cxa_demangle(typeid(*node).name(), 0, 0, &status);
+        if (status == 0) {
+            ret = demangle;
+        }
+        free(demangle);
+
+        return ret;
+    }
+#endif
+}
+
 void Container::dispatchEventUnsafe(NodeEvent* event) {
+    log::debug("[{} | Container]: Dispatching {} for {}", getNodeName(this), event->m_eventName, this);
     for (auto i : m_listeners[event->eventName()]) {
-        if (tryDispatch(i,event)) break;
+        if (tryDispatch(i,event)) return;
     }
     if (event->m_stopPropagate) return;
     switch (event->m_dispatchingFlow) {
@@ -33,7 +57,7 @@ void Container::dispatchEventUnsafe(NodeEvent* event) {
 void Container::dispatchToChild(NodeEvent* event) {
     event->m_dispatchingFlow = DispatchingFlow::Down;
     CCObject* obj;
-    CCARRAY_FOREACH(m_pChildren, obj) {
+    CCARRAY_FOREACH_REVERSE(m_pChildren, obj) {
         if (auto node = typeinfo_cast<Container*>(obj)) {
             node->dispatchEvent(event);
         }

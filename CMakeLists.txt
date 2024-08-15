@@ -81,8 +81,6 @@ add_library(${PROJECT_NAME} SHARED
   src/helpers/colors.hpp
   src/helpers/CustomActions.cpp
   src/helpers/CustomActions.hpp
-  src/helpers/MouseEvent.cpp
-  src/helpers/MouseEvent.hpp
   src/helpers/sound/SoundManager.cpp
   src/helpers/sound/SoundManager.hpp
   src/main/PauseLayer.cpp

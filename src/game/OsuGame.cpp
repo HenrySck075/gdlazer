@@ -73,7 +73,7 @@ void OsuGame::pushScreen(Screen* s) {
     s->onEntering(ScreenTransitionEvent(ls,s));
     screenStack.push_back(s);
     main->addChild(s);
-    
+    currentScreen = s;
 }
 
 void OsuGame::popScreen() {
@@ -87,6 +87,7 @@ void OsuGame::popScreen() {
     ScreenTransitionEvent event = {s,ps};
     s->onExiting(event);
     if (ps!=nullptr) ps->onEntering(event);
+    currentScreen = ps;
 }
 
 void OsuGame::onLoseFocus() {
