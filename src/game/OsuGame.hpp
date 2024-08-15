@@ -22,11 +22,11 @@ private:
     static OsuGame* instance;
 
     Toolbar* toolbar;
-    Container* main;
 
     CCArrayExt<Screen*> screenStack;
-    Screen* currentScreen;
+    Container* main;
 public:
+    Screen* currentScreen;
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
     static OsuGame* get() {
@@ -42,14 +42,20 @@ public:
         return instance;
     }
 
-    void dispatchEvent(NodeEvent* event) override {
+public:
+    bool dispatchEvent(NodeEvent* event) override {
+        updateDispatchFlow(event, DispatchingFlow::Down);
+        /*
         if (event->eventName() == "mouseEvent") {
-            updateDispatchFlow(event, DispatchingFlow::Down);
             toolbar->dispatchEvent(event);
             if (currentScreen) currentScreen->dispatchEvent(event);
             return;
         }
-        EventTarget::dispatchEvent(event);
+        */
+        //EventTarget::dispatchEvent(event);
+        toolbar->dispatchEvent(event);
+        if (currentScreen) currentScreen->dispatchEvent(event);
+        return true;
     }
 
     bool init();

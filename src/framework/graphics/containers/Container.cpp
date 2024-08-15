@@ -3,7 +3,8 @@
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
     colorBg = CCLayerColor::create(ccc4(255,255,255,0));
-    //addChild(colorBg);
+    colorBg->setZOrder(99999);
+    addChild(colorBg);
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
@@ -38,30 +39,38 @@ std::string getNodeName(CCObject* node) {
 #endif
 }
 
-void Container::dispatchEventUnsafe(NodeEvent* event) {
-    log::debug("[{} | Container]: Dispatching {} for {}", getNodeName(this), event->m_eventName, this);
-    for (auto i : m_listeners[event->eventName()]) {
-        if (tryDispatch(i,event)) return;
+bool Container::dispatchEvent(NodeEvent* event) {
+    //log::debug("[{} | Container]: Dispatching {}", getNodeName(this), event->m_eventName);
+    auto ret = EventTarget::dispatchEvent(event);
+    /*
+    colorBg->setColor(ccc3(255,171,15));
+    colorBg->setOpacity(150);
+    colorBg->runAction(CCFadeTo::create(0.5,0));
+    */
+    if (!ret) return false;
+    if (event->m_stopPropagate) {
+        event->m_stopPropagate = true;
+        return false;
     }
-    if (event->m_stopPropagate) return;
     switch (event->m_dispatchingFlow) {
       case DispatchingFlow::Up:
-        if (auto p = typeinfo_cast<Container*>(m_pParent)) p->dispatchEvent(event);
-        break;
+        if (auto p = typeinfo_cast<Container*>(m_pParent)) return p->dispatchEvent(event);
       case DispatchingFlow::Down:
-        dispatchToChild(event);
+        return dispatchToChild(event);
     }
+    return true;
 }
 
 
-void Container::dispatchToChild(NodeEvent* event) {
+bool Container::dispatchToChild(NodeEvent* event) {
     event->m_dispatchingFlow = DispatchingFlow::Down;
     CCObject* obj;
     CCARRAY_FOREACH_REVERSE(m_pChildren, obj) {
         if (auto node = typeinfo_cast<Container*>(obj)) {
-            node->dispatchEvent(event);
+            if (!node->dispatchEvent(event)) return false;
         }
     }
+    return true;
 };
 
 void Container::onLayoutUpdate() {
@@ -99,13 +108,12 @@ void Container::onLayoutUpdate() {
     resetContentSize();
 };
 
+/*
 bool ContainerNodeWrapper::init(CCNode* node)  {
-    /*
     if (!typeinfo_cast<Container*>(node)) {
         log::error("[ContainerNodeWrapper]: The node passed does not meet the candidate to be a node: it is a {}", node);
         return false;
     }
-    */
     m_node = node;
     Container::init();
     //log::debug("[ContainerNodeWrapper]: {}", node);
@@ -128,3 +136,4 @@ void ContainerNodeWrapper::dispatchToChild(NodeEvent* event) {
         }
     }
 };
+*/

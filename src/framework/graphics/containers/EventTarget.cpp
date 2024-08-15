@@ -23,17 +23,20 @@ bool EventTarget::tryDispatch(Callback& cb, NodeEvent* event) {
       event->m_cancelled;
 }
 
-void EventTarget::dispatchEvent(NodeEvent* event) {
+bool EventTarget::dispatchEvent(NodeEvent* event) {
     auto it = m_listeners.find(event->eventName());
     if (it == m_listeners.end()) {
         //log::warn("[EventTarget]: Event {} not in list.",event->eventName());
-        return;
+        return false;
     }
-    dispatchEventUnsafe(event);
+    return dispatchEventUnsafe(event);
 };
 
-void EventTarget::dispatchEventUnsafe(NodeEvent* event) {
+bool EventTarget::dispatchEventUnsafe(NodeEvent* event) {
     for (auto i : m_listeners[event->eventName()]) {
-        if (tryDispatch(i,event)) break;
+        if (tryDispatch(i,event)) {
+            return false;
+        };
     }
+    return true;
 }

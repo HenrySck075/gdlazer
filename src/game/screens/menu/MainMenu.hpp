@@ -30,6 +30,11 @@ private:
         CCDirector::sharedDirector()->popSceneWithTransition(0.5,PopTransition::kPopTransitionFade);
         OsuGame::get()->popScreen();
     }
+    void testDispatch(CCObject* e) {
+        auto m = new NodeEvent("googoo gaga");
+        m->setDispatchingFlow(DispatchingFlow::Down);
+        dispatchEvent(m);
+    }
     //BeatDetector* detector;
 
     CCLayer* songSelect;

@@ -28,6 +28,8 @@ public:
     std::string eventName() {return m_eventName;};
     void eventName(std::string newName) {m_eventName = newName;};
 
+    void setDispatchingFlow(DispatchingFlow flow) {m_dispatchingFlow = flow;}
+
     // Stop any further event dispatchs further in the tree
     void stopPropagation() {m_stopPropagate = true;}
     // Stop any further event dispatchs further in the tree AND the current child list

@@ -38,6 +38,7 @@ OsuGame* OsuGame::instance = nullptr;
 bool OsuGame::init() {
     CCScene::init();
     main = Container::create();
+    main->setID("mainUI");
     main->setContentSize(getContentSize());
     this->addChild(main);
     toolbar = Toolbar::create();
@@ -87,7 +88,7 @@ void OsuGame::popScreen() {
     ScreenTransitionEvent event = {s,ps};
     s->onExiting(event);
     if (ps!=nullptr) ps->onEntering(event);
-    currentScreen = ps;
+    currentScreen = s;
 }
 
 void OsuGame::onLoseFocus() {

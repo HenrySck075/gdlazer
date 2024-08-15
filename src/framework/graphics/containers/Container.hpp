@@ -35,7 +35,7 @@ enum class Unit {
 
 /// @brief CCLayer that implements some more shit
 ///
-/// The way event works on this is rather different from Javascript (and the Geode Event system); instead of calling in added order, it calls in children list order
+/// Works similar to the JavaScript event system
 class Container : public CCLayerRGBA, public EventTarget {
 private:
     enum class ah {Left, Center, Right};
@@ -130,10 +130,10 @@ protected:
 
     //bool tryDispatch(Callback& cb, NodeEvent* event) override;
 
-    void dispatchEventUnsafe(NodeEvent* event) override;
 public:
+    bool dispatchEvent(NodeEvent* event) override;
     // Dispatches the event to the child. 
-    virtual void dispatchToChild(NodeEvent* event);
+    virtual bool dispatchToChild(NodeEvent* event);
 
     void addChild(CCNode* e) override {
         e->setParent(nullptr);
@@ -252,6 +252,7 @@ public:
 template<class T>
 concept is_node = std::is_base_of_v<CCNode, T> && !std::is_base_of_v<Container, T>;
 
+/*
 // wraps a node inside a container
 // @warning this currently does not work for some reason. So if you dont need to also resize the node, wrap it in a Container instead.
 class ContainerNodeWrapper : public Container {
@@ -276,10 +277,5 @@ public:
 
     void dispatchToChild(NodeEvent* event) override;
 
-    /*
-    ~ContainerNodeWrapper() {
-        m_node->release();
-        Container::~Container();
-    }
-    */
 };
+*/

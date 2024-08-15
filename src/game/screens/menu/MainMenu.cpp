@@ -57,8 +57,13 @@ bool MainMenu::init(bool flash) {
     this->addChild(paral);
 
     auto back = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this, menu_selector(MainMenu::debugReturn));
+    auto test = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this, menu_selector(MainMenu::testDispatch));
+
     auto j = CCMenu::create();
     j->addChild(back);
+    j->addChild(test);
+    j->setLayout(RowLayout::create()->setGap(3)->setAxisAlignment(AxisAlignment::End));
+    j->updateLayout();
     this->addChildAtPosition(j, Anchor::TopLeft);
     
     auto btnParal = ParallaxContainer::create(0.01f);

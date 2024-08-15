@@ -11,7 +11,7 @@ public:
     static Screen* create() {
         create_class(Screen, init);
     };
-    bool init() {
+    bool init() override {
         Container::init();
         setContentSizeWithUnit(CCSize(1,1),Unit::Viewport,Unit::Viewport);
         return true;
