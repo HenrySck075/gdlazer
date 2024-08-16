@@ -23,7 +23,7 @@ public:
         return true;
     };
     virtual void onEntering(ScreenTransitionEvent e) {};
-    virtual void onExiting(ScreenTransitionEvent e) {this->removeFromParentAndCleanup(true);};
+    virtual void onExiting(ScreenTransitionEvent e) {};
 
     // when?
     virtual void onSuspending(ScreenTransitionEvent e) {};
