@@ -18,7 +18,9 @@ private:
     bool m_stopImmediatePropagate = false;
     bool m_cancelled = false;
     DispatchingFlow m_dispatchingFlow = DispatchingFlow::Up;
+
 protected:
+    bool m_log = false;
     std::string m_eventName = "";
 public:
     NodeEvent() {

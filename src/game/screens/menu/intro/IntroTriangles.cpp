@@ -85,7 +85,7 @@ void osuIntroTriangles::text_3_func() {
 void osuIntroTriangles::text_4_func() {
     static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
-    auto a = osuCallFuncP::create(0,13,5,this, callfuncp_selector(osuIntroTriangles::text_4_set_spacing));
+    auto a = CCCallFuncP::create(0,13,5,this, callfuncp_selector(osuIntroTriangles::text_4_set_spacing));
     a->setTag(7);
     this->runAction(a);
 #endif
@@ -166,7 +166,7 @@ void osuIntroTriangles::rulesets_1_func() {
     addIcon("swing.png"_spr);
     addIcon("jetpack.png"_spr);
     n->updateLayout();
-    auto a = osuCallFuncP::create(50, 30, this->rulesets_2 - this->rulesets_1 + 0.3, this, callfuncp_selector(osuIntroTriangles::rulesets_1_change_gap));
+    auto a = CCCallFuncP::create(50, 30, this->rulesets_2 - this->rulesets_1 + 0.3, this, callfuncp_selector(osuIntroTriangles::rulesets_1_change_gap));
     a->setTag(9);
     this->runAction(a);
 

@@ -27,7 +27,9 @@ bool EventTarget::dispatchEvent(NodeEvent* event) {
     auto it = m_listeners.find(event->eventName());
     if (it == m_listeners.end()) {
         //log::warn("[EventTarget]: Event {} not in list.",event->eventName());
-        return false;
+
+        // theres nothing handling, keep going
+        return true;
     }
     return dispatchEventUnsafe(event);
 };

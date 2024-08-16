@@ -8,7 +8,7 @@ using namespace geode::prelude;
 typedef void (CCObject::*CallFuncP)(float);
 #define callfuncp_selector(...) (CallFuncP)(&__VA_ARGS__)
 
-class osuCallFuncP : public CCActionInterval {
+class CCCallFuncP : public CCActionInterval {
 private:
     bool m_reversed;
     float m_to;
@@ -28,8 +28,8 @@ private:
     /// <returns>bool</returns>
     bool initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector);
 public:
-    static osuCallFuncP* create(float from, float to, float duration, CCObject* target, CallFuncP selector);
-    osuCallFuncP* reverse();
+    static CCCallFuncP* create(float from, float to, float duration, CCObject* target, CallFuncP selector);
+    CCCallFuncP* reverse();
 };
 
 class CCActionSkip : public CCActionEase {
@@ -170,5 +170,39 @@ public:
         m_previousPosition = m_startPosition;
         m_positionDelta = ccpSub( m_endPosition, m_startPosition );
         log::debug("[CCMoveFromTo]: target: {} | posDelta: {} | start: {} | end: {}", pTarget,m_positionDelta,m_startPosition,m_endPosition);
+    }
+};
+
+class CCRepeatUntil : public CCRepeatForever {
+private:
+    geode::utils::MiniFunction<bool()> m_predicate;
+    bool m_predicateCheckValid = false;
+    CCAction* m_pAction;
+public:
+    bool initWithPredicate(CCAction* action, decltype(m_predicate) predicate) {
+        m_pAction = action;
+        m_predicate = predicate;
+        return true;
+    }
+    static CCRepeatUntil* create(CCAction* action, decltype(m_predicate) predicate) {
+        create_class(CCRepeatUntil, initWithPredicate, action, predicate);
+    }
+    void step(float dt) {
+        m_pAction->step(dt);
+        if (!m_predicateCheckValid) {
+            m_predicateCheckValid = m_predicate(); 
+        }
+        if (m_pAction->isDone())
+        {
+            if (m_predicateCheckValid) return;
+            float diff = m_pInnerAction->getElapsed() - m_pInnerAction->getDuration();
+            m_pAction->startWithTarget(m_pTarget);
+            // to prevent jerk. issue #390, 1247
+            m_pAction->step(0.0f);
+            m_pAction->step(diff);
+        }
+    }
+    bool isDone() override {
+        return m_pInnerAction->isDone() && m_predicateCheckValid;
     }
 };

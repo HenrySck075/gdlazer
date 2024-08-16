@@ -10,7 +10,7 @@ using namespace cocos2d;
 #include "overlays/toolbar/Toolbar.hpp"
 
 // the
-class Screen;
+class OsuScreen;
 #include "../framework/screens/Screen.hpp"
 #include "../framework/screens/ScreenTransitionEvent.hpp"
 
@@ -44,6 +44,10 @@ public:
 
 public:
     bool dispatchEvent(NodeEvent* event) override {
+        if (event->eventName().starts_with("og")) {
+            EventTarget::dispatchEvent(event);
+            return true;
+        }
         updateDispatchFlow(event, DispatchingFlow::Down);
         /*
         if (event->eventName() == "mouseEvent") {

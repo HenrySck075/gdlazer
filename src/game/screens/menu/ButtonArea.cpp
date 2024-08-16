@@ -17,7 +17,7 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
 }
 
 void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
-    auto b = CCMenu::create();
+    auto b = CCLayer::create();
     auto gap = ccp(20,0);
     b->ignoreAnchorPointForPosition(true);
     b->setAnchorPoint(ccp(0,0.5));
@@ -31,7 +31,7 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
     b->updateLayout();
     b->setTag(2);
     
-    auto t = CCMenu::create();
+    auto t = CCLayer::create();
     t->ignoreAnchorPointForPosition(false);
     t->setAnchorPoint(ccp(1,0.5));
     t->setPosition(anchorPosition-gap);

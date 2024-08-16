@@ -49,6 +49,9 @@ bool OsuGame::init() {
         newWindowProcSet = true;
     }
 #endif
+    addListener("ogExitDidFinish", [this](NodeEvent* e){
+        main->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
+    });
     return true;
 }
 
@@ -66,8 +69,8 @@ void OsuGame::hideToolbar() {
     ));
 }
 
-void OsuGame::pushScreen(Screen* s) {
-    Screen* ls;
+void OsuGame::pushScreen(OsuScreen* s) {
+    OsuScreen* ls;
     if (screenStack.size()!=0) {
         ls = screenStack[screenStack.size()-1];
     }
@@ -88,7 +91,7 @@ void OsuGame::popScreen() {
     ScreenTransitionEvent event = {s,ps};
     s->onExiting(event);
     if (ps!=nullptr) ps->onEntering(event);
-    currentScreen = s;
+    currentScreen = ps;
 }
 
 void OsuGame::onLoseFocus() {

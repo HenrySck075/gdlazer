@@ -12,32 +12,30 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
     addListener("mouseEvent",[this](NodeEvent* e) {
         auto event = static_cast<MouseEvent*>(e);
         auto type = event->eventType;
+        log::debug("[OsuClickableContainer]: {}",int(type));
         if (!(this->m_hoverEnabled && isRunning())) return;
         switch (type) {
             case MouseEventType::Enter:
                 m_entered = true;
+                log::debug("[OsuClickableContainer]: Mouse entered");
                 this->onMouseEnter();
                 break;
             case MouseEventType::Exit:
                 m_entered = false;
+                log::debug("[OsuClickableContainer]: Mouse entered");
                 this->onMouseExit();
                 break;
             case MouseEventType::MouseUp:
-                if (m_entered) {
-                    this->onMouseUp();
-                    event->preventDefault();
-                }
+                this->onMouseUp();
                 break;
             case MouseEventType::MouseDown:
                 this->onMouseDown();
                 break;
             case MouseEventType::Click:
-                if (m_entered) {
-                    this->onClick();
-                    FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
-                    this->clickCallback(this);
-                    event->preventDefault();
-                }
+                this->onClick();
+                FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
+                this->clickCallback(this);
+                event->preventDefault();
         }
         MouseEventType type2 = type;
         if (type == MouseEventType::MouseUp && m_entered) type2 == MouseEventType::Click;

@@ -40,7 +40,7 @@ std::string getNodeName(CCObject* node) {
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {
-    //log::debug("[{} | Container]: Dispatching {}", getNodeName(this), event->m_eventName);
+    if (event->m_log) log::debug("[{} | Container]: Dispatching {}", getNodeName(this), event->m_eventName);
     auto ret = EventTarget::dispatchEvent(event);
     /*
     colorBg->setColor(ccc3(255,171,15));
@@ -61,16 +61,21 @@ bool Container::dispatchEvent(NodeEvent* event) {
     return true;
 }
 
-
-bool Container::dispatchToChild(NodeEvent* event) {
+bool Container::dispatchToChildInList(NodeEvent* event, CCArray* children) {
     event->m_dispatchingFlow = DispatchingFlow::Down;
     CCObject* obj;
-    CCARRAY_FOREACH_REVERSE(m_pChildren, obj) {
+    CCARRAY_FOREACH_REVERSE(children, obj) {
         if (auto node = typeinfo_cast<Container*>(obj)) {
             if (!node->dispatchEvent(event)) return false;
+        } else {
+            if (!dispatchToChildInList(event,typeinfo_cast<CCNode*>(obj)->getChildren())) return false;
         }
     }
     return true;
+}
+
+bool Container::dispatchToChild(NodeEvent* event) {
+    return dispatchToChildInList(event, m_pChildren);
 };
 
 void Container::onLayoutUpdate() {

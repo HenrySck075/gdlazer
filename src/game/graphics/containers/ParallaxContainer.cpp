@@ -23,7 +23,7 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
     // i will add some checks in the future
 
     // this is added later so it will be called after the layout update function finishes
-    //addListener("nodeLayoutUpdate", [](NodeEvent* e){e->stopPropagation();});
+    addListener("nodeLayoutUpdate", [](NodeEvent* e){e->stopPropagation();});
     /*
     m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
         // iykyk

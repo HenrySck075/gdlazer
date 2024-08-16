@@ -14,5 +14,7 @@ public:
     CCPoint position = CCPoint(0,0);
     MouseEventType eventType;
 
-    MouseEvent(MouseEventType event, CCPoint pos) : NodeEvent("mouseEvent"), position(pos), eventType(event) {};
+    MouseEvent(MouseEventType event, CCPoint pos) : NodeEvent("mouseEvent"), position(pos), eventType(event) {
+        //m_log = true;
+    };
 };

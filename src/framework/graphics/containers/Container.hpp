@@ -129,6 +129,7 @@ protected:
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
 
     //bool tryDispatch(Callback& cb, NodeEvent* event) override;
+    bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
 public:
     bool dispatchEvent(NodeEvent* event) override;

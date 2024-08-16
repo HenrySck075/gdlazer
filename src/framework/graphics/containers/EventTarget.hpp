@@ -31,6 +31,7 @@ protected:
 public:
     void addListener(std::string eventName, const Callback& listener);
     void removeListener(std::string eventName, const Callback& listener);
+    /// @returns true if the event is successfully dispatched or false if any of the handler cancels the event in any way
     virtual bool dispatchEvent(NodeEvent* event);
 
     friend class Container;

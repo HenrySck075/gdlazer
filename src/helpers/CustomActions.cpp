@@ -1,6 +1,6 @@
 #include "CustomActions.hpp"
 
-bool osuCallFuncP::initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector) {
+bool CCCallFuncP::initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector) {
     if (!CCActionInterval::initWithDuration(duration)) {
         return false;
     };
@@ -18,17 +18,17 @@ bool osuCallFuncP::initWithACatgirl(float from, float to, float duration, CCObje
     return true;
 }
 
-void osuCallFuncP::update(float time) {
+void CCCallFuncP::update(float time) {
     // percentage distance * current time percentage + percent start value
     this->execute((m_to-m_from)*(m_reversed?1-(time/m_fDuration):time/m_fDuration)+m_from);
 }
 
-void osuCallFuncP::execute(float percentage) {
+void CCCallFuncP::execute(float percentage) {
     (m_target->*m_pCallFunc)(percentage);
 }
 
-osuCallFuncP* osuCallFuncP::create(float from, float to, float duration, CCObject* target, CallFuncP selector) {
-    osuCallFuncP* pRet = new osuCallFuncP();
+CCCallFuncP* CCCallFuncP::create(float from, float to, float duration, CCObject* target, CallFuncP selector) {
+    CCCallFuncP* pRet = new CCCallFuncP();
     if (pRet && pRet->initWithACatgirl(from, to, duration, target, selector)) {
         pRet->m_pCallFunc = selector;
         return pRet;
@@ -39,8 +39,8 @@ osuCallFuncP* osuCallFuncP::create(float from, float to, float duration, CCObjec
     return pRet;
 }
 
-osuCallFuncP* osuCallFuncP::reverse() {
-    return osuCallFuncP::create(m_to, m_from, m_fDuration, m_target, m_pCallFunc);
+CCCallFuncP* CCCallFuncP::reverse() {
+    return CCCallFuncP::create(m_to, m_from, m_fDuration, m_target, m_pCallFunc);
 }
 
 /// CCActionSkip
