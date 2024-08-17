@@ -8,16 +8,17 @@
 #include "../../../utils.hpp"
 using namespace geode::prelude;
 
+enum class NodeUIEventType {
+    Position,
+    Size,
+    // specifically setParent
+    All 
+};
+
 class NodeUIEvent final : public NodeEvent {
-private:
-    static std::string validate(std::string name) {
-        if (!name.starts_with("node")) {
-            throw "NodeUIEvent name must start with \"node\"";
-        }
-        return name;
-    }
 public:
-    NodeUIEvent(std::string name) : NodeEvent(validate(name)) {};
+    NodeUIEventType type;
+    NodeUIEvent(std::string name, NodeUIEventType t) : NodeEvent("node"+name), type(t) {};
 };
 
 
@@ -121,7 +122,7 @@ protected:
 
 
 protected:
-    virtual void onLayoutUpdate();
+    virtual void onLayoutUpdate(NodeUIEvent*e);
     CCPoint m_position = CCPoint(0,0);
     CCSize m_size = CCSize(0,0);
     CCSize m_sizeP = CCSize(0,0);
@@ -147,8 +148,10 @@ public:
         CCNode::addChild(e);
     }
 
-    /// TODO: change the system to support this node
-    void updateLayout() {}
+    /// nvm
+    void updateLayout() {
+        log::warn("[{} | Container]: updateLayout is not supported!", getNodeName(this));
+    }
 
     bool init();
 
@@ -159,7 +162,7 @@ public:
     void setAnchor(Anchor anchor) {
         m_anchor = anchor;
         updateAnchorLabel();
-        dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
+        dispatchEvent(new NodeUIEvent("LayoutUpdate",NodeUIEventType::Position));
     }
     Anchor getAnchor() {
         return m_anchor;
@@ -192,7 +195,7 @@ public:
     void setContentSize(CCSize const& size) override {
         m_size = size;
         resetContentSize();
-        //dispatchToChild(new NodeEvent("nodeLayoutUpdate"));
+        //dispatchToChild(new NodeEvent("LayoutUpdate"));
     }
     void setContentWidth(float width) {
         setContentSize(CCSize(width,getContentHeight()));
@@ -222,7 +225,7 @@ public:
     void setPosition(CCPoint const& position) override {
         if (position == m_position) return;
         m_position = position;
-        dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
+        dispatchEvent(new NodeUIEvent("LayoutUpdate",NodeUIEventType::Position));
         /*
         CCLayer::setPosition(CCPoint(
             processUnit(position.x, m_positionUnit.first, true),
@@ -252,7 +255,7 @@ public:
 
     void setParent(CCNode* parent) override {
         CCLayer::setParent(parent);
-        dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
+        dispatchEvent(new NodeUIEvent("LayoutUpdate", NodeUIEventType::All));
     };
 
     ~Container() {

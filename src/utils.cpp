@@ -72,3 +72,22 @@ float uiHeightToGL(float length) {
   auto d = CCDirector::sharedDirector();
   return length / d->getOpenGLView()->getFrameSize().height * d->getWinSize().height;
 }
+
+std::string getNodeName(CCObject* node){
+#ifdef GEODE_IS_WINDOWS
+    return typeid(*node).name() + 6;
+#else 
+    {
+        std::string ret;
+
+        int status = 0;
+        auto demangle = abi::__cxa_demangle(typeid(*node).name(), 0, 0, &status);
+        if (status == 0) {
+            ret = demangle;
+        }
+        free(demangle);
+
+        return ret;
+    }
+#endif
+}

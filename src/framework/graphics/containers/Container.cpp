@@ -6,7 +6,7 @@ bool Container::init() {
     colorBg->setZOrder(-999);
     colorBg->retain();
     //addChild(colorBg);
-    addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
+    addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate(static_cast<NodeUIEvent*>(j));});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
     updateAnchorLabel();
@@ -24,27 +24,6 @@ void Container::setOpacity(GLubyte opacity) {
     colorBg->setOpacity(opacity);
 }
 
-#ifndef GEODE_IS_WINDOWS
-#include <cxxabi.h>
-#endif
-std::string getNodeName(CCObject* node) {
-#ifdef GEODE_IS_WINDOWS
-    return typeid(*node).name() + 6;
-#else 
-    {
-        std::string ret;
-
-        int status = 0;
-        auto demangle = abi::__cxa_demangle(typeid(*node).name(), 0, 0, &status);
-        if (status == 0) {
-            ret = demangle;
-        }
-        free(demangle);
-
-        return ret;
-    }
-#endif
-}
 
 bool Container::dispatchEvent(NodeEvent* event) {
     if (event->m_log) log::debug("[{} | Container]: Dispatching {}", getNodeName(this), event->m_eventName);
@@ -85,7 +64,8 @@ bool Container::dispatchToChild(NodeEvent* event) {
     return dispatchToChildInList(event, m_pChildren);
 };
 
-void Container::onLayoutUpdate() {
+void Container::onLayoutUpdate(NodeUIEvent* e) {
+    
     if (m_pParent == nullptr) return;
     CCPoint resP = ccp(0,0);
     auto anchor = m_anchors[m_anchor];

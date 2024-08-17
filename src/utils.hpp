@@ -65,3 +65,9 @@ T* postconfig(T* node, std::function<void(T*)> func) {
   func(node);
   return node;
 }
+
+
+#ifndef GEODE_IS_WINDOWS
+#include <cxxabi.h>
+#endif
+std::string getNodeName(CCObject* node);
