@@ -28,7 +28,7 @@
         }
     },
     "sprites": [
-      "resources/textures/ui/dialog.png"
+      "resources/textures/ui/roundborder.png"
     ],
     "spritesheets": {
       "MainMenuSheet": [

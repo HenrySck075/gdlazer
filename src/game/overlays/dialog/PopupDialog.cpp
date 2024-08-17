@@ -22,6 +22,7 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
     
     m_mainLayer->addChild(m_bodyLayout);
 
+    m_bgSprite->setColor(ccc3(33, 26, 32));
     auto contentSize = m_bgSprite->getContentSize();
     auto batchNode = getChildOfType<CCSpriteBatchNode>(m_mainLayer,0);
     m_bgSpriteClip = CCClippingNode::create(m_bgSprite);

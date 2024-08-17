@@ -9,6 +9,7 @@ using namespace geode::prelude;
 class DrawableCarouselBeatmap : public OsuClickableContainer {
 private:
     GJGameLevel* m_level;
+    CCClippingNode* m_main;
 public:
     float const MAX_HEIGHT = 80;
     float const h = MAX_HEIGHT*0.6;
@@ -17,18 +18,7 @@ public:
     static DrawableCarouselBeatmap* create(GJGameLevel* level) {
         create_class(DrawableCarouselBeatmap, init, level);
     };
-    bool init(GJGameLevel* level) {
-        OsuClickableContainer::init("select-expand.wav"_spr, [](CCNode*self){});
-        m_level = level;
-        addChild(colorBg);
-        setAnchorPoint(ccp(0,0));
-        setContentSizeWithUnit(CCSize(0.4,h), Unit::Viewport, Unit::UIKit);
-        setOpacity(255);
-        setColor(ccc3(255,0,0));
-        return true;
-
-        //CCScheduler::get()->scheduleUpdateForTarget();
-    };
+    bool init(GJGameLevel* level);
 
     void onClick() {};
     void onMouseEnter() { };

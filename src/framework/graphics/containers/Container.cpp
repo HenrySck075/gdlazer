@@ -4,6 +4,7 @@ bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
     colorBg = CCLayerColor::create(ccc4(255,255,255,0));
     colorBg->setZOrder(-999);
+    colorBg->retain();
     //addChild(colorBg);
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
@@ -117,6 +118,7 @@ void Container::onLayoutUpdate() {
     }
     CCNode::setPosition(resP);
     resetContentSize();
+    colorBg->setContentSize(getRealContentSize());
 };
 
 /*

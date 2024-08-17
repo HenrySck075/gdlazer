@@ -93,7 +93,7 @@ private:
             "Y: "+getUnitLabel(m_positionUnit.second)
         ));
     }
-    
+
 protected:
     CCLayerColor* colorBg;
 
@@ -147,8 +147,8 @@ public:
         CCNode::addChild(e);
     }
 
-    // breaking change (not)
-    void setLayout(Layout* l) {}
+    /// TODO: change the system to support this node
+    void updateLayout() {}
 
     bool init();
 
@@ -186,13 +186,13 @@ private:
             processUnit(m_size.width, m_sizeUnit.first, true),
             processUnit(m_size.height,m_sizeUnit.second, false)
         ));
-        dispatchToChild(new NodeEvent("nodeLayoutUpdate"));
         m_sizeP = m_size;
     }
 public:
     void setContentSize(CCSize const& size) override {
         m_size = size;
         resetContentSize();
+        //dispatchToChild(new NodeEvent("nodeLayoutUpdate"));
     }
     void setContentWidth(float width) {
         setContentSize(CCSize(width,getContentHeight()));
@@ -205,7 +205,7 @@ public:
     }
     // Get the actual node content size
     const CCSize& getRealContentSize() {
-        return CCLayer::getContentSize();
+        return CCNode::getContentSize();
     }
 
     // set the position unit that will be used to calculate the result position on the next `setPosition` call
@@ -247,13 +247,17 @@ public:
     }
     // Get the actual node position
     CCPoint const& getRealPosition() {
-        return CCLayer::getPosition();
+        return CCNode::getPosition();
     }
 
     void setParent(CCNode* parent) override {
         CCLayer::setParent(parent);
         dispatchEvent(new NodeUIEvent("nodeLayoutUpdate"));
     };
+
+    ~Container() {
+        colorBg->release();
+    }
 };
 
 template<class T>

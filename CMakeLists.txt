@@ -75,6 +75,7 @@ add_library(${PROJECT_NAME} SHARED
   src/game/screens/menu/OsuLogo.hpp
   src/game/screens/menu/intro/IntroTriangles.cpp
   src/game/screens/menu/intro/IntroTriangles.hpp
+  src/game/screens/select/DrawableCarouselBeatmap.cpp
   src/game/screens/select/DrawableCarouselBeatmap.hpp
   src/game/screens/select/SongSelect.hpp
   src/helpers/ColorHelper.hpp
