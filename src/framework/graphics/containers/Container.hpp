@@ -67,7 +67,6 @@ private:
         {Anchor::Bottom, "bottom center"},
         {Anchor::BottomRight, "bottom right"} 
     };
-    CCLayerColor* colorBg;
 
     std::string getUnitLabel(Unit unit) {
         std::string l;
@@ -94,7 +93,10 @@ private:
             "Y: "+getUnitLabel(m_positionUnit.second)
         ));
     }
+    
 protected:
+    CCLayerColor* colorBg;
+
     Anchor m_anchor = Anchor::BottomLeft;
     
     // @param value Value in specified unit
@@ -132,6 +134,10 @@ protected:
     bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
 public:
+    void setColor(ccColor3B const& col) override;
+    void setOpacity(GLubyte opacity) override;
+
+
     bool dispatchEvent(NodeEvent* event) override;
     // Dispatches the event to the child. 
     virtual bool dispatchToChild(NodeEvent* event);

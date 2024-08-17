@@ -28,7 +28,10 @@ public:
 private:
     void debugReturn(CCObject* t) {
         CCDirector::sharedDirector()->popSceneWithTransition(0.5,PopTransition::kPopTransitionFade);
-        OsuGame::get()->popScreen();
+        while (OsuGame::get()->popScreen()) {/*meow*/};
+    }
+    void onExiting(ScreenTransitionEvent e) override {
+        /*if (e.Destination != nullptr)*/ setVisible(false);
     }
     void testDispatch(CCObject* e) {
         auto m = new NodeEvent("googoo gaga");

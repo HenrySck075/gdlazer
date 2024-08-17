@@ -21,7 +21,7 @@ CCSize getRealScaledContentSize(CCNode* node) {
 /// <param name="node"></param>
 /// <returns>the node's bottom-left position</returns>
 CCPoint getPositionAnchorAware(CCNode* node) {
-    auto pos = node->getPosition();
+    auto pos = node->CCNode::getPosition();
     auto size = getRealScaledContentSize(node);
     auto anchor = node->isIgnoreAnchorPointForPosition() ? CCPoint{0,0} : node->getAnchorPoint();
 

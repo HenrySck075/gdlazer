@@ -37,6 +37,13 @@ OsuGame* OsuGame::instance = nullptr;
 
 bool OsuGame::init() {
     CCScene::init();
+    checkAction = CCRepeatForever::create(
+        CCSequence::createWithTwoActions(
+            CCDelayTime::create(0.1),
+            CCCallFunc::create(this,callfunc_selector(OsuGame::checkForQueue))
+        )
+    );
+    m_pActionManager->pauseTarget(this);
     main = Container::create();
     main->setID("mainUI");
     main->setContentSize(getContentSize());
@@ -52,6 +59,7 @@ bool OsuGame::init() {
     addListener("ogExitDidFinish", [this](NodeEvent* e){
         main->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
     });
+    runAction(checkAction);
     return true;
 }
 
@@ -69,29 +77,39 @@ void OsuGame::hideToolbar() {
     ));
 }
 
-void OsuGame::pushScreen(OsuScreen* s) {
-    OsuScreen* ls;
+void OsuGame::pushScreen(Screen* s) {
+    Screen* ls = nullptr;
+    bool scheduleResume = screenStack.size()==0;
     if (screenStack.size()!=0) {
         ls = screenStack[screenStack.size()-1];
     }
-    s->onEntering(ScreenTransitionEvent(ls,s));
+    auto e = ScreenTransitionEvent(ls,s);
+    if (ls) ls->onExiting(e);
+    s->onEntering(e);
     screenStack.push_back(s);
     main->addChild(s);
     currentScreen = s;
+    if (scheduleResume) m_pActionManager->resumeTarget(this);
 }
 
-void OsuGame::popScreen() {
+Screen* OsuGame::popScreen() {
     if (screenStack.size()==0) {
         log::error("[OsuGame]: nice >:]");
-        return;
+        return nullptr;
     }
-    auto s = screenStack[screenStack.size()-1];
-    auto ps = screenStack.pop_back();
+    bool schedulePause = screenStack.size()==1;
+    auto s = screenStack.pop_back();
+    Screen* ps = nullptr;
+    if (screenStack.size()!=0) ps = screenStack[screenStack.size()-1];
     
     ScreenTransitionEvent event = {s,ps};
     s->onExiting(event);
+    screenPopQueue.push_back(s);
     if (ps!=nullptr) ps->onEntering(event);
     currentScreen = ps;
+    if (schedulePause) m_pActionManager->pauseTarget(this);
+    
+    return s;
 }
 
 void OsuGame::onLoseFocus() {
@@ -104,6 +122,23 @@ void OsuGame::onFocus() {
     engine->setBackgroundMusicVolume(engine->getBackgroundMusicVolume()/0.6);
     engine->setEffectsVolume(engine->getEffectsVolume()/0.6);
 }
+
+void OsuGame::checkForQueue() {
+    std::vector<Screen*> e;
+    for (auto* s : screenPopQueue) {
+        if (m_pActionManager->numberOfRunningActionsInTarget(s) == 0) {
+            main->removeChild(s);
+            e.push_back(s);
+        }
+    };
+    if (e.size()!=0) {
+        auto i = screenPopQueue.inner();
+        for (auto*s : screenPopQueue) {
+            i->removeObject(s);
+        }
+    }
+}
+
 
 #include <Geode/modify/AppDelegate.hpp>
 

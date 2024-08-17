@@ -3,8 +3,8 @@
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
     colorBg = CCLayerColor::create(ccc4(255,255,255,0));
-    colorBg->setZOrder(99999);
-    addChild(colorBg);
+    colorBg->setZOrder(-999);
+    //addChild(colorBg);
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate();});
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
@@ -16,6 +16,12 @@ bool Container::init() {
     return true;
 }
 
+void Container::setColor(ccColor3B const& col) {
+    colorBg->setColor(col);
+}
+void Container::setOpacity(GLubyte opacity) {
+    colorBg->setOpacity(opacity);
+}
 
 #ifndef GEODE_IS_WINDOWS
 #include <cxxabi.h>

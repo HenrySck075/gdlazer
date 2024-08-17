@@ -18,15 +18,20 @@ public:
         create_class(DrawableCarouselBeatmap, init, level);
     };
     bool init(GJGameLevel* level) {
+        OsuClickableContainer::init("select-expand.wav"_spr, [](CCNode*self){});
         m_level = level;
-        setContentSizeWithUnit(CCSize(100,h), Unit::OpenGL, Unit::UIKit);
+        addChild(colorBg);
+        setAnchorPoint(ccp(0,0));
+        setContentSizeWithUnit(CCSize(0.4,h), Unit::Viewport, Unit::UIKit);
         setOpacity(255);
         setColor(ccc3(255,0,0));
         return true;
+
+        //CCScheduler::get()->scheduleUpdateForTarget();
     };
 
     void onClick() {};
-    void onMouseEnter() {};
+    void onMouseEnter() { };
     void onMouseExit() {};
     void onMouseUp() {};
     void onMouseDown() {};

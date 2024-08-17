@@ -24,9 +24,12 @@ private:
     Toolbar* toolbar;
 
     CCArrayExt<Screen*> screenStack;
+    CCArrayExt<Screen*> screenPopQueue;
     Container* main;
+
+    CCRepeatForever* checkAction;
 public:
-    Screen* currentScreen;
+    Screen* currentScreen = nullptr;
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
     static OsuGame* get() {
@@ -68,10 +71,12 @@ public:
     void hideToolbar();
 
     void pushScreen(Screen* s);
-    void popScreen();
+    Screen* popScreen();
 
     void onLoseFocus();
     void onFocus();
+
+    void checkForQueue();
 };
 
 /*

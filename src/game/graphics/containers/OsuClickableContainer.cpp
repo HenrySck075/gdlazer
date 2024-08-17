@@ -12,7 +12,6 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
     addListener("mouseEvent",[this](NodeEvent* e) {
         auto event = static_cast<MouseEvent*>(e);
         auto type = event->eventType;
-        log::debug("[OsuClickableContainer]: {}",int(type));
         if (!(this->m_hoverEnabled && isRunning())) return;
         switch (type) {
             case MouseEventType::Enter:
@@ -22,7 +21,7 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
                 break;
             case MouseEventType::Exit:
                 m_entered = false;
-                log::debug("[OsuClickableContainer]: Mouse entered");
+                log::debug("[OsuClickableContainer]: Mouse exited");
                 this->onMouseExit();
                 break;
             case MouseEventType::MouseUp:
@@ -32,15 +31,19 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
                 this->onMouseDown();
                 break;
             case MouseEventType::Click:
+                log::debug("[OsuClickableContainer]: clicked");
                 this->onClick();
                 FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
                 this->clickCallback(this);
                 event->preventDefault();
         }
-        MouseEventType type2 = type;
-        if (type == MouseEventType::MouseUp && m_entered) type2 == MouseEventType::Click;
-        if (type == MouseEventType::Move) {
-            bool containsCursor = boundingBoxFromContentSize(this).containsPoint(event->position);
+        int type2 = (int)type;
+        if (type == MouseEventType::MouseUp && m_entered) {
+            type2 = MouseEventType::Click;
+        }
+        else if (type == MouseEventType::Move) {
+            auto bound = boundingBoxFromContentSize(this);
+            bool containsCursor = bound.containsPoint(event->position);
             if (
                 containsCursor
                 && 
@@ -53,7 +56,7 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
             ) type2 = MouseEventType::Exit;
         }
         // redispatch without calling child
-        if (type2 != type) EventTarget::dispatchEventUnsafe(new MouseEvent(type2, event->position));
+        if (type2 != (int)type) dispatchEventUnsafe(new MouseEvent((MouseEventType)type2, event->position));
         return;
     });
     //CCNodeHover::init();
