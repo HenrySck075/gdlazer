@@ -25,10 +25,16 @@ bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, C
                 this->onMouseExit();
                 break;
             case MouseEventType::MouseUp:
-                this->onMouseUp();
+                if (m_holding) {
+                    this->onMouseUp();
+                    m_holding = false;
+                }
                 break;
             case MouseEventType::MouseDown:
-                this->onMouseDown();
+                if (m_entered) {
+                    this->onMouseDown();
+                    m_holding = true;
+                }
                 break;
             case MouseEventType::Click:
                 log::debug("[OsuClickableContainer]: clicked");

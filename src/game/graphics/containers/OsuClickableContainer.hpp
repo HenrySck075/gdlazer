@@ -16,6 +16,7 @@ private:
     bool m_clickEnabled = true;
     bool m_hoverEnabled = true;
     bool m_entered = false;
+    bool m_holding = false;
     EventListenerProtocol* m_listener;
 
     bool holding = false;

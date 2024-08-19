@@ -5,8 +5,12 @@ bool Container::init() {
     colorBg = CCLayerColor::create(ccc4(255,255,255,0));
     colorBg->setZOrder(-999);
     colorBg->retain();
+    colorBg->setAnchorPoint(ccp(0,0));
     //addChild(colorBg);
-    addListener("nodeLayoutUpdate", [this](NodeEvent*j){onLayoutUpdate(static_cast<NodeUIEvent*>(j));});
+    addListener("nodeLayoutUpdate", [this](NodeEvent*j){
+        onLayoutUpdate(static_cast<NodeUIEvent*>(j));
+        colorBg->setContentSize(getRealContentSize()/2);
+    });
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
     updateAnchorLabel();
@@ -23,7 +27,6 @@ void Container::setColor(ccColor3B const& col) {
 void Container::setOpacity(GLubyte opacity) {
     colorBg->setOpacity(opacity);
 }
-
 
 bool Container::dispatchEvent(NodeEvent* event) {
     if (event->m_log) log::debug("[{} | Container]: Dispatching {}", getNodeName(this), event->m_eventName);

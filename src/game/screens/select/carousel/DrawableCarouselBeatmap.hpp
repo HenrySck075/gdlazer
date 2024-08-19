@@ -1,8 +1,8 @@
 #pragma once
 #include <Geode/Geode.hpp>
 class Container;
-#include "../../graphics/containers/OsuClickableContainer.hpp"
-#include "../../../utils.hpp"
+#include "../../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../../utils.hpp"
 using namespace geode::prelude;
 
 /// @note plus im still confused
@@ -21,8 +21,13 @@ public:
     bool init(GJGameLevel* level);
 
     void onClick() {};
-    void onMouseEnter() { };
-    void onMouseExit() {};
+    void onMouseEnter() {
+        colorBg->stopAllActions();
+        colorBg->setOpacity(150);
+    };
+    void onMouseExit() {
+        colorBg->runAction(CCFadeTo::create(0.5,0));
+    };
     void onMouseUp() {};
     void onMouseDown() {};
 };

@@ -15,17 +15,8 @@ add_library(${PROJECT_NAME} SHARED
   src/main.cpp
   src/utils.cpp
   src/utils.hpp
-  src/helpers/CustomActions.cpp
-  src/helpers/CustomActions.hpp
-  src/helpers/colors.hpp
-  src/helpers/ColorHelper.hpp
-  src/helpers/sound/SoundManager.hpp
-  src/helpers/sound/SoundManager.cpp
-  src/framework/utils/Interpolation.hpp
-  src/framework/utils/IInterpolable.hpp
-  src/framework/utils/Interpolation.cpp
-  src/framework/graphics/Color4.hpp
   src/framework/graphics/Color4.cpp
+  src/framework/graphics/Color4.hpp
   src/framework/graphics/color/ColorInfo.hpp
   src/framework/graphics/containers/Container.cpp
   src/framework/graphics/containers/Container.hpp
@@ -36,58 +27,69 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/graphics/containers/FillFlowContainer.hpp
   src/framework/screens/Screen.hpp
   src/framework/screens/ScreenTransitionEvent.hpp
-  src/main/PauseLayer.hpp
-  src/main/PauseLayer.cpp
+  src/framework/utils/IInterpolable.hpp
+  src/framework/utils/Interpolation.cpp
+  src/framework/utils/Interpolation.hpp
+  src/game/MouseEvent.hpp
   src/game/OsuGame.cpp
   src/game/OsuGame.hpp
-  src/game/MouseEvent.hpp
-  src/game/scoring/HitResult.hpp
-  src/game/scoring/ScoreRank.hpp
-  src/game/scoring/RankingTier.hpp
-  src/game/screens/menu/MainMenu.hpp
-  src/game/screens/menu/ButtonSystem.hpp
-  src/game/screens/menu/OsuLogo.hpp
-  src/game/screens/menu/ButtonSystem.cpp
-  src/game/screens/menu/ButtonArea.hpp
-  src/game/screens/menu/MainMenuButton.hpp
-  src/game/screens/menu/MainMenu.cpp
-  src/game/screens/menu/ButtonSystemState.hpp
-  src/game/screens/menu/MainMenuButton.cpp
-  src/game/screens/menu/ButtonConstants.hpp
-  src/game/screens/menu/OsuLogo.cpp
-  src/game/screens/menu/ButtonArea.cpp
-  src/game/screens/menu/intro/IntroTriangles.cpp
-  src/game/screens/menu/intro/IntroTriangles.hpp
-  src/game/screens/select/DrawableCarouselBeatmap.cpp
-  src/game/screens/select/SongSelect.hpp
-  src/game/screens/select/DrawableCarouselBeatmap.hpp
-  src/game/graphics/OsuIcon.cpp
-  src/game/graphics/OsuColor.hpp
-  src/game/graphics/OsuIcon.hpp
-  src/game/graphics/CCResizableSprite.hpp
+  src/game/beatmaps/BeatmapOnlineStatus.hpp
   src/game/graphics/CCResizableSprite.cpp
+  src/game/graphics/CCResizableSprite.hpp
+  src/game/graphics/OsuColor.hpp
+  src/game/graphics/OsuIcon.cpp
+  src/game/graphics/OsuIcon.hpp
+  src/game/graphics/containers/BeatSyncedContainer.hpp
+  src/game/graphics/containers/OsuClickableContainer.cpp
+  src/game/graphics/containers/OsuClickableContainer.hpp
+  src/game/graphics/containers/ParallaxContainer.cpp
+  src/game/graphics/containers/ParallaxContainer.hpp
+  src/game/graphics/containers/WaveContainer.cpp
+  src/game/graphics/containers/WaveContainer.hpp
+  src/game/graphics/containers/beatsync/BeatEvent.hpp
   src/game/graphics/ui/OsuText.hpp
   src/game/graphics/ui/deco/Triangles.cpp
   src/game/graphics/ui/deco/Triangles.hpp
-  src/game/graphics/containers/WaveContainer.cpp
-  src/game/graphics/containers/WaveContainer.hpp
-  src/game/graphics/containers/BeatSyncedContainer.hpp
-  src/game/graphics/containers/ParallaxContainer.cpp
-  src/game/graphics/containers/ParallaxContainer.hpp
-  src/game/graphics/containers/OsuClickableContainer.cpp
-  src/game/graphics/containers/OsuClickableContainer.hpp
-  src/game/graphics/containers/beatsync/BeatEvent.hpp
+  src/game/online/rooms/RoomCategory.hpp
   src/game/overlays/OverlayColorProvider.cpp
   src/game/overlays/OverlayColorProvider.hpp
-  src/game/overlays/dialog/PopupDialog.hpp
   src/game/overlays/dialog/PopupDialog.cpp
+  src/game/overlays/dialog/PopupDialog.hpp
   src/game/overlays/dialog/PopupDialogButton.cpp
   src/game/overlays/dialog/PopupDialogButton.hpp
   src/game/overlays/toolbar/Toolbar.cpp
   src/game/overlays/toolbar/Toolbar.hpp
-  src/game/beatmaps/BeatmapOnlineStatus.hpp
   src/game/rulesets/mods/ModType.hpp
-  src/game/online/rooms/RoomCategory.hpp
+  src/game/scoring/HitResult.hpp
+  src/game/scoring/RankingTier.hpp
+  src/game/scoring/ScoreRank.hpp
+  src/game/screens/menu/Background.cpp
+  src/game/screens/menu/Background.hpp
+  src/game/screens/menu/ButtonArea.cpp
+  src/game/screens/menu/ButtonArea.hpp
+  src/game/screens/menu/ButtonConstants.hpp
+  src/game/screens/menu/ButtonSystem.cpp
+  src/game/screens/menu/ButtonSystem.hpp
+  src/game/screens/menu/ButtonSystemState.hpp
+  src/game/screens/menu/MainMenu.cpp
+  src/game/screens/menu/MainMenu.hpp
+  src/game/screens/menu/MainMenuButton.cpp
+  src/game/screens/menu/MainMenuButton.hpp
+  src/game/screens/menu/OsuLogo.cpp
+  src/game/screens/menu/OsuLogo.hpp
+  src/game/screens/menu/intro/IntroTriangles.cpp
+  src/game/screens/menu/intro/IntroTriangles.hpp
+  src/game/screens/select/SongSelect.hpp
+  src/game/screens/select/carousel/DrawableCarouselBeatmap.cpp
+  src/game/screens/select/carousel/DrawableCarouselBeatmap.hpp
+  src/helpers/ColorHelper.hpp
+  src/helpers/colors.hpp
+  src/helpers/CustomActions.cpp
+  src/helpers/CustomActions.hpp
+  src/helpers/sound/SoundManager.cpp
+  src/helpers/sound/SoundManager.hpp
+  src/main/PauseLayer.cpp
+  src/main/PauseLayer.hpp
     # Fill end
 )
 

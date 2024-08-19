@@ -1,18 +1,18 @@
 {
-    "geode": "3.4.0",
-    "gd": {
-    "win": "2.206",
-    "android": "2.206",
-    "mac": "2.206",
-    "ios": "2.206"
-    },
-    "id": "henrysck075.osulazer",
-    "name": "osu!lazer",
-    "version": "v0.0.7",
-    "developer": "Henry Spheria",
-    "description": "nico nico niii",
-    "early-load": true,
-    "resources": {
+  "geode": "3.4.0",
+  "gd": {
+  "win": "2.206",
+  "android": "2.206",
+  "mac": "2.206",
+  "ios": "2.206"
+  },
+  "id": "henrysck075.osulazer",
+  "name": "osu!lazer",
+  "version": "v0.0.7",
+  "developer": "Henry Spheria",
+  "description": "nico nico niii",
+  "early-load": true,
+  "resources": {
     "fonts": {
         "torus-regular": {
         "path": "resources/torus/regular.ttf",
@@ -27,16 +27,13 @@
         "size": 80
         }
     },
-    "sprites": [
-      "resources/textures/ui/roundborder.png"
-    ],
     "spritesheets": {
       "MainMenuSheet": [
         "resources/textures/menu/*.png",
         "resources/textures/menu/*.jpg"
       ],
       "UISheet": [
-        "resources/textures/ui/square.png"
+        "resources/textures/ui/*.png"
       ],
       "IntroSheet": [
         "resources/textures/iconset/*.png",
@@ -50,5 +47,12 @@
       "resources/glyphs/*.fnt",
       "resources/glyphs/*.png"
     ]
+  },
+  "dependencies": [
+    {
+      "id": "henrysck075.imagecache",
+      "importance": "required",
+      "version": "v1.0.0"
     }
+  ]
 }

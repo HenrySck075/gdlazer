@@ -98,6 +98,8 @@ private:
 protected:
     CCLayerColor* colorBg;
 
+    bool m_includeShadow = false;
+
     Anchor m_anchor = Anchor::BottomLeft;
     
     // @param value Value in specified unit
@@ -137,7 +139,6 @@ protected:
 public:
     void setColor(ccColor3B const& col) override;
     void setOpacity(GLubyte opacity) override;
-
 
     bool dispatchEvent(NodeEvent* event) override;
     // Dispatches the event to the child. 

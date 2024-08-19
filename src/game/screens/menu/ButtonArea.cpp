@@ -106,6 +106,7 @@ void ButtonArea::show(std::string tag) {
                 })
             ));
         }
+        buttonsMenus[tag]->setZOrder(curZOrder--);
         this->addChild(buttonsMenus[tag]);
         tagsStack.push_back(tag);
     }
@@ -163,6 +164,7 @@ void ButtonArea::hide(std::string tag, bool collapse) {
                     )
                 );
             }
+            curZOrder--;
             this->runAction(
                 CCSequence::createWithTwoActions(
                     CCDelayTime::create(animationSpeed),

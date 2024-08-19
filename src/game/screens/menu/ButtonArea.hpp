@@ -16,6 +16,8 @@ private:
     CCPoint anchorPosition = ccp(0,0);
     float animationSpeed = 0.5;
     using EasingEffect = CCEaseExponentialOut;
+
+    int curZOrder = 0;
 public:
     static ButtonArea* create(const CCPoint& anchorPos) {
         create_class(ButtonArea, init, anchorPos);
