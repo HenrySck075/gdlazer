@@ -205,7 +205,7 @@ class $modify(CCEGLView) {
 #include <Geode/modify/CCTouchDispatcher.hpp>
 class $modify(CCTouchDispatcher) {
   void broadcastPos(CCPoint pos) {
-    MouseEvent(pos).post();
+    OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move,pos));
   };
   void touches(CCSet* t, CCEvent* e, uint i) {
     CCTouchDispatcher::touches(t, e, i);
@@ -290,7 +290,7 @@ class $modify(CCNodeRGBA) {
                 {
                     CCBool* _b = static_cast<CCBool*>(dynamic_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
                     
-                    if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
+                    if (_b!=nullptr && _b->getValue()) item->updateDisplayedOpacity(_displayedOpacity);
                 }
             }
         }
