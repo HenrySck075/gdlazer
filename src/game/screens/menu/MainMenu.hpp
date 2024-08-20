@@ -31,7 +31,8 @@ private:
         while (OsuGame::get()->popScreen()) {/*meow*/};
     }
     void onExiting(ScreenTransitionEvent e) override {
-        /*if (e.Destination != nullptr)*/ setVisible(false);
+        setVisible(false);
+        if (e.Destination != nullptr) removeFromParent();
     }
     void testDispatch(CCObject* e) {
         auto m = new NodeEvent("googoo gaga");

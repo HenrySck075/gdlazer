@@ -2,7 +2,7 @@
 #include "../../utils.hpp"
 
 CCResizableSprite* CCResizableSprite::create() {
-  create_class(CCResizableSprite, init);
+    create_class(CCResizableSprite, init);
 }
 
 CCResizableSprite* CCResizableSprite::createWithSpriteFrameName(const char *pszSpriteFrameName)
@@ -30,14 +30,16 @@ bool CCResizableSprite::initWithSpriteFrameName(const char* pszSpriteFrameName) 
 
 void CCResizableSprite::setContentSize(CCSize const& size) {
     CCNode::setContentSize(size);
-    if (baseSize.equals(CCSize(0,0))) {
-        baseSize = getContentSize();
+    if (baseSize.equals(CCSize{0,0})) {
+        baseSize = m_sprite->getContentSize();
     }
+    if (baseSize.equals(CCSize{0,0})) return;
+    
     float wRatio = size.width / baseSize.width;
     float hRatio = size.height / baseSize.height;
     if (m_preserveRatio) {
         if (size.width > size.height) hRatio = wRatio;
-        if (size.width > size.height) wRatio = hRatio;
+        if (size.height > size.width) wRatio = hRatio;
     }
     
     m_sprite->setScaleX(wRatio);
