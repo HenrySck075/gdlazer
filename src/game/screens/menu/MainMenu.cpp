@@ -1,11 +1,8 @@
 #include "MainMenu.hpp"
-#include "MainMenuButton.hpp"
+#include "Background.hpp"
 #include "ButtonSystem.hpp"
 #include "OsuLogo.hpp"
-#include "../../graphics/OsuIcon.hpp"
-#include "../../graphics/CCResizableSprite.hpp"
 #include "../../graphics/containers/ParallaxContainer.hpp"
-#include "../select/SongSelect.hpp"
 
 bool MainMenu::init(bool flash) {
     Screen::init();
@@ -15,6 +12,8 @@ bool MainMenu::init(bool flash) {
     //auto g = MainMenuButton::create("g","button-play-select.wav"_spr, OsuIcon().Logo, Color4Defined::Green, [this](CCNode* idk) {});
     //detector = BeatDetector::Instance();
     //detector->LoadSongFromSystem();
+
+    /*
     int bgIndex = (int)(randomFloat() * 7) + 1;
     std::string the;
     // this is not yandere behaviour, simply because of _spr
@@ -52,8 +51,9 @@ bool MainMenu::init(bool flash) {
     CCSize m2 = CCDirector::sharedDirector()->getWinSize();
     d->setScale(m2.width/m.width);
     d->setAnchorPoint(ccp(0, 0));
+    */
     auto paral = ParallaxContainer::create();
-    paral->addChild(d);
+    paral->addChild(Background::create());
     this->addChild(paral);
 
     auto back = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this, menu_selector(MainMenu::debugReturn));
