@@ -36,6 +36,7 @@ add_library(${PROJECT_NAME} SHARED
   src/game/beatmaps/BeatmapOnlineStatus.hpp
   src/game/graphics/CCResizableSprite.cpp
   src/game/graphics/CCResizableSprite.hpp
+  src/game/graphics/OsuColor.cpp
   src/game/graphics/OsuColor.hpp
   src/game/graphics/OsuIcon.cpp
   src/game/graphics/OsuIcon.hpp

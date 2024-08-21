@@ -17,6 +17,11 @@ public:
   bool init();
   void setContentSize(CCSize const& size) override;
 
+  void refreshScaling() {
+      baseSize = m_sprite->getContentSize();
+      setContentSize(getContentSize());
+  }
+
   void preserveRatio(bool enable) {m_preserveRatio = enable;}
   CCSprite* getSprite(){return m_sprite;}
 };

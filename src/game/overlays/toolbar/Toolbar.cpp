@@ -4,8 +4,7 @@
 bool Toolbar::init() {
     Container::init();
     m_anchor = Anchor::Top;
-    auto color = OsuColor();
-    auto bgColor = color.Gray(0.1f);
+    auto bgColor = OsuColor::Gray(0.1f);
     this->setSizeUnit(Unit::OpenGL,Unit::UIKit);
     this->setContentHeight(HEIGHT);
     this->setAnchorPoint(ccp(0.5,1));

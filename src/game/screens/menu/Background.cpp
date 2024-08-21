@@ -10,6 +10,7 @@ bool Background::init() {
     addChild(m_background);
     m_backgroundGetListener.bind([this](meow::Event* e){
         if (auto img = e->getValue()) {
+            m_background->preserveRatio(true);
             auto name = *img;
             if (name.starts_with("https://")) {
                 ImageCache::instance()->download(name, {}, "", [this](CCImage* i, std::string) {
@@ -18,6 +19,7 @@ bool Background::init() {
                     auto m = texture->getContentSize();
                     m_background->getSprite()->setTexture(texture);
                     m_background->getSprite()->setTextureRect(CCRect{0,0,m.width, m.height});
+                    m_background->refreshScaling();
                 });
             } else {
                 auto spriteFrame = CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(name.c_str());
@@ -25,7 +27,6 @@ bool Background::init() {
                 m_background->getSprite()->setTextureRect(spriteFrame->getRect());
             }
             m_background->setContentSize(getRealContentSize());
-            m_background->preserveRatio(true);
         } else if (e->isCancelled()) {
             return;
         }

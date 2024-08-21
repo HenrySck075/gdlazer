@@ -9,7 +9,7 @@ bool Container::init() {
     //addChild(colorBg);
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeUIEvent*>(j));
-        colorBg->setContentSize(getRealContentSize()/2);
+        colorBg->setContentSize(getRealContentSize());
     });
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));

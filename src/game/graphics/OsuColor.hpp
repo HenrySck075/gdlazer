@@ -265,100 +265,100 @@ public:
         return Gray(brightness > 0.5f ? 0.2f : 0.9f);
     }
 
-    Color4 TeamColorRed = Color4::fromHex("AA1414");
-    Color4 TeamColorBlue = Color4::fromHex("1462AA");
+    static Color4 TeamColorRed;
+    static Color4 TeamColorBlue;
 
     // See https://github.com/ppy/osu-web/blob/master/resources/assets/less/colors.less
-    Color4 PurpleLighter = Color4::fromHex("eeeeff");
-    Color4 PurpleLight = Color4::fromHex("aa88ff");
-    Color4 PurpleLightAlternative = Color4::fromHex("cba4da");
-    Color4 Purple = Color4::fromHex("8866ee");
-    Color4 PurpleDark = Color4::fromHex("6644cc");
-    Color4 PurpleDarkAlternative = Color4::fromHex("312436");
-    Color4 PurpleDarker = Color4::fromHex("441188");
+    static Color4 PurpleLighter;
+    static Color4 PurpleLight;
+    static Color4 PurpleLightAlternative;
+    static Color4 Purple;
+    static Color4 PurpleDark;
+    static Color4 PurpleDarkAlternative;
+    static Color4 PurpleDarker;
 
-    Color4 PinkLighter = Color4::fromHex("ffddee");
-    Color4 PinkLight = Color4::fromHex("ff99cc");
-    Color4 Pink = Color4::fromHex("ff66aa");
-    Color4 PinkDark = Color4::fromHex("cc5288");
-    Color4 PinkDarker = Color4::fromHex("bb1177");
+    static Color4 PinkLighter;
+    static Color4 PinkLight;
+    static Color4 Pink;
+    static Color4 PinkDark;
+    static Color4 PinkDarker;
 
-    Color4 BlueLighter = Color4::fromHex("ddffff");
-    Color4 BlueLight = Color4::fromHex("99eeff");
-    Color4 Blue = Color4::fromHex("66ccff");
-    Color4 BlueDark = Color4::fromHex("44aadd");
-    Color4 BlueDarker = Color4::fromHex("2299bb");
+    static Color4 BlueLighter;
+    static Color4 BlueLight;
+    static Color4 Blue;
+    static Color4 BlueDark;
+    static Color4 BlueDarker;
 
-    Color4 YellowLighter = Color4::fromHex("ffffdd");
-    Color4 YellowLight = Color4::fromHex("ffdd55");
-    Color4 Yellow = Color4::fromHex("ffcc22");
-    Color4 YellowDark = Color4::fromHex("eeaa00");
-    Color4 YellowDarker = Color4::fromHex("cc6600");
+    static Color4 YellowLighter;
+    static Color4 YellowLight;
+    static Color4 Yellow;
+    static Color4 YellowDark;
+    static Color4 YellowDarker;
 
-    Color4 GreenLighter = Color4::fromHex("eeffcc");
-    Color4 GreenLight = Color4::fromHex("b3d944");
-    Color4 Green = Color4::fromHex("88b300");
-    Color4 GreenDark = Color4::fromHex("668800");
-    Color4 GreenDarker = Color4::fromHex("445500");
+    static Color4 GreenLighter;
+    static Color4 GreenLight;
+    static Color4 Green;
+    static Color4 GreenDark;
+    static Color4 GreenDarker;
 
-    Color4 Sky = Color4::fromHex("6bb5ff");
-    Color4 GreySkyLighter = Color4::fromHex("c6e3f4");
-    Color4 GreySkyLight = Color4::fromHex("8ab3cc");
-    Color4 GreySky = Color4::fromHex("405461");
-    Color4 GreySkyDark = Color4::fromHex("303d47");
-    Color4 GreySkyDarker = Color4::fromHex("21272c");
+    static Color4 Sky;
+    static Color4 GreySkyLighter;
+    static Color4 GreySkyLight;
+    static Color4 GreySky;
+    static Color4 GreySkyDark;
+    static Color4 GreySkyDarker;
 
-    Color4 SeaFoam = Color4::fromHex("05ffa2");
-    Color4 GreySeaFoamLighter = Color4::fromHex("9ebab1");
-    Color4 GreySeaFoamLight = Color4::fromHex("4d7365");
-    Color4 GreySeaFoam = Color4::fromHex("33413c");
-    Color4 GreySeaFoamDark = Color4::fromHex("2c3532");
-    Color4 GreySeaFoamDarker = Color4::fromHex("1e2422");
+    static Color4 SeaFoam;
+    static Color4 GreySeaFoamLighter;
+    static Color4 GreySeaFoamLight;
+    static Color4 GreySeaFoam;
+    static Color4 GreySeaFoamDark;
+    static Color4 GreySeaFoamDarker;
 
-    Color4 Cyan = Color4::fromHex("05f4fd");
-    Color4 GreyCyanLighter = Color4::fromHex("77b1b3");
-    Color4 GreyCyanLight = Color4::fromHex("436d6f");
-    Color4 GreyCyan = Color4::fromHex("293d3e");
-    Color4 GreyCyanDark = Color4::fromHex("243536");
-    Color4 GreyCyanDarker = Color4::fromHex("1e2929");
+    static Color4 Cyan;
+    static Color4 GreyCyanLighter;
+    static Color4 GreyCyanLight;
+    static Color4 GreyCyan;
+    static Color4 GreyCyanDark;
+    static Color4 GreyCyanDarker;
 
-    Color4 Lime = Color4::fromHex("82ff05");
-    Color4 GreyLimeLighter = Color4::fromHex("deff87");
-    Color4 GreyLimeLight = Color4::fromHex("657259");
-    Color4 GreyLime = Color4::fromHex("3f443a");
-    Color4 GreyLimeDark = Color4::fromHex("32352e");
-    Color4 GreyLimeDarker = Color4::fromHex("2e302b");
+    static Color4 Lime;
+    static Color4 GreyLimeLighter;
+    static Color4 GreyLimeLight;
+    static Color4 GreyLime;
+    static Color4 GreyLimeDark;
+    static Color4 GreyLimeDarker;
 
-    Color4 Violet = Color4::fromHex("bf04ff");
-    Color4 GreyVioletLighter = Color4::fromHex("ebb8fe");
-    Color4 GreyVioletLight = Color4::fromHex("685370");
-    Color4 GreyViolet = Color4::fromHex("46334d");
-    Color4 GreyVioletDark = Color4::fromHex("2c2230");
-    Color4 GreyVioletDarker = Color4::fromHex("201823");
+    static Color4 Violet;
+    static Color4 GreyVioletLighter;
+    static Color4 GreyVioletLight;
+    static Color4 GreyViolet;
+    static Color4 GreyVioletDark;
+    static Color4 GreyVioletDarker;
 
-    Color4 Carmine = Color4::fromHex("ff0542");
-    Color4 GreyCarmineLighter = Color4::fromHex("deaab4");
-    Color4 GreyCarmineLight = Color4::fromHex("644f53");
-    Color4 GreyCarmine = Color4::fromHex("342b2d");
-    Color4 GreyCarmineDark = Color4::fromHex("302a2b");
-    Color4 GreyCarmineDarker = Color4::fromHex("241d1e");
+    static Color4 Carmine;
+    static Color4 GreyCarmineLighter;
+    static Color4 GreyCarmineLight;
+    static Color4 GreyCarmine;
+    static Color4 GreyCarmineDark;
+    static Color4 GreyCarmineDarker;
 
-    Color4 Gray0 = Color4::fromHex("000");
-    Color4 Gray1 = Color4::fromHex("111");
-    Color4 Gray2 = Color4::fromHex("222");
-    Color4 Gray3 = Color4::fromHex("333");
-    Color4 Gray4 = Color4::fromHex("444");
-    Color4 Gray5 = Color4::fromHex("555");
-    Color4 Gray6 = Color4::fromHex("666");
-    Color4 Gray7 = Color4::fromHex("777");
-    Color4 Gray8 = Color4::fromHex("888");
-    Color4 Gray9 = Color4::fromHex("999");
-    Color4 GrayA = Color4::fromHex("aaa");
-    Color4 GrayB = Color4::fromHex("bbb");
-    Color4 GrayC = Color4::fromHex("ccc");
-    Color4 GrayD = Color4::fromHex("ddd");
-    Color4 GrayE = Color4::fromHex("eee");
-    Color4 GrayF = Color4::fromHex("fff");
+    static Color4 Gray0;
+    static Color4 Gray1;
+    static Color4 Gray2;
+    static Color4 Gray3;
+    static Color4 Gray4;
+    static Color4 Gray5;
+    static Color4 Gray6;
+    static Color4 Gray7;
+    static Color4 Gray8;
+    static Color4 Gray9;
+    static Color4 GrayA;
+    static Color4 GrayB;
+    static Color4 GrayC;
+    static Color4 GrayD;
+    static Color4 GrayE;
+    static Color4 GrayF;
 
 
     // Reference: https://www.figma.com/file/VIkXMYNPMtQem2RJg9k2iQ/Asset%2Fcolors?node-id=1838%3A3
@@ -368,63 +368,63 @@ public:
     // If the color in question is supposed to always match the view in which it is displayed theme-wise, use `OverlaycolorProvider`.
     // If the color usage is special and in general differs from the surrounding view in choice of hue, use the `Osucolor` constants.
 
-    Color4 Pink0 = Color4::fromHex("ff99c7");
-    Color4 Pink1 = Color4::fromHex("ff66ab");
-    Color4 Pink2 = Color4::fromHex("eb4791");
-    Color4 Pink3 = Color4::fromHex("cc3378");
-    Color4 Pink4 = Color4::fromHex("6b2e49");
+    static Color4 Pink0;
+    static Color4 Pink1;
+    static Color4 Pink2;
+    static Color4 Pink3;
+    static Color4 Pink4;
 
-    Color4 Purple0 = Color4::fromHex("b299ff");
-    Color4 Purple1 = Color4::fromHex("8c66ff");
-    Color4 Purple2 = Color4::fromHex("7047eb");
-    Color4 Purple3 = Color4::fromHex("5933cc");
-    Color4 Purple4 = Color4::fromHex("3d2e6b");
+    static Color4 Purple0;
+    static Color4 Purple1;
+    static Color4 Purple2;
+    static Color4 Purple3;
+    static Color4 Purple4;
 
-    Color4 Blue0 = Color4::fromHex("99ddff");
-    Color4 Blue1 = Color4::fromHex("66ccff");
-    Color4 Blue2 = Color4::fromHex("47b4eb");
-    Color4 Blue3 = Color4::fromHex("3399cc");
-    Color4 Blue4 = Color4::fromHex("2e576b");
+    static Color4 Blue0;
+    static Color4 Blue1;
+    static Color4 Blue2;
+    static Color4 Blue3;
+    static Color4 Blue4;
 
-    Color4 Green0 = Color4::fromHex("99ffa2");
-    Color4 Green1 = Color4::fromHex("66ff73");
-    Color4 Green2 = Color4::fromHex("47eb55");
-    Color4 Green3 = Color4::fromHex("33cc40");
-    Color4 Green4 = Color4::fromHex("2e6b33");
+    static Color4 Green0;
+    static Color4 Green1;
+    static Color4 Green2;
+    static Color4 Green3;
+    static Color4 Green4;
 
-    Color4 Lime0 = Color4::fromHex("ccff99");
-    Color4 Lime1 = Color4::fromHex("b2ff66");
-    Color4 Lime2 = Color4::fromHex("99eb47");
-    Color4 Lime3 = Color4::fromHex("7fcc33");
-    Color4 Lime4 = Color4::fromHex("4c6b2e");
+    static Color4 Lime0;
+    static Color4 Lime1;
+    static Color4 Lime2;
+    static Color4 Lime3;
+    static Color4 Lime4;
 
-    Color4 Orange0 = Color4::fromHex("ffe699");
-    Color4 Orange1 = Color4::fromHex("ffd966");
-    Color4 Orange2 = Color4::fromHex("ebc247");
-    Color4 Orange3 = Color4::fromHex("cca633");
-    Color4 Orange4 = Color4::fromHex("6b5c2e");
+    static Color4 Orange0;
+    static Color4 Orange1;
+    static Color4 Orange2;
+    static Color4 Orange3;
+    static Color4 Orange4;
 
-    Color4 Red0 = Color4::fromHex("ff9b9b");
-    Color4 Red1 = Color4::fromHex("ff6666");
-    Color4 Red2 = Color4::fromHex("eb4747");
-    Color4 Red3 = Color4::fromHex("cc3333");
-    Color4 Red4 = Color4::fromHex("6b2e2e");
+    static Color4 Red0;
+    static Color4 Red1;
+    static Color4 Red2;
+    static Color4 Red3;
+    static Color4 Red4;
 
     // Content Background
-    Color4 B5 = Color4::fromHex("222a28");
+    static Color4 B5;
 
-    Color4 RedLighter = Color4::fromHex("ffeded");
-    Color4 RedLight = Color4::fromHex("ed7787");
-    Color4 Red = Color4::fromHex("ed1121");
-    Color4 RedDark = Color4::fromHex("ba0011");
-    Color4 RedDarker = Color4::fromHex("870000");
+    static Color4 RedLighter;
+    static Color4 RedLight;
+    static Color4 Red;
+    static Color4 RedDark;
+    static Color4 RedDarker;
 
-    Color4 ChatBlue = Color4::fromHex("17292e");
+    static Color4 ChatBlue;
 
-    Color4 ContextMenuGray = Color4::fromHex("223034");
+    static Color4 ContextMenuGray;
 
-    Color4 SpotlightColor = Green2;
-    Color4 FeaturedArtistColor = Blue2;
+    static Color4 SpotlightColor;
+    static Color4 FeaturedArtistColor;
 
-    Color4 DangerousButtonColor = Pink3;
+    static Color4 DangerousButtonColor;
 };

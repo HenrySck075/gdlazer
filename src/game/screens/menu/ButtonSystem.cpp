@@ -202,8 +202,10 @@ bool ButtonSystem::init(OsuLogo* logo) {
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
     logo->setZOrder(1);
-    logo->setPosition(an);
+    logo->setPosition(ccp(an.x,0));
     logo->setScale(0.4);
+    logo->setAnchor(Anchor::Center);
+    
     //this->setPositionX(0);
     //auto me = CCMenu::createWithItem(logo);
     //me->setPosition(ccp(0,0));

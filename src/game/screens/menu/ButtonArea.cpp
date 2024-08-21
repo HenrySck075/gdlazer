@@ -5,6 +5,7 @@
 #include "Geode/loader/Log.hpp"
 #include <Geode/utils/ranges.hpp>
 #include "ButtonConstants.hpp"
+#include "../../graphics/OsuColor.hpp"
 
 bool ButtonArea::init(const CCPoint& anchorPos) {
     Container::init();
@@ -13,6 +14,10 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
     setAnchorPoint(ccp(0.5,0.5));
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
+
+    addChild(colorBg);
+    setColor(OsuColor::Gray(50));
+
     return true;
 }
 
