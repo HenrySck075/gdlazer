@@ -32,6 +32,8 @@ protected:
     virtual void onMouseExit() = 0;
 
 public:
+    // pretend to be clicking
+    void click() {dispatchEvent(new MouseEvent(MouseEventType::Click, ccp(9,9)));};
     void setClickSFX(std::string sfx) { clickSfx = sfx; };
     void setCallback(ButtonCallback clickCb) { clickCallback = clickCb; };
     /// <param name="clickCb">| the</param>

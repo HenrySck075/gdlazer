@@ -205,6 +205,13 @@ bool ButtonSystem::init(OsuLogo* logo) {
     logo->setPosition(ccp(an.x,0));
     logo->setScale(0.4);
     logo->setAnchor(Anchor::Center);
+    logo->setCallback([this,area](CCNode* self){
+        auto cur = area->getCurrent();
+        if (cur.has_value()) 
+            static_cast<MainMenuButton*>(
+                getChildByID("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
+            )->click();
+    });
     
     //this->setPositionX(0);
     //auto me = CCMenu::createWithItem(logo);

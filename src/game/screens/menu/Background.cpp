@@ -34,6 +34,7 @@ bool Background::init() {
 
     addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
         auto e = static_cast<NodeUIEvent*>(ev);
+        log::debug("[Background]: {}", (int)(e->type));
         if (e->type == NodeUIEventType::Size || e->type == NodeUIEventType::All) {
             auto s = getRealContentSize();
             m_background->setPosition(s/2);
@@ -89,8 +90,8 @@ bool Background::init() {
             finish(roll(sbg));
         }
     }, "<Background:BGImageGet>")
-
     );
+    setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     return true;
 }
 

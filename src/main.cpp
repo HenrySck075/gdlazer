@@ -169,14 +169,12 @@ class $modify(MyMenuLayer, MenuLayer) {
     }
 };
 
-#ifdef GEODE_IS_WINDOWS
-
+#ifndef GEODE_IS_ANDROID
 
 // fields does not work on non-CCNode :pensive:
 bool m_click = false;
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
-
     void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
         CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
         int w; int h;
@@ -198,10 +196,9 @@ class $modify(CCEGLView) {
             o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, ccp(-2, -2)));
             m_click = false;
         }
-    }
+    };
 };
-#endif
-#ifdef GEODE_IS_ANDROID
+#else
 #include <Geode/modify/CCTouchDispatcher.hpp>
 class $modify(CCTouchDispatcher) {
   void broadcastPos(CCPoint pos) {

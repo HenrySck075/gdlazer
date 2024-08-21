@@ -60,7 +60,14 @@ bool OsuGame::init() {
         main->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
     });
     runAction(checkAction);
+    runAction(CCRepeatForever::create(
+        CCSequence::createWithTwoActions(
+            CCDelayTime::create(0.5),
+            CCCallFunc::create(this,callfunc_selector(OsuGame::e))
+        )
+    ));
     return true;
+
 }
 
 void OsuGame::showToolbar() {
@@ -137,6 +144,7 @@ void OsuGame::checkForQueue() {
             i->removeObject(s);
         }
     }
+
 }
 
 

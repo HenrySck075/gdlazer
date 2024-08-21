@@ -17,6 +17,8 @@ private:
     float animationSpeed = 0.5;
     using EasingEffect = CCEaseExponentialOut;
 
+    bool hidden = true;
+
     int curZOrder = 0;
 public:
     static ButtonArea* create(const CCPoint& anchorPos) {
@@ -32,7 +34,7 @@ public:
 
     void updateLayout(bool jweuioghvfweuigiweuhgiloweughiwe = true) {}
     void show(std::string tag);
-    void hide(std::string tag, bool collapse = true);
+    void hide(std::string tag, bool collapse = true, bool close = false);
     // convenient function to show the previous menu
     void pop() {
         auto d = getBefore();

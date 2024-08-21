@@ -17,6 +17,7 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
 
     addChild(colorBg);
     setColor(OsuColor::Gray(50));
+    colorBg->setScaleY(0);
 
     return true;
 }
@@ -84,7 +85,12 @@ void ButtonArea::show(std::string tag) {
         shownIndex = 0;
         index = 1;
     }
-    // expand
+
+    if (hidden) {
+        colorBg->runAction(CCEaseSineIn::create(CCScaleTo::create(0.3,1,1)));
+        hidden = false;
+    }
+
     CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
     /*
     auto menuLayout = buttonsMenus[tag]->getLayout();
@@ -92,6 +98,7 @@ void ButtonArea::show(std::string tag) {
     */
     log::debug("[ButtonArea]: showing tag {} by {}", tag, shownIndex<index?"expanding from the logo":"going from offscreen");
 
+    // expand
     if (shownIndex<index) {
         for (int idx = 0; idx<j.size(); idx++) {
             auto i = j[idx];
@@ -150,10 +157,14 @@ void ButtonArea::show(std::string tag) {
     }
 }
 
-void ButtonArea::hide(std::string tag, bool collapse) {
+void ButtonArea::hide(std::string tag, bool collapse, bool close) {
     if (buttonsMenus.contains(tag)) {
         log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
         CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
+        if (close) {
+            colorBg->runAction(CCEaseOutQuint::create(CCScaleTo::create(0.3,1,0)));
+            hidden = true;
+        }
         if (collapse) {
             for (int idx = 0; idx<j.size(); idx++) {
                 auto i = j[idx];
