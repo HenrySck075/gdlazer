@@ -46,8 +46,10 @@ bool ButtonSystem::init(OsuLogo* logo) {
         "back-to-top.wav"_spr,                    \
         icons.PrevCircle,                         \
         Color4(51, 58, 94, 255),                  \
-        [area](CCNode*j){area->pop();}            \
+        [area](CCNode*j){area->pop();},           \
+        {enumKeyCodes::KEY_Escape}                \
     )
+    
     #define $cca(...) CCArray::create(__VA_ARGS__, nullptr)
     // daily/weekly levels
     area->constructButtons($cca(
@@ -67,7 +69,6 @@ bool ButtonSystem::init(OsuLogo* logo) {
             [this](CCNode*j){this->m_creatorLayerPtr->onWeeklyLevel(this);}
         )
     ), "challenges");
-    // play    
     area->constructButtons($cca(
         backBtnCreate,
         MainMenuButton::create(
@@ -78,14 +79,40 @@ bool ButtonSystem::init(OsuLogo* logo) {
             [this](CCNode*j){
                 //this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);
                 OsuGame::get()->pushScreen(SongSelect::create());
-            }
+            },
+            {enumKeyCodes::KEY_M}
         ),
         MainMenuButton::create(
             "Saved levels", 
             "button-default-select.wav"_spr, 
             icons.Online, 
             Color4(94, 63, 186, 255), 
-            [this](CCNode*j){this->m_creatorLayerPtr->onSavedLevels(this);}
+            [this](CCNode*j){this->m_creatorLayerPtr->onSavedLevels(this);},
+            {enumKeyCodes::KEY_P}
+        )
+    ),"play_local");
+    // play    
+    area->constructButtons($cca(
+        backBtnCreate,
+        MainMenuButton::create(
+            "Local", 
+            "button-play-select.wav"_spr, 
+            icons.Player, 
+            Color4(102, 68, 204, 255),
+            [area](CCNode*j){area->show("play_local");},
+            {enumKeyCodes::KEY_P}
+        ),
+        MainMenuButton::create(
+            "Multiplayer", 
+            "button-default-select.wav"_spr, 
+            icons.Online, 
+            Color4(94, 63, 186, 255), 
+            [](CCNode*j){PopupDialog::createSimpleDialog(
+                "Not implemented yet!", "mrow", 
+                ":sphere_thumbsup:", "alr", 
+                [](CCNode*wfhuio){CCApplication::sharedApplication()->openURL("https://www.pixiv.net/en/artworks/112989297");}
+            )->show();},
+            {enumKeyCodes::KEY_M}
         ),
         MainMenuButton::create(
             "Playlists", // this is lists
@@ -95,15 +122,17 @@ bool ButtonSystem::init(OsuLogo* logo) {
             [](CCNode*j){PopupDialog::createSimpleDialog(
                 "hey guys robtopgames here", "geometry dash pdb in bio", 
                 "yipee", "nuh uh", 
-                [](CCNode*wfhuio){log::info("https://www.pixiv.net/en/artworks/120777141");}
-            )->show();}
+                [](CCNode*wfhuio){CCApplication::sharedApplication()->openURL("https://www.pixiv.net/en/artworks/120777141");}
+            )->show();},
+            {enumKeyCodes::KEY_L}
         ),
         MainMenuButton::create(
             "Challenges", // daily/weekly levels
             "button-play-select.wav"_spr, 
             icons.DailyChallenge,
             Color4(94, 63, 186, 255), 
-            [area](CCNode*j) {area->show("challenges");}
+            [area](CCNode*j) {area->show("challenges");},
+            {enumKeyCodes::KEY_D}
         )
     ), "play");
 
@@ -117,17 +146,20 @@ bool ButtonSystem::init(OsuLogo* logo) {
             Color4(238, 170, 0, 255), 
             [](CCNode*fowehui) {
                 LevelBrowserLayer::create(GJSearchObject::create(SearchType::MyLevels))->onNew(fowehui);                
-            }
+            },
+            {enumKeyCodes::KEY_B, enumKeyCodes::KEY_E}
         ),
         MainMenuButton::create(
             "Created levels", 
             "button-default-select.wav"_spr, 
             icons.Collections, 
             Color4(220, 160, 0, 255), 
-            [this](CCNode*j){this->m_creatorLayerPtr->onMyLevels(this);}
+            [this](CCNode*j){this->m_creatorLayerPtr->onMyLevels(this);},
+            {enumKeyCodes::KEY_S}
         )
     ), "edit");
     
+    // debug
     area->constructButtons($cca(
         backBtnCreate,
         MainMenuButton::create(
@@ -136,9 +168,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             icons.Beatmap, 
             Color4(165, 204, 0, 255), 
             [](CCNode* j) {
-                auto s = typeinfo_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
-                if (s == nullptr) return;
-                s->showToolbar();
+                OsuGame::get()->showToolbar();
                 //->setUserObject("osugame.show-toolbar"_spr, CCBool::create(true));
             }
         ),
@@ -148,9 +178,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             icons.Beatmap, 
             Color4(154, 198, 0, 255), 
             [](CCNode* j) {
-                auto s = typeinfo_cast<OsuGame*>(CCDirector::sharedDirector()->getRunningScene());
-                if (s == nullptr) return;
-                s->hideToolbar();
+                OsuGame::get()->hideToolbar();
                 //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
             }
         )
@@ -170,21 +198,24 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-play-select.wav"_spr, 
             icons.Logo, 
             Color4(102, 68, 204, 255), 
-            [area](CCNode* j) {area->show("play");}
+            [area](CCNode* j) {area->show("play");},
+            {enumKeyCodes::KEY_P, enumKeyCodes::KEY_M, enumKeyCodes::KEY_L}
         ),
         MainMenuButton::create(
             "Edit", 
             "button-play-select.wav"_spr, 
             icons.EditCircle, 
             Color4(238, 170, 0, 255), 
-            [area](CCNode* j) {area->show("edit");}
+            [area](CCNode* j) {area->show("edit");},
+            {enumKeyCodes::KEY_E}
         ),
         MainMenuButton::create(
             "Browse", 
             "button-play-select.wav"_spr, 
             icons.Beatmap, 
             Color4(165, 204, 0, 255), 
-            [area](CCNode* j) {area->show("debug");}
+            [area](CCNode* j) {area->show("debug");},
+            {enumKeyCodes::KEY_B, enumKeyCodes::KEY_D}
         ),
         MainMenuButton::create(
             "Exit", 
@@ -193,7 +224,8 @@ bool ButtonSystem::init(OsuLogo* logo) {
             Color4(238, 51, 153, 255), 
             [this](CCNode* j) {
                 m_menuLayerPtr->onQuit(this);
-            }
+            },
+            {enumKeyCodes::KEY_Q  }
         )
     ), "toplevel");
 
@@ -209,7 +241,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
         auto cur = area->getCurrent();
         if (cur.has_value()) 
             static_cast<MainMenuButton*>(
-                getChildByID("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
+                getChildByIDRecursive("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
             )->click();
     });
     

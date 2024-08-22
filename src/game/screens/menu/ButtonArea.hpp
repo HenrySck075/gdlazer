@@ -26,6 +26,17 @@ public:
     }
     bool init(const CCPoint& anchorPos);
 
+    bool dispatchEvent(NodeEvent* e) override {
+        if (e->eventName()!="keyboardEvent") return Container::dispatchEvent(e);
+        else {
+            auto cur = getCurrent();
+            if (cur.has_value()) {
+                dispatchToChildInList(e, getChildByIDRecursive("buttonarea_"+cur.value())->getChildren());
+            }
+            return true;
+        }
+    };
+
     /// @brief Creates the buttons layers and optionally place them at a specific index.
     /// The first button will be placed at the left, the rest goes to the right.
     /// @param buttons The buttons.

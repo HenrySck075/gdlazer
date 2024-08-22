@@ -10,6 +10,7 @@ bool Toolbar::init() {
     this->setAnchorPoint(ccp(0.5,1));
     this->setPositionUnit(Unit::OpenGL,Unit::UIKit);
     this->setPositionY(-HEIGHT);
+    this->setAnchor(Anchor::Top);
 
     auto bg = Container::create();
     bg->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);

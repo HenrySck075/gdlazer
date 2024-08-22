@@ -17,6 +17,7 @@
 #include "game/graphics/containers/beatsync/BeatEvent.hpp"
 #include "utils.hpp"
 #include "game/OsuGame.hpp"
+#include "framework/graphics/containers/KeyEvent.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
@@ -210,8 +211,23 @@ class $modify(CCTouchDispatcher) {
   }
 };
 
-#endif // DEBUG
-       //
+#endif 
+
+#include <Geode/modify/CCKeyboardDispatcher.hpp>
+class $modify(CCKeyboardDispatcher) {
+    bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat) {
+        auto ret = CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat);
+        OsuGame::get()->dispatchEvent(new KeyboardEvent(KeyInfo{
+            .key = key,
+            .ctrl = getControlKeyPressed() || getCommandKeyPressed(),
+            .alt = getAltKeyPressed(),
+            .shift = getShiftKeyPressed(),
+            .pressed = isKeyDown
+        }));
+        return ret;
+    }
+};
+
 /*
 #include <Geode/modify/CCTouchDelegate.hpp>
 class $modify(CCTouchDelegate) {

@@ -32,14 +32,15 @@ bool Background::init() {
         }
     });
 
+
     addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
         auto e = static_cast<NodeUIEvent*>(ev);
-        log::debug("[Background]: {}", (int)(e->type));
-        if (e->type == NodeUIEventType::Size || e->type == NodeUIEventType::All) {
+        //log::debug("[Background]: {}", (int)(e->type));
+        //if (e->type == NodeUIEventType::Size || e->type == NodeUIEventType::All) {
             auto s = getRealContentSize();
             m_background->setPosition(s/2);
             m_background->setContentSize(s);
-        }
+        //n}
     });
 
     // set the task

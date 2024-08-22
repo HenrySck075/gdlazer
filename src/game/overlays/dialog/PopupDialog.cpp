@@ -1,11 +1,12 @@
 #include "PopupDialog.hpp"
 #include "../../graphics/ui/deco/Triangles.hpp"
-
+#include "../../../framework/graphics/containers/FillFlowContainer.hpp"
 
 float PopupDialog::width = 250.f;
 float PopupDialog::height = 230.f;
 
 bool PopupDialog::setup(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
+    setUserObject("popupdialog"_spr, CCBool::create(true));
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     m_buttons = buttons;
     // convenience function provided by Popup
@@ -22,8 +23,9 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
     
     m_mainLayer->addChild(m_bodyLayout);
 
-    m_bgSprite->setColor(ccc3(33, 26, 32));
     auto contentSize = m_bgSprite->getContentSize();
+    m_bgSprite->setColor(ccc3(33, 26, 32));
+
     auto batchNode = getChildOfType<CCSpriteBatchNode>(m_mainLayer,0);
     m_bgSpriteClip = CCClippingNode::create(m_bgSprite);
     m_bgSpriteClip->setAlphaThreshold(0.02f);
@@ -50,32 +52,35 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
-    auto btnLayer = CCMenu::create();
+    auto btnLayer = FillFlowContainer::create(FillDirection::Vertical);
+    /*
     btnLayer->setLayout(
         ColumnLayout::create()
         ->setAutoScale(false)
         ->setAxisReverse(true)
         ->setGap(0)
     );
-    btnLayer->setContentWidth(contentSize.width);
+    */
     btnLayer->setAnchorPoint(ccp(0.5, 0.5));
-    btnLayer->setPosition(ccp(contentSize.width/2,55));
+    btnLayer->setPosition(contentSize/2);
+    btnLayer->setContentSizeWithUnit(CCSize(contentSize.width,100),Unit::OpenGL,Unit::Percent);
     btnLayer->setCascadeOpacityEnabled(true);
+    m_mainLayer->addChild(btnLayer);
 
     for (auto& btn : buttons) { 
         btn->setHoverEnabled(false);
         btn->setClickEnabled(false);
         btnLayer->addChild(btn); 
     }
-    btnLayer->updateLayout();
     btnLayer->setID("buttonLayer");
-    m_mainLayer->addChild(btnLayer);
 
     m_bodyLayout->updateLayout();
     label->limitLabelWidth(contentSize.width - 2.f, 0.4f, .1f);
 
-
     this->setOpacity(0);
+
+    // block keyboard inputs
+    addListener("keyboardEvent", [](NodeEvent* e){e->preventDefault();});
     return true;
 }
 

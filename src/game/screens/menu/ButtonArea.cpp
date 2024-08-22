@@ -18,6 +18,7 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
     addChild(colorBg);
     setColor(OsuColor::Gray(50));
     colorBg->setScaleY(0);
+    colorBg->setAnchorPoint(ccp(0,0.5));
 
     return true;
 }
@@ -87,7 +88,12 @@ void ButtonArea::show(std::string tag) {
     }
 
     if (hidden) {
-        colorBg->runAction(CCEaseSineIn::create(CCScaleTo::create(0.3,1,1)));
+        colorBg->runAction(CCEaseSineOut::create(
+            CCSpawn::createWithTwoActions(
+                CCFadeIn::create(0.3),
+                CCScaleTo::create(0.3,1,1)
+            )
+        ));
         hidden = false;
     }
 

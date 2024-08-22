@@ -57,12 +57,31 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     if (d!=nullptr) this->addChild(d);
     //this->addChild(clipNode);
     this->addChild(j);
-    this->setContentSize(CCSize{ 12.f,height });
+    
+    OsuClickableContainer::init(clickSfx, clickCb, this);
+    addListener("nodeLayoutUpdate", [this](NodeEvent* e){
+        auto size = getRealContentSize();
+        this->getChildByID("dialogbutton-label")->setPosition(size/2);
+        auto d = this->getChildByID("dialogbutton-background");
+        if (d!=nullptr) {
+            d->setContentWidth(size.width * 0.8);
+            d->setPosition(size / 2);
+        }
+
+        auto gradWidth = size.width * 0.125;
+        
+        auto gradLeft = static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"));
+        gradLeft->setContentWidth(gradWidth);
+        auto gradRight = static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"));
+        gradRight->setContentWidth(gradWidth);
+        gradRight->setPosition(ccp(size.width-gradWidth, 0));
+    });
+
+    this->setContentSizeWithUnit(CCSize{ 100,height },Unit::Percent,Unit::OpenGL);
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
     this->setCascadeOpacityEnabled(true);
 
-    OsuClickableContainer::init(clickSfx, clickCb, this);
 
     return true;
 
@@ -74,24 +93,6 @@ void PopupDialogButton::setOpacity(GLubyte opacity) {
     static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"))->setOpacity(opacity);
 }
 
-void PopupDialogButton::setContentSize(const CCSize& size) {
-    CCNode::setContentSize(size);
-    this->getChildByID("dialogbutton-label")->setPosition(size/2);
-    auto d = this->getChildByID("dialogbutton-background");
-    if (d!=nullptr) {
-        d->setContentWidth(size.width * 0.8);
-        d->setPosition(size / 2);
-    }
-
-    auto gradWidth = size.width * 0.125;
-    
-    auto gradLeft = static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"));
-    gradLeft->setContentWidth(gradWidth);
-    auto gradRight = static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"));
-    gradRight->setContentWidth(gradWidth);
-    gradRight->setPosition(ccp(size.width-gradWidth, 0));
-}
-
 /*
 void PopupDialogButton::setContentWidth(float width) {
     this->setContentSize(CCSize{width,this->getContentHeight()});
@@ -101,10 +102,6 @@ void PopupDialogButton::setContentWidth(float width) {
 void PopupDialogButton::setContentHeight(float height) {
 }
 
-void PopupDialogButton::setParent(CCNode* parent) {
-    CCNode::setParent(parent);
-    this->setContentWidth(parent->getContentWidth());
-}
 
 void PopupDialogButton::onMouseEnter() {
     if (!getHoverEnabled()) return;

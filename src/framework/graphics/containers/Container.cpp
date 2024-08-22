@@ -54,7 +54,7 @@ bool Container::dispatchToChildInList(NodeEvent* event, CCArray* children) {
     event->m_dispatchingFlow = DispatchingFlow::Down;
     CCObject* obj;
     CCARRAY_FOREACH_REVERSE(children, obj) {
-        if (auto node = typeinfo_cast<Container*>(obj)) {
+        if (auto node = typeinfo_cast<EventTarget*>(obj)) {
             if (!node->dispatchEvent(event)) return false;
         } else {
             if (!dispatchToChildInList(event,typeinfo_cast<CCNode*>(obj)->getChildren())) return false;

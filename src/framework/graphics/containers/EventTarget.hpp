@@ -16,7 +16,7 @@ public:
 private:
     std::map<std::string, std::vector<Callback>> m_listeners;
 protected:
-    // @returns true if one of the callback cancels the event, either via `cancel()` or `stopImmediatePropagate()` (for `DispatchingFlow::Down`)
+    // @returns true if one of the callback cancels the event, either via `preventDefault()` or `stopImmediatePropagate()` (for `DispatchingFlow::Down`)
     virtual bool tryDispatch(Callback& cb, NodeEvent* event);
     // dispatchEvent but does not care about whether any listener even registered that event 
     //

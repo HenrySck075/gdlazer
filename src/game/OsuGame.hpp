@@ -59,6 +59,7 @@ public:
             EventTarget::dispatchEvent(event);
             return true;
         }
+        if (CCDirector::sharedDirector()->getRunningScene()!=this) return true;
         updateDispatchFlow(event, DispatchingFlow::Down);
         /*
         if (event->eventName() == "mouseEvent") {
@@ -70,6 +71,15 @@ public:
         //EventTarget::dispatchEvent(event);
         toolbar->dispatchEvent(event);
         if (currentScreen) currentScreen->dispatchEvent(event);
+        // messy way to get popupdialogs
+        if (auto c = getChildren()) {
+            for (auto* i : CCArrayExt<CCNode*>()) {
+                if (static_cast<CCBool*>(i->getUserObject("popupdialog"_spr))) {
+                    // EventTarget is not a cocos2d object
+                    dynamic_cast<EventTarget*>(i)->dispatchEvent(event);
+                }
+            }
+        }
         return true;
     }
 

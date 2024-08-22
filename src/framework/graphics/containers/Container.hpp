@@ -22,7 +22,6 @@ public:
 };
 
 
-
 enum class Unit {
     /// Relative to the parent size. Value in range 0-100. Value higher or lower is allowed.
     Percent,
@@ -134,6 +133,10 @@ protected:
     std::pair<Unit, Unit> m_positionUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
 
     //bool tryDispatch(Callback& cb, NodeEvent* event) override;
+
+    // Dispatch event to children in the given list
+    // 
+    // Useful when you want to dispatch event to childrens from other nodes
     bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
 public:

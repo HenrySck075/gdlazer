@@ -3,57 +3,62 @@
 bool FillFlowContainer::init(FillDirection dir) {
     Container::init();
     direction = dir;
-    addListener("nodeLayoutUpdate", [this](NodeEvent* e){
-    });
     return true;
 }
 
 void FillFlowContainer::updateChildPosition() {
     // child nodes after the update will reset their position back so
-
+    auto size = getRealContentSize();
     float x = 0;
     float y = 0;
     float yh = 0;
 
     bool dirFull = direction == FillDirection::Full;
     bool dirVerti = direction == FillDirection::Vertical;
-    for (auto* c : CCArrayExt<CCNode*>(getChildren())) {
-        auto cw = c->CCNode::getContentSize().width;
-        auto ch = c->CCNode::getContentSize().height;
-        if (
-            dirFull ||
-            direction == FillDirection::Horizontal
-        ) {
-            c->CCNode::setPositionX(
-                x
-                +
-                c->CCNode::getPositionX()
-                +
-                (cw * c->CCNode::getAnchorPoint().x)
-            );
-        }
+    auto childList = getChildren();
+    if (childList) {
+        for (auto* c : CCArrayExt<CCNode*>(childList)) {
+            auto cw = c->CCNode::getContentSize().width;
+            auto ch = c->CCNode::getContentSize().height;
+            if (
+                dirFull ||
+                direction == FillDirection::Horizontal
+            ) {
+                c->CCNode::setPosition(ccp(
+                    x
+                    +
+                    c->CCNode::getPosition().x
+                    +
+                    (cw * c->CCNode::getAnchorPoint().x)
+                ,0));
+            }
 
-        if (
-            dirFull ||
-            dirVerti
-        ) {
-        c->CCNode::setPositionY(
-                y
-                +
-                c->CCNode::getPositionY()
-                +
-                (ch * c->CCNode::getAnchorPoint().y)
-            );
-        }
-        x+=cw;
-        if (dirFull) {
-            if (yh+ch > yh) yh+=ch;
-        } else {
-            y+=ch;
-        }
-        if (x > CCNode::getPositionX() && dirFull) {
-            x = 0;
-            y = yh;
+            if (
+                dirFull ||
+                dirVerti
+            ) {
+            c->CCNode::setPosition(ccp(0,
+                    size.height 
+                    -
+                    (
+                        y
+                        +
+                        c->CCNode::getPosition().y
+                        +
+                        (ch * c->CCNode::getAnchorPoint().y)
+                    )
+                ));
+            }
+            x+=cw;
+            if (dirFull) {
+                if (yh+ch > yh) yh+=ch;
+            } else {
+                y+=ch;
+            }
+            if (x > CCNode::getPosition().x && dirFull) {
+                x = 0;
+                y = yh;
+            }
         }
     }
 };

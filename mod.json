@@ -17,15 +17,15 @@
         "torus-regular": {
         "path": "resources/torus/regular.ttf",
         "size": 80
-        },
+      },
         "torus-light": {
         "path": "resources/torus/light.ttf",
         "size": 80
-        },
+      },
         "torus-bold": {
         "path": "resources/torus/bold.ttf",
         "size": 80
-        }
+      }
     },
     "spritesheets": {
       "MainMenuSheet": [

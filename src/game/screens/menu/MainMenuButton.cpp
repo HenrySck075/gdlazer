@@ -1,5 +1,6 @@
 #include "MainMenuButton.hpp" 
 #include "../../graphics/ui/OsuText.hpp"
+#include "../../../framework/graphics/containers/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
@@ -50,6 +51,13 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     this->setCascadeOpacityEnabled(true);
     setHoverEnabled(false);
     setClickEnabled(false);
+
+    addListener("keyboardEvent", [this](NodeEvent* ev){
+        auto e = static_cast<KeyboardEvent*>(ev);
+        if (std::find(activationKeys.begin(), activationKeys.end(), e->key.key) != activationKeys.end()) {
+            click();
+        }
+    });
     return true;
 }
 

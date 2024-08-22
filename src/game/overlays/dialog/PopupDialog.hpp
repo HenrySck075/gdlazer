@@ -4,10 +4,11 @@
 #include "PopupDialogButton.hpp"
 #include "../../../helpers/colors.hpp"
 #include "../../../utils.hpp"
+#include "../../../framework/graphics/containers/EventTarget.hpp"
 
 using namespace geode::prelude;
 
-class PopupDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<PopupDialogButton*>> {
+class PopupDialog : public geode::Popup<std::string const&, std::string const&, std::initializer_list<PopupDialogButton*>>, public EventTarget {
 private:
     float volume;   
     bool hiding = false;
@@ -30,10 +31,10 @@ public:
         return initAnchored(width, height, title, content, {
             PopupDialogButton::create(confirmButtonText.c_str(), dialog_button_primary, "dialog-ok-select.wav"_spr,[this,confirmCallback](CCNode* the) {confirmCallback(the); hide(); }),
             PopupDialogButton::create(cancelButtonText.c_str(), dialog_button_secondary, "dialog-cancel-select.wav"_spr, [this](CCNode* self) {hide(); })
-        }, "roundborder.png"_spr);
+        }, "roundborderlarge.png"_spr);
     }
     static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
-        create_class(PopupDialog, initAnchored, PopupDialog::width, PopupDialog::height, title, content, buttons, "roundborder.png"_spr);
+        create_class(PopupDialog, initAnchored, PopupDialog::width, PopupDialog::height, title, content, buttons, "roundborderlarge.png"_spr);
     }
     static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, ButtonCallback confirmCallback) {
         create_class(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
