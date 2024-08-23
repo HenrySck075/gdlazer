@@ -54,7 +54,10 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
 
     addListener("keyboardEvent", [this](NodeEvent* ev){
         auto e = static_cast<KeyboardEvent*>(ev);
-        if (std::find(activationKeys.begin(), activationKeys.end(), e->key.key) != activationKeys.end()) {
+        if (
+            e->key.pressed &&
+            std::find(activationKeys.begin(), activationKeys.end(), e->key.key) != activationKeys.end()
+        ) {
             click();
         }
     });

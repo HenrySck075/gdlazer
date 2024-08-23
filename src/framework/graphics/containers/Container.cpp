@@ -43,7 +43,7 @@ bool Container::dispatchEvent(NodeEvent* event) {
     }
     switch (event->m_dispatchingFlow) {
       case DispatchingFlow::Up:
-        if (auto p = typeinfo_cast<Container*>(m_pParent)) return p->dispatchEvent(event);
+        if (auto p = typeinfo_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);
       case DispatchingFlow::Down:
         return dispatchToChild(event);
     }

@@ -55,6 +55,7 @@ public:
 
 public:
     bool dispatchEvent(NodeEvent* event) override {
+        if (event->getCaller() != nullptr) return;
         if (event->eventName().starts_with("og")) {
             EventTarget::dispatchEvent(event);
             return true;
@@ -68,18 +69,20 @@ public:
             return;
         }
         */
-        //EventTarget::dispatchEvent(event);
-        toolbar->dispatchEvent(event);
-        if (currentScreen) currentScreen->dispatchEvent(event);
         // messy way to get popupdialogs
         if (auto c = getChildren()) {
-            for (auto* i : CCArrayExt<CCNode*>()) {
+            c->reverseObjects();
+            for (auto* i : CCArrayExt<CCNode*>(c)) {
                 if (static_cast<CCBool*>(i->getUserObject("popupdialog"_spr))) {
                     // EventTarget is not a cocos2d object
                     dynamic_cast<EventTarget*>(i)->dispatchEvent(event);
                 }
             }
+            c->reverseObjects();
         }
+        //EventTarget::dispatchEvent(event);
+        toolbar->dispatchEvent(event);
+        if (currentScreen) currentScreen->dispatchEvent(event);
         return true;
     }
 

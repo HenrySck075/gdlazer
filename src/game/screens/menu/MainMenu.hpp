@@ -32,7 +32,7 @@ private:
     }
     void onExiting(ScreenTransitionEvent e) override {
         setVisible(false);
-        if (e.Destination != nullptr) removeFromParent();
+        if (e.Destination == nullptr) removeFromParent();
     }
     void testDispatch(CCObject* e) {
         auto m = new NodeEvent("googoo gaga");

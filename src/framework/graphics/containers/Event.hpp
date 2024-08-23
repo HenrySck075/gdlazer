@@ -18,17 +18,19 @@ private:
     bool m_stopImmediatePropagate = false;
     bool m_cancelled = false;
     DispatchingFlow m_dispatchingFlow = DispatchingFlow::Up;
+    EventTarget* m_target = nullptr;
 
 protected:
     bool m_log = false;
     std::string m_eventName = "";
 public:
+    EventTarget* getCaller() {return m_target;};
     NodeEvent() {
         throw "kill yourself";
     }; // i cant delete this
     NodeEvent(std::string name) : m_eventName(name) {};
-    std::string eventName() {return m_eventName;};
-    void eventName(std::string newName) {m_eventName = newName;};
+    virtual std::string eventName() {return m_eventName;};
+    virtual void eventName(std::string newName) {m_eventName = newName;};
 
     void setDispatchingFlow(DispatchingFlow flow) {m_dispatchingFlow = flow;}
 
@@ -53,4 +55,11 @@ private:
 public:
     GeodeEvent(std::string name) = delete;
     GeodeEvent(T event, std::string name) : NodeEvent(name), m_event(event) {}
+};
+
+template<char const* eventname>
+class NamedNodeEvent : public NodeEvent {
+public:
+    NamedNodeEvent() : NodeEvent(eventname) {}
+    static std::string eventName() override {return std::string(eventname);};
 };

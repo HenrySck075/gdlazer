@@ -35,6 +35,7 @@ bool EventTarget::dispatchEvent(NodeEvent* event) {
 };
 
 bool EventTarget::dispatchEventUnsafe(NodeEvent* event) {
+    if (event->m_target == nullptr) event->m_target = this;
     for (auto i : m_listeners[event->eventName()]) {
         if (tryDispatch(i,event)) {
             return false;

@@ -5,11 +5,18 @@ class Container;
 #include "../../../../utils.hpp"
 using namespace geode::prelude;
 
-/// @note plus im still confused
+namespace {
+extern char const carouselItemSelect[] = "carouselItemSelect";
+}
+
+using CarouselItemSelect = NamedNodeEvent<carouselItemSelect>;
+
+/// @note This is CarouselHeader
 class DrawableCarouselBeatmap : public OsuClickableContainer {
 private:
     GJGameLevel* m_level;
     CCClippingNode* m_main;
+    CCScale9Sprite* m_shadow;
 public:
     float const MAX_HEIGHT = 80;
     float const h = MAX_HEIGHT*0.6;
@@ -20,13 +27,18 @@ public:
     };
     bool init(GJGameLevel* level);
 
-    void onClick() {};
+    void onClick() {
+        m_shadow->setColor(ccc3(130, 204, 255));
+        m_shadow->setOpacity(150);
+        static_cast<Container*>(getParent())->dispatchEvent(new CarouselItemSelect());
+    };
     void onMouseEnter() {
         colorBg->stopAllActions();
-        colorBg->setOpacity(150);
+        colorBg->runAction(CCFadeTo::create(0.1,25));
     };
     void onMouseExit() {
-        colorBg->runAction(CCFadeTo::create(0.5,0));
+        colorBg->stopAllActions();
+        colorBg->runAction(CCFadeTo::create(0.25,0));
     };
     void onMouseUp() {};
     void onMouseDown() {};
