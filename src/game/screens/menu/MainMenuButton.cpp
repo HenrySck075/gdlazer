@@ -106,6 +106,7 @@ void MainMenuButton::onMouseUp(MouseEvent* event) {
     ));
 }
 void MainMenuButton::onClick() {
+    OsuClickableContainer::onClick();
     auto node = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
     node->stopAllActions();
     node->setOpacity(255*0.9);

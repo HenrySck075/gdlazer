@@ -59,14 +59,16 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-default-select.wav"_spr, 
             icons.ModRelax, 
             Color4(102, 68, 204, 255),
-            [this](CCNode*j){this->m_creatorLayerPtr->onDailyLevel(this);}
+            [this](CCNode*j){this->m_creatorLayerPtr->onDailyLevel(this);},
+            {enumKeyCodes::KEY_D}
         ),
         MainMenuButton::create(
             "Weekly",
             "button-default-select.wav"_spr, 
             icons.ModSuddenDeath,
             Color4(94, 63, 186, 255), 
-            [this](CCNode*j){this->m_creatorLayerPtr->onWeeklyLevel(this);}
+            [this](CCNode*j){this->m_creatorLayerPtr->onWeeklyLevel(this);},
+            {enumKeyCodes::KEY_W}
         )
     ), "challenges");
     area->constructButtons($cca(
@@ -132,7 +134,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             icons.DailyChallenge,
             Color4(94, 63, 186, 255), 
             [area](CCNode*j) {area->show("challenges");},
-            {enumKeyCodes::KEY_D}
+            {enumKeyCodes::KEY_C}
         )
     ), "play");
 
