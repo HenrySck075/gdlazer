@@ -54,37 +54,7 @@ public:
     }
 
 public:
-    bool dispatchEvent(NodeEvent* event) override {
-        if (event->getCaller() != nullptr) return false;
-        if (event->eventName().starts_with("og")) {
-            EventTarget::dispatchEvent(event);
-            return true;
-        }
-        if (CCDirector::sharedDirector()->getRunningScene()!=this) return true;
-        updateDispatchFlow(event, DispatchingFlow::Down);
-        /*
-        if (event->eventName() == "mouseEvent") {
-            toolbar->dispatchEvent(event);
-            if (currentScreen) currentScreen->dispatchEvent(event);
-            return;
-        }
-        */
-        // messy way to get popupdialogs
-        if (auto c = getChildren()) {
-            c->reverseObjects();
-            for (auto* i : CCArrayExt<CCNode*>(c)) {
-                if (static_cast<CCBool*>(i->getUserObject("popupdialog"_spr))) {
-                    // EventTarget is not a cocos2d object
-                    dynamic_cast<EventTarget*>(i)->dispatchEvent(event);
-                }
-            }
-            c->reverseObjects();
-        }
-        //EventTarget::dispatchEvent(event);
-        toolbar->dispatchEvent(event);
-        if (currentScreen) currentScreen->dispatchEvent(event);
-        return true;
-    }
+    bool dispatchEvent(NodeEvent* event) override;
 
     bool init();
 
@@ -98,6 +68,9 @@ public:
     void onFocus();
 
     void checkForQueue();
+
+    // on android, this does nothing
+    void updateTitle();
 };
 
 /*

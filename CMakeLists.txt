@@ -26,6 +26,8 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/graphics/containers/EventTarget.hpp
   src/framework/graphics/containers/FillFlowContainer.cpp
   src/framework/graphics/containers/FillFlowContainer.hpp
+  src/framework/graphics/containers/ScrollableContainer.cpp
+  src/framework/graphics/containers/ScrollableContainer.hpp
   src/framework/input/Input.hpp
   src/framework/input/events/KeyEvent.hpp
   src/framework/input/events/MouseDragEvent.hpp
@@ -84,6 +86,7 @@ add_library(${PROJECT_NAME} SHARED
   src/game/screens/menu/OsuLogo.hpp
   src/game/screens/menu/intro/IntroTriangles.cpp
   src/game/screens/menu/intro/IntroTriangles.hpp
+  src/game/screens/select/BeatmapCarousel.cpp
   src/game/screens/select/BeatmapCarousel.hpp
   src/game/screens/select/SongSelect.hpp
   src/game/screens/select/carousel/DrawableCarouselBeatmap.cpp

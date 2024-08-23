@@ -20,7 +20,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
         if(auto stencil = m_main->getStencil()) stencil->setContentSize(s);
         //colorBg->setPosition(s/2);
         m_shadow->setPosition(s/2);
-        auto e = processUnit(10,Unit::UIKit,false);
+        auto e = processUnit(9,Unit::UIKit,false);
         m_shadow->setContentSize(s+CCSize{e,e});
     });
     m_level = level;

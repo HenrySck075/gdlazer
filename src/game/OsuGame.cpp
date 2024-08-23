@@ -97,6 +97,8 @@ void OsuGame::pushScreen(Screen* s) {
     main->addChild(s);
     currentScreen = s;
     if (scheduleResume) m_pActionManager->resumeTarget(this);
+
+    updateTitle();
 }
 
 Screen* OsuGame::popScreen() {
@@ -115,6 +117,8 @@ Screen* OsuGame::popScreen() {
     if (ps!=nullptr) ps->onEntering(event);
     currentScreen = ps;
     if (schedulePause) m_pActionManager->pauseTarget(this);
+
+    updateTitle();
     
     return s;
 }
@@ -147,6 +151,49 @@ void OsuGame::checkForQueue() {
 
 }
 
+bool OsuGame::dispatchEvent(NodeEvent* event) {
+    if (event->getCaller() != nullptr) return false;
+    if (event->eventName().starts_with("og")) {
+        EventTarget::dispatchEvent(event);
+        return true;
+    }
+    if (CCDirector::sharedDirector()->getRunningScene()!=this) return true;
+    updateDispatchFlow(event, DispatchingFlow::Down);
+    /*
+    if (event->eventName() == "mouseEvent") {
+        toolbar->dispatchEvent(event);
+        if (currentScreen) currentScreen->dispatchEvent(event);
+        return;
+    }
+    */
+    // messy way to get popupdialogs
+    if (auto c = getChildren()) {
+        c->reverseObjects();
+        for (auto* i : CCArrayExt<CCNode*>(c)) {
+            if (static_cast<CCBool*>(i->getUserObject("popupdialog"_spr))) {
+                // EventTarget is not a cocos2d object
+                dynamic_cast<EventTarget*>(i)->dispatchEvent(event);
+            }
+        }
+        c->reverseObjects();
+    }
+    //EventTarget::dispatchEvent(event);
+    toolbar->dispatchEvent(event);
+    if (currentScreen) currentScreen->dispatchEvent(event);
+    return true;
+}
+
+void OsuGame::updateTitle() {
+    if (currentScreen) {
+        auto title = currentScreen->title() + " | osu!lazer";
+        
+        #ifdef GEODE_IS_WINDOWS
+
+        SetWindowTextA(getWindowHandle(), title.c_str());
+
+        #endif
+    }
+}
 
 #include <Geode/modify/AppDelegate.hpp>
 

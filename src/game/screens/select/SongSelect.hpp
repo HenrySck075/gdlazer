@@ -12,6 +12,7 @@ public:
     }
     bool init() {
         Screen::init();
+        m_title = "Level select";
         auto testBg = CCResizableSprite::createWithSpriteFrameName("menu-background-5.png"_spr);
         testBg->setContentSize(CCDirector::sharedDirector()->getWinSize());
         testBg->setPosition(CCDirector::sharedDirector()->getWinSize()/2);

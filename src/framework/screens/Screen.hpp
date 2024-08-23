@@ -13,7 +13,13 @@ public:
 
 // idgaf imo
 class Screen : public Container {
+protected:
+    // title
+    std::string m_title = "";
 public:
+    std::string title() {return m_title;}
+    void title(std::string newTitle) {m_title = newTitle;}
+
     static Screen* create() {
         create_class(Screen, init);
     };

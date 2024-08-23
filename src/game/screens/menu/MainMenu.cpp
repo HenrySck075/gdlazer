@@ -6,6 +6,7 @@
 
 bool MainMenu::init(bool flash) {
     Screen::init();
+    m_title = "Welcome to Geometry Dash!";
     auto logo = OsuLogo::create();
     //logo->setPosition(CCDirector::sharedDirector()->getWinSize() / 2);
     //logo->setCallback([this](CCNode* j) {onLogoClickIdle(); });
