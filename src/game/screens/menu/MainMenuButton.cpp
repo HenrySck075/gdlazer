@@ -1,6 +1,6 @@
 #include "MainMenuButton.hpp" 
 #include "../../graphics/ui/OsuText.hpp"
-#include "../../../framework/graphics/containers/KeyEvent.hpp"
+#include "../../../framework/input/events/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
@@ -92,13 +92,13 @@ void MainMenuButton::onMouseExit() {
         CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
     ));
 }
-void MainMenuButton::onMouseDown() {
+void MainMenuButton::onMouseDown(MouseEvent* event) {
     auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
     n->runAction(CCEaseOutQuint::create(
         CCFadeTo::create(1,255*0.1)
     ));
 }
-void MainMenuButton::onMouseUp() {
+void MainMenuButton::onMouseUp(MouseEvent* event) {
     //if (!static_cast<CCBool*>(this->getUserObject("clicking"_spr))) return;
     auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
     n->runAction(CCEaseOutQuint::create(

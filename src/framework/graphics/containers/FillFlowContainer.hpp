@@ -22,8 +22,8 @@ public:
         bool ret = Container::dispatchEvent(event);
         if (ret) {
             if (event->eventName() == "nodeLayoutUpdate") {
-                auto e = static_cast<NodeUIEvent*>(event);
-                //if (e->type==NodeUIEventType::Size) { //||e->type==NodeUIEventType::All
+                auto e = static_cast<NodeLayoutUpdate*>(event);
+                //if (e->type==NodeLayoutUpdateType::Size) { //||e->type==NodeLayoutUpdateType::All
                     this->updateChildPosition();
                 //}
             };

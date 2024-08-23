@@ -1,6 +1,5 @@
 #include "EventTarget.hpp"
 
-
 void EventTarget::addListener(std::string eventName, const Callback& listener) {
     m_listeners[eventName].push_back(listener);
 };

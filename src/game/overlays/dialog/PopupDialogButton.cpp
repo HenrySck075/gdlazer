@@ -136,7 +136,7 @@ void PopupDialogButton::onMouseExit() {
     this->getChildByID("gradientRight")->runAction(gradAct);
     #undef gradAct
 }
-void PopupDialogButton::onMouseDown() {
+void PopupDialogButton::onMouseDown(MouseEvent* event) {
     this->getChildByID("dialogbutton-background")->runAction(
         CCEaseOutQuad::create(
             CCResizeTo::create(
@@ -147,7 +147,7 @@ void PopupDialogButton::onMouseDown() {
         )
     );
 }
-void PopupDialogButton::onMouseUp() {
+void PopupDialogButton::onMouseUp(MouseEvent* event) {
     this->getChildByID("dialogbutton-background")->runAction(
         CCEaseIn::create(
             CCResizeTo::create(

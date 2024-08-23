@@ -15,6 +15,7 @@ add_library(${PROJECT_NAME} SHARED
   src/main.cpp
   src/utils.cpp
   src/utils.hpp
+  src/framework/graphics/CCPointExtensions.hpp
   src/framework/graphics/Color4.cpp
   src/framework/graphics/Color4.hpp
   src/framework/graphics/color/ColorInfo.hpp
@@ -25,13 +26,15 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/graphics/containers/EventTarget.hpp
   src/framework/graphics/containers/FillFlowContainer.cpp
   src/framework/graphics/containers/FillFlowContainer.hpp
-  src/framework/graphics/containers/KeyEvent.hpp
+  src/framework/input/Input.hpp
+  src/framework/input/events/KeyEvent.hpp
+  src/framework/input/events/MouseDragEvent.hpp
+  src/framework/input/events/MouseEvent.hpp
   src/framework/screens/Screen.hpp
   src/framework/screens/ScreenTransitionEvent.hpp
   src/framework/utils/IInterpolable.hpp
   src/framework/utils/Interpolation.cpp
   src/framework/utils/Interpolation.hpp
-  src/game/MouseEvent.hpp
   src/game/OsuGame.cpp
   src/game/OsuGame.hpp
   src/game/beatmaps/BeatmapOnlineStatus.hpp
@@ -81,6 +84,7 @@ add_library(${PROJECT_NAME} SHARED
   src/game/screens/menu/OsuLogo.hpp
   src/game/screens/menu/intro/IntroTriangles.cpp
   src/game/screens/menu/intro/IntroTriangles.hpp
+  src/game/screens/select/BeatmapCarousel.hpp
   src/game/screens/select/SongSelect.hpp
   src/game/screens/select/carousel/DrawableCarouselBeatmap.cpp
   src/game/screens/select/carousel/DrawableCarouselBeatmap.hpp

@@ -34,9 +34,9 @@ bool Background::init() {
 
 
     addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
-        auto e = static_cast<NodeUIEvent*>(ev);
+        auto e = static_cast<NodeLayoutUpdate*>(ev);
         //log::debug("[Background]: {}", (int)(e->type));
-        //if (e->type == NodeUIEventType::Size || e->type == NodeUIEventType::All) {
+        //if (e->type == NodeLayoutUpdateType::Size || e->type == NodeLayoutUpdateType::All) {
             auto s = getRealContentSize();
             m_background->setPosition(s/2);
             m_background->setContentSize(s);

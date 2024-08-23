@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include "Geode/utils/MiniFunction.hpp"
-#include "../../MouseEvent.hpp"
+#include "../../../framework/input/events/MouseEvent.hpp"
 #include "../../../framework/graphics/containers/Container.hpp"
 
 using namespace geode::prelude;
@@ -13,11 +13,7 @@ class OsuClickableContainer : public Container {
 private:
     ButtonCallback clickCallback;
     std::string clickSfx = "";
-    bool m_clickEnabled = true;
-    bool m_hoverEnabled = true;
-    bool m_entered = false;
-    bool m_holding = false;
-    EventListenerProtocol* m_listener;
+
 
     bool holding = false;
 
@@ -25,11 +21,10 @@ private:
     //void ccTouchEnded(CCTouch* t, CCEvent* idc) override;
 
 protected:
-    virtual void onClick() = 0;
-    virtual void onMouseDown() = 0;
-    virtual void onMouseUp() = 0;
-    virtual void onMouseEnter() = 0;
-    virtual void onMouseExit() = 0;
+    virtual void onClick() {
+        FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
+        this->clickCallback(this);
+    };
 
 public:
     // pretend to be clicking
@@ -39,28 +34,7 @@ public:
     /// <param name="clickCb">| the</param>
     /// <param name="self">| the node to be used as the clickCb parameter</param>
     bool init(std::string clickSfx, ButtonCallback clickCb, CCNode* self = nullptr);
-    void setClickEnabled(bool e) {m_clickEnabled = e;}
-    bool getClickEnabled() {return m_clickEnabled;}
-    void setHoverEnabled(bool state) { 
-        m_hoverEnabled = state; 
-        if (!m_hoverEnabled) {onMouseExit();}
-    else {
-#ifdef GEODE_IS_WINDOWS
-        auto director = CCDirector::sharedDirector();
-        auto pos = director->getOpenGLView()->getMousePosition();
-        auto realSize = director->getOpenGLView()->getDisplaySize();
-        auto winSize = director->getWinSize();
-
-        auto p = CCPoint(
-            pos.x / realSize.width * winSize.width, 
-            ((realSize.height-pos.y) / realSize.height * winSize.height)
-        );
-
-        dispatchEvent(new MouseEvent(MouseEventType::Move, p));
-#endif
-    }
-    };
-    bool getHoverEnabled() { return m_hoverEnabled; }
+    
     
   /*
     // redirecting functions

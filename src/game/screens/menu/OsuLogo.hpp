@@ -15,8 +15,8 @@ public:
     void onMouseEnter() override {};
     void onMouseExit() override {};
     void onBeat(float delta) override;
-    void onMouseUp() override {};
-    void onMouseDown() override {};
+    void onMouseUp(MouseEvent* event) override {};
+    void onMouseDown(MouseEvent* event) override {};
     void onClick() override {};
     void update(float delta);
 

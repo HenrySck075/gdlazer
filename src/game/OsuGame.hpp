@@ -49,13 +49,13 @@ public:
         auto m = CCDirector::sharedDirector()->getOpenGLView()->getDesignResolutionSize();
         if (m!=getContentSize()) {
             setContentSize(m);
-            dispatchEvent(new NodeUIEvent("nodeLayoutUpdate", NodeUIEventType::Size));
+            dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
         }
     }
 
 public:
     bool dispatchEvent(NodeEvent* event) override {
-        if (event->getCaller() != nullptr) return;
+        if (event->getCaller() != nullptr) return false;
         if (event->eventName().starts_with("og")) {
             EventTarget::dispatchEvent(event);
             return true;

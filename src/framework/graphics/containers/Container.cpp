@@ -1,4 +1,78 @@
 #include "Container.hpp"
+#include "../CCPointExtensions.hpp"
+#include "../../input/events/MouseEvent.hpp"
+
+void InputHandlerImpl::initHandler() {
+    addListener("mouseEvent",[this](NodeEvent* e) {
+        auto event = static_cast<MouseEvent*>(e);
+        auto type = event->eventType;
+        if (!(this->m_hoverEnabled && isRunning())) return;
+        switch (type) {
+            case MouseEventType::Move:
+                this->onMouseMove(event);
+                break;
+            case MouseEventType::Enter:
+                m_entered = true;
+                this->onMouseEnter();
+                break;
+            case MouseEventType::Exit:
+                m_entered = false;
+                this->onMouseExit();
+                break;
+            case MouseEventType::MouseUp:
+                if (m_holding) {
+                    this->onMouseUp(event);
+                    m_holding = false;
+                }
+                break;
+            case MouseEventType::MouseDown:
+                if (m_entered) {
+                    this->onMouseDown(event);
+                    m_holding = true;
+                }
+                break;
+            case MouseEventType::Click:
+                this->onClick();
+                event->preventDefault();
+        }
+        int type2 = (int)type;
+        if (type == MouseEventType::MouseUp && m_entered) {
+            type2 = MouseEventType::Click;
+        }
+        else if (type == MouseEventType::Move) {
+            auto bound = boundingBoxFromContentSize(this);
+            bool containsCursor = bound.containsPoint(event->position);
+            if (
+                containsCursor
+                && 
+                !m_entered
+            ) type2 = MouseEventType::Enter;
+            if (
+                !containsCursor
+                && 
+                m_entered
+            ) type2 = MouseEventType::Exit;
+        }
+        // redispatch without calling child
+        if (type2 != (int)type) dispatchEventUnsafe(new MouseEvent((MouseEventType)type2, event->position));
+
+        if (dragEnabled() && type == MouseEventType::Move) {
+            if (CCPointExtensions::distance(
+                mouseDownPos.equals(ccp(0,0)) ? event->position : mouseDownPos, 
+                event->position
+            ) > clickDragDistance) {
+                if (!currentDragEvent) {
+                    currentDragEvent = new MouseDragEvent(mouseDownPos, event->position);
+                    onDragStart(currentDragEvent);
+                } else {
+                    currentDragEvent->current = event->position;
+                    onDrag(currentDragEvent);
+                }
+            }
+        }
+        return;
+    });
+}
 
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
@@ -7,10 +81,12 @@ bool Container::init() {
     colorBg->retain();
     colorBg->setAnchorPoint(ccp(0,0));
     //addChild(colorBg);
+
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
-        onLayoutUpdate(static_cast<NodeUIEvent*>(j));
+        onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));
         colorBg->setContentSize(getRealContentSize());
     });
+    InputHandlerImpl::initHandler();
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
     updateAnchorLabel();
@@ -67,8 +143,7 @@ bool Container::dispatchToChild(NodeEvent* event) {
     return dispatchToChildInList(event, m_pChildren);
 };
 
-void Container::onLayoutUpdate(NodeUIEvent* e) {
-    
+void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     if (m_pParent == nullptr) return;
     CCPoint resP = ccp(0,0);
     auto anchor = m_anchors[m_anchor];
@@ -103,6 +178,23 @@ void Container::onLayoutUpdate(NodeUIEvent* e) {
     resetContentSize();
     colorBg->setContentSize(getRealContentSize());
 };
+
+float Container::processUnit(float value, Unit unit, bool width) {
+    if (m_pParent == nullptr && unit == Unit::Percent) {
+        // does not have a parent
+        return value;
+    }
+    switch (unit) {
+    case Unit::OpenGL:
+        return value;
+    case Unit::UIKit:
+        return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getFrameSize().width);
+    case Unit::Viewport:
+        return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
+    case Unit::Percent:
+        return (value / 100) * (width ? m_pParent->CCNode::getContentSize().width : m_pParent->CCNode::getContentSize().height);
+    };
+}
 
 /*
 bool ContainerNodeWrapper::init(CCNode* node)  {

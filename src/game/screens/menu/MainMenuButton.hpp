@@ -59,8 +59,8 @@ protected:
 private:
     void onMouseEnter() override;
     void onMouseExit() override;
-    void onMouseDown() override;
-    void onMouseUp() override;
+    void onMouseDown(MouseEvent* event) override;
+    void onMouseUp(MouseEvent* event) override;
     void onClick() override;
 
     CCNode* background;

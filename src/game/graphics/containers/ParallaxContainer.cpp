@@ -1,5 +1,4 @@
 #include "ParallaxContainer.hpp"
-#include "../../MouseEvent.hpp"
 
 bool ParallaxContainer::init(float parallaxAmount, bool scale) {
     Container::init();
@@ -10,13 +9,6 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     if (scale) this->setScale(1 + abs(parallaxAmount));
-
-    addListener("mouseEvent", [this](NodeEvent* e){
-        auto event = static_cast<MouseEvent*>(e);
-        if (event->eventType == MouseEventType::Move) { 
-            updateParallax(event->position); 
-        };
-    });
     // cancel the event
 
     // this is done to prevent unnecessary event cascading but 

@@ -22,8 +22,8 @@ private:
     void onMouseEnter() override;
     void onMouseExit() override;
     bool init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
-    void onMouseDown() override;
-    void onMouseUp() override;
+    void onMouseDown(MouseEvent* event) override;
+    void onMouseUp(MouseEvent* event) override;
     void onClick() override {};
 public:
     void setOpacity(GLubyte opacity) override;

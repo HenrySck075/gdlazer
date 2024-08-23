@@ -57,9 +57,9 @@ public:
     GeodeEvent(T event, std::string name) : NodeEvent(name), m_event(event) {}
 };
 
-template<char const* eventname>
+template<char const* name>
 class NamedNodeEvent : public NodeEvent {
 public:
-    NamedNodeEvent() : NodeEvent(eventname) {}
-    static std::string eventName() override {return std::string(eventname);};
+    NamedNodeEvent() : NodeEvent(name) {}
+    static constexpr std::string eventname = std::string(name);
 };

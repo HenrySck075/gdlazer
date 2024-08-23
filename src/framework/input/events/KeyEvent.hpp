@@ -1,5 +1,7 @@
+#pragma once
+
 #include <Geode/cocos/include/cocos2d.h>
-#include "Event.hpp"
+#include "../../graphics/containers/Event.hpp"
 using namespace cocos2d;
 
 struct KeyInfo {

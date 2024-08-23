@@ -27,19 +27,9 @@ public:
     };
     bool init(GJGameLevel* level);
 
-    void onClick() {
-        m_shadow->setColor(ccc3(130, 204, 255));
-        m_shadow->setOpacity(150);
-        static_cast<Container*>(getParent())->dispatchEvent(new CarouselItemSelect());
-    };
-    void onMouseEnter() {
-        colorBg->stopAllActions();
-        colorBg->runAction(CCFadeTo::create(0.1,25));
-    };
-    void onMouseExit() {
-        colorBg->stopAllActions();
-        colorBg->runAction(CCFadeTo::create(0.25,0));
-    };
+    void onClick();
+    void onMouseEnter();
+    void onMouseExit();
     void onMouseUp() {};
     void onMouseDown() {};
 };

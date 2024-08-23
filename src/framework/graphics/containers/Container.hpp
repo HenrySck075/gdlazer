@@ -4,21 +4,23 @@
 
 #include <Geode/Geode.hpp>
 #include "Event.hpp"
+#include "../../input/events/MouseEvent.hpp"
+#include "../../input/events/MouseDragEvent.hpp"
 #include "EventTarget.hpp"
 #include "../../../utils.hpp"
 using namespace geode::prelude;
 
-enum class NodeUIEventType {
+enum class NodeLayoutUpdateType {
     Position,
     Size,
     // specifically setParent
     All 
 };
 
-class NodeUIEvent final : public NodeEvent {
+class NodeLayoutUpdate final : public NodeEvent {
 public:
-    NodeUIEventType type;
-    NodeUIEvent(std::string name, NodeUIEventType t) : NodeEvent("node"+name), type(t) {};
+    NodeLayoutUpdateType type;
+    NodeLayoutUpdate(NodeLayoutUpdateType t) : NodeEvent("nodeLayoutUpdate"), type(t) {};
 };
 
 
@@ -33,10 +35,68 @@ enum class Unit {
     UIKit
 };
 
+class InputHandlerImpl : public CCLayerRGBA, public EventTarget {
+    bool m_entered = false;
+    bool m_holding = false;
+    bool m_clickEnabled = true;
+    bool m_hoverEnabled = true;
+
+    bool m_dragEnabled = false;
+    CCPoint mouseDownPos = ccp(0,0);
+    // according to osu!framework
+    int clickDragDistance = 10;
+
+    MouseDragEvent* currentDragEvent = nullptr;
+protected:
+    // for those who need to add more checks to when dragging is enabled
+    virtual bool dragEnabled() {return m_dragEnabled;}
+public:
+    void initHandler();
+
+    virtual void onMouseEnter() {};
+    virtual void onMouseExit() {};
+    virtual void onMouseMove(MouseEvent* event) {};
+    virtual void onMouseUp(MouseEvent* event) {
+        if (dragEnabled() && currentDragEvent) {
+            onDragEnd(currentDragEvent);
+            free(currentDragEvent);
+            currentDragEvent = nullptr;
+        }
+    };
+    virtual void onMouseDown(MouseEvent* event) {mouseDownPos = event->position;};
+    virtual void onDragStart(MouseDragEvent* event) {};
+    virtual void onDrag(MouseDragEvent* event) {};
+    virtual void onDragEnd(MouseDragEvent* event) {};
+    virtual void onClick() {};
+
+    void setClickEnabled(bool e) {m_clickEnabled = e;}
+    bool getClickEnabled() {return m_clickEnabled;}
+    void setHoverEnabled(bool state) { 
+        m_hoverEnabled = state; 
+        if (!m_hoverEnabled) {onMouseExit();}
+        else {
+    #ifdef GEODE_IS_WINDOWS
+            auto director = CCDirector::sharedDirector();
+            auto pos = director->getOpenGLView()->getMousePosition();
+            auto realSize = director->getOpenGLView()->getDisplaySize();
+            auto winSize = director->getWinSize();
+
+            auto p = CCPoint(
+                pos.x / realSize.width * winSize.width, 
+                ((realSize.height-pos.y) / realSize.height * winSize.height)
+            );
+
+            dispatchEvent(new MouseEvent(MouseEventType::Move, p));
+    #endif
+        }
+    };
+    bool getHoverEnabled() { return m_hoverEnabled; }
+};
+
 /// @brief CCLayer that implements some more shit
 ///
 /// Works similar to the JavaScript event system
-class Container : public CCLayerRGBA, public EventTarget {
+class Container : public InputHandlerImpl {
 private:
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
@@ -104,26 +164,9 @@ protected:
     // @param value Value in specified unit
     // @param unit The unit in question
     // @returns The value in OpenGL unit
-    float processUnit(float value, Unit unit, bool width) {
-        if (m_pParent == nullptr && unit == Unit::Percent) {
-            // does not have a parent
-            return value;
-        }
-        switch (unit) {
-        case Unit::OpenGL:
-            return value;
-        case Unit::UIKit:
-            return value * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getFrameSize().width);
-        case Unit::Viewport:
-            return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
-        case Unit::Percent:
-            return (value / 100) * (width ? m_pParent->CCNode::getContentSize().width : m_pParent->CCNode::getContentSize().height);
-        };
-    }
+    float processUnit(float value, Unit unit, bool width);
 
-
-protected:
-    virtual void onLayoutUpdate(NodeUIEvent*e);
+    virtual void onLayoutUpdate(NodeLayoutUpdate*e);
     CCPoint m_position = CCPoint(0,0);
     CCSize m_size = CCSize(0,0);
     CCSize m_sizeP = CCSize(0,0);
@@ -166,7 +209,7 @@ public:
     void setAnchor(Anchor anchor) {
         m_anchor = anchor;
         updateAnchorLabel();
-        dispatchEvent(new NodeUIEvent("LayoutUpdate",NodeUIEventType::Position));
+        dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Position));
     }
     Anchor getAnchor() {
         return m_anchor;
@@ -229,7 +272,7 @@ public:
     void setPosition(CCPoint const& position) override {
         if (position == m_position) return;
         m_position = position;
-        dispatchEvent(new NodeUIEvent("LayoutUpdate",NodeUIEventType::Position));
+        dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Position));
         /*
         CCLayer::setPosition(CCPoint(
             processUnit(position.x, m_positionUnit.first, true),
@@ -259,7 +302,7 @@ public:
 
     void setParent(CCNode* parent) override {
         CCLayer::setParent(parent);
-        dispatchEvent(new NodeUIEvent("LayoutUpdate", NodeUIEventType::All));
+        dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::All));
     };
 
     ~Container() {

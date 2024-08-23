@@ -3,6 +3,7 @@
 #include "../../../utils.hpp"
 #include <Geode/Geode.hpp>
 #include "../../../framework/graphics/containers/Container.hpp"
+#include "../../../framework/input/events/MouseEvent.hpp"
 
 using namespace geode::prelude;
 
@@ -20,4 +21,7 @@ public:
     }
     bool init(float parallaxAmount, bool scale);
     void updateParallax(const CCPoint& cursorPos);
+    void onMouseMove(MouseEvent* event) {
+        updateParallax(event->position); 
+    }
 };

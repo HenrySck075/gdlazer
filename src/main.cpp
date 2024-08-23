@@ -5,7 +5,7 @@
 #include "Geode/binding/FMODAudioEngine.hpp"
 #include "Geode/cocos/cocoa/CCObject.h"
 #include "game/screens/menu/intro/IntroTriangles.hpp"
-#include "game/MouseEvent.hpp"
+#include "framework/input/events/MouseEvent.hpp"
 #include "game/overlays/dialog/PopupDialog.hpp"
 #include "game/overlays/dialog/PopupDialogButton.hpp"
 #include "main/PauseLayer.hpp"
@@ -17,7 +17,7 @@
 #include "game/graphics/containers/beatsync/BeatEvent.hpp"
 #include "utils.hpp"
 #include "game/OsuGame.hpp"
-#include "framework/graphics/containers/KeyEvent.hpp"
+#include "framework/input/events/KeyEvent.hpp"
 
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.

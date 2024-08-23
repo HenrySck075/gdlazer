@@ -41,3 +41,19 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
 
     //CCScheduler::get()->scheduleUpdateForTarget();
 }
+
+void DrawableCarouselBeatmap::onClick()  {
+    m_shadow->setColor(ccc3(130, 204, 255));
+    m_shadow->setOpacity(150);
+    static_cast<Container*>(getParent())->dispatchEvent(new CarouselItemSelect());
+}
+
+void DrawableCarouselBeatmap::onMouseEnter() {
+    colorBg->stopAllActions();
+    colorBg->runAction(CCFadeTo::create(0.1,25));
+}
+
+void DrawableCarouselBeatmap::onMouseExit() {
+    colorBg->stopAllActions();
+    colorBg->runAction(CCFadeTo::create(0.25,0));
+}
