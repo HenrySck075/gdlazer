@@ -1,6 +1,5 @@
 // Source: https://github.com/ppy/osu/blob/54cf64d5ceed8a05aeba44620c5964fa284f5ca7/osu.Game/Overlays/OverlayColourProvider.cs#L10
-#ifndef __osu_ui_color_overlay_provider__
-#define __osu_ui_color_overlay_provider__
+#pragma once
 
 
 #include <Geode/Geode.hpp>
@@ -91,4 +90,3 @@ class OverlayColorProvider : public CCObject{
     static float getBaseHue(OverlayColorScheme colorScheme); 
 };
 
-#endif // !__osu_ui_color_overlay_provider__

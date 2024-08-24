@@ -4,6 +4,7 @@
 #include "../../../utils.hpp"
 #include "../../graphics/CCResizableSprite.hpp"
 #include "carousel/DrawableCarouselBeatmap.hpp"
+#include "BeatmapCarousel.hpp"
 
 class SongSelect : public Screen {
 public:
@@ -17,7 +18,17 @@ public:
         testBg->setContentSize(CCDirector::sharedDirector()->getWinSize());
         testBg->setPosition(CCDirector::sharedDirector()->getWinSize()/2);
         addChild(testBg);
-        addChild(DrawableCarouselBeatmap::create(GameLevelManager::sharedState()->getMainLevel(1,true)));
+        auto glm = GameLevelManager::sharedState();
+        auto mainList = GJLevelList::create();
+        for (int i = 1; i <= 22; i++) {
+            mainList->addLevelToList(glm->getMainLevel(i, true));
+        }
+        //addChild(DrawableCarouselBeatmap::create(glm->getMainLevel(1,true)));
+        auto carousel = BeatmapCarousel::create(mainList);
+        carousel->setAnchor(Anchor::Right);
+        carousel->setAnchorPoint(ccp(1,0.5));
+        addChild(carousel);
+
         return true;
     }
 };

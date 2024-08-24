@@ -1,5 +1,6 @@
 #include "DrawableCarouselBeatmap.hpp"
 #include "../../../graphics/OsuColor.hpp"
+#include "../../../graphics/ui/OsuText.hpp"
 
 bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     auto d = CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr);
@@ -37,16 +38,27 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     setContentSizeWithUnit(CCSize(40,h), Unit::Percent, Unit::UIKit);
     setOpacity(0);
     setColor(OsuColor::Blue);
+
+    addChild(OsuText(level->m_levelName.c_str(), FontType::Regular));
     return true;
 
     //CCScheduler::get()->scheduleUpdateForTarget();
 }
 
 void DrawableCarouselBeatmap::onClick()  {
+    select();
+}
+void DrawableCarouselBeatmap::select() {
     m_shadow->setColor(ccc3(130, 204, 255));
     m_shadow->setOpacity(150);
-    static_cast<Container*>(getParent())->dispatchEvent(new CarouselItemSelect());
+    auto e = new CarouselItemSelect();
+    dispatchEvent(e);
 }
+void DrawableCarouselBeatmap::deselect() {
+    m_shadow->setColor(ccc3(0,0,0));
+    m_shadow->setOpacity(255);
+}
+
 
 void DrawableCarouselBeatmap::onMouseEnter() {
     colorBg->stopAllActions();

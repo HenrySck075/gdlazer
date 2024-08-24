@@ -54,6 +54,7 @@ add_library(${PROJECT_NAME} SHARED
   src/game/graphics/containers/WaveContainer.cpp
   src/game/graphics/containers/WaveContainer.hpp
   src/game/graphics/containers/beatsync/BeatEvent.hpp
+  src/game/graphics/ui/OsuText.cpp
   src/game/graphics/ui/OsuText.hpp
   src/game/graphics/ui/deco/Triangles.cpp
   src/game/graphics/ui/deco/Triangles.hpp

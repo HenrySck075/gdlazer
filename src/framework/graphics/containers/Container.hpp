@@ -154,6 +154,10 @@ private:
         ));
     }
 
+    CCSize minimumSize = CCSize(0,0);
+    CCSize maximumSize = CCSize(0,0);
+
+    void checkConstraints();
 protected:
     CCLayerColor* colorBg;
 
@@ -257,6 +261,8 @@ public:
     const CCSize& getRealContentSize() {
         return CCNode::getContentSize();
     }
+
+    void setSizeConstraints(CCSize const& minSize, CCSize const& maxSize);
 
     // set the position unit that will be used to calculate the result position on the next `setPosition` call
     void setPositionUnit(Unit posUnitHorizontal, Unit posUnitVertical) {

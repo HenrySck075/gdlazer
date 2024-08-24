@@ -25,15 +25,18 @@ public:
     bool init(Container* body) {
         if (!Container::init()) return false;
         this->body = body;
+        addChild(body);
         return true;
     }
     void addChild(CCNode* child) {
         if (typeinfo_cast<Container*>(child) == nullptr) return;
         auto offset = body->getRealPosition();
+        removeChild(body);
         body = static_cast<Container*>(child);
+        CCNode::addChild(body);
         body->setAnchorPoint(ccp(0,1));
         body->setAnchor(Anchor::TopLeft);
-        body->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
+        //body->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
         body->setPositionWithUnit(offset,Unit::OpenGL,Unit::OpenGL);
     }
     void onDragStart(MouseDragEvent* event) override {lastIdlePos = body->getRealPosition();};

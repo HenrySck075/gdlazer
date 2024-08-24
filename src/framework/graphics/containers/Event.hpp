@@ -24,7 +24,7 @@ protected:
     bool m_log = false;
     std::string m_eventName = "";
 public:
-    EventTarget* getCaller() {return m_target;};
+    EventTarget* target() {return m_target;};
     NodeEvent() {
         throw "kill yourself";
     }; // i cant delete this
@@ -40,6 +40,8 @@ public:
     void stopImmediatePropagation() {m_stopImmediatePropagate = true;}
     // Cancels the event
     void preventDefault() {m_cancelled = true;}
+
+    void logging(bool enable) {m_log = enable;}
 
     friend class Container;
     friend class EventTarget;
@@ -61,5 +63,5 @@ template<char const* name>
 class NamedNodeEvent : public NodeEvent {
 public:
     NamedNodeEvent() : NodeEvent(name) {}
-    static constexpr std::string eventname = std::string(name);
+    static constexpr auto eventname = name;
 };

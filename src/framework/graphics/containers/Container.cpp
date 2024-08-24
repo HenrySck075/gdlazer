@@ -85,6 +85,7 @@ bool Container::init() {
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));
         colorBg->setContentSize(getRealContentSize());
+        checkConstraints();
     });
     InputHandlerImpl::initHandler();
     ignoreAnchorPointForPosition(false);
@@ -105,8 +106,9 @@ void Container::setOpacity(GLubyte opacity) {
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {
-    if (event->m_log) log::debug("[{} | Container]: Dispatching {}", getNodeName(this), event->m_eventName);
+
     auto ret = EventTarget::dispatchEvent(event);
+    if (event->m_log) log::debug("[{} | EventTarget]: Dispatching {} (target: {})", getNodeName(this), event->m_eventName, getNodeName(static_cast<Container*>(event->target())));
     /*
     colorBg->setColor(ccc3(255,171,15));
     colorBg->setOpacity(150);
@@ -196,6 +198,51 @@ float Container::processUnit(float value, Unit unit, bool width) {
     };
 }
 
+void Container::setSizeConstraints(CCSize const& minSize, CCSize const& maxSize) {
+    // who did this
+    if (minSize.width < maxSize.width && minSize.height < maxSize.height) {
+        log::error("Monika: you got it the wrong way.");
+        return;
+    }
+
+    minimumSize = CCSize{
+        processUnit(minSize.width,m_sizeUnit.first,true),
+        processUnit(minSize.height,m_sizeUnit.second,false)
+    };
+    maximumSize = CCSize{
+        processUnit(maxSize.width,m_sizeUnit.first,true),
+        processUnit(maxSize.height,m_sizeUnit.second,false)
+    };
+    checkConstraints();
+}
+
+void Container::checkConstraints() {
+    auto currentSize = getRealContentSize();
+    bool d = false;
+    if (currentSize.width < minimumSize.width) {
+        currentSize.width = minimumSize.width;
+        d = true;
+    }
+    if (currentSize.height < minimumSize.height) {
+        currentSize.height = minimumSize.height;
+        d = true;
+    }
+    if (!maximumSize.equals(CCSize(0,0))) {
+        if (currentSize.width > maximumSize.width) {
+            currentSize.width = maximumSize.width;
+            d = true;
+        }
+        if (currentSize.height > maximumSize.height) {
+            currentSize.height = maximumSize.height;
+            d = true;
+        }
+    }
+    if (d) {
+        // mark the node as dirty so cocos2d will actually attempt to do something with that (i suppose)
+        CCNode::setContentSize(currentSize);
+        dispatchToChild(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
+    }
+}
 /*
 bool ContainerNodeWrapper::init(CCNode* node)  {
     if (!typeinfo_cast<Container*>(node)) {

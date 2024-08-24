@@ -1,7 +1,6 @@
 #include "BeatmapCarousel.hpp"
 #include "../../../framework/graphics/containers/ScrollableContainer.hpp"
 #include "../../../framework/graphics/containers/FillFlowContainer.hpp"
-#include "carousel/DrawableCarouselBeatmap.hpp"
 
 bool BeatmapCarousel::init(GJLevelList* list) {
     if (!Container::init()) return false;
@@ -10,7 +9,13 @@ bool BeatmapCarousel::init(GJLevelList* list) {
         body->addChild(DrawableCarouselBeatmap::create(level));
     }
     auto scroll = ScrollableContainer::create(body);
-    scroll->setAnchor(Anchor::Right);
+    addListener(CarouselItemSelect::eventname, [this](NodeEvent* e){
+        if (currentItem) currentItem->deselect();
+        if (e->target()) {
+            currentItem = static_cast<DrawableCarouselBeatmap*>(e->target());
+        }
+        e->preventDefault();
+    });
     addChild(scroll);
     return true;
 }

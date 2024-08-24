@@ -10,6 +10,7 @@ enum class FillDirection {
 
 class FillFlowContainer : public Container {
 private:
+    CCSize minimumSize;
     FillDirection direction;
     void updateChildPosition();
 public:
@@ -29,5 +30,5 @@ public:
             };
         }
         return ret;
-    }
+    };
 };

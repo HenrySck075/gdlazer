@@ -15,6 +15,7 @@ void FillFlowContainer::updateChildPosition() {
 
     bool dirFull = direction == FillDirection::Full;
     bool dirVerti = direction == FillDirection::Vertical;
+    bool dirHori = direction == FillDirection::Horizontal;
     auto childList = getChildren();
     if (childList) {
         for (auto* c : CCArrayExt<CCNode*>(childList)) {
@@ -22,7 +23,7 @@ void FillFlowContainer::updateChildPosition() {
             auto ch = c->CCNode::getContentSize().height;
             if (
                 dirFull ||
-                direction == FillDirection::Horizontal
+                dirHori 
             ) {
                 c->CCNode::setPosition(ccp(
                     x
@@ -55,10 +56,17 @@ void FillFlowContainer::updateChildPosition() {
             } else {
                 y+=ch;
             }
-            if (x > CCNode::getPosition().x && dirFull) {
-                x = 0;
-                y = yh;
+            if (x > CCNode::getContentSize().width) {
+                if (dirFull) {
+                    x = 0;
+                    y = yh;
+                }
+                else if (dirHori) {
+                    
+                }
             }
         }
     }
 };
+
+

@@ -32,4 +32,7 @@ public:
     void onMouseExit();
     void onMouseUp() {};
     void onMouseDown() {};
+
+    void select();
+    void deselect();
 };

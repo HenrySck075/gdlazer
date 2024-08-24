@@ -23,6 +23,7 @@ bool EventTarget::tryDispatch(Callback& cb, NodeEvent* event) {
 }
 
 bool EventTarget::dispatchEvent(NodeEvent* event) {
+    if (event->m_target == nullptr) event->m_target = this;
     auto it = m_listeners.find(event->eventName());
     if (it == m_listeners.end()) {
         //log::warn("[EventTarget]: Event {} not in list.",event->eventName());
@@ -34,7 +35,6 @@ bool EventTarget::dispatchEvent(NodeEvent* event) {
 };
 
 bool EventTarget::dispatchEventUnsafe(NodeEvent* event) {
-    if (event->m_target == nullptr) event->m_target = this;
     for (auto i : m_listeners[event->eventName()]) {
         if (tryDispatch(i,event)) {
             return false;
