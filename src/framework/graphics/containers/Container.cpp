@@ -22,12 +22,18 @@ void InputHandlerImpl::initHandler() {
             case MouseEventType::MouseUp:
                 if (m_holding) {
                     this->onMouseUp(event);
+                    if (dragEnabled() && currentDragEvent) {
+                        onDragEnd(currentDragEvent);
+                        free(currentDragEvent);
+                        currentDragEvent = nullptr;
+                    }
                     m_holding = false;
                 }
                 break;
             case MouseEventType::MouseDown:
                 if (m_entered) {
                     this->onMouseDown(event);
+                    mouseDownPos = event->position;
                     m_holding = true;
                 }
                 break;
@@ -56,7 +62,7 @@ void InputHandlerImpl::initHandler() {
         // redispatch without calling child
         if (type2 != (int)type) dispatchEventUnsafe(new MouseEvent((MouseEventType)type2, event->position));
 
-        if (dragEnabled() && type == MouseEventType::Move) {
+        if (dragEnabled() && type == MouseEventType::Move && m_entered && m_holding) {
             if (CCPointExtensions::distance(
                 mouseDownPos.equals(ccp(0,0)) ? event->position : mouseDownPos, 
                 event->position

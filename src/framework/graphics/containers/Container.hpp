@@ -56,14 +56,8 @@ public:
     virtual void onMouseEnter() {};
     virtual void onMouseExit() {};
     virtual void onMouseMove(MouseEvent* event) {};
-    virtual void onMouseUp(MouseEvent* event) {
-        if (dragEnabled() && currentDragEvent) {
-            onDragEnd(currentDragEvent);
-            free(currentDragEvent);
-            currentDragEvent = nullptr;
-        }
-    };
-    virtual void onMouseDown(MouseEvent* event) {mouseDownPos = event->position;};
+    virtual void onMouseUp(MouseEvent* event) {};
+    virtual void onMouseDown(MouseEvent* event) {};
     virtual void onDragStart(MouseDragEvent* event) {};
     virtual void onDrag(MouseDragEvent* event) {};
     virtual void onDragEnd(MouseDragEvent* event) {};
@@ -201,7 +195,7 @@ public:
 
     /// nvm
     void updateLayout() {
-        log::warn("[{} | Container]: updateLayout is not supported!", getNodeName(this));
+        log::warn("[{} | Container]: Use a FillFlowContainer instead!. I mean, it is better to split the code to multiple files than squeezing it into one like a beginner's main.cpp, right?", getNodeName(this));
     }
 
     bool init();

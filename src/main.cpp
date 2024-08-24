@@ -198,6 +198,11 @@ class $modify(CCEGLView) {
             m_click = false;
         }
     };
+    void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height) {
+        CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
+        OsuGame::get()->setContentSize(getDesignResolutionSize());
+        OsuGame::get()->dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
+    }
 };
 #else
 #include <Geode/modify/CCTouchDispatcher.hpp>

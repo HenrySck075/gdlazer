@@ -195,8 +195,8 @@ void OsuGame::updateTitle() {
     }
 }
 
-#include <Geode/modify/AppDelegate.hpp>
 
+#include <Geode/modify/AppDelegate.hpp>
 class $modify(AppDelegate) {
     void platformShutdown() {
         log::info("[hook: AppDelegate]: shutdown app");

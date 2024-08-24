@@ -17,7 +17,15 @@ public:
     static FillFlowContainer* create(FillDirection dir) {
         create_class(FillFlowContainer, init, dir);
     }
+    void setFillDirection(FillDirection dir);
     bool init(FillDirection dir);
+    void addChild(CCNode* child) {
+        Container::addChild(child);
+        if (auto c = typeinfo_cast<Container*>(child)) {
+            //c->setAnchor(Anchor::TopLeft);
+            c->setAnchorPoint(ccp(0,1));
+        }
+    };
 
     bool dispatchEvent(NodeEvent* event) override {
         bool ret = Container::dispatchEvent(event);
