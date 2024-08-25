@@ -159,10 +159,6 @@ protected:
 
     Anchor m_anchor = Anchor::BottomLeft;
     
-    // @param value Value in specified unit
-    // @param unit The unit in question
-    // @returns The value in OpenGL unit
-    float processUnit(float value, Unit unit, bool width);
 
     virtual void onLayoutUpdate(NodeLayoutUpdate*e);
     CCPoint m_position = CCPoint(0,0);
@@ -181,6 +177,11 @@ protected:
     bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
 public:
+    // @param value Value in specified unit
+    // @param unit The unit in question
+    // @returns The value in OpenGL unit
+    float processUnit(float value, Unit unit, bool width);
+    
     void setColor(ccColor3B const& col) override;
     void setOpacity(GLubyte opacity) override;
 

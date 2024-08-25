@@ -26,6 +26,8 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/graphics/containers/EventTarget.hpp
   src/framework/graphics/containers/FillFlowContainer.cpp
   src/framework/graphics/containers/FillFlowContainer.hpp
+  src/framework/graphics/containers/GridContainer.cpp
+  src/framework/graphics/containers/GridContainer.hpp
   src/framework/graphics/containers/ScrollableContainer.cpp
   src/framework/graphics/containers/ScrollableContainer.hpp
   src/framework/input/Input.hpp
@@ -37,6 +39,7 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/utils/IInterpolable.hpp
   src/framework/utils/Interpolation.cpp
   src/framework/utils/Interpolation.hpp
+  src/framework/utils/readonly.hpp
   src/game/OsuGame.cpp
   src/game/OsuGame.hpp
   src/game/beatmaps/BeatmapOnlineStatus.hpp
@@ -89,6 +92,7 @@ add_library(${PROJECT_NAME} SHARED
   src/game/screens/menu/intro/IntroTriangles.hpp
   src/game/screens/select/BeatmapCarousel.cpp
   src/game/screens/select/BeatmapCarousel.hpp
+  src/game/screens/select/SongSelect.cpp
   src/game/screens/select/SongSelect.hpp
   src/game/screens/select/carousel/DrawableCarouselBeatmap.cpp
   src/game/screens/select/carousel/DrawableCarouselBeatmap.hpp

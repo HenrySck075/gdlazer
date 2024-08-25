@@ -8,6 +8,7 @@ enum class FillDirection {
     Horizontal
 };
 
+// wrapper container around geode's layout system
 class FillFlowContainer : public Container {
 private:
     CCSize minimumSize;
