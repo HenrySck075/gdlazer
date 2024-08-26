@@ -12,21 +12,17 @@
   "developer": "Henry Spheria",
   "description": "nico nico niii",
   "early-load": true,
+  "settings": {
+    "language": {
+      "type": "string",
+      "default": "English",
+      "one-of": [
+        "English",
+        "Vietnamese"
+      ]
+    }
+  },
   "resources": {
-    "fonts": {
-        "torus-regular": {
-        "path": "resources/torus/regular.ttf",
-        "size": 80
-      },
-        "torus-light": {
-        "path": "resources/torus/light.ttf",
-        "size": 80
-      },
-        "torus-bold": {
-        "path": "resources/torus/bold.ttf",
-        "size": 80
-      }
-    },
     "spritesheets": {
       "MainMenuSheet": [
         "resources/textures/menu/*.png",
@@ -45,7 +41,8 @@
       "resources/sfx/**/*.wav",
       "resources/sfx/gameplay/pause-loop.mp3",
       "resources/glyphs/*.fnt",
-      "resources/glyphs/*.png"
+      "resources/glyphs/*.png",
+      "resources/torus/*.ttf"
     ]
   },
   "dependencies": [

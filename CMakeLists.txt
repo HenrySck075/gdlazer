@@ -34,6 +34,9 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/input/events/KeyEvent.hpp
   src/framework/input/events/MouseDragEvent.hpp
   src/framework/input/events/MouseEvent.hpp
+  src/framework/localisation/LocalisationManager.cpp
+  src/framework/localisation/LocalisationManager.hpp
+  src/framework/localisation/LocalisedLabel.hpp
   src/framework/screens/Screen.hpp
   src/framework/screens/ScreenTransitionEvent.hpp
   src/framework/utils/IInterpolable.hpp
@@ -61,6 +64,8 @@ add_library(${PROJECT_NAME} SHARED
   src/game/graphics/ui/OsuText.hpp
   src/game/graphics/ui/deco/Triangles.cpp
   src/game/graphics/ui/deco/Triangles.hpp
+  src/game/localisations/Language.cpp
+  src/game/localisations/Language.hpp
   src/game/online/rooms/RoomCategory.hpp
   src/game/overlays/OverlayColorProvider.cpp
   src/game/overlays/OverlayColorProvider.hpp

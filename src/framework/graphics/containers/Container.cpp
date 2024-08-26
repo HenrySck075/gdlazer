@@ -59,8 +59,13 @@ void InputHandlerImpl::initHandler() {
                 m_entered
             ) type2 = MouseEventType::Exit;
         }
-        // redispatch without calling child
-        if (type2 != (int)type) dispatchEventUnsafe(new MouseEvent((MouseEventType)type2, event->position));
+        if (type2 != (int)type) {
+            // this setup will makes the new event dispatched before the old one
+            // so we need to schedule it after the current one
+            
+            // unfortunately im sucks
+            dispatchEvent(new MouseEvent((MouseEventType)type2, event->position));
+        }
 
         if (dragEnabled() && type == MouseEventType::Move && m_entered && m_holding) {
             if (CCPointExtensions::distance(

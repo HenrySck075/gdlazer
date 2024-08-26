@@ -22,8 +22,10 @@ bool SongSelect::init() {
         // unfortunately you have to do this
         Dimension{GridSizeMode::Relative, 0, 0.5f, processUnit(850, Unit::UIKit, false)}
     });
-    grid->addChild(CCNode::create()); // nothing burger for now
-    grid->addChild(carousel);
+    auto details = CCNode::create();// nothing burger for now
+    grid->addChild(details); 
+    grid->insertAfter(carousel, details);
+    grid->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     addChild(grid);
 
     return true;

@@ -10,6 +10,7 @@ public:
 };
 
 // The base implementation for a class (preferably in a node tree) that receives events
+// i realized i never made this to be used outside of a node tree
 class EventTarget {
 public:
     using Callback = geode::utils::MiniFunction<void(NodeEvent*)>;
@@ -18,12 +19,7 @@ private:
 protected:
     // @returns true if one of the callback cancels the event, either via `preventDefault()` or `stopImmediatePropagate()` (for `DispatchingFlow::Down`)
     virtual bool tryDispatch(Callback& cb, NodeEvent* event);
-    // dispatchEvent but does not care about whether any listener even registered that event 
-    //
-    // used by dispatchEvent to handle actually calling listeners
-    //
-    // trust me its better than reloadAllStep5
-    virtual bool dispatchEventUnsafe(NodeEvent* event);
+    virtual bool listenersExists(NodeEvent* event);
 
     void updateDispatchFlow(NodeEvent* event, DispatchingFlow flow) {
         event->m_dispatchingFlow = flow;

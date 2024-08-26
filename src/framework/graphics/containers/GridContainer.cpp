@@ -9,9 +9,9 @@ float calcSize(float size, float s, Dimension dim) {
 std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& dimensions) {
     int idx = 0;
     std::vector<float> SizeF;
-    std::map<Dimension,float,std::equal_to<Dimension>> Size;
-    std::vector<Dimension> Queue;
-    std::vector<Dimension> AutoSizeQueue;
+    std::map<int,float> Size;
+    std::vector<int> Queue;
+    std::vector<int> AutoSizeQueue;
     int numItems = dimensions.size();
     // essentially copying
     float remainingSize = 0+size;
@@ -28,27 +28,30 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
 
             // nvm you dont have a copy of a coldim every rowdims
             if (dim.maxSize != -1) s = std::min(s, (float)dim.maxSize);
-            Size[dim] = s;
+            Size[idx] = s;
             remainingSize -= s;
         } else {
-            if (dim.mode == GridSizeMode::AutoSize) AutoSizeQueue.push_back(dim);
-            else Queue.push_back(dim);
+            log::debug("[getCellSizes (GridLayout)]: crazy");
+            if (dim.mode == GridSizeMode::AutoSize) {AutoSizeQueue.push_back(idx);}
+            else {Queue.push_back(idx);}
         }
     }
     auto qcount = Queue.size();
     auto aqcount = AutoSizeQueue.size();
-    for (auto dim : Queue) {
+    for (auto idx : Queue) {
+        auto dim = dimensions[idx];
         auto divSize = remainingSize/qcount;
         float s;
         if (aqcount == 0) {
-            s = calcSize(size, std::max(divSize, (float)dim.minSize), dim);
+            s = std::max(divSize, (float)dim.minSize);
             if (dim.maxSize != -1) s = std::min(s, (float)dim.maxSize);
         } 
         // give em a slot
         else {
-            s = calcSize(size, dim.minSize, dim);
+            s = dim.minSize;
         }
-        Size[dim] = s;
+        log::debug("[getCellSizes (GridLayout)]: {}",s);
+        Size[idx] = s;
         remainingSize -= s;
         qcount--;
     }
@@ -59,7 +62,7 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
     
     idx = 0;
     for (;idx<numItems;idx++) {
-        SizeF.push_back(Size[dimensions[idx]]);
+        SizeF.push_back(Size[idx]);
     };
     return SizeF;
 
@@ -89,7 +92,7 @@ void GridLayout::apply(CCNode* on) {
             cc->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
         }
         colidx++;
-        if (colidx==numcols-1) {colidx = 0; rowidx++;}
+        if (colidx==numcols) {colidx = 0; rowidx++;}
     }
 
     colidx = 0; rowidx = 0;
@@ -97,18 +100,17 @@ void GridLayout::apply(CCNode* on) {
     auto colSize = getCellSizes(on, nodeSize.width, colDim);
     auto rowSize = getCellSizes(on, nodeSize.height, rowDim);
 
-    log::debug("[GridLayout]: \nColumn sizes: {}\nRow sizes: {}", colSize,rowSize);
-
     int x = 0, y = 0;
     for (auto* c : nodes) {
         c->setContentSize(CCSize{colSize[colidx], rowSize[rowidx]});
-        c->setPosition(x,y);
+        c->setPosition(x,typeinfo_cast<Container*>(c)!=nullptr?y:nodeSize.height-y);
         x+=colSize[colidx];
         colidx++;
-        if (colidx==numcols-1) {
+        if (colidx==numcols) {
             y+=rowSize[rowidx];
             colidx = 0; rowidx++;
             x = 0;
+            if (rowidx==numrows)break;
         }  
     }
 };
