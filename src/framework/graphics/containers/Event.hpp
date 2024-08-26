@@ -12,7 +12,7 @@ enum class DispatchingFlow {Up, Down};
 // Event with event name (yea)
 //
 // For use in EventTarget
-class NodeEvent {
+class NodeEvent : public CCObject {
 private:
     bool m_stopPropagate = false;
     bool m_stopImmediatePropagate = false;

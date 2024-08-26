@@ -20,7 +20,9 @@ enum class NodeLayoutUpdateType {
 class NodeLayoutUpdate final : public NodeEvent {
 public:
     NodeLayoutUpdateType type;
-    NodeLayoutUpdate(NodeLayoutUpdateType t) : NodeEvent("nodeLayoutUpdate"), type(t) {};
+    NodeLayoutUpdate(NodeLayoutUpdateType t) : NodeEvent("nodeLayoutUpdate"), type(t) {
+        setDispatchingFlow(DispatchingFlow::Down);
+    };
 };
 
 
@@ -92,6 +94,8 @@ public:
 /// Works similar to the JavaScript event system
 class Container : public InputHandlerImpl {
 private:
+    NodeEvent* queuedLayoutUpdate = nullptr;
+
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
 
@@ -148,11 +152,12 @@ private:
         ));
     }
 
+protected:
     CCSize minimumSize = CCSize(0,0);
     CCSize maximumSize = CCSize(0,0);
 
     void checkConstraints();
-protected:
+
     CCLayerColor* colorBg;
 
     bool m_includeShadow = false;
@@ -177,6 +182,11 @@ protected:
     bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
 public:
+    void onEnter() override {
+        CCLayer::onEnter();
+        if (queuedLayoutUpdate) dispatchToChild(queuedLayoutUpdate);
+    }
+
     // @param value Value in specified unit
     // @param unit The unit in question
     // @returns The value in OpenGL unit

@@ -28,6 +28,15 @@ public:
         }
     };
 
+    void setContentSize(CCSize const& size) override {
+        setSizeConstraints(
+            CCSize(
+                processUnit(size.width, m_sizeUnit.first, true),
+                processUnit(size.width, m_sizeUnit.second, false)
+            ), maximumSize
+        );
+    }
+
     bool dispatchEvent(NodeEvent* event) override {
         bool ret = Container::dispatchEvent(event);
         if (ret) {

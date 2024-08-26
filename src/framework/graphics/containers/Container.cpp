@@ -60,11 +60,7 @@ void InputHandlerImpl::initHandler() {
             ) type2 = MouseEventType::Exit;
         }
         if (type2 != (int)type) {
-            // this setup will makes the new event dispatched before the old one
-            // so we need to schedule it after the current one
-            
-            // unfortunately im sucks
-            dispatchEvent(new MouseEvent((MouseEventType)type2, event->position));
+            EventTarget::dispatchEvent(new MouseEvent((MouseEventType)type2, event->position));
         }
 
         if (dragEnabled() && type == MouseEventType::Move && m_entered && m_holding) {
@@ -117,7 +113,7 @@ void Container::setOpacity(GLubyte opacity) {
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {
-
+    event->retain();
     auto ret = EventTarget::dispatchEvent(event);
     if (event->m_log) log::debug("[{} | EventTarget]: Dispatching {} (target: {})", getNodeName(this), event->m_eventName, getNodeName(static_cast<Container*>(event->target())));
     /*
@@ -130,12 +126,27 @@ bool Container::dispatchEvent(NodeEvent* event) {
         event->m_stopPropagate = true;
         return false;
     }
-    switch (event->m_dispatchingFlow) {
-      case DispatchingFlow::Up:
-        if (auto p = typeinfo_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);
-      case DispatchingFlow::Down:
-        return dispatchToChild(event);
-    }
+    // workaround to prevent one heck of a call stack
+    //
+    // TODO: use some sort of a global event listeners mapper
+    // so we can just do everything in 1 call
+    auto dispatch = [this,event](){
+        switch (event->m_dispatchingFlow) {
+            case DispatchingFlow::Up:
+                if (auto p = typeinfo_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);
+            case DispatchingFlow::Down:
+                return dispatchToChild(event);
+        }
+        event->release();
+    };
+    if (event->eventName() == "nodeLayoutUpdate") {
+        if (isRunning()) {
+            dispatch();
+        } else {
+            if (queuedLayoutUpdate) queuedLayoutUpdate->release();
+            queuedLayoutUpdate = event;
+        }
+    } else dispatch();
     return true;
 }
 
