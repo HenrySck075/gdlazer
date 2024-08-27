@@ -26,7 +26,7 @@ bool Background::init() {
                 m_background->getSprite()->setTexture(spriteFrame->getTexture());
                 m_background->getSprite()->setTextureRect(spriteFrame->getRect());
             }
-            m_background->setContentSize(getRealContentSize());
+            m_background->setContentSize(getContentSize());
         } else if (e->isCancelled()) {
             return;
         }
@@ -37,7 +37,7 @@ bool Background::init() {
         auto e = static_cast<NodeLayoutUpdate*>(ev);
         //log::debug("[Background]: {}", (int)(e->type));
         //if (e->type == NodeLayoutUpdateType::Size || e->type == NodeLayoutUpdateType::All) {
-            auto s = getRealContentSize();
+            auto s = getContentSize();
             m_background->setPosition(s/2);
             m_background->setContentSize(s);
         //n}

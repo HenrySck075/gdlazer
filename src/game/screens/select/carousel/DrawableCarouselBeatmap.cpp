@@ -15,7 +15,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
 
     OsuClickableContainer::init("select-expand.wav"_spr, [](CCNode*self){});
     addListener("nodeLayoutUpdate", [this](NodeEvent* event){
-        auto s = getRealContentSize();
+        auto s = getContentSize();
         m_main->setContentSize(s);
         m_main->getChildByID("dcb_gradient")->setContentSize(s);
         if(auto stencil = m_main->getStencil()) stencil->setContentSize(s);
@@ -35,7 +35,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     m_main->addChild(colorBg);
     m_main->addChild(gradient);
     setAnchorPoint(ccp(0,0));
-    setContentSizeWithUnit(CCSize(40,h), Unit::Percent, Unit::UIKit);
+    setContentSizeWithUnit(CCSize(100,h), Unit::Percent, Unit::UIKit);
     setOpacity(0);
     setColor(OsuColor::Blue);
 

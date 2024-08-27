@@ -6,6 +6,7 @@ void InputHandlerImpl::initHandler() {
     addListener("mouseEvent",[this](NodeEvent* e) {
         auto event = static_cast<MouseEvent*>(e);
         auto type = event->eventType;
+        //if (type == MouseEventType::Move) event->logging(true);
         if (!(this->m_hoverEnabled && isRunning())) return;
         switch (type) {
             case MouseEventType::Move:
@@ -24,8 +25,7 @@ void InputHandlerImpl::initHandler() {
                     this->onMouseUp(event);
                     if (dragEnabled() && currentDragEvent) {
                         onDragEnd(currentDragEvent);
-                        free(currentDragEvent);
-                        currentDragEvent = nullptr;
+                        delete currentDragEvent;
                     }
                     m_holding = false;
                 }
@@ -91,7 +91,7 @@ bool Container::init() {
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));
-        colorBg->setContentSize(getRealContentSize());
+        colorBg->setContentSize(getContentSize());
         checkConstraints();
     });
     InputHandlerImpl::initHandler();
@@ -123,43 +123,53 @@ bool Container::dispatchEvent(NodeEvent* event) {
     */
     if (!ret) return false;
     if (event->m_stopPropagate) {
-        event->m_stopPropagate = true;
-        return false;
+        event->m_stopPropagate = false;
+        // according to the parent this is not really a cancel event, but if you want 
+        // you can check for m_stopPropagate like i did here
+        return true;
     }
     // workaround to prevent one heck of a call stack
     //
     // TODO: use some sort of a global event listeners mapper
     // so we can just do everything in 1 call
-    auto dispatch = [this,event](){
-        switch (event->m_dispatchingFlow) {
-            case DispatchingFlow::Up:
-                if (auto p = typeinfo_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);
-            case DispatchingFlow::Down:
-                return dispatchToChild(event);
-        }
-        event->release();
-    };
+    #define dispatch                                                                                    \
+        switch (event->m_dispatchingFlow) {                                                             \
+            case DispatchingFlow::Up:                                                                   \
+                if (auto p = dynamic_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);    \
+            case DispatchingFlow::Down:                                                                 \
+                return dispatchToChild(event);                                                          \
+        }                                                                                               \
+        event->release()
     if (event->eventName() == "nodeLayoutUpdate") {
         if (isRunning()) {
-            dispatch();
+            dispatch;
         } else {
             if (queuedLayoutUpdate) queuedLayoutUpdate->release();
             queuedLayoutUpdate = event;
         }
-    } else dispatch();
+    } else {
+        dispatch;
+    }
     return true;
 }
 
 bool Container::dispatchToChildInList(NodeEvent* event, CCArray* children) {
     event->m_dispatchingFlow = DispatchingFlow::Down;
-    CCObject* obj;
-    CCARRAY_FOREACH_REVERSE(children, obj) {
-        if (auto node = typeinfo_cast<EventTarget*>(obj)) {
-            if (!node->dispatchEvent(event)) return false;
+    auto the = CCArrayExt<CCNode*>(children);
+
+    auto rev_iter_start = std::reverse_iterator(the.end());
+    auto rev_iter_end = std::reverse_iterator(the.begin());
+    
+    while (rev_iter_start != rev_iter_end) {
+        auto node = *rev_iter_start++;
+        if (auto target = typeinfo_cast<Container*>(node)) {
+            if (event->m_log) log::debug("[Container]: {}",target);
+            if (!target->dispatchEvent(event)) return false;
         } else {
-            if (!dispatchToChildInList(event,typeinfo_cast<CCNode*>(obj)->getChildren())) return false;
+            if (!dispatchToChildInList(event,node->getChildren())) return false;
         }
     }
+    
     return true;
 }
 
@@ -169,6 +179,7 @@ bool Container::dispatchToChild(NodeEvent* event) {
 
 void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     if (m_pParent == nullptr) return;
+    CCPoint oldP = CCNode::getPosition();
     CCPoint resP = ccp(0,0);
     auto anchor = m_anchors[m_anchor];
     auto openglPos = CCPoint(
@@ -198,9 +209,12 @@ void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
             resP.y = openglPos.y; 
             break;
     }
-    CCNode::setPosition(resP);
+    //bool nothingHappens = false;
+    //if (resP.equals(oldP) && !resetContentSize()) nothingHappens = true;
+    //if (nothingHappens) e->stopPropagation();
     resetContentSize();
-    colorBg->setContentSize(getRealContentSize());
+    CCNode::setPosition(resP);
+    colorBg->setContentSize(getContentSize());
 };
 
 float Container::processUnit(float value, Unit unit, bool width) {
@@ -239,7 +253,7 @@ void Container::setSizeConstraints(CCSize const& minSize, CCSize const& maxSize)
 }
 
 void Container::checkConstraints() {
-    auto currentSize = getRealContentSize();
+    auto currentSize = getContentSize();
     bool d = false;
     if (currentSize.width < minimumSize.width) {
         currentSize.width = minimumSize.width;
@@ -264,6 +278,17 @@ void Container::checkConstraints() {
         CCNode::setContentSize(currentSize);
         dispatchToChild(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
     }
+}
+
+bool Container::resetContentSize() {
+    auto newS = CCSize(
+        processUnit(m_size.width, m_sizeUnit.first, true),
+        processUnit(m_size.height,m_sizeUnit.second, false)
+    );
+    if (newS.equals(getContentSize())) return false;
+    CCLayer::setContentSize(newS);
+    m_sizeP = m_size;
+    return true;
 }
 /*
 bool ContainerNodeWrapper::init(CCNode* node)  {

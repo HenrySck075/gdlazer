@@ -4,7 +4,7 @@
 
 class MouseDragEvent{
 public:
-    CCPoint const& startPos;
+    CCPoint startPos;
     CCPoint current;
     MouseDragEvent(decltype(startPos) start, decltype(current) cur) : startPos(start), current(cur) {}
 };

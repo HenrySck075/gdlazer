@@ -9,10 +9,10 @@ float calcSize(float size, float s, Dimension dim) {
 std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& dimensions) {
     int idx = 0;
     std::vector<float> SizeF;
-    std::map<int,float> Size;
     std::vector<int> Queue;
     std::vector<int> AutoSizeQueue;
     int numItems = dimensions.size();
+    SizeF.reserve(numItems);
     // essentially copying
     float remainingSize = 0+size;
 
@@ -28,7 +28,7 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
 
             // nvm you dont have a copy of a coldim every rowdims
             if (dim.maxSize != -1) s = std::min(s, (float)dim.maxSize);
-            Size[idx] = s;
+            SizeF[idx] = s;
             remainingSize -= s;
         } else {
             log::debug("[getCellSizes (GridLayout)]: crazy");
@@ -50,26 +50,19 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
         else {
             s = dim.minSize;
         }
-        log::debug("[getCellSizes (GridLayout)]: {}",s);
-        Size[idx] = s;
+        SizeF[idx] = s;
         remainingSize -= s;
         qcount--;
     }
     if (aqcount != 0) {    
         float maxSize = remainingSize / aqcount;
-        for (auto dim : AutoSizeQueue) {Size[dim] = maxSize;}
+        for (auto dim : AutoSizeQueue) {SizeF[dim] = maxSize;}
     }
-    
-    idx = 0;
-    for (;idx<numItems;idx++) {
-        SizeF.push_back(Size[idx]);
-    };
     return SizeF;
 
 }
 
 void GridLayout::apply(CCNode* on) {
-    log::debug("[GridLayout]: meow");
     auto nodes = CCArrayExt<CCNode*>(getNodesToPosition(on));
 
     int colidx = 0;

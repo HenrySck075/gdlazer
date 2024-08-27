@@ -49,10 +49,10 @@ class InputHandlerImpl : public CCLayerRGBA, public EventTarget {
     int clickDragDistance = 10;
 
     MouseDragEvent* currentDragEvent = nullptr;
-protected:
+public:
     // for those who need to add more checks to when dragging is enabled
     virtual bool dragEnabled() {return m_dragEnabled;}
-public:
+    void dragEnabled(bool enable) {m_dragEnabled = enable;}
     void initHandler();
 
     virtual void onMouseEnter() {};
@@ -129,10 +129,18 @@ private:
     std::string getUnitLabel(Unit unit) {
         std::string l;
         switch (unit) {
-            case Unit::OpenGL: l = "OpenGL Points";
-            case Unit::UIKit: l = "UIKit Points";
-            case Unit::Percent: l = "Parent's percentage";
-            case Unit::Viewport: l = "Viewport";
+            case Unit::OpenGL: 
+                l = "OpenGL Points";
+                break;
+            case Unit::UIKit: 
+                l = "UIKit Points";
+                break;
+            case Unit::Percent: 
+                l = "Parent's percentage";
+                break;
+            case Unit::Viewport: 
+                l = "Viewport";
+                break;
         }
         return l;
     }
@@ -184,7 +192,10 @@ protected:
 public:
     void onEnter() override {
         CCLayer::onEnter();
-        if (queuedLayoutUpdate) dispatchToChild(queuedLayoutUpdate);
+        if (queuedLayoutUpdate) {
+            dispatchToChild(queuedLayoutUpdate);
+            queuedLayoutUpdate->release();
+        }
     }
 
     // @param value Value in specified unit
@@ -206,7 +217,7 @@ public:
 
     /// nvm
     void updateLayout() {
-        log::warn("[{} | Container]: Use a FillFlowContainer instead!. I mean, it is better to split the code to multiple files than squeezing it into one like a beginner's main.cpp, right?", getNodeName(this));
+        log::warn("[{} | Container]: Use a FillFlowContainer instead!. I mean, it is better to split the code to multiple classes than squeezing it into one like a beginner's main.cpp, right?", getNodeName(this));
     }
 
     bool init();
@@ -240,13 +251,8 @@ public:
     };
 
 private:
-    void resetContentSize() {
-        CCLayer::setContentSize(CCSize(
-            processUnit(m_size.width, m_sizeUnit.first, true),
-            processUnit(m_size.height,m_sizeUnit.second, false)
-        ));
-        m_sizeP = m_size;
-    }
+    /// @returns if the size is changed
+    bool resetContentSize();
 public:
     void setContentSize(CCSize const& size) override {
         m_size = size;
@@ -259,15 +265,13 @@ public:
     void setContentHeight(float height) {
         setContentSize(CCSize(getContentWidth(),height));
     }
-    const CCSize& getContentSize() const override {
-        return m_size;
-    }
     // Get the actual node content size
-    const CCSize& getRealContentSize() {
-        return CCNode::getContentSize();
+    const CCSize& getContentSizeWithUnit() {
+        return m_size;
     }
 
     void setSizeConstraints(CCSize const& minSize, CCSize const& maxSize);
+    std::pair<CCSize, CCSize> getSizeConstraints() {return std::make_pair(minimumSize,maximumSize);};
 
     // set the position unit that will be used to calculate the result position on the next `setPosition` call
     void setPositionUnit(Unit posUnitHorizontal, Unit posUnitVertical) {
@@ -297,18 +301,9 @@ public:
     void setPositionX(float pos) override {
         setPosition(ccp(pos,m_position.y));
     }
-    const CCPoint& getPosition() override {
-        return m_position;
-    }
-    float getPositionX() override {
-        return m_position.x;
-    }
-    float getPositionY() override {
-        return m_position.y;
-    }
     // Get the actual node position
-    CCPoint const& getRealPosition() {
-        return CCNode::getPosition();
+    CCPoint const& getPositionWithUnit() {
+        return m_position;
     }
 
     void setParent(CCNode* parent) override {

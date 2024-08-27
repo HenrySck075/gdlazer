@@ -15,22 +15,32 @@ private:
     Container* body;
     CCPoint lastOffset = CCPoint(0,0);
     CCPoint lastIdlePos = CCPoint(0,0);
-
-    CCSequence* lastOffsetResetAction = CCSequence::createWithTwoActions(
-        CCDelayTime::create(0.1),
-        CCCallFuncL::create([this](){lastOffset = body->getRealPosition();})
-    );
+    // not lastOffset
+    CCPoint lastDragPosition;
+    bool m_dragging = false;
+    float timer = 0;
 
 public:
+    void update(float dt) override {
+        if (m_dragging) {
+            timer+=dt;
+            if (timer>=0.5) {
+                lastOffset = lastDragPosition;
+                timer = 0;
+            }
+        }
+    }
     bool init(Container* body) {
         if (!Container::init()) return false;
         this->body = body;
+        dragEnabled(true);
         addChild(body);
+        scheduleUpdate();
         return true;
     }
     void addChild(CCNode* child) {
         if (typeinfo_cast<Container*>(child) == nullptr) return;
-        auto offset = body->getRealPosition();
+        auto offset = body->getPosition();
         removeChild(body);
         body = static_cast<Container*>(child);
         CCNode::addChild(body);
@@ -39,7 +49,7 @@ public:
         //body->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
         body->setPositionWithUnit(offset,Unit::OpenGL,Unit::OpenGL);
     }
-    void onDragStart(MouseDragEvent* event) override {lastIdlePos = body->getRealPosition();};
+    void onDragStart(MouseDragEvent* event) override;
     void onDrag(MouseDragEvent* event) override;
     void onDragEnd(MouseDragEvent* event) override;
 

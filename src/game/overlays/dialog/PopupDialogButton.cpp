@@ -60,7 +60,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     
     OsuClickableContainer::init(clickSfx, clickCb, this);
     addListener("nodeLayoutUpdate", [this](NodeEvent* e){
-        auto size = getRealContentSize();
+        auto size = getContentSize();
         this->getChildByID("dialogbutton-label")->setPosition(size/2);
         auto d = this->getChildByID("dialogbutton-background");
         if (d!=nullptr) {

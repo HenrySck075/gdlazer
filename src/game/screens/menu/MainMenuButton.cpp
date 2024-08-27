@@ -67,7 +67,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
 
 void MainMenuButton::setContentSize(const CCSize& size) {
     OsuClickableContainer::setContentSize(size);
-    auto s = getRealContentSize();
+    auto s = getContentSize();
     // todo: move to container
     if (auto bg = this->getChildByID("background")) {
         bg->setContentSize(s);
