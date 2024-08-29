@@ -52,18 +52,16 @@ bool PopupDialog::setup(std::string const& title, std::string const& content, st
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
-    auto btnLayer = FillFlowContainer::create(FillDirection::Vertical);
-    /*
+    auto btnLayer = CCLayerColor::create();
     btnLayer->setLayout(
         ColumnLayout::create()
         ->setAutoScale(false)
         ->setAxisReverse(true)
         ->setGap(0)
     );
-    */
     btnLayer->setAnchorPoint(ccp(0.5, 0.5));
     btnLayer->setPosition(contentSize/2);
-    btnLayer->setContentSizeWithUnit(CCSize(contentSize.width,100),Unit::OpenGL,Unit::Percent);
+    btnLayer->setContentSize(contentSize);
     btnLayer->setCascadeOpacityEnabled(true);
     m_mainLayer->addChild(btnLayer);
 

@@ -25,7 +25,8 @@ void InputHandlerImpl::initHandler() {
                     this->onMouseUp(event);
                     if (dragEnabled() && currentDragEvent) {
                         onDragEnd(currentDragEvent);
-                        delete currentDragEvent;
+                        currentDragEvent->release();
+                        currentDragEvent = nullptr;
                     }
                     m_holding = false;
                 }
@@ -70,6 +71,7 @@ void InputHandlerImpl::initHandler() {
             ) > clickDragDistance) {
                 if (!currentDragEvent) {
                     currentDragEvent = new MouseDragEvent(mouseDownPos, event->position);
+                    currentDragEvent->retain();
                     onDragStart(currentDragEvent);
                 } else {
                     currentDragEvent->current = event->position;
@@ -83,7 +85,7 @@ void InputHandlerImpl::initHandler() {
 
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
-    colorBg = CCLayerColor::create(ccc4(255,255,255,0));
+    colorBg = CCLayerColor::create(ccc4(255,255,255,255));
     colorBg->setZOrder(-999);
     colorBg->retain();
     colorBg->setAnchorPoint(ccp(0,0));
@@ -101,15 +103,12 @@ bool Container::init() {
     updateSizeUnitLabel();
     updatePositionUnitLabel();
     //setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
-
+    setCascadeOpacityEnabled(true);
     return true;
 }
 
 void Container::setColor(ccColor3B const& col) {
     colorBg->setColor(col);
-}
-void Container::setOpacity(GLubyte opacity) {
-    colorBg->setOpacity(opacity);
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {

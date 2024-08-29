@@ -204,7 +204,6 @@ public:
     float processUnit(float value, Unit unit, bool width);
     
     void setColor(ccColor3B const& col) override;
-    void setOpacity(GLubyte opacity) override;
 
     bool dispatchEvent(NodeEvent* event) override;
     // Dispatches the event to the child. 
@@ -257,7 +256,7 @@ public:
     void setContentSize(CCSize const& size) override {
         m_size = size;
         resetContentSize();
-        //dispatchToChild(new NodeEvent("LayoutUpdate"));
+        dispatchToChild(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
     }
     void setContentWidth(float width) {
         setContentSize(CCSize(width,getContentHeight()));

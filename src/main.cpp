@@ -174,6 +174,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 // fields does not work on non-CCNode :pensive:
 bool m_click = false;
+CCPoint lastKnownCursorPos = ccp(0,0);
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(CCEGLView) {
     void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
@@ -183,6 +184,7 @@ class $modify(CCEGLView) {
         h = m_obScreenSize.height;
         auto st = CCDirector::sharedDirector()->getVisibleSize();
         auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
+        lastKnownCursorPos = p;
         OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move, CCPoint{ (float)p.x, (float)p.y }));
     };
     void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
@@ -190,11 +192,11 @@ class $modify(CCEGLView) {
         auto o = OsuGame::get();
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
             m_click = true;
-            o->dispatchEvent(new MouseEvent(MouseEventType::MouseDown, ccp(-4, -4)));
+            o->dispatchEvent(new MouseEvent(MouseEventType::MouseDown, lastKnownCursorPos));
             return;
         }
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE && m_click) {
-            o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, ccp(-2, -2)));
+            o->dispatchEvent(new MouseEvent(MouseEventType::MouseUp, lastKnownCursorPos));
             m_click = false;
         }
     };
@@ -304,11 +306,32 @@ class $modify(CCNodeRGBA) {
             CCObject* pObj;
             CCARRAY_FOREACH(m_pChildren, pObj)
             {
-                if (CCRGBAProtocol* item = dynamic_cast<CCRGBAProtocol*>(pObj))
+                if (CCRGBAProtocol* item = typeinfo_cast<CCRGBAProtocol*>(pObj))
                 {
-                    CCBool* _b = static_cast<CCBool*>(dynamic_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+                    CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
                     
-                    if (_b!=nullptr && _b->getValue()) item->updateDisplayedOpacity(_displayedOpacity);
+                    if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
+                }
+            }
+        }
+    }
+};
+
+#include <Geode/modify/CCLayerRGBA.hpp>
+class $modify(CCLayerRGBA) {
+    virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
+        _displayedOpacity = _realOpacity * parentOpacity/255.0;
+        
+        if (_cascadeOpacityEnabled)
+        {
+            CCObject* pObj;
+            CCARRAY_FOREACH(m_pChildren, pObj)
+            {
+                if (CCRGBAProtocol* item = typeinfo_cast<CCRGBAProtocol*>(pObj))
+                {
+                    CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+                    
+                    if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
                 }
             }
         }

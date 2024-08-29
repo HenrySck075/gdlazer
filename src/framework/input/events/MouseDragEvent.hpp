@@ -2,7 +2,7 @@
 
 #include <Geode/cocos/include/cocos2d.h>
 
-class MouseDragEvent{
+class MouseDragEvent : public cocos2d::CCObject {
 public:
     CCPoint startPos;
     CCPoint current;

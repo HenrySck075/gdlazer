@@ -15,8 +15,7 @@ private:
     Container* body;
     CCPoint lastOffset = CCPoint(0,0);
     CCPoint lastIdlePos = CCPoint(0,0);
-    // not lastOffset
-    CCPoint lastDragPosition;
+    MouseDragEvent* lastDragEvent;
     bool m_dragging = false;
     float timer = 0;
 
@@ -25,7 +24,7 @@ public:
         if (m_dragging) {
             timer+=dt;
             if (timer>=0.5) {
-                lastOffset = lastDragPosition;
+                lastOffset = lastDragEvent->startPos;
                 timer = 0;
             }
         }

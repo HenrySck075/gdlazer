@@ -14,16 +14,6 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     addChild(m_shadow);
 
     OsuClickableContainer::init("select-expand.wav"_spr, [](CCNode*self){});
-    addListener("nodeLayoutUpdate", [this](NodeEvent* event){
-        auto s = getContentSize();
-        m_main->setContentSize(s);
-        m_main->getChildByID("dcb_gradient")->setContentSize(s);
-        if(auto stencil = m_main->getStencil()) stencil->setContentSize(s);
-        //colorBg->setPosition(s/2);
-        m_shadow->setPosition(s/2);
-        auto e = processUnit(9,Unit::UIKit,false);
-        m_shadow->setContentSize(s+CCSize{e,e});
-    });
     m_level = level;
     colorBg->setZOrder(999);
     colorBg->setAnchorPoint(ccp(0.5,0.5));
@@ -39,7 +29,24 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     setOpacity(0);
     setColor(OsuColor::Blue);
 
-    addChild(OsuText(level->m_levelName.c_str(), FontType::Regular));
+    auto levelName = OsuText(level->m_levelName.c_str(), FontType::Regular);
+    levelName->setAnchorPoint(ccp(0,1));
+    levelName->setScale(0.4);
+    levelName->setZOrder(50);
+    addChild(levelName);
+    levelName->setPosition(ccp(0,getContentSize().height));
+
+    addListener("nodeLayoutUpdate", [this,levelName](NodeEvent* event){
+        auto s = getContentSize();
+        levelName->setPosition(ccp(0,s.height));
+        m_main->setContentSize(s);
+        m_main->getChildByID("dcb_gradient")->setContentSize(s);
+        if(auto stencil = m_main->getStencil()) stencil->setContentSize(s);
+        //colorBg->setPosition(s/2);
+        m_shadow->setPosition(s/2);
+        auto e = processUnit(9,Unit::UIKit,false);
+        m_shadow->setContentSize(s+CCSize{e,e});
+    });
     return true;
 
     //CCScheduler::get()->scheduleUpdateForTarget();

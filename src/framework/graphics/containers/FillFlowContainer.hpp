@@ -34,7 +34,7 @@ public:
             c->setPosition(ccp(0,0));
             c->setAnchorPoint(ccp(0,1));
             auto cs = c->getContentSize();
-            //c->CCNode::setPositionY(size.height);
+            c->CCNode::setPositionY(size.height);
             auto ns = size.height+cs.height;
             size.height = constraint.height!=0?std::min(constraint.height, ns):ns;
         }
@@ -78,9 +78,9 @@ public:
         if (ret) {
             if (event->eventName() == "nodeLayoutUpdate") {
                 auto e = static_cast<NodeLayoutUpdate*>(event);
-                //if (e->type==NodeLayoutUpdateType::Size) { //||e->type==NodeLayoutUpdateType::All
-                    this->updateChildPosition();
-                //}
+                if (e->type==NodeLayoutUpdateType::Size || e->type==NodeLayoutUpdateType::All) {
+                    CCLayer::updateLayout();
+                }
             };
         }
         return ret;

@@ -24,8 +24,8 @@ public:
         create_class(Screen, init);
     };
     bool init() override {
-        Container::init();
-        setContentSizeWithUnit(CCSize(1,1),Unit::Viewport,Unit::Viewport);
+        if (!Container::init()) return false;
+        setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
         return true;
     };
     virtual void onEntering(ScreenTransitionEvent e) {};

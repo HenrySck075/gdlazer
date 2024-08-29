@@ -138,7 +138,7 @@ void PopupDialogButton::onMouseExit() {
 }
 void PopupDialogButton::onMouseDown(MouseEvent* event) {
     this->getChildByID("dialogbutton-background")->runAction(
-        CCEaseOutQuad::create(
+        CCEaseOutQuart::create(
             CCResizeTo::create(
                 click_duration*4, 
                 m_pParent->getParent()->getContentWidth()*hover_width*0.98f,

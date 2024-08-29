@@ -67,7 +67,6 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
 
 void ButtonArea::show(std::string tag) {
     auto _cur = getCurrent();
-    log::debug("[ButtonArea]: Current menu: {}", _cur);
     int shownIndex, index;
     if (_cur.has_value()) {
     // just for comparison
@@ -102,7 +101,6 @@ void ButtonArea::show(std::string tag) {
     auto menuLayout = buttonsMenus[tag]->getLayout();
     buttonsMenus[tag]->setLayout(nullptr);
     */
-    log::debug("[ButtonArea]: showing tag {} by {}", tag, shownIndex<index?"expanding from the logo":"going from offscreen");
 
     // expand
     if (shownIndex<index) {

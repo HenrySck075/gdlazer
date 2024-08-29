@@ -3,6 +3,7 @@
 #include <Geode/cocos/include/cocos2d.h>
 #include "../utils.hpp"
 #include "../framework/graphics/containers/Container.hpp"
+#include "../framework/utils/readonly.hpp"
 #include "../framework/graphics/containers/EventTarget.hpp"
 using namespace cocos2d;
 
@@ -29,6 +30,7 @@ private:
 
     CCRepeatForever* checkAction;
 public:
+    // be responsible for your action and do NOT change this value yourself
     Screen* currentScreen = nullptr;
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
@@ -53,6 +55,7 @@ public:
         }
     }
 
+
 public:
     bool dispatchEvent(NodeEvent* event) override;
 
@@ -62,7 +65,10 @@ public:
     void hideToolbar();
 
     void pushScreen(Screen* s);
+    Screen* popManyScreens(int amount = 1);
     Screen* popScreen();
+    template<typename T>
+    T* popUntilScreenType();
 
     void onLoseFocus();
     void onFocus();

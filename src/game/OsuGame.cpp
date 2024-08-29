@@ -73,7 +73,7 @@ bool OsuGame::init() {
 void OsuGame::showToolbar() {
     toolbar->show();
     main->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,main->getContentWidth(),main->getContentHeight()-toolbar->HEIGHT)
+        CCResizeTo::create(0.5,main->getContentWidth(),main->getContentHeight()-main->processUnit(toolbar->HEIGHT,Unit::UIKit,false))
     ));
 }
 
@@ -101,13 +101,17 @@ void OsuGame::pushScreen(Screen* s) {
     updateTitle();
 }
 
-Screen* OsuGame::popScreen() {
+Screen* OsuGame::popManyScreens(int amount) {
     if (screenStack.size()==0) {
         log::error("[OsuGame]: nice >:]");
         return nullptr;
     }
     bool schedulePause = screenStack.size()==1;
-    auto s = screenStack.pop_back();
+    Screen* s;
+    for (;amount>0;amount--) {
+        if (screenStack.size()!=0) s = screenStack.pop_back();
+        else break;
+    }
     Screen* ps = nullptr;
     if (screenStack.size()!=0) ps = screenStack[screenStack.size()-1];
     
@@ -122,6 +126,18 @@ Screen* OsuGame::popScreen() {
     
     return s;
 }
+
+Screen* OsuGame::popScreen() {return popManyScreens(1);}
+
+template<typename T>
+T* OsuGame::popUntilScreenType() {
+    int idx = 0;
+    for (Screen* s : screenStack) {
+        if (dynamic_cast<T*>(s)) return popManyScreens(screenStack.size()-idx);
+        idx++;
+    }
+    return nullptr; // nada
+};
 
 void OsuGame::onLoseFocus() {
     auto engine = FMODAudioEngine::sharedEngine();

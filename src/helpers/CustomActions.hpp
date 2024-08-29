@@ -82,10 +82,10 @@ protected:
     float m_fDeltaY;
 };
 
-class CCEaseOutQuad : public CCEaseOut {
+class CCEaseOutQuart : public CCEaseOut {
 public:
-    static CCEaseOutQuad* create(CCActionInterval* action) {
-        create_class(CCEaseOutQuad, initWithAction, action, 4);
+    static CCEaseOutQuart* create(CCActionInterval* action) {
+        create_class(CCEaseOutQuart, initWithAction, action, 4);
     }
 };
 class CCEaseOutQuint : public CCEaseOut {

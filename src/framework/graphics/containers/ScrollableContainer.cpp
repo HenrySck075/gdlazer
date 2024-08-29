@@ -1,12 +1,15 @@
 #include "ScrollableContainer.hpp"
 void ScrollableContainer::onDragStart(MouseDragEvent* event) {
     lastIdlePos = body->getPosition();
+    //log::debug("[ScrollableContainer]: sp {}", lastIdlePos);
     m_dragging = true;
 }
 void ScrollableContainer::onDrag(MouseDragEvent* event) {
     lastOffset = body->getPosition();
-    lastDragPosition = event->current;
-    moveToPos(ccp(lastIdlePos.x, lastIdlePos.y - (event->current.y - event->startPos.y)), false);
+    if (lastDragEvent == nullptr) lastDragEvent = event;
+    auto dist = (event->current.y - event->startPos.y);
+    log::debug("[ScrollableContainer]: {}", dist);
+    moveToPos(CCPoint(lastIdlePos.x, dist), false);
     timer = 0;
 };
 void ScrollableContainer::onDragEnd(MouseDragEvent* event) {

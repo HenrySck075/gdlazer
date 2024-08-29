@@ -18,6 +18,8 @@ public:
         return m_t;
     }
 
+    T& inner() {return m_t;}
+
 private:
     T& operator =(const T &t) {
         m_t = t; 

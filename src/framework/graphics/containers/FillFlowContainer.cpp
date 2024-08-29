@@ -15,14 +15,17 @@ void FillFlowContainer::setFillDirection(FillDirection dir) {
     */
     auto layout = FillFlowLayout::create();
     setLayout(layout);
-    updateChildPosition();
+    //CCLayer::updateLayout();
 };
 
 void FillFlowContainer::updateChildPosition() {
     auto childList = getChildren();
     if (childList) {
         for (auto* c : CCArrayExt<CCNode*>(childList)) {
-            if (auto cc = typeinfo_cast<Container*>(c)) cc->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
+            if (auto cc = typeinfo_cast<Container*>(c)) {
+                cc->dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
+                cc->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
+            }
         }
         CCLayer::updateLayout();
     }
