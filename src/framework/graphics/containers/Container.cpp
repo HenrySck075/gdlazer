@@ -83,6 +83,27 @@ void InputHandlerImpl::initHandler() {
     });
 }
 
+
+
+std::string Container::getUnitLabel(Unit unit) {
+    std::string l;
+    switch (unit) {
+        case Unit::OpenGL: 
+            l = "OpenGL Points";
+            break;
+        case Unit::UIKit: 
+            l = "UIKit Points";
+            break;
+        case Unit::Percent: 
+            l = "Parent's percentage";
+            break;
+        case Unit::Viewport: 
+            l = "Viewport";
+            break;
+    }
+    return l;
+}
+
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
     colorBg = CCLayerColor::create(ccc4(255,255,255,255));

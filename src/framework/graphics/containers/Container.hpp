@@ -126,24 +126,7 @@ private:
         {Anchor::BottomRight, "bottom right"} 
     };
 
-    std::string getUnitLabel(Unit unit) {
-        std::string l;
-        switch (unit) {
-            case Unit::OpenGL: 
-                l = "OpenGL Points";
-                break;
-            case Unit::UIKit: 
-                l = "UIKit Points";
-                break;
-            case Unit::Percent: 
-                l = "Parent's percentage";
-                break;
-            case Unit::Viewport: 
-                l = "Viewport";
-                break;
-        }
-        return l;
-    }
+    std::string getUnitLabel(Unit unit); 
     void updateAnchorLabel() {
         setUserObject("of/anchor", CCString::create(m_anchorDebugLabel[m_anchor]));
     }
@@ -174,7 +157,7 @@ protected:
     
 
     virtual void onLayoutUpdate(NodeLayoutUpdate*e);
-    CCPoint m_position = CCPoint(0,0);
+    CCPoint m_position;
     CCSize m_size = CCSize(0,0);
     CCSize m_sizeP = CCSize(0,0);
 
