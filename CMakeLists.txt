@@ -18,6 +18,7 @@ add_library(${PROJECT_NAME} SHARED
   src/framework/graphics/CCPointExtensions.hpp
   src/framework/graphics/Color4.cpp
   src/framework/graphics/Color4.hpp
+  src/framework/graphics/Vector4.hpp
   src/framework/graphics/color/ColorInfo.hpp
   src/framework/graphics/containers/Container.cpp
   src/framework/graphics/containers/Container.hpp
@@ -77,6 +78,8 @@ add_library(${PROJECT_NAME} SHARED
   src/game/overlays/toolbar/Toolbar.hpp
   src/game/overlays/toolbar/ToolbarButton.cpp
   src/game/overlays/toolbar/ToolbarButton.hpp
+  src/game/overlays/toolbar/ToolbarConstants.hpp
+  src/game/overlays/toolbar/ToolbarStateButton.hpp
   src/game/rulesets/mods/ModType.hpp
   src/game/scoring/HitResult.hpp
   src/game/scoring/RankingTier.hpp
