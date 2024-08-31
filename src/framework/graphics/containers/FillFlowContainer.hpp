@@ -28,7 +28,7 @@ public:
         for (auto c : nodes) {
             //log::debug("[FillFlowLayout]: {}",size.height);
             if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
-                throw std::invalid_argument("[FillFlowContainer/Layout]: One of the child Container has the size dependent on the parent, but the parent does not have a maximum size constraint. Please set the maximum constraint to non-zero.");
+                throw std::invalid_argument(fmt::format("[FillFlowContainer/Layout]: Child {} has the size dependent on the parent, but the parent does not have a maximum size constraint. Please set the maximum constraint to non-zero.", geode::format_as(c)));
             }
             c->setAnchor(Anchor::TopLeft);
             c->setPosition(ccp(0,0));

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "ToolbarButton.hpp"
+#include "ToolbarToggleButton.hpp"
 
-
-class ToolbarSettingsButton : public ToolbarButton {
+class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
     static ToolbarSettingsButton* create() {
-        create_class(ToolbarSettingsButton, init, OsuIcon::Settings, "Settings", "the");
+        create_class(ToolbarSettingsButton, init, OsuIcon::Settings, "Settings", "the", ccColor3B(205,29,72));
     }
 };
+

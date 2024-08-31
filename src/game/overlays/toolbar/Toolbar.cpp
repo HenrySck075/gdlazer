@@ -1,6 +1,9 @@
 #include "Toolbar.hpp"
 #include "../../../helpers/CustomActions.hpp"
 #include "ToolbarButton.hpp"
+
+#include "ToolbarButtons.hpp"
+
 using namespace ToolbarConstants;
 bool Toolbar::init() {
     Container::init();
@@ -18,7 +21,7 @@ bool Toolbar::init() {
     });
 
     auto left = CCLayer::create();
-    left->addChild();
+    left->addChild(ToolbarSettingsButton::create());
 
     setColor(bgColor);
     setOpacity(255);

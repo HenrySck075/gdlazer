@@ -111,6 +111,7 @@ bool Container::init() {
     colorBg->retain();
     colorBg->setAnchorPoint(ccp(0,0));
     addChild(colorBg);
+    setOpacity(0);
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));

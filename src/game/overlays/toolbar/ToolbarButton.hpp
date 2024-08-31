@@ -2,11 +2,16 @@
 
 #include "../../graphics/containers/OsuClickableContainer.hpp"
 #include "../../graphics/OsuIcon.hpp"
+#include "../../../framework/graphics/containers/FillFlowContainer.hpp"
 
 class ToolbarButton : public OsuClickableContainer {
     CCLabelBMFont* iconSprite;
     Container* bg;
-    Container* hbg;
+    Container* flashBg;
+
+    CCLayer* tooltipContainer; 
+    CCLabelBMFont* text;
+    CCLabelBMFont* subtext;
 protected:
     Vector4 m_padding = {3};
 public:
@@ -14,8 +19,7 @@ public:
     bool init(IconConstructor icon, std::string text, std::string sub);
     void onMouseEnter() override;
     void onMouseExit() override;
-    void onMouseDown(MouseEvent* e) override;
-    void onMouseUp(MouseEvent* e) override;
+    void onClick() override;
     /**
      * @param icon Toolbar icon
      * @param text Toolbar text

@@ -86,7 +86,7 @@ std::string unicode_to_utf8(int unicode)
     return "";
 }
 
-
+/*
 #define iconFont(name, charid, fontname) IconConstructor OsuIcon::name = {unicode_to_utf8(charid).c_str(),fontname}
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)
 #define iconOsuIcon(name, charid) iconFont(name,charid,"osuIcon.fnt"_spr)
@@ -242,3 +242,4 @@ std::string unicode_to_utf8(int unicode)
 #undef iconOsuIcon
 #undef iconOsuEditor
 
+*/

@@ -17,12 +17,12 @@ struct IconConstructor {
     }
 };
 
-#define iconFont(name, charid, fontname) static IconConstructor name
+#define iconFont(name, charid, fontname) static IconConstructor name = {unicode_to_utf8(charid).c_str(),fontname}
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)
 #define iconOsuIcon(name, charid) iconFont(name,charid,"osuIcon.fnt"_spr)
 #define iconOsuEditor(name, charid) iconFont(name,charid,"osuEditor.fnt"_spr)
 // are you high
-struct OsuIcon {
+namespace OsuIcon {
     // ruleset icons without circles
     // my guy why tf did you call these ruleset
     iconOsuFont(FilledCircle, 0xe004);
