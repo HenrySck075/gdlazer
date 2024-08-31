@@ -7,7 +7,7 @@
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
     m_color = color;
-    OsuClickableContainer::init(sampleClick, clickAct, this);
+    OsuClickableContainer::init(sampleClick, clickAct);
     OsuClickableContainer::setContentSize(m);
     //this->addListener(reactive_listener(updateReactive));
 

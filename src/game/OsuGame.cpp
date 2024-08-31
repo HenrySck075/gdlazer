@@ -1,5 +1,6 @@
 #include "OsuGame.hpp"
 #include "../helpers/CustomActions.hpp"
+#include "overlays/toolbar/ToolbarConstants.hpp"
 
 #ifdef GEODE_IS_WINDOWS
 
@@ -73,7 +74,7 @@ bool OsuGame::init() {
 void OsuGame::showToolbar() {
     toolbar->show();
     main->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,main->getContentWidth(),main->getContentHeight()-main->processUnit(toolbar->HEIGHT,Unit::UIKit,false))
+        CCResizeTo::create(0.5,main->getContentWidth(),main->getContentHeight()-main->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
     ));
 }
 

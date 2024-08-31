@@ -15,7 +15,6 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
 
-    addChild(colorBg);
     setColor(OsuColor::Gray(50));
     colorBg->setScaleY(0);
     colorBg->setAnchorPoint(ccp(0,0.5));

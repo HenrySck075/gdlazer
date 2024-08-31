@@ -7,9 +7,7 @@ float lin2dB(float linear)
     return -(clamp(log10(linear) * 20.0f, -80.f, 1.0f));
 }
 bool OsuLogo::init() {
-    OsuClickableContainer::init("osu-logo-select.wav"_spr, [this](CCNode* idk) {
-        //FMODAudioEngine::sharedEngine()->playEffect();
-    },this);
+    OsuClickableContainer::init("osu-logo-select.wav"_spr);
     /*
     m_listener = this->template addEventListener<EventFilter<BeatEvent>>([this](float elapsed) {
         const char* sfxName;
