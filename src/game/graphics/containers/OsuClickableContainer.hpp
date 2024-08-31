@@ -24,7 +24,8 @@ protected:
     void onClick() override {
         Container::onClick();
         FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
-        this->clickCallback(this);
+        
+        if (clickCallback) clickCallback(this);
     };
 
 public:
@@ -34,7 +35,8 @@ public:
     void setCallback(ButtonCallback clickCb) { clickCallback = clickCb; };
     /// <param name="clickCb">| the</param>
     /// <param name="self">| the node to be used as the clickCb parameter</param>
-    bool init(std::string clickSfx, ButtonCallback clickCb, CCNode* self = nullptr);
+    bool init(std::string clickSfx, ButtonCallback clickCb);
+    bool init(std::string clickSfx);
     
     
   /*

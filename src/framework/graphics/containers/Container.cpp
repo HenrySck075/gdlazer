@@ -233,7 +233,7 @@ void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     //if (resP.equals(oldP) && !resetContentSize()) nothingHappens = true;
     //if (nothingHappens) e->stopPropagation();
     resetContentSize();
-    CCNode::setPosition(resP);
+    CCNode::setPosition(resP+ccp(m_padding.t,m_padding.l));
     colorBg->setContentSize(getContentSize());
 };
 
@@ -301,12 +301,17 @@ void Container::checkConstraints() {
 }
 
 bool Container::resetContentSize() {
+    #define acu(padx) processUnit(padx, Unit::UIKit, true)
+    #define ac(pady) processUnit(pady, Unit::UIKit, false)
     auto newS = CCSize(
         processUnit(m_size.width, m_sizeUnit.first, true),
         processUnit(m_size.height,m_sizeUnit.second, false)
     );
     if (newS.equals(getContentSize())) return false;
-    CCLayer::setContentSize(newS);
+    CCLayer::setContentSize(CCSize(
+        newS.width - acu(m_padding.l) - acu(m_padding.r),
+        newS.height - ac(m_padding.t) - ac(m_padding.d)
+    ));
     m_sizeP = m_size;
     return true;
 }

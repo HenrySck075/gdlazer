@@ -1,12 +1,15 @@
 #include "OsuClickableContainer.hpp"
 #include "../../../utils.hpp"
 
-bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb, CCNode* self) {
-    Container::init();
+bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb) {
+    if (!OsuClickableContainer::init(clickSfx)) return false;
     this->clickCallback = clickCb;
+    return true;
+}
+bool OsuClickableContainer::init(std::string clickSfx) {
+    if (!Container::init()) return false;
     this->clickSfx = clickSfx;
 
-    if (self == nullptr) {self = this;}
     this->setZOrder(3);
     //this->setCascadeOpacityEnabled(true);
     

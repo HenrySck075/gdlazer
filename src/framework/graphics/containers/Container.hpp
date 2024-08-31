@@ -8,6 +8,7 @@
 #include "../../input/events/MouseDragEvent.hpp"
 #include "EventTarget.hpp"
 #include "../../../utils.hpp"
+#include "../Vector4.hpp"
 using namespace geode::prelude;
 
 enum class NodeLayoutUpdateType {
@@ -160,6 +161,7 @@ protected:
     CCPoint m_position;
     CCSize m_size = CCSize(0,0);
     CCSize m_sizeP = CCSize(0,0);
+    Vector4 m_padding;
 
     // first: hori | second: verti
     std::pair<Unit, Unit> m_sizeUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);

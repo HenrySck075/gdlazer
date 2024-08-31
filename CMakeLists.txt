@@ -75,6 +75,8 @@ add_library(${PROJECT_NAME} SHARED
   src/game/overlays/dialog/PopupDialogButton.hpp
   src/game/overlays/toolbar/Toolbar.cpp
   src/game/overlays/toolbar/Toolbar.hpp
+  src/game/overlays/toolbar/ToolbarButton.cpp
+  src/game/overlays/toolbar/ToolbarButton.hpp
   src/game/rulesets/mods/ModType.hpp
   src/game/scoring/HitResult.hpp
   src/game/scoring/RankingTier.hpp
