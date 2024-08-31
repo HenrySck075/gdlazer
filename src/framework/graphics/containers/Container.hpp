@@ -161,7 +161,7 @@ protected:
     CCPoint m_position;
     CCSize m_size = CCSize(0,0);
     CCSize m_sizeP = CCSize(0,0);
-    Vector4 m_padding;
+    Vector4 m_padding = {0};
 
     // first: hori | second: verti
     std::pair<Unit, Unit> m_sizeUnit = std::make_pair(Unit::OpenGL, Unit::OpenGL);
@@ -256,6 +256,8 @@ public:
 
     void setSizeConstraints(CCSize const& minSize, CCSize const& maxSize);
     std::pair<CCSize, CCSize> getSizeConstraints() {return std::make_pair(minimumSize,maximumSize);};
+
+    void setPadding(Vector4 padding) {m_padding = padding;}
 
     // set the position unit that will be used to calculate the result position on the next `setPosition` call
     void setPositionUnit(Unit posUnitHorizontal, Unit posUnitVertical) {

@@ -110,7 +110,7 @@ bool Container::init() {
     colorBg->setZOrder(-999);
     colorBg->retain();
     colorBg->setAnchorPoint(ccp(0,0));
-    //addChild(colorBg);
+    addChild(colorBg);
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));

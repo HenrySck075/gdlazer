@@ -1,9 +1,9 @@
 #include "Toolbar.hpp"
 #include "../../../helpers/CustomActions.hpp"
-
+#include "ToolbarButton.hpp"
+using namespace ToolbarConstants;
 bool Toolbar::init() {
     Container::init();
-    addChild(colorBg);
     m_anchor = Anchor::Top;
     auto bgColor = OsuColor::Gray(0.1f*255);
     this->setContentSizeWithUnit(CCSize(1,HEIGHT),Unit::Viewport,Unit::UIKit);
@@ -16,6 +16,9 @@ bool Toolbar::init() {
     addListener("nodeLayoutUpdate",[gradient,this](NodeEvent*e){
         gradient->setContentSize(CCSize(getContentWidth(),processUnit(HEIGHT,Unit::UIKit,false)));
     });
+
+    auto left = CCLayer::create();
+    left->addChild();
 
     setColor(bgColor);
     setOpacity(255);
