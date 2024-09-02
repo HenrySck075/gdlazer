@@ -6,6 +6,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include "../framework/graphics/containers/OverlayContainer.hpp"
 
 LONG_PTR oWindowProc;
 bool newWindowProcSet = false;
@@ -91,7 +92,13 @@ void OsuGame::hideToolbar() {
     ));
 }
 
-void OsuGame::pushScreen(Screen* s) {
+template<typename T>
+concept is_screen = std::is_class_v<Screen>;
+
+template<typename T>
+concept is_overlay = std::is_class_v<OverlayContainer>;
+
+void OsuGame::pushScreen(Container* s) {
     Screen* ls = nullptr;
     bool scheduleResume = screenStack.size()==0;
     if (screenStack.size()!=0) {

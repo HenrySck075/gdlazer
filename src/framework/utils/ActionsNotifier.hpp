@@ -2,18 +2,24 @@
 
 #include <Geode/loader/Event.hpp>
 #include <Geode/cocos/include/cocos2d.h>
+using namespace geode::prelude;
 class ActionFinished : public geode::Event {
 public:
-    cocos2d::CCNode* m_target;
-    cocos2d::CCAction* m_action;
-
-    ActionFinished(cocos2d::CCNode* target, cocos2d::CCAction* action) : m_target(target), m_action(action) {}
+    CCAction* m_action;
+    ActionFinished(CCAction* action) : m_action(action) {}
 };
 
 class ActionFinishedFilter : geode::EventFilter<ActionFinished> {
+    CCNode* m_target;
 public:
-    cocos2d::CCNode* m_target;
-    
-    using Callback = void(cocos2d::CCNode* target, cocos2d::CCAction* action);
-    ActionFinishedFilter(cocos2d::CCNode* target) : m_target(target) {};
+    using Callback = void(CCAction* action);
+    ListenerResult handle(MiniFunction<Callback> fn, ActionFinished* event) {
+        if (event->m_action->getTarget() == m_target) {
+            fn(event->m_action);
+            return ListenerResult::Stop;
+        }
+        return ListenerResult::Propagate;
+    };
+    /// @param target Filter the event to only dispatch callbacks if the m_target member is this target
+    ActionFinishedFilter(CCNode* target) : m_target(target) {};
 };
