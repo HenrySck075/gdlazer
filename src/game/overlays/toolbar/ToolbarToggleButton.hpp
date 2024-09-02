@@ -14,10 +14,10 @@ public:
     };
     void onClick() override;
 
-    void select() {
+    virtual void select() {
         toggleBg->setOpacity(255);
     }
-    void deselect() {
+    virtual void deselect() {
         toggleBg->setOpacity(0);
     }
 };

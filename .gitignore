@@ -65,3 +65,6 @@ build-*/
 
 # e 
 copy_to_framework.py
+
+# CMake outputs
+CMakeFiles/

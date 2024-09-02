@@ -26,12 +26,15 @@ private:
 
     CCArrayExt<Screen*> screenStack;
     CCArrayExt<Screen*> screenPopQueue;
-    Container* main;
+    Container* screensContainer;
+    Container* overlaysContainer;
 
     CCRepeatForever* checkAction;
 public:
-    // be responsible for your action and do NOT change this value yourself
-    Screen* currentScreen = nullptr;
+    // be responsible for your action and do NOT change these value yourself
+    // 
+    // can be overlay or screen
+    Container* current = nullptr;
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
     static OsuGame* get() {

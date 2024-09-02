@@ -206,19 +206,6 @@ class $modify(CCEGLView) {
         OsuGame::get()->dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
     }
 };
-#else
-#include <Geode/modify/CCTouchDispatcher.hpp>
-class $modify(CCTouchDispatcher) {
-  void broadcastPos(CCPoint pos) {
-    OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move,pos));
-  };
-  void touches(CCSet* t, CCEvent* e, uint i) {
-    CCTouchDispatcher::touches(t, e, i);
-    broadcastPos(static_cast<CCTouch*>(t->anyObject())->getLocation());
-  }
-};
-
-#endif 
 
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
 class $modify(CCKeyboardDispatcher) {
@@ -234,6 +221,20 @@ class $modify(CCKeyboardDispatcher) {
         return ret;
     }
 };
+
+#elif false
+#include <Geode/modify/CCTouchDispatcher.hpp>
+class $modify(CCTouchDispatcher) {
+  void broadcastPos(CCPoint pos) {
+    OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move,pos));
+  };
+  void touches(CCSet* t, CCEvent* e, uint i) {
+    CCTouchDispatcher::touches(t, e, i);
+    if (t->count()!=0) broadcastPos(static_cast<CCTouch*>(t->anyObject())->getLocation());
+  }
+};
+
+#endif 
 
 /*
 #include <Geode/modify/CCTouchDelegate.hpp>

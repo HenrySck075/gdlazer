@@ -45,10 +45,16 @@ bool OsuGame::init() {
         )
     );
     m_pActionManager->pauseTarget(this);
-    main = Container::create();
-    main->setID("mainUI");
-    main->setContentSize(getContentSize());
-    this->addChild(main);
+    screensContainer = Container::create();
+    screensContainer->setID("screens");
+    screensContainer->setContentSize(getContentSize());
+    this->addChild(screensContainer);
+
+    overlaysContainer = Container::create();
+    overlaysContainer->setID("overlays");
+    overlaysContainer->setContentSize(getContentSize());
+    this->addChild(overlaysContainer);
+
     toolbar = Toolbar::create();
     this->addChild(toolbar);
 #ifdef GEODE_IS_WINDOWS
@@ -58,7 +64,7 @@ bool OsuGame::init() {
     }
 #endif
     addListener("ogExitDidFinish", [this](NodeEvent* e){
-        main->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
+        screensContainer->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
     });
     runAction(checkAction);
     runAction(CCRepeatForever::create(
@@ -73,15 +79,15 @@ bool OsuGame::init() {
 
 void OsuGame::showToolbar() {
     toolbar->show();
-    main->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,main->getContentWidth(),main->getContentHeight()-main->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
+    screensContainer->runAction(CCEaseOutQuint::create(
+        CCResizeTo::create(0.5,screensContainer->getContentWidth(),screensContainer->getContentHeight()-screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
     ));
 }
 
 void OsuGame::hideToolbar() {
     toolbar->hide();
-    main->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,main->getContentWidth(),getContentHeight())
+    screensContainer->runAction(CCEaseOutQuint::create(
+        CCResizeTo::create(0.5,screensContainer->getContentWidth(),getContentHeight())
     ));
 }
 
@@ -95,8 +101,8 @@ void OsuGame::pushScreen(Screen* s) {
     if (ls) ls->onExiting(e);
     s->onEntering(e);
     screenStack.push_back(s);
-    main->addChild(s);
-    currentScreen = s;
+    screensContainer->addChild(s);
+    current = s;
     if (scheduleResume) m_pActionManager->resumeTarget(this);
 
     updateTitle();
@@ -104,11 +110,10 @@ void OsuGame::pushScreen(Screen* s) {
 
 Screen* OsuGame::popManyScreens(int amount) {
     if (screenStack.size()==0) {
-        log::error("[OsuGame]: nice >:]");
         return nullptr;
     }
     bool schedulePause = screenStack.size()==1;
-    Screen* s;
+    Screen* s = nullptr;
     for (;amount>0;amount--) {
         if (screenStack.size()!=0) s = screenStack.pop_back();
         else break;
@@ -120,7 +125,7 @@ Screen* OsuGame::popManyScreens(int amount) {
     s->onExiting(event);
     screenPopQueue.push_back(s);
     if (ps!=nullptr) ps->onEntering(event);
-    currentScreen = ps;
+    current = ps;
     if (schedulePause) m_pActionManager->pauseTarget(this);
 
     updateTitle();
@@ -155,7 +160,7 @@ void OsuGame::checkForQueue() {
     std::vector<Screen*> e;
     for (auto* s : screenPopQueue) {
         if (m_pActionManager->numberOfRunningActionsInTarget(s) == 0) {
-            main->removeChild(s);
+            screensContainer->removeChild(s);
             e.push_back(s);
         }
     };
@@ -174,7 +179,7 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
         EventTarget::dispatchEvent(event);
         return true;
     }
-    if (CCDirector::sharedDirector()->getRunningScene()!=this) return true;
+    if (isRunning()) return true;
     updateDispatchFlow(event, DispatchingFlow::Down);
     /*
     if (event->eventName() == "mouseEvent") {
@@ -196,12 +201,13 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
     }
     //EventTarget::dispatchEvent(event);
     toolbar->dispatchEvent(event);
-    if (currentScreen) currentScreen->dispatchEvent(event);
+    if (current) current->dispatchEvent(event);
     return true;
 }
 
 void OsuGame::updateTitle() {
-    if (currentScreen) {
+    auto currentScreen = dynamic_cast<Screen*>(current);
+    if (current && currentScreen) {
         auto title = currentScreen->title() + " | osu!lazer";
         
         #ifdef GEODE_IS_WINDOWS
