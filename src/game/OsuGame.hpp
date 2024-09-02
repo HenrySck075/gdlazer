@@ -11,7 +11,7 @@ using namespace cocos2d;
 #include "overlays/toolbar/Toolbar.hpp"
 
 // the
-class OsuScreen;
+class Screen;
 #include "../framework/screens/Screen.hpp"
 #include "../framework/screens/ScreenTransitionEvent.hpp"
 
@@ -28,8 +28,14 @@ private:
     CCArrayExt<Screen*> screenPopQueue;
     Container* screensContainer;
     Container* overlaysContainer;
+    CCArrayExt<OverlayContainer*> overlayPopQueue;
 
-    CCRepeatForever* checkAction;
+
+    float bgVol = 1;
+    float sfxVol = 1;
+    float volMult = 1;
+    bool volMultChange = false;
+
 public:
     // be responsible for your action and do NOT change these value yourself
     // 
@@ -67,7 +73,7 @@ public:
     void showToolbar();
     void hideToolbar();
 
-    void pushScreen(Screen* s);
+    void pushScreen(Container* s);
     Screen* popManyScreens(int amount = 1);
     Screen* popScreen();
     template<typename T>
@@ -80,6 +86,8 @@ public:
 
     // on android, this does nothing
     void updateTitle();
+
+    void update(float dt);
 };
 
 /*

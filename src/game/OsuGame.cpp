@@ -39,13 +39,6 @@ OsuGame* OsuGame::instance = nullptr;
 
 bool OsuGame::init() {
     CCScene::init();
-    checkAction = CCRepeatForever::create(
-        CCSequence::createWithTwoActions(
-            CCDelayTime::create(0.1),
-            CCCallFunc::create(this,callfunc_selector(OsuGame::checkForQueue))
-        )
-    );
-    m_pActionManager->pauseTarget(this);
     screensContainer = Container::create();
     screensContainer->setID("screens");
     screensContainer->setContentSize(getContentSize());
@@ -67,13 +60,9 @@ bool OsuGame::init() {
     addListener("ogExitDidFinish", [this](NodeEvent* e){
         screensContainer->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
     });
-    runAction(checkAction);
-    runAction(CCRepeatForever::create(
-        CCSequence::createWithTwoActions(
-            CCDelayTime::create(0.5),
-            CCCallFunc::create(this,callfunc_selector(OsuGame::e))
-        )
-    ));
+    // making m_pChildren non-nullptr
+    overlaysContainer->addChild(CCNode::create());
+    overlaysContainer->removeAllChildren();
     return true;
 
 }
@@ -81,36 +70,46 @@ bool OsuGame::init() {
 void OsuGame::showToolbar() {
     toolbar->show();
     screensContainer->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,screensContainer->getContentWidth(),screensContainer->getContentHeight()-screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
+    ));
+    overlaysContainer->runAction(CCEaseOutQuint::create(
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-overlaysContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
     ));
 }
 
 void OsuGame::hideToolbar() {
     toolbar->hide();
     screensContainer->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,screensContainer->getContentWidth(),getContentHeight())
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight())
+    ));
+    overlaysContainer->runAction(CCEaseOutQuint::create(
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight())
     ));
 }
 
+/*
 template<typename T>
 concept is_screen = std::is_class_v<Screen>;
 
 template<typename T>
 concept is_overlay = std::is_class_v<OverlayContainer>;
-
-void OsuGame::pushScreen(Container* s) {
+*/
+void OsuGame::pushScreen(Container* screen_or_overlay) {
     Screen* ls = nullptr;
-    bool scheduleResume = screenStack.size()==0;
-    if (screenStack.size()!=0) {
-        ls = screenStack[screenStack.size()-1];
+    if (auto s = dynamic_cast<Screen*>(screen_or_overlay)) {
+        if (screenStack.size()!=0) {
+            ls = screenStack[screenStack.size()-1];
+        }
+        auto e = ScreenTransitionEvent(ls,s);
+        if (ls) ls->onExiting(e);
+        s->onEntering(e);
+        screenStack.push_back(s);
+        screensContainer->addChild(s);
+        current = s;
+    } else if (auto o = dynamic_cast<OverlayContainer*>(screen_or_overlay)) {
+        overlaysContainer->addChild(o);
+        o->onOpen();
     }
-    auto e = ScreenTransitionEvent(ls,s);
-    if (ls) ls->onExiting(e);
-    s->onEntering(e);
-    screenStack.push_back(s);
-    screensContainer->addChild(s);
-    current = s;
-    if (scheduleResume) m_pActionManager->resumeTarget(this);
 
     updateTitle();
 }
@@ -121,8 +120,16 @@ Screen* OsuGame::popManyScreens(int amount) {
     }
     bool schedulePause = screenStack.size()==1;
     Screen* s = nullptr;
+    auto oc = overlaysContainer->getChildren();
+    int count = oc ? oc->count() : 0;
     for (;amount>0;amount--) {
-        if (screenStack.size()!=0) s = screenStack.pop_back();
+        if (count!=0) {
+            auto c = static_cast<OverlayContainer*>(oc->objectAtIndex(count-1));
+            c->onClose();
+            overlayPopQueue.push_back(c);
+            count--;
+        }
+        else if (screenStack.size()!=0) s = screenStack.pop_back();
         else break;
     }
     Screen* ps = nullptr;
@@ -146,7 +153,7 @@ template<typename T>
 T* OsuGame::popUntilScreenType() {
     int idx = 0;
     for (Screen* s : screenStack) {
-        if (dynamic_cast<T*>(s)) return popManyScreens(screenStack.size()-idx);
+        if (dynamic_cast<T*>(s)) return popManyScreens(screenStack.size()-idx+overlaysContainer->getChildrenCount());
         idx++;
     }
     return nullptr; // nada
@@ -154,13 +161,15 @@ T* OsuGame::popUntilScreenType() {
 
 void OsuGame::onLoseFocus() {
     auto engine = FMODAudioEngine::sharedEngine();
-    engine->setBackgroundMusicVolume(engine->getBackgroundMusicVolume()*0.6);
-    engine->setEffectsVolume(engine->getEffectsVolume()*0.6);
+    bgVol = engine->getBackgroundMusicVolume();
+    sfxVol = engine->getEffectsVolume();
+    volMultChange = true;
 }
 void OsuGame::onFocus() {
+    volMultChange = false;
     auto engine = FMODAudioEngine::sharedEngine();
-    engine->setBackgroundMusicVolume(engine->getBackgroundMusicVolume()/0.6);
-    engine->setEffectsVolume(engine->getEffectsVolume()/0.6);
+    engine->setBackgroundMusicVolume(bgVol);
+    engine->setEffectsVolume(bgVol);
 }
 
 void OsuGame::checkForQueue() {
@@ -222,6 +231,21 @@ void OsuGame::updateTitle() {
         SetWindowTextA(getWindowHandle(), title.c_str());
 
         #endif
+    }
+}
+
+void OsuGame::update(float dt) {
+    checkForQueue();
+    e();
+    if (volMultChange) {
+        volMult -= dt;
+        auto engine = FMODAudioEngine::sharedEngine();
+        engine->setBackgroundMusicVolume(bgVol*volMult);
+        engine->setEffectsVolume(sfxVol*volMult);
+        if (volMult <= 0.6) {
+            volMultChange = false;
+            volMult = 1;
+        }
     }
 }
 

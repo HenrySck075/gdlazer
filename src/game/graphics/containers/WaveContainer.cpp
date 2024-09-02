@@ -49,28 +49,26 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
   */
 }
 
-  CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor4B col) {
+CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor4B col) {
     CCDrawNode* wave;
     float offset;
     std::tie(wave, offset) = drawWave(size, col, angle); 
     wave->setAnchorPoint(ccp(0.5,1)); 
     wave->setPosition(ccp(w,-offset-2));
     return wave;
-  }
+}
 
-  WaveContainer* WaveContainer::create(ColorScheme color, CCNode* body) {
-    auto s = CCDirector::sharedDirector()->getWinSize();
-    create_class(WaveContainer, initAnchored, s.width, s.height, color, body);
-  }
+WaveContainer* WaveContainer::create(ColorScheme color, CCNode* body) {
+    create_class(WaveContainer, init, color, body);
+}
 
-  bool WaveContainer::setup(ColorScheme color, CCNode* pBody) {
-    m_mainLayer->setVisible(false);
+bool WaveContainer::init(ColorScheme color, CCNode* pBody) {
     provider = OverlayColorProvider::create(color);
     provider->retain();
     return customSetup(pBody);
-  }
+}
 
-  bool WaveContainer::customSetup(CCNode* pBody) {
+bool WaveContainer::customSetup(CCNode* pBody) {
     auto s = CCDirector::sharedDirector()->getWinSize();
     auto k = CCSize{s.width*0.8f, s.height};
     touchBoundary = CCRect((s.width-k.width)/2,0,k.width,k.height);
@@ -94,10 +92,10 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
     body->setContentSize(k);
 
     return true;
-  }
+}
 
 
-  void WaveContainer::show() {
+void WaveContainer::onOpen() {
     hiding = false;
     auto opacity = this->getOpacity();
     this->setOpacity(0);
@@ -116,9 +114,9 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
 
     FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
 #undef j
-  }
+}
 
-  void WaveContainer::hide() {
+void WaveContainer::onClose() {
     // nuh uh
     if (hiding) return;
     this->stopAllActions();
@@ -140,22 +138,9 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
     FMODAudioEngine::sharedEngine()->playEffect("overlay-big-pop-out.wav"_spr);
     hiding = true;
 #undef j
-  }
+}
 
-  void WaveContainer::onClose(cocos2d::CCObject*) {
-    hide();
-  }
-
-  void WaveContainer::keyBackClicked() {
-    hide();
-  }
-
-  bool WaveContainer::ccTouchBegan(CCTouch* t, CCEvent* what) {
-    bool ret = CCLayer::ccTouchBegan(t, what);
-    if (ret) touchLoc = t->getLocation();
-    return ret;
-  }
-  void WaveContainer::ccTouchEnded(CCTouch* t, CCEvent* what) {
+void WaveContainer::onClick() {
     if (!touchBoundary.containsPoint(touchLoc) && !touchBoundary.containsPoint(t->getLocation())) hide();
-  }
+}
 
