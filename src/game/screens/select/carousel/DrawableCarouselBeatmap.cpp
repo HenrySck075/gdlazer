@@ -1,6 +1,8 @@
 #include "DrawableCarouselBeatmap.hpp"
 #include "../../../graphics/OsuColor.hpp"
 #include "../../../graphics/ui/OsuText.hpp"
+#include "henrysck075.imagecache/include/ImageCache.hpp"
+#include <fmt/format.h>
 
 bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     auto d = CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr);
@@ -36,8 +38,30 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     addChild(levelName);
     levelName->setPosition(ccp(0,getContentSize().height));
 
+    m_thumbnail = CCResizableSprite::create();
+    m_thumbnail->preserveRatio(true);
+    m_thumbnail->setAnchorPoint(CCPoint(0,0));
+
+    if (level->m_isUploaded) {
+        // stealing from level thumbnails
+        ImageCache::instance()->download(
+            fmt::format("https://raw.githubusercontent.com/cdc-sys/level-thumbnails/main/thumbs/{}.png",(int)level->m_levelID), 
+            {}, 
+            fmt::format("thumb-{}",(int)level->m_levelID), 
+            [this](CCImage* img, std::string k) {
+                auto texture = new CCTexture2D();
+                texture->initWithImage(img);
+                auto s = texture->getContentSize();
+                m_thumbnail->getSprite()->setTexture(texture);
+                m_thumbnail->getSprite()->setTextureRect({0,0,s.width,s.height});
+                m_thumbnail->refreshScaling();
+            }
+        );
+    }
+
     addListener("nodeLayoutUpdate", [this,levelName](NodeEvent* event){
         auto s = getContentSize();
+        m_thumbnail->setContentSize(s);
         levelName->setPosition(ccp(0,s.height));
         m_main->setContentSize(s);
         m_main->getChildByID("dcb_gradient")->setContentSize(s);

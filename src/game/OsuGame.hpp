@@ -3,7 +3,6 @@
 #include <Geode/cocos/include/cocos2d.h>
 #include "../utils.hpp"
 #include "../framework/graphics/containers/Container.hpp"
-#include "../framework/utils/readonly.hpp"
 #include "../framework/graphics/containers/EventTarget.hpp"
 using namespace cocos2d;
 
@@ -14,6 +13,7 @@ using namespace cocos2d;
 class Screen;
 #include "../framework/screens/Screen.hpp"
 #include "../framework/screens/ScreenTransitionEvent.hpp"
+#include "../framework/graphics/containers/OverlayContainer.hpp"
 
 // the grand dad
 //

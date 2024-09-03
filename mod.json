@@ -20,6 +20,10 @@
         "English",
         "Vietnamese"
       ]
+    },
+    "parallax": {
+      "type": "bool",
+      "default": true
     }
   },
   "resources": {

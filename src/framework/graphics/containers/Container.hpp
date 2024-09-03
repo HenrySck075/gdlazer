@@ -66,30 +66,16 @@ public:
     virtual void onDragEnd(MouseDragEvent* event) {};
     virtual void onClick() {};
 
-    void setClickEnabled(bool e) {m_clickEnabled = e;}
-    bool getClickEnabled() {return m_clickEnabled;}
-    void setHoverEnabled(bool state) { 
-        m_hoverEnabled = state; 
-        if (!m_hoverEnabled) {onMouseExit();}
-        else {
-    #ifdef GEODE_IS_WINDOWS
-            auto director = CCDirector::sharedDirector();
-            auto pos = director->getOpenGLView()->getMousePosition();
-            auto realSize = director->getOpenGLView()->getDisplaySize();
-            auto winSize = director->getWinSize();
-
-            auto p = CCPoint(
-                pos.x / realSize.width * winSize.width, 
-                ((realSize.height-pos.y) / realSize.height * winSize.height)
-            );
-
-            dispatchEvent(new MouseEvent(MouseEventType::Move, p));
-    #endif
-        }
-    };
-    bool getHoverEnabled() { return m_hoverEnabled; }
+    void setClickEnabled(bool e);
+    bool getClickEnabled();
+    void setHoverEnabled(bool state);
+    bool getHoverEnabled();
 };
 
+namespace {
+    enum class ah {Left, Center, Right};
+    enum class av {Top, Center, Bottom};
+};
 /// @brief CCLayer that implements some more shit
 ///
 /// Works similar to the JavaScript event system
@@ -97,54 +83,15 @@ class Container : public InputHandlerImpl {
 private:
     NodeEvent* queuedLayoutUpdate = nullptr;
 
-    enum class ah {Left, Center, Right};
-    enum class av {Top, Center, Bottom};
+    static std::map<Anchor, std::pair<ah,av>> m_anchors;
+    static std::map<Anchor, std::string> m_anchorDebugLabel; 
 
-    std::map<Anchor, std::pair<ah,av>> m_anchors = {
-        {Anchor::TopLeft, std::make_pair(ah::Left, av::Top)},
-        {Anchor::Top, std::make_pair(ah::Center, av::Top)},
-        {Anchor::TopRight, std::make_pair(ah::Right, av::Top)},
+    std::string getUnitLabel(Unit unit);
+    void updateAnchorLabel();
+    void updateSizeUnitLabel();
+    void updatePositionUnitLabel();
 
-        {Anchor::Left, std::make_pair(ah::Left, av::Center)},
-        {Anchor::Center, std::make_pair(ah::Center, av::Center)},
-        {Anchor::Right, std::make_pair(ah::Right, av::Center)},
-
-        {Anchor::BottomLeft, std::make_pair(ah::Left, av::Bottom)},
-        {Anchor::Bottom, std::make_pair(ah::Center, av::Bottom)},
-        {Anchor::BottomRight, std::make_pair(ah::Right, av::Bottom)} 
-    };
-    std::map<Anchor, std::string> m_anchorDebugLabel = {
-        {Anchor::TopLeft, "top left"},
-        {Anchor::Top, "top center"},
-        {Anchor::TopRight, "top right"},
-
-        {Anchor::Left, "center left"},
-        {Anchor::Center, "center*2"},
-        {Anchor::Right, "center right"},
-
-        {Anchor::BottomLeft, "bottom left"},
-        {Anchor::Bottom, "bottom center"},
-        {Anchor::BottomRight, "bottom right"} 
-    };
-
-    std::string getUnitLabel(Unit unit); 
-    void updateAnchorLabel() {
-        setUserObject("of/anchor", CCString::create(m_anchorDebugLabel[m_anchor]));
-    }
-    void updateSizeUnitLabel() {
-        setUserObject("of/su", CCString::create(
-            "W: "+getUnitLabel(m_sizeUnit.first)+" | "
-            "H: "+getUnitLabel(m_sizeUnit.second)
-        ));
-    }
-    void updatePositionUnitLabel() {
-        setUserObject("of/pu", CCString::create(
-            "X: "+getUnitLabel(m_positionUnit.first)+" | "
-            "Y: "+getUnitLabel(m_positionUnit.second)
-        ));
-    }
-
-protected:
+  protected:
     CCSize minimumSize = CCSize(0,0);
     CCSize maximumSize = CCSize(0,0);
 

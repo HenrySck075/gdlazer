@@ -2,6 +2,7 @@
 #include <Geode/Geode.hpp>
 class Container;
 #include "../../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../graphics/CCResizableSprite.hpp"
 #include "../../../../utils.hpp"
 using namespace geode::prelude;
 
@@ -17,6 +18,7 @@ private:
     GJGameLevel* m_level;
     CCClippingNode* m_main;
     CCScale9Sprite* m_shadow;
+    CCResizableSprite* m_thumbnail;
 public:
     float const MAX_HEIGHT = 80;
     float const h = MAX_HEIGHT*0.6;
