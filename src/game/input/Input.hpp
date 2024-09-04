@@ -3,5 +3,6 @@
 
 #include <Geode/Geode.hpp>
 
-
 cocos2d::CCPoint& getLastKnownCursorPos();
+
+void hookInput();

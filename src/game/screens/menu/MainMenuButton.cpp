@@ -105,8 +105,8 @@ void MainMenuButton::onMouseUp(MouseEvent* event) {
         CCFadeTo::create(1,0)
     ));
 }
-void MainMenuButton::onClick() {
-    OsuClickableContainer::onClick();
+void MainMenuButton::onClick(MouseEvent* event) {
+    OsuClickableContainer::onClick(event);
     auto node = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
     node->stopAllActions();
     node->setOpacity(255*0.9);

@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include "ButtonSystemState.hpp"
-#include "../../graphics/containers/BeatSyncedContainer.hpp"
+//#include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
 #include "../../graphics/containers/OsuClickableContainer.hpp"
 #include "../../../utils.hpp"
@@ -61,7 +61,7 @@ private:
     void onMouseExit() override;
     void onMouseDown(MouseEvent* event) override;
     void onMouseUp(MouseEvent* event) override;
-    void onClick() override;
+    void onClick(MouseEvent* e) override;
 
     CCNode* background;
     CCNode* boxHoverLayer; // ?

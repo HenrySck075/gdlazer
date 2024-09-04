@@ -21,8 +21,8 @@ private:
     //void ccTouchEnded(CCTouch* t, CCEvent* idc) override;
 
 protected:
-    void onClick() override {
-        Container::onClick();
+    void onClick(MouseEvent* e) override {
+        Container::onClick(e);
         FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
         
         if (clickCallback) clickCallback(this);

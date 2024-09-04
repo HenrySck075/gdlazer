@@ -266,3 +266,7 @@ class $modify(CCLayerRGBA) {
         }
     }
 };
+
+$on_mod(Loaded) {
+    hookInput();
+};

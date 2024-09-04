@@ -12,7 +12,7 @@ public:
     static ToolbarToggleButton* create(IconConstructor icon, std::string text, std::string sub, ccColor3B stateColor) {
         create_class(ToolbarToggleButton, init, icon, text, sub, stateColor);
     };
-    void onClick() override;
+    void onClick(MouseEvent* e) override;
 
     virtual void select() {
         toggleBg->setOpacity(255);

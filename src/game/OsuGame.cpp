@@ -102,13 +102,14 @@ void OsuGame::pushScreen(Container* screen_or_overlay) {
         }
         auto e = ScreenTransitionEvent(ls,s);
         if (ls) ls->onExiting(e);
+        screensContainer->addChild(s);
         s->onEntering(e);
         screenStack.push_back(s);
-        screensContainer->addChild(s);
         current = s;
     } else if (auto o = dynamic_cast<OverlayContainer*>(screen_or_overlay)) {
         overlaysContainer->addChild(o);
         o->onOpen();
+        current = o;
     }
 
     updateTitle();
@@ -217,13 +218,16 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
     }
     //EventTarget::dispatchEvent(event);
     toolbar->dispatchEvent(event);
-    if (current) current->dispatchEvent(event);
+    log::debug("o: {}", current);
+    if (current) {
+        current->dispatchEvent(event);
+    }
     return true;
 }
 
 void OsuGame::updateTitle() {
     auto currentScreen = dynamic_cast<Screen*>(current);
-    if (current && currentScreen) {
+    if (currentScreen) {
         auto title = currentScreen->title() + " | osu!lazer";
         
         #ifdef GEODE_IS_WINDOWS

@@ -51,8 +51,10 @@ void OsuLogo::update(float delta) {
   static_cast<CCResizableSprite*>(this->getChildByID("m"))->setScale(0.8+sc/40/10);
   */
 }
+/*
 void OsuLogo::onBeat(float delta) {
     auto spr = static_cast<CCSprite*>(this->getChildByID("m"));
     spr->setScale(1);
     spr->runAction(CCScaleTo::create(0.5, 0.8));
 }
+*/

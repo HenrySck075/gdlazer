@@ -42,7 +42,7 @@ void InputHandlerImpl::initHandler() {
                 }
                 break;
             case MouseEventType::Click:
-                this->onClick();
+                this->onClick(event);
                 event->preventDefault();
         }
         int type2 = (int)type;
@@ -131,7 +131,7 @@ std::map<Anchor, std::pair<ah,av>> Container::m_anchors = {
     {Anchor::BottomRight, std::make_pair(ah::Right, av::Bottom)} 
 };
 
-std::map<Anchor, std::string> m_anchorDebugLabel = {
+std::map<Anchor, std::string> Container::m_anchorDebugLabel = {
     {Anchor::TopLeft, "top left"},
     {Anchor::Top, "top center"},
     {Anchor::TopRight, "top right"},
@@ -166,7 +166,7 @@ std::string Container::getUnitLabel(Unit unit) {
 
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
-    colorBg = CCLayerColor::create(ccc4(255,255,255,255));
+    colorBg = CCLayerColor::create(ccc4(255,255,255,0));
     colorBg->setZOrder(-999);
     colorBg->retain();
     colorBg->setAnchorPoint(ccp(0,0));

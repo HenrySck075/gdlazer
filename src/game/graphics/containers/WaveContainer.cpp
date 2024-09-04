@@ -5,48 +5,48 @@
 #include <tuple>
 
 std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angle) {
-  /*
-  auto ren = CCRenderTexture::create(size.width, size.height);
-  ren->begin();
-  */
-  CCDrawNode* node = CCDrawNode::create();
-  node->setContentSize(size);
-  bool rotateLeft = angle<0;
-  angle = abs(angle);
-  auto h = node->getContentHeight();
-  auto left = ccp(0,h);
-  auto right = ccp(node->getContentWidth(),h);
+    /*
+    auto ren = CCRenderTexture::create(size.width, size.height);
+    ren->begin();
+    */
+    CCDrawNode* node = CCDrawNode::create();
+    node->setContentSize(size);
+    bool rotateLeft = angle<0;
+    angle = abs(angle);
+    auto h = node->getContentHeight();
+    auto left = ccp(0,h);
+    auto right = ccp(node->getContentWidth(),h);
 
-  // i still have naming skill issues
-  CCPoint last;
-  if (rotateLeft) {
-    last = right.rotateByAngle(left, degreeToRadius(angle));
-    float remainingDistRatio = last.x/right.x;
-    last = ccp(right.x,last.y*remainingDistRatio);
-  } else {
-    last = left.rotateByAngle(right, -degreeToRadius(angle));
-    float remainingDistRatio = last.x/right.x;
-    last = ccp(left.x,last.y);
-  }
-  CCPoint j[3] = {left, right, last};
-  auto color4f = ccc4FFromccc4B(color);
-  node->drawPolygon(j, 3, color4f,0,color4f);
+    // i still have naming skill issues
+    CCPoint last;
+    if (rotateLeft) {
+        last = right.rotateByAngle(left, degreeToRadius(angle));
+        float remainingDistRatio = last.x/right.x;
+        last = ccp(right.x,last.y*remainingDistRatio);
+    } else {
+        last = left.rotateByAngle(right, -degreeToRadius(angle));
+        float remainingDistRatio = last.x/right.x;
+        last = ccp(left.x,last.y);
+    }
+    CCPoint j[3] = {left, right, last};
+    auto color4f = ccc4FFromccc4B(color);
+    node->drawPolygon(j, 3, color4f,0,color4f);
 
-  // debug
-  /*
-  node->drawDot(left, 3, ccc4f(1, 0, 0, 1));
-  node->drawDot(right, 3, ccc4f(0, 1, 0, 1));
-  node->drawDot(last, 3, ccc4f(0, 0, 1, 1));
-  */
-  node->drawRect(ccp(0,-(h/2)), size, color4f,0,color4f);
+    // debug
+    /*
+    node->drawDot(left, 3, ccc4f(1, 0, 0, 1));
+    node->drawDot(right, 3, ccc4f(0, 1, 0, 1));
+    node->drawDot(last, 3, ccc4f(0, 0, 1, 1));
+    */
+    node->drawRect(ccp(0,-(h/2)), size, color4f,0,color4f);
 
-  return std::make_tuple(node, last.y-h);
-  /*
-  node->visit();
-  ren->end();
-  ren->retain();
-  return ren;
-  */
+    return std::make_tuple(node, last.y-h);
+    /*
+    node->visit();
+    ren->end();
+    ren->retain();
+    return ren;
+    */
 }
 
 CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor4B col) {
@@ -139,8 +139,9 @@ void WaveContainer::onClose() {
     hiding = true;
 #undef j
 }
-
-void WaveContainer::onClick() {
-    if (!touchBoundary.containsPoint(touchLoc) && !touchBoundary.containsPoint(t->getLocation())) hide();
+void WaveContainer::onMouseDown(MouseEvent* e) {
+    touchLoc = e->position;
 }
-
+void WaveContainer::onClick(MouseEvent* e) {
+    if (!touchBoundary.containsPoint(touchLoc) && !touchBoundary.containsPoint(e->position)) hide();
+}

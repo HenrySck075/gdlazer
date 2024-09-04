@@ -44,7 +44,7 @@ void ToolbarButton::onMouseEnter() {
 void ToolbarButton::onMouseExit() {
     bg->runAction(CCFadeTo::create(0.2, 0));
 }
-void ToolbarButton::onClick() {
+void ToolbarButton::onClick(MouseEvent* e) {
     flashBg->runAction(CCSequence::createWithTwoActions(
         CCFadeTo::create(0.05,100),
         CCFadeTo::create(0.8,0)

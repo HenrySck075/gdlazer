@@ -40,7 +40,8 @@ private:
     void onClose() override;
     void onOpen() override;
 
-    void onClick() override;
+    void onMouseDown(MouseEvent* e) override;
+    void onClick(MouseEvent* e) override;
 public:
     bool init(ColorScheme color, CCNode* body);
     // @note RobTop addition

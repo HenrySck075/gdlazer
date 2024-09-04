@@ -19,7 +19,7 @@ public:
     bool init(IconConstructor icon, std::string text, std::string sub);
     void onMouseEnter() override;
     void onMouseExit() override;
-    void onClick() override;
+    void onClick(MouseEvent* e) override;
     /**
      * @param icon Toolbar icon
      * @param text Toolbar text

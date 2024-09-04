@@ -1,4 +1,7 @@
 #include "Input.hpp"
+#include "../OsuGame.hpp"
+#include "../../framework/input/events/KeyEvent.hpp"
+#include "../../framework/input/events/MouseEvent.hpp"
 using namespace geode::prelude;
 
 #ifndef GEODE_IS_ANDROID
@@ -10,10 +13,21 @@ CCPoint lastKnownCursorPos = ccp(0,0);
 cocos2d::CCPoint& getLastKnownCursorPos() {
     return lastKnownCursorPos;
 };
-
 #include <Geode/modify/CCEGLView.hpp>
-class $modify(CCEGLView) {
+class $modify(meowview, CCEGLView) {
+    // it's all fucking black magic
+    /*
+    static void onModify(ModifyBase<ModifyDerive<meowview,CCEGLView>>& self) {
+        if (auto mmc = self.getHook("CCEGLView::onGLFWMouseMoveCallback")) {
+            mmc.unwrap()->setAutoEnable(false);
+        }
+        if (auto mc = self.getHook("CCEGLView::onGLFWMouseCallBack")) {
+            mc.unwrap()->setAutoEnable(false);
+        }
+    }
+    */
     void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
+        //log::debug("hi chat");
         CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
         int w; int h;
         w = m_obScreenSize.width;
@@ -43,8 +57,14 @@ class $modify(CCEGLView) {
     }
 };
 
+
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
-class $modify(CCKeyboardDispatcher) {
+class $modify(catdispatch, CCKeyboardDispatcher) {
+    static void onModify(ModifyBase<ModifyDerive<catdispatch,CCKeyboardDispatcher>>& self) {
+        if (auto e = self.getHook("CCKeyboardDispatcher::dispatchKeyboardMSG")) {
+            e.unwrap()->setAutoEnable(false);
+        }
+    }
     bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat) {
         auto ret = CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat);
         OsuGame::get()->dispatchEvent(new KeyboardEvent(KeyInfo{
@@ -61,15 +81,32 @@ class $modify(CCKeyboardDispatcher) {
 #elif false
 #include <Geode/modify/CCTouchDispatcher.hpp>
 class $modify(CCTouchDispatcher) {
-  void broadcastPos(CCPoint pos) {
-    OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move,pos));
-  };
-  void touches(CCSet* t, CCEvent* e, uint i) {
-    CCTouchDispatcher::touches(t, e, i);
-    if (t->count()!=0) broadcastPos(static_cast<CCTouch*>(t->anyObject())->getLocation());
-  }
+    void broadcastPos(CCPoint pos) {
+        OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move,pos));
+    };
+    void touches(CCSet* t, CCEvent* e, uint i) {
+        CCTouchDispatcher::touches(t, e, i);
+        if (t->count()!=0) broadcastPos(static_cast<CCTouch*>(t->anyObject())->getLocation());
+    }
 };
 
 #endif 
+
+bool hookEnabled = false;
+
+void hookInput() {
+    /*
+    if (hookEnabled) return;
+    hookEnabled = true;
+
+    for (auto* i : Mod::get()->getHooks()) {
+        auto d = i->getDisplayName();
+        if (d.starts_with("CCEGLView")) i->enable();
+        else if (d.starts_with("CCKeyboardDispatcher")) i->enable();
+    }
+    log::info("[hookInput]: Manually hooked input stuff. idk why but yeah ig it works now");
+    */
+};
+
 
 

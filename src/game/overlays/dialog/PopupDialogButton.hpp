@@ -24,7 +24,7 @@ private:
     bool init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
     void onMouseDown(MouseEvent* event) override;
     void onMouseUp(MouseEvent* event) override;
-    void onClick() override {};
+    //void onClick(MouseEvent* e) override {};
 public:
     void setOpacity(GLubyte opacity) override;
     static PopupDialogButton* create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);

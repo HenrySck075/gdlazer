@@ -1,23 +1,25 @@
 #pragma once
 
-//#include "../../graphics/containers/beatsync/BeatDetector.hpp"
+/* 
+#include "../../graphics/containers/beatsync/BeatDetector.hpp"
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../graphics/containers/beatsync/BeatEvent.hpp"
+*/
 #include "../../graphics/containers/OsuClickableContainer.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-class OsuLogo : public BeatSyncedContainer, public OsuClickableContainer {
+class OsuLogo : public OsuClickableContainer {
 private:
     //BeatDetector* instance;
     int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  
     void onMouseEnter() override {};
     void onMouseExit() override {};
-    void onBeat(float delta) override;
+    //void onBeat(float delta) override;
     void onMouseUp(MouseEvent* event) override {};
     void onMouseDown(MouseEvent* event) override {};
-    void onClick() override {};
+    void onClick(MouseEvent* e) override {};
     void update(float delta);
 
     static OsuLogo* create() {

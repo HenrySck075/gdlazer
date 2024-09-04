@@ -64,7 +64,7 @@ public:
     virtual void onDragStart(MouseDragEvent* event) {};
     virtual void onDrag(MouseDragEvent* event) {};
     virtual void onDragEnd(MouseDragEvent* event) {};
-    virtual void onClick() {};
+    virtual void onClick(MouseEvent* event) {};
 
     void setClickEnabled(bool e);
     bool getClickEnabled();

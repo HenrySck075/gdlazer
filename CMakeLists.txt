@@ -5,7 +5,6 @@ set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 project(osulazer VERSION 1.0.0)
-
 if("${CMAKE_GENERATOR}" EQUAL "Unix Makefiles")
     target_compile_options(${PROJECT_NAME} PUBLIC -j8)
 endif()
