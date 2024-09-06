@@ -35,7 +35,7 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
         return false;
     }, false);
     */
-    //updateParallax(director->convertToGL(director->getOpenGLView()->getMousePosition()));
+    updateParallax(director->getOpenGLView()->getMousePosition());
     return true;
 }
 

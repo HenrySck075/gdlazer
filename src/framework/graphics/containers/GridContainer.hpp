@@ -61,7 +61,7 @@ struct Dimension {
 };
 
 // geode team baited everyone in the docs
-class GridLayout : public Layout {
+class GridLayout : public ContainerLayout {
     std::vector<Dimension> colDim;
     std::vector<Dimension> rowDim;
 public:

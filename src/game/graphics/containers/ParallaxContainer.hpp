@@ -4,7 +4,6 @@
 #include <Geode/Geode.hpp>
 #include "../../../framework/graphics/containers/Container.hpp"
 #include "../../../framework/input/events/MouseEvent.hpp"
-#include "../../input/Input.hpp"
 
 using namespace geode::prelude;
 

@@ -91,7 +91,7 @@ private:
     void updateSizeUnitLabel();
     void updatePositionUnitLabel();
 
-  protected:
+protected:
     CCSize minimumSize = CCSize(0,0);
     CCSize maximumSize = CCSize(0,0);
 

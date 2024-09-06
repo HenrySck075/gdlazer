@@ -36,11 +36,11 @@ private:
     float volMult = 1;
     bool volMultChange = false;
 
-public:
     // be responsible for your action and do NOT change these value yourself
     // 
     // can be overlay or screen
     Container* current = nullptr;
+public:
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
     static OsuGame* get() {

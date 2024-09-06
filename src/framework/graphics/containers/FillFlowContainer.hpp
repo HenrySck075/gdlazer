@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Container.hpp"
+#include "ContainerLayout.hpp"
 
 enum class FillDirection {
     Full,
@@ -11,7 +12,7 @@ enum class FillDirection {
 // axislayout rewrite
 //
 // dang
-class FillFlowLayout : public Layout {
+class FillFlowLayout : public ContainerLayout {
 public:
     bool init() {return true;}
     static FillFlowLayout* create() {

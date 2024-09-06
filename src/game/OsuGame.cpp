@@ -196,7 +196,7 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
         EventTarget::dispatchEvent(event);
         return true;
     }
-    if (isRunning()) return true;
+    if (!isRunning()) return true;
     updateDispatchFlow(event, DispatchingFlow::Down);
     /*
     if (event->eventName() == "mouseEvent") {
@@ -218,8 +218,7 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
     }
     //EventTarget::dispatchEvent(event);
     toolbar->dispatchEvent(event);
-    log::debug("o: {}", current);
-    if (current) {
+    if (current != nullptr) {
         current->dispatchEvent(event);
     }
     return true;
