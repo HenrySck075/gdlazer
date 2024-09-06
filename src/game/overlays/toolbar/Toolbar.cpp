@@ -19,10 +19,12 @@ bool Toolbar::init() {
     addListener("nodeLayoutUpdate",[gradient,this](NodeEvent*e){
         gradient->setContentSize(CCSize(getContentWidth(),processUnit(HEIGHT,Unit::UIKit,false)));
     });
+    addChild(gradient);
 
     auto left = CCLayer::create();
     left->addChild(ToolbarSettingsButton::create());
 
+    addChild(left);
     setColor(bgColor);
     setOpacity(255);
 
