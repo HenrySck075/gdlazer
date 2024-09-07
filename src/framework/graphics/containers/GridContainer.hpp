@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Container.hpp"
+#include "ContainerLayout.hpp"
 #include <Geode/cocos/base_nodes/CCNode.h>
 using namespace cocos2d;
 #include "../../utils/readonly.hpp"

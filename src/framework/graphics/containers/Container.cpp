@@ -166,16 +166,10 @@ std::string Container::getUnitLabel(Unit unit) {
 
 bool Container::init() {
     if (!CCLayerRGBA::init()) return false;
-    colorBg = CCLayerColor::create(ccc4(255,255,255,0));
-    colorBg->setZOrder(-999);
-    colorBg->retain();
-    colorBg->setAnchorPoint(ccp(0,0));
-    addChild(colorBg);
     setOpacity(0);
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));
-        colorBg->setContentSize(getContentSize());
         checkConstraints();
     });
     InputHandlerImpl::initHandler();
@@ -187,10 +181,6 @@ bool Container::init() {
     //setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
     setCascadeOpacityEnabled(true);
     return true;
-}
-
-void Container::setColor(ccColor3B const& col) {
-    colorBg->setColor(col);
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {
@@ -295,7 +285,6 @@ void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     //if (nothingHappens) e->stopPropagation();
     resetContentSize();
     CCNode::setPosition(resP+ccp(m_padding.t,m_padding.l));
-    colorBg->setContentSize(getContentSize());
 };
 
 float Container::processUnit(float value, Unit unit, bool width) {

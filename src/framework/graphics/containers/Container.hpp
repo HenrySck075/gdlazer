@@ -76,6 +76,8 @@ namespace {
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
 };
+
+class ContainerLayout;
 /// @brief CCLayer that implements some more shit
 ///
 /// Works similar to the JavaScript event system
@@ -96,8 +98,6 @@ protected:
     CCSize maximumSize = CCSize(0,0);
 
     void checkConstraints();
-
-    CCLayerColor* colorBg;
 
     bool m_includeShadow = false;
 
@@ -135,8 +135,6 @@ public:
     // @returns The value in OpenGL unit
     float processUnit(float value, Unit unit, bool width);
     
-    void setColor(ccColor3B const& col) override;
-
     bool dispatchEvent(NodeEvent* event) override;
     // Dispatches the event to the child. 
     virtual bool dispatchToChild(NodeEvent* event);
@@ -243,10 +241,6 @@ public:
         CCLayer::setParent(parent);
         dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::All));
     };
-
-    ~Container() {
-        colorBg->release();
-    }
 };
 
 template<class T>

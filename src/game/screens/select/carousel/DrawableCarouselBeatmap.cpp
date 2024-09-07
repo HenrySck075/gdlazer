@@ -17,6 +17,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
 
     OsuClickableContainer::init("select-expand.wav"_spr, [](CCNode*self){});
     m_level = level;
+    colorBg = CCLayerColor::create();
     colorBg->setZOrder(999);
     colorBg->setAnchorPoint(ccp(0.5,0.5));
 

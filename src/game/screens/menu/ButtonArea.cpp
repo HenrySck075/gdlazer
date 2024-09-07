@@ -16,8 +16,6 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
 
     setColor(OsuColor::Gray(50));
-    colorBg->setScaleY(0);
-    colorBg->setAnchorPoint(ccp(0,0.5));
 
     return true;
 }
@@ -86,13 +84,7 @@ void ButtonArea::show(std::string tag) {
     }
 
     if (hidden) {
-        colorBg->runAction(CCEaseSineOut::create(
-            CCSpawn::createWithTwoActions(
-                CCFadeIn::create(0.3),
-                CCScaleTo::create(0.3,1,1)
-            )
-        ));
-        hidden = false;
+	hidden = false;
     }
 
     CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
@@ -165,7 +157,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
         CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
         if (close) {
-            colorBg->runAction(CCEaseOutQuint::create(CCScaleTo::create(0.3,1,0)));
+            //colorBg->runAction(CCEaseOutQuint::create(CCScaleTo::create(0.3,1,0)));
             hidden = true;
         }
         if (collapse) {

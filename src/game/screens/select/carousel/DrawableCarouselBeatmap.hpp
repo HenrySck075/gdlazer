@@ -19,6 +19,7 @@ private:
     CCClippingNode* m_main;
     CCScale9Sprite* m_shadow;
     CCResizableSprite* m_thumbnail;
+    CCLayerColor* colorBg;
 public:
     float const MAX_HEIGHT = 80;
     float const h = MAX_HEIGHT*0.6;
