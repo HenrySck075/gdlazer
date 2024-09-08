@@ -16,6 +16,7 @@ private:
     CCPoint anchorPosition = ccp(0,0);
     float animationSpeed = 0.5;
     using EasingEffect = CCEaseExponentialOut;
+    CCLayerColor* colorBg;
 
     bool hidden = true;
 

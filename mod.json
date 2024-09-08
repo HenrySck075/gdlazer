@@ -54,6 +54,11 @@
       "id": "henrysck075.imagecache",
       "importance": "required",
       "version": "v1.0.0"
+    },
+    {
+      "id": "mat.max-window",
+      "importance": "recommended",
+      "version": "v1.0.4"
     }
   ]
 }

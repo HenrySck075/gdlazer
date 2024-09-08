@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-
+add_compile_options(-DCOCOS2D_DEBUG=2)
 project(osulazer VERSION 1.0.0)
 if("${CMAKE_GENERATOR}" EQUAL "Unix Makefiles")
     target_compile_options(${PROJECT_NAME} PUBLIC -j8)

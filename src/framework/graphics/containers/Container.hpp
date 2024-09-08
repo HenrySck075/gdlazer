@@ -38,7 +38,7 @@ enum class Unit {
     UIKit
 };
 
-class InputHandlerImpl : public CCLayerRGBA, public EventTarget {
+class InputHandlerImpl : public CCLayerColor, public EventTarget {
     bool m_entered = false;
     bool m_holding = false;
     bool m_clickEnabled = true;

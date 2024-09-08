@@ -17,7 +17,7 @@ bool Toolbar::init() {
 
     auto gradient = CCLayerGradient::create(ccc4(0,0,0,0),ccc4(0,0,0,0),ccp(0.5,0));
     addListener("nodeLayoutUpdate",[gradient,this](NodeEvent*e){
-        gradient->setContentSize(CCSize(getContentWidth(),processUnit(HEIGHT,Unit::UIKit,false)));
+        gradient->setContentSize({CCNode::getContentSize().width,processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false)});
     });
     addChild(gradient);
 

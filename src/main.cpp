@@ -2,6 +2,7 @@
  * Include the Geode headers.
  */
 #include <Geode/Geode.hpp>
+
 #include "game/screens/menu/intro/IntroTriangles.hpp"
 #include "game/overlays/dialog/PopupDialog.hpp"
 #include "game/screens/menu/MainMenu.hpp"

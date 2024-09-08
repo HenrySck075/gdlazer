@@ -37,7 +37,7 @@ bool Background::init() {
         auto e = static_cast<NodeLayoutUpdate*>(ev);
         //log::debug("[Background]: {}", (int)(e->type));
         //if (e->type == NodeLayoutUpdateType::Size || e->type == NodeLayoutUpdateType::All) {
-            auto s = getContentSize();
+            auto s = CCNode::getContentSize();
             m_background->setPosition(s/2);
             m_background->setContentSize(s);
         //n}

@@ -20,13 +20,13 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     auto the = CCLayerRGBA::create();
     the->setCascadeOpacityEnabled(true);
     the->setID("ui");
-    symbol->setScale(0.3);
+    symbol->setScale(0.62);
     the->setLayout(ColumnLayout::create()->setGap(3)->setAutoScale(false)->setAxisReverse(true));
     the->addChild(symbol);
     the->setAnchorPoint(ccp(0.5,0.5));
     the->setPosition(m/2);
     auto label = OsuText(text.c_str(), FontType::Regular);
-    label->setScale(0.3);
+    label->setScale(0.4);
     the->addChild(label);
     the->updateLayout();
     

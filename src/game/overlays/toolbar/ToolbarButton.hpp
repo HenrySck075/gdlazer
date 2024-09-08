@@ -10,8 +10,8 @@ class ToolbarButton : public OsuClickableContainer {
     Container* flashBg;
 
     CCLayer* tooltipContainer; 
-    CCLabelBMFont* text;
-    CCLabelBMFont* subtext;
+    CCLabelTTF* text;
+    CCLabelTTF* subtext;
 protected:
     Vector4 m_padding = {3};
 public:

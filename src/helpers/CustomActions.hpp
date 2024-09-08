@@ -157,19 +157,15 @@ public:
     static CCMoveFromTo* create(float duration, const CCPoint& startPos, const CCPoint& endPos) {
         create_class(CCMoveFromTo, initWithDuration, duration, startPos, endPos);
     }
-    void update(float t)
-    {
-        if (m_pTarget)
-        {
+    void update(float t) {
+        if (m_pTarget) {
             m_pTarget->setPosition(m_startPosition + (m_positionDelta * t));
         }
     }
-    void startWithTarget(CCNode *pTarget)
-    {
+    void startWithTarget(CCNode *pTarget) {
         CCActionInterval::startWithTarget(pTarget);
         m_previousPosition = m_startPosition;
         m_positionDelta = ccpSub( m_endPosition, m_startPosition );
-        log::debug("[CCMoveFromTo]: target: {} | posDelta: {} | start: {} | end: {}", pTarget,m_positionDelta,m_startPosition,m_endPosition);
     }
 };
 

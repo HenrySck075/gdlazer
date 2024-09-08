@@ -2,31 +2,16 @@
 #include "../helpers/CustomActions.hpp"
 #include "overlays/toolbar/ToolbarConstants.hpp"
 
+#include "../framework/graphics/containers/OverlayContainer.hpp"
 #ifdef GEODE_IS_WINDOWS
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include "../framework/graphics/containers/OverlayContainer.hpp"
 
 LONG_PTR oWindowProc;
 bool newWindowProcSet = false;
 
 LRESULT CALLBACK nWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-    switch (msg) {
-    case WM_SIZE:
-    case WM_MOVE:
-    case WM_KILLFOCUS:
-        if (OsuGame* mainGame = typeinfo_cast<OsuGame*>(OsuGame::get())) {
-            mainGame->onLoseFocus();
-        }
-        break;
-    case WM_SETFOCUS:
-        if (OsuGame* mainGame = typeinfo_cast<OsuGame*>(OsuGame::get())) {
-            mainGame->onFocus();
-        }
-        break;
-    }
-
     return CallWindowProc((WNDPROC)oWindowProc, hwnd, msg, wparam, lparam);
 }
 
@@ -191,12 +176,12 @@ void OsuGame::checkForQueue() {
 }
 
 bool OsuGame::dispatchEvent(NodeEvent* event) {
+    if (!isRunning()) return true;
     if (event->target() != nullptr) return false;
     if (event->eventName().starts_with("og")) {
         EventTarget::dispatchEvent(event);
         return true;
     }
-    if (!isRunning()) return true;
     updateDispatchFlow(event, DispatchingFlow::Down);
     /*
     if (event->eventName() == "mouseEvent") {
@@ -256,6 +241,14 @@ void OsuGame::update(float dt) {
 #ifndef GEODE_IS_ANDROID
 #include <Geode/modify/AppDelegate.hpp>
 class $modify(AppDelegate) {
+    void applicationWillBecomeActive() {
+        AppDelegate::applicationWillBecomeActive();
+        OsuGame::get()->onFocus();
+    }
+    void applicationWillResignActive() {
+        AppDelegate::applicationWillResignActive();
+        OsuGame::get()->onLoseFocus();
+    }
     void platformShutdown() {
         log::info("[hook: AppDelegate]: shutdown app");
         OsuGame::get()->release();

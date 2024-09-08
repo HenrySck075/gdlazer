@@ -12,7 +12,7 @@ enum class FontType {
 };
 
 
-CCLabelBMFont* OsuText(const char* text, FontType fontType);
+CCLabelTTF* OsuText(const char* text, FontType fontType, float fontSize = 18);
 /*
 class OsuText : public CCLabelBMFont {
 public:

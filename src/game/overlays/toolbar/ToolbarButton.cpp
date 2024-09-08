@@ -27,6 +27,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
 
     tooltipContainer = CCLayer::create();
     tooltipContainer->setAnchorPoint(ccp(0,1));
+    tooltipContainer->setContentHeight(ToolbarConstants::TOOLTIP_HEIGHT);
     text = OsuText(label.c_str(), FontType::Bold);
     subtext = OsuText(sub.c_str(), FontType::Regular);
     tooltipContainer->addChild(text);
