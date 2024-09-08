@@ -323,7 +323,7 @@ void Container::setSizeConstraints(CCSize const& minSize, CCSize const& maxSize)
 }
 
 void Container::checkConstraints() {
-    auto currentSize = getContentSize();
+    auto currentSize = CCNode::getContentSize();
     bool d = false;
     if (currentSize.width < minimumSize.width) {
         currentSize.width = minimumSize.width;
@@ -357,12 +357,14 @@ bool Container::resetContentSize() {
         processUnit(m_size.width, m_sizeUnit.first, true),
         processUnit(m_size.height,m_sizeUnit.second, false)
     );
-    if (newS.equals(getContentSize())) return false;
+    if (newS.equals(CCNode::getContentSize())) return false;
     CCLayer::setContentSize(CCSize(
         newS.width - acu(m_padding.l) - acu(m_padding.r),
         newS.height - ac(m_padding.t) - ac(m_padding.d)
     ));
     m_sizeP = m_size;
+#undef acu
+#undef ac
     return true;
 }
 /*

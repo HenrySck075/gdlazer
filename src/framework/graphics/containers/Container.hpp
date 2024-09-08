@@ -195,7 +195,7 @@ public:
         setContentSize(CCSize(getContentWidth(),height));
     }
     // Get the actual node content size
-    const CCSize& getContentSizeWithUnit() {
+    const CCSize& getContentSize() const override{
         return m_size;
     }
 
@@ -233,7 +233,7 @@ public:
         setPosition(ccp(pos,m_position.y));
     }
     // Get the actual node position
-    CCPoint const& getPositionWithUnit() {
+    CCPoint const& getPosition() override{
         return m_position;
     }
 

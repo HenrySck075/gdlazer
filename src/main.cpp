@@ -343,15 +343,23 @@ class $modify(catdispatch, CCKeyboardDispatcher) {
     }
 };
 
-#elif false
+#else
 #include <Geode/modify/CCTouchDispatcher.hpp>
 class $modify(CCTouchDispatcher) {
-    void broadcastPos(CCPoint pos) {
-        OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::Move,pos));
+    void broadcastPos(MouseEventType type, CCPoint pos) {
+        OsuGame::get()->dispatchEvent(new MouseEvent(type,pos));
     };
     void touches(CCSet* t, CCEvent* e, uint i) {
         CCTouchDispatcher::touches(t, e, i);
-        if (t->count()!=0) broadcastPos(static_cast<CCTouch*>(t->anyObject())->getLocation());
+        if (t->count()!=0) broadcastPos(MouseEventType::Move,static_cast<CCTouch*>(t->anyObject())->getLocation());
+    }
+    void touchesBegan(CCSet* t, CCEvent* e) { 
+        CCTouchDispatcher::touchesBegan(t, e);
+        if (t->count()!=0) broadcastPos(MouseEventType::MouseDown,static_cast<CCTouch*>(t->anyObject())->getLocation());
+    }
+    void touchesEnded(CCSet* t, CCEvent* e) { 
+        CCTouchDispatcher::touchesEnded(t, e);
+        if (t->count()!=0) broadcastPos(MouseEventType::MouseUp,static_cast<CCTouch*>(t->anyObject())->getLocation());
     }
 };
 
