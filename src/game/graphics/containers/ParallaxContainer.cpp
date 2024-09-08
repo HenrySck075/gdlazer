@@ -35,7 +35,9 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
         return false;
     }, false);
     */
+#ifndef GEODE_IS_ANDROID
     updateParallax(director->getOpenGLView()->getMousePosition());
+#endif
     return true;
 }
 

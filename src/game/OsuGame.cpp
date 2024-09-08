@@ -253,6 +253,7 @@ void OsuGame::update(float dt) {
 }
 
 
+#ifndef GEODE_IS_ANDROID
 #include <Geode/modify/AppDelegate.hpp>
 class $modify(AppDelegate) {
     void platformShutdown() {
@@ -261,3 +262,4 @@ class $modify(AppDelegate) {
         AppDelegate::platformShutdown();
     }
 };
+#endif
