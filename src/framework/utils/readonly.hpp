@@ -20,6 +20,10 @@ public:
 
     T& inner() {return m_t;}
 
+    // how does this work
+    friend bool operator==(const readonly<T,OWNER>& lhs, const T& rhs) {return lhs.m_t == rhs;}
+    friend bool operator==(const readonly<T,OWNER>& lhs, const readonly<T,OWNER>& rhs) {return lhs.m_t == rhs.m_t;}
+
 private:
     T& operator =(const T &t) {
         m_t = t; 

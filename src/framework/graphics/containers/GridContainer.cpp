@@ -27,7 +27,7 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
             // nvm i think they did autosize mode exists
 
             // nvm you dont have a copy of a coldim every rowdims
-            if (dim.maxSize != -1) s = std::min(s, (float)dim.maxSize);
+            if (dim.maxSize != (float)-1) s = std::min(s, (float)dim.maxSize);
             SizeF[idx] = s;
             remainingSize -= s;
         } else {
@@ -44,7 +44,7 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
         float s;
         if (aqcount == 0) {
             s = std::max(divSize, (float)dim.minSize);
-            if (dim.maxSize != -1) s = std::min(s, (float)dim.maxSize);
+            if (dim.maxSize != (float)-1) s = std::min(s, (float)dim.maxSize);
         } 
         // give em a slot
         else {
