@@ -166,7 +166,7 @@ std::string Container::getUnitLabel(Unit unit) {
 
 bool Container::init() {
     if (!CCLayerColor::init()) return false;
-    setOpacity(0);
+    setOpacity(255);
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));

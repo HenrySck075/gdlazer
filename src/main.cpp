@@ -58,46 +58,41 @@ class $modify(nPauseLayer,PauseLayer) {
     }
 };
 
-/**
- * `$modify` lets you extend and modify GD's classes.
- * To hook a function in Geode, simply $modify the class
- * and write a new function definition with the signature of
- * the function you want to hook.
- *
- * Here we use the overloaded `$modify` macro to set our own class name,
- * so that we can use it for button callbacks.
- *
- * Notice the header being included, you *must* include the header for
- * the class you are modifying, or you will get a compile error.
- *
- * Another way you could do this is like this:
- *
- * struct MyMenuLayer : Modify<MyMenuLayer, MenuLayer> {};
- */
 
 #include <Geode/modify/LoadingLayer.hpp>
-class $modify(LoadingLayer) {
+#include "game/graphics/ui/OsuText.hpp"
+class $modify(Camila, LoadingLayer) {
+    struct Fields {
+        CCLabelTTF* m_smallLabel = nullptr;
+    };
     bool init(bool idk) {
         bool res = LoadingLayer::init(idk);
         this->setVisible(false);
+        this->schedule(schedule_selector(Camila::updateSmallTextLabel));
+
+        auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+        m_fields->m_smallLabel = OsuText("",FontType::Regular, 18, CCTextAlignment::kCCTextAlignmentRight);
+        m_fields->m_smallLabel->setPosition(winSize-CCPoint{30,5});
+        m_fields->m_smallLabel->setAnchorPoint({1,0});
+        addChild(m_fields->m_smallLabel);
         return res;
     }
+    void updateSmallTextLabel(float the) {
+        auto sl2 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label-2"));
+        m_fields->m_smallLabel->setString(fmt::format(
+            "{}{}{}",
+            static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"))->getString(),
+            std::string(sl2->getString()).empty()?"":" | ",
+            sl2->getString()
+        ).c_str());
+    };
+
 };
 
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
-    /**
-     * Typically classes in GD are initialized using the `init` function, (though not always!),
-     * so here we use it to add our own button to the bottom menu.
-     *
-     * Note that for all hooks, your signature has to *match exactly*,
-     * `void init()` would not place a hook!
-    */
     bool init() {
-        /**
-         * We call the original init function so that the
-         * original class is properly initialized.
-         */
         if (!MenuLayer::init()) {
             return false;
         }
