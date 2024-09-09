@@ -48,6 +48,10 @@ bool OsuGame::init() {
     // making m_pChildren non-nullptr
     overlaysContainer->addChild(CCNode::create());
     overlaysContainer->removeAllChildren();
+
+    auto curSize = getContentSize();
+    screensContainer->setContentSize(curSize);
+    overlaysContainer->setContentSize(curSize);
     return true;
 
 }
