@@ -18,6 +18,38 @@
  */
 using namespace geode::prelude;
 
+#ifdef GEODE_IS_WINDOWS
+#define MAX_LEN         (cocos2d::kMaxLogLen + 1)
+void CCLog2(char const * pszFormat, ...)
+{
+    char szBuf[MAX_LEN];
+
+    va_list ap;
+    va_start(ap, pszFormat);
+    vsnprintf_s(szBuf, MAX_LEN, MAX_LEN, pszFormat, ap);
+    va_end(ap);
+
+    WCHAR wszBuf[MAX_LEN] = {0};
+    MultiByteToWideChar(CP_UTF8, 0, szBuf, -1, wszBuf, sizeof(wszBuf));
+    OutputDebugStringW(wszBuf);
+    OutputDebugStringA("\n");
+
+    WideCharToMultiByte(CP_ACP, 0, wszBuf, sizeof(wszBuf), szBuf, sizeof(szBuf), NULL, FALSE);
+    log::info("[CCLog]: {}", szBuf);
+}
+#if 0
+$execute {
+    if (!Mod::get()->hook(
+        reinterpret_cast<void*>(geode::base::getCocos()+0x73e10), // address
+        &CCLog2, // detour
+        "cocos2d::CCLog", // display name, shows up on the console
+        tulip::hook::TulipConvention::Cdecl // calling convention
+    ).isErr()) {
+        log::debug("hook: Get ready for the brand new jam!");
+    };
+}
+#endif
+#endif
 
 #include <Geode/modify/PauseLayer.hpp>
 class $modify(nPauseLayer,PauseLayer) {
@@ -69,10 +101,12 @@ class $modify(Camila, LoadingLayer) {
     };
     bool init(bool idk) {
         bool res = LoadingLayer::init(idk);
+        CCLog("meow");
         this->setAnchorPoint({0,2});
         this->ignoreAnchorPointForPosition(false);
+        
+        #if 0
         this->schedule(schedule_selector(Camila::updateSmallTextLabel));
-
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
         m_fields->m_smallLabel = OsuText("",FontType::Regular, 14, CCTextAlignment::kCCTextAlignmentRight);
@@ -83,11 +117,8 @@ class $modify(Camila, LoadingLayer) {
         m_fields->m_smallLabel2->setPosition(winSize-CCPoint{30,-22-winSize.height});
         m_fields->m_smallLabel2->setAnchorPoint({1,0});
         addChild(m_fields->m_smallLabel2);
+        #endif
         return res;
-    }
-    void updateProgress(int p0) {
-        LoadingLayer::updateProgress(p0);
-        m_fields->prog = p0;
     }
     void updateSmallTextLabel(float the) {
         auto sl1 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"));
@@ -107,7 +138,7 @@ class $modify(MyMenuLayer, MenuLayer) {
         if (!MenuLayer::init()) {
             return false;
         }
-
+        CCLog("e");
         auto introButton = CCMenuItemSpriteExtra::create(
             CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
             this,

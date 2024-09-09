@@ -8,8 +8,9 @@ using namespace ToolbarConstants;
 bool ToolbarButton::init(IconConstructor icon, std::string label, std::string sub) {
     OsuClickableContainer::init(sfx);
     iconSprite = icon;
+    iconSprite->setScale(0.3);
     addListener("nodeLayoutUpdate",[this](NodeEvent* e){
-        iconSprite->setPosition(getContentSize()/2);
+        iconSprite->setPosition(CCNode::getContentSize()/2);
     });
     addChild(iconSprite);
 
