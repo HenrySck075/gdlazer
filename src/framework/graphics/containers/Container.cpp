@@ -5,7 +5,7 @@
 /**
  * InputHandlerImpl
  */
-void InputHandlerImpl::initHandler() {
+void Container::initHandler() {
     addListener("mouseEvent",[this](NodeEvent* e) {
         auto event = static_cast<MouseEvent*>(e);
         auto type = event->eventType;
@@ -86,11 +86,11 @@ void InputHandlerImpl::initHandler() {
     });
 }
 
-void InputHandlerImpl::setClickEnabled(bool e) { m_clickEnabled = e; }
+void Container::setClickEnabled(bool e) { m_clickEnabled = e; }
 
-bool InputHandlerImpl::getClickEnabled() { return m_clickEnabled; }
+bool Container::getClickEnabled() { return m_clickEnabled; }
 
-void InputHandlerImpl::setHoverEnabled(bool state) { 
+void Container::setHoverEnabled(bool state) { 
     m_hoverEnabled = state; 
     if (!m_hoverEnabled) {onMouseExit();}
     else {
@@ -110,7 +110,7 @@ void InputHandlerImpl::setHoverEnabled(bool state) {
     }
 }
 
-bool InputHandlerImpl::getHoverEnabled() { return m_hoverEnabled; }
+bool Container::getHoverEnabled() { return m_hoverEnabled; }
 
 
 /**
@@ -165,14 +165,13 @@ std::string Container::getUnitLabel(Unit unit) {
 }
 
 bool Container::init() {
-    if (!CCLayerColor::init()) return false;
-    setOpacity(255);
+    if (!CCLayerColor::initWithColor(ccc4(255,255,255,0))) return false;
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));
         checkConstraints();
     });
-    InputHandlerImpl::initHandler();
+    initHandler();
     ignoreAnchorPointForPosition(false);
     setAnchorPoint(ccp(0,0));
     updateAnchorLabel();
@@ -345,26 +344,23 @@ void Container::checkConstraints() {
     }
     if (d) {
         // mark the node as dirty so cocos2d will actually attempt to do something with that (i suppose)
-        CCNode::setContentSize(currentSize);
+        CCLayerColor::setContentSize(currentSize);
+        // todo: remove this
         dispatchToChild(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
     }
 }
 
 bool Container::resetContentSize() {
-    #define acu(padx) processUnit(padx, Unit::UIKit, true)
-    #define ac(pady) processUnit(pady, Unit::UIKit, false)
     auto newS = CCSize(
         processUnit(m_size.width, m_sizeUnit.first, true),
         processUnit(m_size.height,m_sizeUnit.second, false)
     );
     if (newS.equals(CCNode::getContentSize())) return false;
-    CCLayer::setContentSize(CCSize(
-        newS.width - acu(m_padding.l) - acu(m_padding.r),
-        newS.height - ac(m_padding.t) - ac(m_padding.d)
+    CCLayerColor::setContentSize(CCSize(
+        newS.width - processUnit(m_padding.l - m_padding.r, Unit::UIKit, true),
+        newS.height - processUnit(m_padding.t - m_padding.d, Unit::UIKit, false)
     ));
     m_sizeP = m_size;
-#undef acu
-#undef ac
     return true;
 }
 /*

@@ -84,4 +84,5 @@ public:
     };
     bool init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
     void setContentSize(const CCSize& s) override;
+    void updateDisplayedOpacity(GLubyte parentOpacity) override;
 };

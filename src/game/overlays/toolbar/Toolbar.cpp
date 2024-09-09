@@ -15,9 +15,14 @@ bool Toolbar::init() {
     this->setPositionY(-HEIGHT);
     this->setAnchor(Anchor::Top);
 
-    auto gradient = CCLayerGradient::create(ccc4(0,0,0,0),ccc4(0,0,0,0),ccp(0.5,0));
-    addListener("nodeLayoutUpdate",[gradient,this](NodeEvent*e){
-        gradient->setContentSize({CCNode::getContentSize().width,processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false)});
+    auto j = processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false);
+    gradient = CCLayerGradient2::create(ccc4(0,0,0,0),ccc4(0,0,0,0),{0,1},CCLG2Target::Start);
+    gradient->setAnchorPoint({0,1});// keeping it at the bottom
+    gradient->ignoreAnchorPointForPosition(false);
+    //gradient->setPosition({0,-processUnit(HEIGHT,Unit::UIKit,false)});
+    gradient->setScaleY(-1);
+    addListener("nodeLayoutUpdate",[this,j](NodeEvent*e){
+        gradient->setContentSize({CCNode::getContentSize().width,j});
     });
     addChild(gradient);
 

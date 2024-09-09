@@ -64,28 +64,39 @@ class $modify(nPauseLayer,PauseLayer) {
 class $modify(Camila, LoadingLayer) {
     struct Fields {
         CCLabelTTF* m_smallLabel = nullptr;
+        CCLabelTTF* m_smallLabel2 = nullptr;
+        int prog = 0; // could be m_loadStep
     };
     bool init(bool idk) {
         bool res = LoadingLayer::init(idk);
-        this->setVisible(false);
+        this->setAnchorPoint({0,2});
+        this->ignoreAnchorPointForPosition(false);
         this->schedule(schedule_selector(Camila::updateSmallTextLabel));
 
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-        m_fields->m_smallLabel = OsuText("",FontType::Regular, 18, CCTextAlignment::kCCTextAlignmentRight);
-        m_fields->m_smallLabel->setPosition(winSize-CCPoint{30,5});
+        m_fields->m_smallLabel = OsuText("",FontType::Regular, 14, CCTextAlignment::kCCTextAlignmentRight);
+        m_fields->m_smallLabel->setPosition(winSize-CCPoint{30,-5-winSize.height});
         m_fields->m_smallLabel->setAnchorPoint({1,0});
         addChild(m_fields->m_smallLabel);
+        m_fields->m_smallLabel2 = OsuText("",FontType::Regular, 10, CCTextAlignment::kCCTextAlignmentRight);
+        m_fields->m_smallLabel2->setPosition(winSize-CCPoint{30,-22-winSize.height});
+        m_fields->m_smallLabel2->setAnchorPoint({1,0});
+        addChild(m_fields->m_smallLabel2);
         return res;
     }
+    void updateProgress(int p0) {
+        LoadingLayer::updateProgress(p0);
+        m_fields->prog = p0;
+    }
     void updateSmallTextLabel(float the) {
+        auto sl1 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"));
+        // if the node somehow doesn't exists (geode runtime flag or user666 doing) 
+        // then don't do anything
+        if (!sl1) return;
         auto sl2 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label-2"));
-        m_fields->m_smallLabel->setString(fmt::format(
-            "{}{}{}",
-            static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"))->getString(),
-            std::string(sl2->getString()).empty()?"":" | ",
-            sl2->getString()
-        ).c_str());
+        m_fields->m_smallLabel->setString(sl1->getString());
+        m_fields->m_smallLabel2->setString(sl2->getString());
     };
 
 };
@@ -314,7 +325,6 @@ class $modify(meowview, CCEGLView) {
     void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height) {
         CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
         OsuGame::get()->setContentSize(getDesignResolutionSize());
-        OsuGame::get()->dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
     }
 };
 

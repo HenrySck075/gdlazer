@@ -12,7 +12,7 @@ enum class FontType {
 };
 
 
-CCLabelTTF* OsuText(const char* text, FontType fontType, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
+CCLabelTTF* OsuText(const char* text, FontType fontType = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
 /*
 class OsuText : public CCLabelBMFont {
 public:

@@ -10,7 +10,6 @@
 bool ButtonArea::init(const CCPoint& anchorPos) {
     Container::init();
     anchorPosition = anchorPos;
-    this->setOpacity(255);
     setAnchorPoint(ccp(0.5,0.5));
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);

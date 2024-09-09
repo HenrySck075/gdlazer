@@ -64,6 +64,24 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     return true;
 }
 
+// keep being invisible, but cascade opacity to the child nodes
+void MainMenuButton::updateDisplayedOpacity(GLubyte parentOpacity) {
+    
+	_displayedOpacity = _realOpacity * parentOpacity/255.0;
+    
+    if (_cascadeOpacityEnabled) {
+        CCObject *obj = NULL;
+        CCARRAY_FOREACH(m_pChildren, obj) {
+            CCRGBAProtocol *item = typeinfo_cast<CCRGBAProtocol*>(obj);
+            if (item) {
+                CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+                    
+                if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
+            }
+        }
+    }
+    _displayedOpacity = 0;
+}
 
 void MainMenuButton::setContentSize(const CCSize& size) {
     OsuClickableContainer::setContentSize(size);

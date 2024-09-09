@@ -28,11 +28,11 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     tooltipContainer = CCLayer::create();
     tooltipContainer->setAnchorPoint(ccp(0,1));
     tooltipContainer->setContentHeight(ToolbarConstants::TOOLTIP_HEIGHT);
-    text = OsuText(label.c_str(), FontType::Bold);
-    subtext = OsuText(sub.c_str(), FontType::Regular);
+    text = OsuText(label.c_str(), FontType::Bold, 14);
+    subtext = OsuText(sub.c_str(), FontType::Regular, 14);
     tooltipContainer->addChild(text);
     tooltipContainer->addChild(subtext);
-    tooltipContainer->setLayout(ColumnLayout::create()->setGap(2)->setAutoScale(false));
+    tooltipContainer->setLayout(ColumnLayout::create()->setGap(2)->setAutoScale(false)->setAxisReverse(true));
     addChild(tooltipContainer);
 
     setContentSizeWithUnit(CCSize(HEIGHT,HEIGHT),Unit::UIKit,Unit::UIKit);

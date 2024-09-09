@@ -11,6 +11,7 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
 }
 
 void ToolbarToggleButton::onClick(MouseEvent* event) {
+    ToolbarButton::onClick(event);
     if (toggled) deselect();
     else select();
 

@@ -42,6 +42,10 @@ bool OsuGame::init() {
         newWindowProcSet = true;
     }
 #endif
+    addListener("nodeLayoutUpdate",[this](NodeEvent* e){
+        screensContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
+        overlaysContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
+    });
     addListener("ogExitDidFinish", [this](NodeEvent* e){
         screensContainer->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
     });
@@ -54,16 +58,18 @@ bool OsuGame::init() {
 
 void OsuGame::showToolbar() {
     toolbar->show();
+    offset = screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false);
     screensContainer->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset)
     ));
     overlaysContainer->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-overlaysContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false))
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset)
     ));
 }
 
 void OsuGame::hideToolbar() {
     toolbar->hide();
+    offset = 0;
     screensContainer->runAction(CCEaseOutQuint::create(
         CCResizeTo::create(0.5,getContentWidth(),getContentHeight())
     ));

@@ -20,6 +20,7 @@ class Screen;
 // funny
 class OsuGame : public CCScene, public EventTarget {
 private:
+    float offset = 0;
     static OsuGame* instance;
 
     Toolbar* toolbar;
@@ -84,6 +85,10 @@ public:
 
     void checkForQueue();
 
+    void setContentSize(CCSize const& size) override {
+        CCScene::setContentSize(size);
+        dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
+    }
     // on android, this does nothing
     void updateTitle();
 

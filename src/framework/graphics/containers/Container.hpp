@@ -38,7 +38,16 @@ enum class Unit {
     UIKit
 };
 
-class InputHandlerImpl : public CCLayerColor, public EventTarget {
+namespace {
+    enum class ah {Left, Center, Right};
+    enum class av {Top, Center, Bottom};
+};
+
+class ContainerLayout;
+/// @brief CCLayer that implements some more shit
+///
+/// Works similar to the JavaScript event system
+class Container : public CCLayerColor, public EventTarget {
     bool m_entered = false;
     bool m_holding = false;
     bool m_clickEnabled = true;
@@ -70,18 +79,7 @@ public:
     bool getClickEnabled();
     void setHoverEnabled(bool state);
     bool getHoverEnabled();
-};
 
-namespace {
-    enum class ah {Left, Center, Right};
-    enum class av {Top, Center, Bottom};
-};
-
-class ContainerLayout;
-/// @brief CCLayer that implements some more shit
-///
-/// Works similar to the JavaScript event system
-class Container : public InputHandlerImpl {
 private:
     NodeEvent* queuedLayoutUpdate = nullptr;
 
