@@ -14,10 +14,6 @@ public:
     };
     void onClick(MouseEvent* e) override;
 
-    virtual void select() {
-        toggleBg->setOpacity(255);
-    }
-    virtual void deselect() {
-        toggleBg->setOpacity(0);
-    }
+    virtual void select() {};
+    virtual void deselect() {};
 };

@@ -31,6 +31,7 @@ bool EventTarget::listenersExists(NodeEvent* event) {
 bool EventTarget::dispatchEvent(NodeEvent* event) {
     bool ltExist = listenersExists(event);
     if (!ltExist) return true;
+    event->m_cancelled = false;
     for (auto i : m_listeners[event->eventName()]) {
         if (tryDispatch(i,event)) {
             return false;

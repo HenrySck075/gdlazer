@@ -47,6 +47,11 @@ class ContainerLayout;
 /// @brief CCLayer that implements some more shit
 ///
 /// Works similar to the JavaScript event system
+/// 
+/// @warning Opacity cascade is ENABLED by default! I spent like almost 1 hour fixing the opacity issue
+/// in ToolbarButton and the issue is opacity cascade is enabled
+///
+/// TODO: Add support for rounded corners
 class Container : public CCLayerColor, public EventTarget {
     bool m_entered = false;
     bool m_holding = false;
@@ -121,7 +126,7 @@ protected:
 
 public:
     void onEnter() override {
-        CCLayer::onEnter();
+        CCLayerColor::onEnter();
         if (queuedLayoutUpdate) {
             dispatchToChild(queuedLayoutUpdate);
             queuedLayoutUpdate->release();
@@ -200,7 +205,11 @@ public:
     void setSizeConstraints(CCSize const& minSize, CCSize const& maxSize);
     std::pair<CCSize, CCSize> getSizeConstraints() {return std::make_pair(minimumSize,maximumSize);};
 
-    void setPadding(Vector4 padding) {m_padding = padding;}
+    void setPadding(Vector4 padding) {
+        m_padding = padding;
+        dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::All));
+    }
+    Vector4 const& getPadding() {return m_padding;}
 
     // set the position unit that will be used to calculate the result position on the next `setPosition` call
     void setPositionUnit(Unit posUnitHorizontal, Unit posUnitVertical) {

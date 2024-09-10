@@ -186,8 +186,8 @@ void OsuGame::checkForQueue() {
 }
 
 bool OsuGame::dispatchEvent(NodeEvent* event) {
-    if (!isRunning()) return true;
     if (event->target() != nullptr) return false;
+    if (!this->isRunning()) return true;
     if (event->eventName().starts_with("og")) {
         EventTarget::dispatchEvent(event);
         return true;

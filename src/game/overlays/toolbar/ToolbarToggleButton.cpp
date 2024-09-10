@@ -4,16 +4,22 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
     ToolbarButton::init(icon, text, sub);
     toggleBg = Container::create();
     toggleBg->setColor(stateColor);
-    toggleBg->setPadding(Vector4(3));
     toggleBg->setContentSizeWithUnit(CCSize(100,100), Unit::Percent, Unit::Percent);
     toggleBg->setOpacity(0);
+    bgWrapper->addChild(toggleBg,-4);
     return true;
 }
 
 void ToolbarToggleButton::onClick(MouseEvent* event) {
     ToolbarButton::onClick(event);
-    if (toggled) deselect();
-    else select();
+    if (toggled) {
+        toggleBg->setOpacity(0);
+        deselect();
+    }
+    else {
+        toggleBg->setOpacity(255);
+        select();
+    }
 
     toggled = !toggled;
 }

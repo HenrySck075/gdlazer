@@ -283,7 +283,7 @@ void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     //if (resP.equals(oldP) && !resetContentSize()) nothingHappens = true;
     //if (nothingHappens) e->stopPropagation();
     resetContentSize();
-    CCNode::setPosition(resP+ccp(m_padding.t,m_padding.l));
+    CCNode::setPosition(resP+CCPoint{processUnit(m_padding.t, Unit::UIKit, true),processUnit(m_padding.l, Unit::UIKit, false)});
 };
 
 float Container::processUnit(float value, Unit unit, bool width) {
@@ -352,14 +352,12 @@ void Container::checkConstraints() {
 
 bool Container::resetContentSize() {
     auto newS = CCSize(
-        processUnit(m_size.width, m_sizeUnit.first, true),
-        processUnit(m_size.height,m_sizeUnit.second, false)
+        processUnit(m_size.width, m_sizeUnit.first, true) - processUnit(m_padding.l + m_padding.r, Unit::UIKit, true),
+        processUnit(m_size.height,m_sizeUnit.second, false) - processUnit(m_padding.t + m_padding.d, Unit::UIKit, false)
     );
     if (newS.equals(CCNode::getContentSize())) return false;
-    CCLayerColor::setContentSize(CCSize(
-        newS.width - processUnit(m_padding.l - m_padding.r, Unit::UIKit, true),
-        newS.height - processUnit(m_padding.t - m_padding.d, Unit::UIKit, false)
-    ));
+    CCLayerColor::setContentSize(newS);
+    // checkConstraints();
     m_sizeP = m_size;
     return true;
 }

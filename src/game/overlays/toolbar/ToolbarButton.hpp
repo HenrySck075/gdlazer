@@ -9,11 +9,11 @@ class ToolbarButton : public OsuClickableContainer {
     Container* bg;
     Container* flashBg;
 
-    CCLayer* tooltipContainer; 
+    CCLayerRGBA* tooltipContainer; 
     CCLabelTTF* text;
     CCLabelTTF* subtext;
 protected:
-    Vector4 m_padding = {3};
+    CCClippingNode* bgWrapper;
 public:
     std::string sfx = "toolbar-select.wav";
     bool init(IconConstructor icon, std::string text, std::string sub);

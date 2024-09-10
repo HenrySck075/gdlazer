@@ -105,7 +105,6 @@ class $modify(Camila, LoadingLayer) {
         this->setAnchorPoint({0,2});
         this->ignoreAnchorPointForPosition(false);
         
-        #if 0
         this->schedule(schedule_selector(Camila::updateSmallTextLabel));
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -117,7 +116,6 @@ class $modify(Camila, LoadingLayer) {
         m_fields->m_smallLabel2->setPosition(winSize-CCPoint{30,-22-winSize.height});
         m_fields->m_smallLabel2->setAnchorPoint({1,0});
         addChild(m_fields->m_smallLabel2);
-        #endif
         return res;
     }
     void updateSmallTextLabel(float the) {

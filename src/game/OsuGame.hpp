@@ -86,7 +86,7 @@ public:
     void checkForQueue();
 
     void setContentSize(CCSize const& size) override {
-        CCScene::setContentSize(size);
+        CCNode::setContentSize(size);
         dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
     }
     // on android, this does nothing

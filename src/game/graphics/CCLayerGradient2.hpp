@@ -45,7 +45,8 @@ public:
             setEndColor(color);
             return;
         }
-        m_targetColorUpdate == CCLG2Target::Start ? setStartColor(color) : setEndColor(color);
+        if (m_targetColorUpdate == CCLG2Target::Start) setStartColor(color);
+        else setEndColor(color);
     }
     void setOpacity(GLubyte opacity) override {
         if (m_targetOpacityUpdate == CCLG2Target::Both) {
@@ -53,6 +54,15 @@ public:
             setEndOpacity(opacity);
             return;
         }
-        m_targetOpacityUpdate == CCLG2Target::Start ? setStartOpacity(opacity) : setEndOpacity(opacity);
+        if (m_targetOpacityUpdate == CCLG2Target::Start) setStartOpacity(opacity);
+        else setEndOpacity(opacity);
+    }
+    GLubyte getOpacity() override {
+        if (m_targetOpacityUpdate == CCLG2Target::Start) return getStartOpacity();
+        else return getEndOpacity();
+    }
+    const ccColor3B& getColor() override {
+        if (m_targetColorUpdate == CCLG2Target::Start) return getStartColor();
+        else return getEndColor();
     }
 };

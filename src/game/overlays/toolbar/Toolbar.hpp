@@ -6,6 +6,7 @@
 #include "../../graphics/OsuColor.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
+#include "../../../helpers/CustomActions.hpp"
 
 using namespace geode::prelude;
 
@@ -23,11 +24,24 @@ public:
 
     void show();
     void hide();
+    /// The docstring for the HoverInterceptor in the osu! repo is this:
+
+    /// <summary>
+    /// Whenever the mouse cursor is within the bounds of the toolbar, we want the background gradient to show, for toolbar button descriptions to be legible.
+    /// Unfortunately we also need to ensure that the toolbar buttons handle hover, to prevent the possibility of multiple descriptions being shown
+    /// due to hover events passing through multiple buttons.
+    /// This drawable is a workaround, that when placed front-most in the toolbar, allows to see whether hover events have been propagated through it without handling them.
+    /// </summary>
+
+    /// Genuinely speaking, it would be better to handle inputs in the visible boundary
+    /// (like excluding the padding portion), and it will solve the problem.
 
     void onMouseEnter() override {
-        gradient->runAction(CCFadeTo::create(0.5,255));
+        gradient->stopAllActions();
+        gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(2.5,255)));
     }
     void onMouseExit() override {
-        gradient->runAction(CCFadeTo::create(0.5,0));
+        gradient->stopAllActions();
+        gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(0.2,0)));
     }
 };

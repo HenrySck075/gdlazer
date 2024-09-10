@@ -1,5 +1,4 @@
 #include "Toolbar.hpp"
-#include "../../../helpers/CustomActions.hpp"
 #include "ToolbarButton.hpp"
 
 #include "ToolbarButtons.hpp"
@@ -15,11 +14,12 @@ bool Toolbar::init() {
     this->setPositionY(-HEIGHT);
     this->setAnchor(Anchor::Top);
 
-    auto j = processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false);
+    //auto j = processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false);
+    auto j = TOOLTIP_HEIGHT;
     gradient = CCLayerGradient2::create(ccc4(0,0,0,0),ccc4(0,0,0,0),{0,1},CCLG2Target::Start);
     gradient->setAnchorPoint({0,1});// keeping it at the bottom
     gradient->ignoreAnchorPointForPosition(false);
-    //gradient->setPosition({0,-processUnit(HEIGHT,Unit::UIKit,false)});
+    gradient->setPosition({0,-j});
     gradient->setScaleY(-1);
     addListener("nodeLayoutUpdate",[this,j](NodeEvent*e){
         gradient->setContentSize({CCNode::getContentSize().width,j});
