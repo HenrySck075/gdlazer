@@ -89,25 +89,46 @@ concept is_screen = std::is_class_v<Screen>;
 template<typename T>
 concept is_overlay = std::is_class_v<OverlayContainer>;
 */
-void OsuGame::pushScreen(Container* screen_or_overlay) {
+void OsuGame::pushScreen(Screen* s) {
     Screen* ls = nullptr;
-    if (auto s = dynamic_cast<Screen*>(screen_or_overlay)) {
-        if (screenStack.size()!=0) {
-            ls = screenStack[screenStack.size()-1];
-        }
-        auto e = ScreenTransitionEvent(ls,s);
-        if (ls) ls->onExiting(e);
-        screensContainer->addChild(s);
-        s->onEntering(e);
-        screenStack.push_back(s);
-        current = s;
-    } else if (auto o = dynamic_cast<OverlayContainer*>(screen_or_overlay)) {
-        overlaysContainer->addChild(o);
-        o->onOpen();
-        current = o;
+    if (screenStack.size()!=0) {
+        ls = screenStack[screenStack.size()-1];
     }
+    auto e = ScreenTransitionEvent(ls,s);
+    if (ls) ls->onExiting(e);
+    screensContainer->addChild(s);
+    s->onEntering(e);
+    screenStack.push_back(s);
+    current = s;
 
     updateTitle();
+}
+void OsuGame::pushOverlay(OverlayContainer* o) {
+    overlaysContainer->addChild(o);
+    o->onOpen();
+}
+OverlayContainer* OsuGame::popOverlay() {return popManyOverlays(1);}
+OverlayContainer* OsuGame::popManyOverlays(int amount) {
+    CCArrayExt<OverlayContainer*> oc = overlaysContainer->getChildren();
+    if (oc.size()==0) {
+        return nullptr;
+    }
+    bool schedulePause = oc.size()==1;
+    OverlayContainer* cs = oc[oc.size()-1];
+    OverlayContainer* s = nullptr;
+    for (;amount>0;amount--) {
+        if (oc.size()!=0) {
+            auto s = oc.pop_back();
+            overlayPopQueue.push_back(s);
+        }
+        else break;
+    }
+    OverlayContainer* ps = nullptr;
+    if (oc.size()!=0) ps = oc[oc.size()-1];
+    
+    current = ps;
+
+    return s;
 }
 
 Screen* OsuGame::popManyScreens(int amount) {
@@ -115,25 +136,20 @@ Screen* OsuGame::popManyScreens(int amount) {
         return nullptr;
     }
     bool schedulePause = screenStack.size()==1;
+    Screen* cs = screenStack[screenStack.size()-1];
     Screen* s = nullptr;
-    auto oc = overlaysContainer->getChildren();
-    int count = oc ? oc->count() : 0;
     for (;amount>0;amount--) {
-        if (count!=0) {
-            auto c = static_cast<OverlayContainer*>(oc->objectAtIndex(count-1));
-            c->onClose();
-            overlayPopQueue.push_back(c);
-            count--;
+        if (screenStack.size()!=0) {
+            auto s = screenStack.pop_back();
+            screenPopQueue.push_back(s);
         }
-        else if (screenStack.size()!=0) s = screenStack.pop_back();
         else break;
     }
     Screen* ps = nullptr;
     if (screenStack.size()!=0) ps = screenStack[screenStack.size()-1];
     
-    ScreenTransitionEvent event = {s,ps};
-    s->onExiting(event);
-    screenPopQueue.push_back(s);
+    ScreenTransitionEvent event = {cs,ps};
+    for (auto* i : screenPopQueue) {}
     if (ps!=nullptr) ps->onEntering(event);
     current = ps;
     if (schedulePause) m_pActionManager->pauseTarget(this);
@@ -149,7 +165,7 @@ template<typename T>
 T* OsuGame::popUntilScreenType() {
     int idx = 0;
     for (Screen* s : screenStack) {
-        if (dynamic_cast<T*>(s)) return popManyScreens(screenStack.size()-idx+overlaysContainer->getChildrenCount());
+        if (dynamic_cast<T*>(s)) return popManyScreens(screenStack.size()-idx);
         idx++;
     }
     return nullptr; // nada

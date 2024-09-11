@@ -74,9 +74,12 @@ public:
     void showToolbar();
     void hideToolbar();
 
-    void pushScreen(Container* s);
+    void pushScreen(Screen* s);
     Screen* popManyScreens(int amount = 1);
     Screen* popScreen();
+    void pushOverlay(OverlayContainer* o);
+    OverlayContainer* popManyOverlays(int amount = 1);
+    OverlayContainer* popOverlay();
     template<typename T>
     T* popUntilScreenType();
 
