@@ -9,6 +9,7 @@ public:
         create_class(ToolbarSettingsButton, init, OsuIcon::Settings, "Settings", "the", ccColor3B(205,29,72));
     }
     void select() override;
+    void deselect() override;
 };
 
 class ToolbarHomeButton : public ToolbarButton {

@@ -54,6 +54,9 @@ bool OsuGame::init() {
     overlaysContainer->addChild(CCNode::create());
     overlaysContainer->removeAllChildren();
 
+    overlaysContainer->setCascadeOpacityEnabled(false);
+    screensContainer->setCascadeOpacityEnabled(false);
+
     auto curSize = getContentSize();
     screensContainer->setContentSize(curSize);
     overlaysContainer->setContentSize(curSize);
@@ -89,7 +92,7 @@ void OsuGame::hideToolbar() {
 
 void OsuGame::showSettings() {
     pushOverlay(overlays["settings"]);
-    screensContainer->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,SettingsPanel::WIDTH/2})));
+    screensContainer->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {(float)SettingsSidebar::EXPANDED_WIDTH/4,0})));
 }
 void OsuGame::hideSettings() {
     // i hope so
@@ -200,20 +203,21 @@ void OsuGame::onFocus() {
 }
 
 void OsuGame::checkForQueue() {
-    std::vector<Screen*> e;
+    auto i = screenPopQueue.inner();
     for (auto* s : screenPopQueue) {
         if (m_pActionManager->numberOfRunningActionsInTarget(s) == 0) {
             screensContainer->removeChild(s);
-            e.push_back(s);
-        }
-    };
-    if (e.size()!=0) {
-        auto i = screenPopQueue.inner();
-        for (auto*s : screenPopQueue) {
             i->removeObject(s);
         }
-    }
+    };
 
+    auto i2 = overlayPopQueue.inner();
+    for (auto* o : overlayPopQueue) {
+        if (m_pActionManager->numberOfRunningActionsInTarget(o) == 0) {
+            overlaysContainer->removeChild(o);
+            i2->removeObject(o);
+        }
+    };
 }
 
 bool OsuGame::dispatchEvent(NodeEvent* event) {

@@ -90,6 +90,10 @@ class $modify(nPauseLayer,PauseLayer) {
     }
 };
 
+class AssetsLoadedEvent : public Event {
+public:
+    AssetsLoadedEvent() {};
+};
 
 #include <Geode/modify/LoadingLayer.hpp>
 #include "game/graphics/ui/OsuText.hpp"
@@ -97,7 +101,7 @@ class $modify(Camila, LoadingLayer) {
     struct Fields {
         CCLabelTTF* m_smallLabel = nullptr;
         CCLabelTTF* m_smallLabel2 = nullptr;
-        int prog = 0; // could be m_loadStep
+        bool j = false;
     };
     bool init(bool idk) {
         bool res = LoadingLayer::init(idk);
@@ -117,6 +121,13 @@ class $modify(Camila, LoadingLayer) {
         m_fields->m_smallLabel2->setAnchorPoint({1,0});
         addChild(m_fields->m_smallLabel2);
         return res;
+    }
+    void updateProgress(int p0) {
+        LoadingLayer::updateProgress(p0);
+        if (p0 > 0) {
+            if (!m_fields->j) AssetsLoadedEvent().post();
+            m_fields->j = true;
+        }
     }
     void updateSmallTextLabel(float the) {
         auto sl1 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"));
@@ -315,8 +326,7 @@ CCPoint lastKnownCursorPos = ccp(0,0);
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(meowview, CCEGLView) {
     // it's all fucking black magic
-    // type: ModifyBase<ModifyDerive<meowview,CCEGLView>>
-    static void onModify(auto& self) {
+    static void onModify(ModifyBase<ModifyDerive<meowview,CCEGLView>>& self) {
         if (auto mmc = self.getHook("cocos2d::CCEGLView::onGLFWMouseMoveCallBack")) {
             mmc.unwrap()->setAutoEnable(false);
             mmc.unwrap()->disable();
@@ -324,6 +334,10 @@ class $modify(meowview, CCEGLView) {
         if (auto mc = self.getHook("cocos2d::CCEGLView::onGLFWMouseCallBack")) {
             mc.unwrap()->setAutoEnable(false);
             mc.unwrap()->disable();
+        }
+        if (auto wsfc = self.getHook("cocos2d::CCEGLView::onGLFWWindowSizeFunCallback")) {
+            wsfc.unwrap()->setAutoEnable(false);
+            wsfc.unwrap()->disable();
         }
     }
     CCPoint getMousePosition() {return lastKnownCursorPos;}
@@ -361,7 +375,7 @@ class $modify(meowview, CCEGLView) {
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
 class $modify(catdispatch, CCKeyboardDispatcher) {
     static void onModify(ModifyBase<ModifyDerive<catdispatch,CCKeyboardDispatcher>>& self) {
-        if (auto e = self.getHook("CCKeyboardDispatcher::dispatchKeyboardMSG")) {
+        if (auto e = self.getHook("cocos2d::CCKeyboardDispatcher::dispatchKeyboardMSG")) {
             e.unwrap()->setAutoEnable(false);
         }
     }
@@ -400,9 +414,13 @@ class $modify(CCTouchDelegate) {
 
 #endif 
 
-$on_mod(DataLoaded) {
-    for (auto* hook : Mod::get()->getHooks()) {
-        if (hook->getDisplayName().starts_with("cocos2d::CCEGLView")) hook->enable();
-    }
-    log::info("[main.cpp]: ohui;wgrsohnujigrw; huioegrswiju rsehgilvureswilugbhviulers hdfliugbnv esilrudfbd hiluersf dhbgivjkuersd bghliv.ujsgehbrfdglviujehsurbdfkljbvdhsflgkuas hlgriu hawelrsigu vbaesrdf jkl");
+$execute {
+    new EventListener<EventFilter<AssetsLoadedEvent>>(+[](AssetsLoadedEvent* e){
+        for (auto* hook : Mod::get()->getHooks()) {
+            if (hook->getDisplayName().starts_with("cocos2d::CCEGLView")) hook->enable();
+            if (hook->getDisplayName().starts_with("cocos2d::CCKeyboardDispatcher")) hook->enable();
+        }
+        log::info("[main.cpp]: Enabled input hooks for henrysck075.osulazer (previously disabled to prevent crashes because of quirky setups)");
+        return ListenerResult::Propagate;
+    });
 }

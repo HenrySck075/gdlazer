@@ -45,8 +45,6 @@ private:
     // preloaded overlays
     CCDictionaryExt<std::string, OverlayContainer*> overlays;
 public:
-    // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
-    // (its not scary most users dont leave their pc overnight anyways)
     static OsuGame* get() {
         if (instance == nullptr) {
             OsuGame* ret = new OsuGame(); 
