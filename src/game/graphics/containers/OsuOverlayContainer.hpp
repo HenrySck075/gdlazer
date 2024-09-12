@@ -6,10 +6,10 @@
 class OsuOverlayContainer : public OverlayContainer {
 public:
     void show() override {
-        OsuGame::get()->pushScreen(this);
+        OsuGame::get()->pushOverlay(this);
     }
     void hide() override {
-        // not really reliable
-        OsuGame::get()->popScreen();
+        // TODO: f
+        OsuGame::get()->popOverlay();
     }
 };

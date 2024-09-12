@@ -1,6 +1,7 @@
 #include "OsuGame.hpp"
 #include "../helpers/CustomActions.hpp"
 #include "overlays/toolbar/ToolbarConstants.hpp"
+#include "overlays/SettingsPanel.hpp"
 
 #include "../framework/graphics/containers/OverlayContainer.hpp"
 #ifdef GEODE_IS_WINDOWS
@@ -56,6 +57,10 @@ bool OsuGame::init() {
     auto curSize = getContentSize();
     screensContainer->setContentSize(curSize);
     overlaysContainer->setContentSize(curSize);
+
+
+    // preload overlays
+    overlays["settings"] = SettingsPanel::create();
     return true;
 
 }
@@ -82,6 +87,16 @@ void OsuGame::hideToolbar() {
     ));
 }
 
+void OsuGame::showSettings() {
+    pushOverlay(overlays["settings"]);
+    screensContainer->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,SettingsPanel::WIDTH/2})));
+}
+void OsuGame::hideSettings() {
+    // i hope so
+    popOverlay();
+    screensContainer->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0})));
+}
+
 /*
 template<typename T>
 concept is_screen = std::is_class_v<Screen>;
@@ -105,36 +120,36 @@ void OsuGame::pushScreen(Screen* s) {
 }
 void OsuGame::pushOverlay(OverlayContainer* o) {
     overlaysContainer->addChild(o);
+    overlayStack.push_back(o);
     o->onOpen();
 }
 OverlayContainer* OsuGame::popOverlay() {return popManyOverlays(1);}
 OverlayContainer* OsuGame::popManyOverlays(int amount) {
-    CCArrayExt<OverlayContainer*> oc = overlaysContainer->getChildren();
-    if (oc.size()==0) {
+    if (overlayStack.size()==0) {
         return nullptr;
     }
-    bool schedulePause = oc.size()==1;
-    OverlayContainer* cs = oc[oc.size()-1];
+    OverlayContainer* cs = overlayStack[overlayStack.size()-1];
     OverlayContainer* s = nullptr;
     for (;amount>0;amount--) {
-        if (oc.size()!=0) {
-            auto s = oc.pop_back();
+        if (overlayStack.size()!=0) {
+            auto s = overlayStack.pop_back();
             overlayPopQueue.push_back(s);
         }
         else break;
     }
     OverlayContainer* ps = nullptr;
-    if (oc.size()!=0) ps = oc[oc.size()-1];
+    if (overlayStack.size()!=0) ps = overlayStack[overlayStack.size()-1];
     
     current = ps;
 
     return s;
 }
 
-Screen* OsuGame::popManyScreens(int amount) {
+Screen* OsuGame::popManyScreens(int amount, bool popOverlays) {
     if (screenStack.size()==0) {
         return nullptr;
     }
+    if (popOverlays) popManyOverlays(overlaysContainer->getChildrenCount());
     bool schedulePause = screenStack.size()==1;
     Screen* cs = screenStack[screenStack.size()-1];
     Screen* s = nullptr;
@@ -159,7 +174,7 @@ Screen* OsuGame::popManyScreens(int amount) {
     return s;
 }
 
-Screen* OsuGame::popScreen() {return popManyScreens(1);}
+Screen* OsuGame::popScreen(bool popOverlays) {return popManyScreens(1,popOverlays);}
 
 template<typename T>
 T* OsuGame::popUntilScreenType() {

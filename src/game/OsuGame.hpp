@@ -30,7 +30,7 @@ private:
     Container* screensContainer;
     Container* overlaysContainer;
     CCArrayExt<OverlayContainer*> overlayPopQueue;
-
+    CCArrayExt<OverlayContainer*> overlayStack;
 
     float bgVol = 1;
     float sfxVol = 1;
@@ -41,6 +41,9 @@ private:
     // 
     // can be overlay or screen
     Container* current = nullptr;
+  
+    // preloaded overlays
+    CCDictionaryExt<std::string, OverlayContainer*> overlays;
 public:
     // TODO: RELEASE ON GAME EXIT (if anyone caused a game crash or close via the console then FEAR THE LEAK)
     // (its not scary most users dont leave their pc overnight anyways)
@@ -74,9 +77,12 @@ public:
     void showToolbar();
     void hideToolbar();
 
+    void showSettings();
+    void hideSettings();
+
     void pushScreen(Screen* s);
-    Screen* popManyScreens(int amount = 1);
-    Screen* popScreen();
+    Screen* popManyScreens(int amount = 1, bool popOverlays = true);
+    Screen* popScreen(bool popOverlays = true);
     void pushOverlay(OverlayContainer* o);
     OverlayContainer* popManyOverlays(int amount = 1);
     OverlayContainer* popOverlay();

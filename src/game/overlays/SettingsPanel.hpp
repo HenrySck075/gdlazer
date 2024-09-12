@@ -1,21 +1,32 @@
 #pragma once
 
 #include "../graphics/containers/OsuOverlayContainer.hpp"
-
+#include "../../utils.hpp"
+#include "settings/SettingsSidebar.hpp"
 
 class SettingsPanel : public OsuOverlayContainer {
-    float const TRANSITION_LENGTH = 0.6;
-    /// what this doin
-    float ExpandedPosition = 0;
-    float const PANEL_WIDTH = 7;
-    float const SIDEBAR_WIDTH = 400;
-    float const WIDTH = PANEL_WIDTH + SIDEBAR_WIDTH;
 public:
+    const float CONTENT_MARGINS = 20;
+
+    static const float TRANSITION_LENGTH;
+
+    private: static const float sidebar_width;
+
+public: 
+    /// <summary>
+    /// The width of the settings panel content, excluding the sidebar.
+    /// </summary>
+    static const float PANEL_WIDTH;
+
+    /// <summary>
+    /// The full width of the settings panel, including the sidebar.
+    /// </summary>
+    static const float WIDTH;
+
+    bool init();
     static SettingsPanel* create() {
         create_class(SettingsPanel, init);
     }
-    bool init();
-
     void onOpen() override;
     void onClose() override;
 };
