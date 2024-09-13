@@ -211,23 +211,23 @@ class $modify(MyMenuLayer, MenuLayer) {
     }
 };
 /*
-#include <Geode/modify/CCTouchDelegate.hpp>
-class $modify(CCTouchDelegate) {
+#include <Geode/modify/CCTouchDispatcher.hpp>
+class $modify(CCTouchDispatcher) {
     bool ccTouchBegan(CCTouch * t, CCEvent * e) {
-        log::debug("[hook: CCTouchDelegate]: ccTouchBegan");
-        return CCTouchDelegate::ccTouchBegan(t, e);
+        log::debug("[hook: CCTouchDispatcher]: ccTouchBegan");
+        return CCTouchDispatcher::ccTouchBegan(t, e);
     }
     void ccTouchEnded(CCTouch * t, CCEvent * e) {
-        log::debug("[hook: CCTouchDelegate]: ccTouchEnded");
-        CCTouchDelegate::ccTouchEnded(t, e);
+        log::debug("[hook: CCTouchDispatcher]: ccTouchEnded");
+        CCTouchDispatcher::ccTouchEnded(t, e);
     }
     void ccTouchesBegan(CCSet * t, CCEvent * e) {
-        log::debug("[hook: CCTouchDelegate]: ccTouchesBegan");
-        CCTouchDelegate::ccTouchesBegan(t, e);
+        log::debug("[hook: CCTouchDispatcher]: ccTouchesBegan");
+        CCTouchDispatcher::ccTouchesBegan(t, e);
     }
     void ccTouchesEnded(CCSet * t, CCEvent * e) {
-        log::debug("[hook: CCTouchDelegate]: ccTouchesEnded");
-        CCTouchDelegate::ccTouchesEnded(t, e);
+        log::debug("[hook: CCTouchDispatcher]: ccTouchesEnded");
+        CCTouchDispatcher::ccTouchesEnded(t, e);
     }
 };
 class BeatUpdater : public CCNode {
@@ -317,8 +317,8 @@ class $modify(CCLayerRGBA) {
 #include "framework/input/events/KeyEvent.hpp"
 #include "framework/input/events/MouseEvent.hpp"
 
-#ifndef GEODE_IS_ANDROID
-
+//#ifndef GEODE_IS_ANDROID
+#if 0
 // fields does not work on non-CCNode :pensive:
 bool m_click = false;
 CCPoint lastKnownCursorPos = ccp(0,0);
@@ -393,24 +393,23 @@ class $modify(catdispatch, CCKeyboardDispatcher) {
 };
 
 #else
-#include <Geode/modify/CCTouchDelegate.hpp>
-class $modify(CCTouchDelegate) {
+#include <Geode/modify/CCTouchDispatcher.hpp>
+class $modify(the,CCTouchDispatcher) {
     void broadcastPos(MouseEventType type, CCPoint pos) {
         OsuGame::get()->dispatchEvent(new MouseEvent(type,pos));
     };
-    void ccTouchesMoved(CCSet* t, CCEvent* e) {
-        CCTouchDelegate::ccTouchesMoved(t, e);
-        if (t->count()!=0) broadcastPos(MouseEventType::Move,static_cast<CCTouch*>(t->anyObject())->getLocation());
+    void touches(CCSet * t, CCEvent * e, unsigned int idx) {
+        CCTouchDispatcher::touches(t, e, idx);
+        MouseEventType type;
+        switch(idx) {
+            case CCTOUCHBEGAN: type = MouseEventType::MouseDown; break;
+            case CCTOUCHMOVED: type = MouseEventType::Move; break;
+            case CCTOUCHENDED: 
+            case CCTOUCHCANCELLED: type = MouseEventType::MouseUp; break;
+        }
+        the::broadcastPos(type,static_cast<CCTouch*>(*t->begin())->getLocation());
     }
-    void ccTouchesBegan(CCSet* t, CCEvent* e) { 
-        CCTouchDelegate::ccTouchesBegan(t, e);
-        if (t->count()!=0) broadcastPos(MouseEventType::MouseDown,static_cast<CCTouch*>(t->anyObject())->getLocation());
-    }
-    void ccTouchesEnded(CCSet* t, CCEvent* e) { 
-        CCTouchDelegate::ccTouchesEnded(t, e);
-        if (t->count()!=0) broadcastPos(MouseEventType::MouseUp,static_cast<CCTouch*>(t->anyObject())->getLocation());
-    }
-};
+   };
 
 #endif 
 
@@ -419,6 +418,7 @@ $execute {
         for (auto* hook : Mod::get()->getHooks()) {
             if (hook->getDisplayName().starts_with("cocos2d::CCEGLView")) hook->enable();
             if (hook->getDisplayName().starts_with("cocos2d::CCKeyboardDispatcher")) hook->enable();
+            if (hook->getDisplayName().starts_with("cocos2d::CCTouchDispatcher")) hook->enable();
         }
         log::info("[main.cpp]: Enabled input hooks for henrysck075.osulazer (previously disabled to prevent crashes because of quirky setups)");
         return ListenerResult::Propagate;

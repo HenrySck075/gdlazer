@@ -46,7 +46,7 @@ void Container::initHandler() {
                 event->preventDefault();
         }
         int type2 = (int)type;
-        if (type == MouseEventType::MouseUp && m_entered) {
+        if (type == MouseEventType::MouseUp && m_entered) { //&& boundingBoxFromContentSize(this).containsPoint(mouseDownPos)) {
             type2 = MouseEventType::Click;
         }
         else if (type == MouseEventType::Move) {

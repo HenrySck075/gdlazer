@@ -2,6 +2,7 @@
 #include "ButtonArea.hpp"
 #include "../../graphics/OsuIcon.hpp"
 #include "../../overlays/dialog/PopupDialog.hpp"
+#include "../../overlays/toolbar/ToolbarToggleButton.hpp"
 
 class SongSelect;
 #include "../select/SongSelect.hpp"
@@ -192,7 +193,9 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "osu-logo-downbeat.wav"_spr, 
             OsuIcon::Settings, 
             Color4(85, 85, 85, 255), 
-            [this](CCNode*j){this->m_menuLayerPtr->openOptions(false);}
+            [this](CCNode*j){
+                static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->select();
+            }
         ),
         MainMenuButton::create(
             "Play", 

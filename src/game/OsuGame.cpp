@@ -61,9 +61,11 @@ bool OsuGame::init() {
     screensContainer->setContentSize(curSize);
     overlaysContainer->setContentSize(curSize);
 
-
     // preload overlays
     overlays["settings"] = SettingsPanel::create();
+
+    // j
+    scheduleUpdate();
     return true;
 
 }
@@ -136,14 +138,17 @@ OverlayContainer* OsuGame::popManyOverlays(int amount) {
     for (;amount>0;amount--) {
         if (overlayStack.size()!=0) {
             auto s = overlayStack.pop_back();
-            overlayPopQueue.push_back(s);
+            s->onClose();
+            if (m_pActionManager->numberOfRunningActionsInTarget(s)!=0) overlayPopQueue.push_back(s);
+            else overlaysContainer->removeChild(s);
         }
         else break;
     }
     OverlayContainer* ps = nullptr;
     if (overlayStack.size()!=0) ps = overlayStack[overlayStack.size()-1];
     
-    current = ps;
+    if (ps) current = ps;
+    else current = *(screenStack.begin()+screenStack.size()-1);
 
     return s;
 }

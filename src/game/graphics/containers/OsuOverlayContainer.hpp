@@ -12,4 +12,7 @@ public:
         // TODO: f
         OsuGame::get()->popOverlay();
     }
+    void onClick(MouseEvent* e) override {
+        if (!boundingBoxFromContentSize(main).containsPoint(e->position)) OsuGame::get()->popOverlay();
+    }
 };
