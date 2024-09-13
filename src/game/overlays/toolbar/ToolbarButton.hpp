@@ -15,7 +15,6 @@ class ToolbarButton : public OsuClickableContainer {
 protected:
     CCClippingNode* bgWrapper;
 public:
-    std::string sfx = "toolbar-select.wav";
     bool init(IconConstructor icon, std::string text, std::string sub);
     void onMouseEnter() override;
     void onMouseExit() override;

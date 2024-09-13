@@ -47,9 +47,6 @@ bool OsuGame::init() {
         screensContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
         overlaysContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
     });
-    addListener("ogExitDidFinish", [this](NodeEvent* e){
-        screensContainer->removeChild(static_cast<ScreenTransitionNotifier*>(e)->caller);
-    });
     // making m_pChildren non-nullptr
     overlaysContainer->addChild(CCNode::create());
     overlaysContainer->removeAllChildren();
@@ -94,12 +91,10 @@ void OsuGame::hideToolbar() {
 
 void OsuGame::showSettings() {
     pushOverlay(overlays["settings"]);
-    screensContainer->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {(float)SettingsSidebar::EXPANDED_WIDTH/4,0})));
 }
 void OsuGame::hideSettings() {
     // i hope so
     popOverlay();
-    screensContainer->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0})));
 }
 
 /*
@@ -127,6 +122,7 @@ void OsuGame::pushOverlay(OverlayContainer* o) {
     overlaysContainer->addChild(o);
     overlayStack.push_back(o);
     o->onOpen();
+    current = o;
 }
 OverlayContainer* OsuGame::popOverlay() {return popManyOverlays(1);}
 OverlayContainer* OsuGame::popManyOverlays(int amount) {

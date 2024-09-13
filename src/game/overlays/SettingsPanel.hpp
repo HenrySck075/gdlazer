@@ -29,4 +29,5 @@ public:
     }
     void onOpen() override;
     void onClose() override;
+    void onDismiss() override;
 };

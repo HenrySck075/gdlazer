@@ -10,6 +10,8 @@ public:
     bool init() {
         if (!Container::init()) return false;
         main = Container::create();
+        main->setContentSize({0,0});
+        addChild(main);
         setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
         return true;
     }
@@ -18,4 +20,11 @@ public:
 
     virtual void show() = 0;
     virtual void hide() = 0;
+
+    void onClick(MouseEvent* e) override {
+        auto j = boundingBoxFromContentSize(main);
+        log::debug("[OverlayContainer]: {} | {}", j, j.containsPoint(e->position));
+        if (!j.containsPoint(e->position)) onDismiss();
+    }
+    virtual void onDismiss() {hide();}
 };

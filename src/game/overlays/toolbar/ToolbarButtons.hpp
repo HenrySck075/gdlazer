@@ -2,11 +2,16 @@
 
 #include "ToolbarButton.hpp"
 #include "ToolbarToggleButton.hpp"
+#include "../../../framework/input/events/KeyEvent.hpp"
 
 class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
     bool init() {
         setID("settings");
+        addListener("keyboardEvent",[this](NodeEvent* ev){
+            auto e = static_cast<KeyboardEvent*>(ev);
+            if (e->key.ctrl && e->key.key == enumKeyCodes::KEY_O) select();
+        });
         return ToolbarToggleButton::init(OsuIcon::Settings, "Settings", "the", {205,29,72});
     }
     static ToolbarSettingsButton* create() {

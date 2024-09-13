@@ -317,8 +317,7 @@ class $modify(CCLayerRGBA) {
 #include "framework/input/events/KeyEvent.hpp"
 #include "framework/input/events/MouseEvent.hpp"
 
-//#ifndef GEODE_IS_ANDROID
-#if 0
+#ifndef GEODE_IS_ANDROID
 // fields does not work on non-CCNode :pensive:
 bool m_click = false;
 CCPoint lastKnownCursorPos = ccp(0,0);

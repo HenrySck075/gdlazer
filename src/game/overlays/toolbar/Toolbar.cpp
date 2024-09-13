@@ -31,7 +31,7 @@ bool Toolbar::init() {
     left->addChild(ToolbarHomeButton::create());
 
     // this will cause issues
-    left->setLayout(RowLayout::create()->setAutoScale(false));
+    left->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::Start)->setGap(-0.5));
     left->setAnchorPoint({0,0});
 
 #ifdef GEODE_IS_ANDROID

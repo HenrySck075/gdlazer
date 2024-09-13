@@ -13,11 +13,9 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
 void ToolbarToggleButton::onClick(MouseEvent* event) {
     ToolbarButton::onClick(event);
     if (toggled) {
-        toggleBg->setOpacity(0);
         deselect();
     }
     else {
-        toggleBg->setOpacity(255);
         select();
     }
 

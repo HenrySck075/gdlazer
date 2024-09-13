@@ -14,28 +14,6 @@ bool OsuClickableContainer::init(std::string clickSfx) {
     //this->setCascadeOpacityEnabled(true);
     
     //CCNodeHover::init();
-    /*
-    //CCDirector::sharedDirector()->getTouchDispatcher()->addStandardDelegate(this, -4566);
-    m_clickListener = this->template addEventListener<MouseFilter>([this,self](MouseType type, CCPoint location) {
-        if (isReallyVisible() && clickEnabled) {
-            if (type == MouseType::MouseDown) {
-                this->onMouseDown();
-                return true;
-            };
-            if (type == MouseType::MouseUp) {
-                this->onMouseUp();
-                return true;
-            };
-            if (type == MouseType::Click) {
-                FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx.c_str());
-                this->onClick();
-                this->clickCallback(self);
-                return true;
-            };
-        }
-        return false;
-    },true);
-    */
     return true;
 }
 
