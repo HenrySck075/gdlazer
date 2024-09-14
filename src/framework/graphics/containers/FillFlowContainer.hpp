@@ -25,7 +25,7 @@ public:
         auto node = static_cast<Container*>(on);
 
         auto constraint = node->getSizeConstraints().second;
-        CCSize size = CCSize(0,0);
+        CCSize size = {0,0};
         for (auto c : nodes) {
             //log::debug("[FillFlowLayout]: {}",size.height);
             if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
@@ -33,13 +33,14 @@ public:
             }
             c->setAnchor(Anchor::TopLeft);
             c->setPosition(ccp(0,0));
+            c->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
             c->setAnchorPoint(ccp(0,1));
-            auto cs = c->getContentSize();
-            c->CCNode::setPositionY(size.height);
+            auto cs = c->CCNode::getContentSize();
+            c->setPosition({0,size.height});
             auto ns = size.height+cs.height;
             size.height = constraint.height!=0?std::min(constraint.height, ns):ns;
         }
-        size.width = node->getContentSize().width;
+        size.width = node->CCNode::getContentSize().width;
         node->CCNode::setContentSize(size);
     };
 };

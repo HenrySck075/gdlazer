@@ -73,6 +73,7 @@ public:
     virtual void onMouseEnter() {};
     virtual void onMouseExit() {};
     virtual void onMouseMove(MouseEvent* event) {};
+    virtual void onMouseScroll(MouseEvent* event) {};
     virtual void onMouseUp(MouseEvent* event) {};
     virtual void onMouseDown(MouseEvent* event) {};
     virtual void onDragStart(MouseDragEvent* event) {};

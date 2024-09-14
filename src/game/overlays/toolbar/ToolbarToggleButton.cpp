@@ -18,6 +18,4 @@ void ToolbarToggleButton::onClick(MouseEvent* event) {
     else {
         select();
     }
-
-    toggled = !toggled;
 }

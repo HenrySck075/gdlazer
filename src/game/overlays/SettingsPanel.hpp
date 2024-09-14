@@ -27,6 +27,7 @@ public:
     static SettingsPanel* create() {
         create_class(SettingsPanel, init);
     }
+    virtual CCArrayExt<Container*> createSections() {return CCArray::create();};
     void onOpen() override;
     void onClose() override;
     void onDismiss() override;

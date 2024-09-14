@@ -328,15 +328,12 @@ class $modify(meowview, CCEGLView) {
     static void onModify(ModifyBase<ModifyDerive<meowview,CCEGLView>>& self) {
         if (auto mmc = self.getHook("cocos2d::CCEGLView::onGLFWMouseMoveCallBack")) {
             mmc.unwrap()->setAutoEnable(false);
-            mmc.unwrap()->disable();
         }
         if (auto mc = self.getHook("cocos2d::CCEGLView::onGLFWMouseCallBack")) {
             mc.unwrap()->setAutoEnable(false);
-            mc.unwrap()->disable();
         }
         if (auto wsfc = self.getHook("cocos2d::CCEGLView::onGLFWWindowSizeFunCallback")) {
             wsfc.unwrap()->setAutoEnable(false);
-            wsfc.unwrap()->disable();
         }
     }
     CCPoint getMousePosition() {return lastKnownCursorPos;}
@@ -370,6 +367,19 @@ class $modify(meowview, CCEGLView) {
     }
 };
 
+#include <Geode/modify/CCMouseDispatcher.hpp>
+class $modify(neko, CCMouseDispatcher) {
+    static void onModify(ModifyBase<ModifyDerive<neko,CCMouseDispatcher>>& self) {
+        if (auto e = self.getHook("cocos2d::CCMouseDispatcher::dispatchScrollMSG")) {
+            e.unwrap()->setAutoEnable(false);
+        }
+    }
+    bool dispatchScrollMSG(float x, float y) {
+        // what the fuck why is vertical gets passed in as a horizontal value
+        OsuGame::get()->dispatchEvent(new MouseEvent(MouseEventType::MouseScroll, {y,x}));
+        return CCMouseDispatcher::dispatchScrollMSG(x,y);
+    }
+};
 
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
 class $modify(catdispatch, CCKeyboardDispatcher) {
@@ -417,9 +427,9 @@ $execute {
         for (auto* hook : Mod::get()->getHooks()) {
             if (hook->getDisplayName().starts_with("cocos2d::CCEGLView")) hook->enable();
             if (hook->getDisplayName().starts_with("cocos2d::CCKeyboardDispatcher")) hook->enable();
+            if (hook->getDisplayName().starts_with("cocos2d::CCMouseDispatcher")) hook->enable();
             if (hook->getDisplayName().starts_with("cocos2d::CCTouchDispatcher")) hook->enable();
         }
-        log::info("[main.cpp]: Enabled input hooks for henrysck075.osulazer (previously disabled to prevent crashes because of quirky setups)");
         return ListenerResult::Propagate;
     });
 }

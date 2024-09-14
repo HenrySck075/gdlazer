@@ -5,7 +5,7 @@
 using namespace cocos2d;
 
 enum MouseEventType {
-    Enter, Exit, Click, MouseDown, MouseUp, Move, ScrollUp, ScrollDown
+    Enter, Exit, Click, MouseDown, MouseUp, Move, MouseScroll
 };
 
 // mouse event 2

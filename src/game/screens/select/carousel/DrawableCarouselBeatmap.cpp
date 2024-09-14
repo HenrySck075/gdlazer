@@ -42,6 +42,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     m_thumbnail = CCResizableSprite::create();
     m_thumbnail->preserveRatio(true);
     m_thumbnail->setAnchorPoint(CCPoint(0,0));
+    addChild(m_thumbnail);
 
     if (level->m_isUploaded) {
         // stealing from level thumbnails
@@ -61,7 +62,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     }
 
     addListener("nodeLayoutUpdate", [this,levelName](NodeEvent* event){
-        auto s = getContentSize();
+        auto s = CCNode::getContentSize();
         m_thumbnail->setContentSize(s);
         levelName->setPosition(ccp(0,s.height));
         m_main->setContentSize(s);

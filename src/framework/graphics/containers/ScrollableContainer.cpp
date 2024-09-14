@@ -8,8 +8,7 @@ void ScrollableContainer::onDrag(MouseDragEvent* event) {
     lastOffset = body->getPosition();
     if (lastDragEvent == nullptr) lastDragEvent = event;
     auto dist = (event->current.y - event->startPos.y);
-    log::debug("[ScrollableContainer]: {}", dist);
-    moveToPos(CCPoint(lastIdlePos.x, dist), false);
+    moveToPos(CCPoint(lastIdlePos.x, -dist+lastIdlePos.y), false);
     timer = 0;
 };
 void ScrollableContainer::onDragEnd(MouseDragEvent* event) {
@@ -26,9 +25,16 @@ void ScrollableContainer::onDragEnd(MouseDragEvent* event) {
             distY--;
             if (distY <= 0) distY = 0;
         }
-    }),std::max(distY,1)));
+    }),std::max(distY,(float)1)));
     */
     m_dragging = false;
+}
+
+void ScrollableContainer::onMouseScroll(MouseEvent* event) {
+    log::debug("[ScrollableContainer]: {}",event->position);
+    lastIdlePos = body->getPosition();
+    // what the fuck why is is passed in as a horizontal value
+    moveToPos(CCPoint(lastIdlePos.x, -(event->position.y)+lastIdlePos.y), true);
 }
 
 void ScrollableContainer::moveToPos(CCPoint const& pos, bool animate) {

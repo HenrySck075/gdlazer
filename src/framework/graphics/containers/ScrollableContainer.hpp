@@ -51,6 +51,7 @@ public:
     void onDragStart(MouseDragEvent* event) override;
     void onDrag(MouseDragEvent* event) override;
     void onDragEnd(MouseDragEvent* event) override;
+    void onMouseScroll(MouseEvent* event) override;
 
     void moveToPos(CCPoint const& pos, bool animate = true);
 

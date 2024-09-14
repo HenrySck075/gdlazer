@@ -41,6 +41,11 @@ void Container::initHandler() {
                     m_holding = true;
                 }
                 break;
+            case MouseEventType::MouseScroll:
+                if (m_entered) {
+                    this->onMouseScroll(event);
+                }
+                return;
             case MouseEventType::Click:
                 this->onClick(event);
                 event->preventDefault();
