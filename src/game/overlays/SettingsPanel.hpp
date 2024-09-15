@@ -5,6 +5,8 @@
 #include "settings/SettingsSidebar.hpp"
 
 class SettingsPanel : public OsuOverlayContainer {
+protected:
+    SettingsSidebar* sidebar;
 public:
     const float CONTENT_MARGINS = 20;
 

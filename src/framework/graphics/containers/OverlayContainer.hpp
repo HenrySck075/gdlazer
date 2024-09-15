@@ -3,6 +3,7 @@
 #include "Container.hpp"
 
 // yeah thats it
+// @note Cascade opacity has been disabled
 class OverlayContainer : public Container {
 protected:
     Container* main;
@@ -13,6 +14,7 @@ public:
         main->setContentSize({0,0});
         addChild(main);
         setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
+        setCascadeOpacityEnabled(false);
         return true;
     }
     virtual void onOpen() = 0;

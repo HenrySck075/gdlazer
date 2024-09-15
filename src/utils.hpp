@@ -28,6 +28,11 @@ CCRect flipRect(CCRect rect);
     };                                         \
     return ret
 
+#define default_create(classname) \
+  static classname* create() {    \
+    create_class(classname, init);\
+  }
+
 #define degreeToRadius(deg) deg/360*M_PI
 
 

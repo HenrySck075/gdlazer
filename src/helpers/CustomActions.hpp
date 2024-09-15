@@ -210,3 +210,27 @@ public:
         return m_pInnerAction->isDone() && m_predicateCheckValid;
     }
 };
+
+class CCWaitUntil : public CCFiniteTimeAction {
+    CCAction* m_pInner;
+public:
+    bool initWithAction(CCAction* action) {
+        m_pInner = action;
+        return true;
+    }
+    static CCWaitUntil* create(CCAction* action) {
+        create_class(CCWaitUntil, initWithAction, action);
+    }
+    bool isDone() override {
+        return m_pInner->isDone();
+    }
+    void stop() override {
+        m_pInner->stop();
+    }
+    CCWaitUntil* reverse() override {
+        if (auto pInner = typeinfo_cast<CCFiniteTimeAction*>(m_pInner)) {
+            if (auto inner = pInner->reverse()) return CCWaitUntil::create(inner);
+            else return nullptr;
+        } else return CCWaitUntil::create(m_pInner);
+    }
+};

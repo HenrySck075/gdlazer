@@ -41,7 +41,7 @@ float OverlayColorProvider::getBaseHue(OverlayColorScheme colorScheme) {
     case OverlayColorScheme::Aquamarine:
         return 160;
 
-    case OverlayColorScheme::Prple:
+    case OverlayColorScheme::Purple:
         return 255;
 
     case OverlayColorScheme::Blue:

@@ -10,19 +10,45 @@ const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel:
 bool SettingsPanel::init() {
     if (!OverlayContainer::init()) return false;
     setColor({0,0,0});
+    sidebar = SettingsSidebar::create();
+    sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
+    addChild(sidebar);
     return true;
 }
 
 void SettingsPanel::onOpen() {
+    stopAllActions();
+    sidebar->stopAllActions();
     runAction(CCFadeTo::create(0.2,180));
-    OsuGame::get()->getChildByID("screens")->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {(float)SettingsSidebar::EXPANDED_WIDTH/4,0})));
+    runAction(CCWaitUntil::create(
+        sidebar->runAction(CCEaseOutQuint::create(
+            CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0})
+        ))
+    ));
+    OsuGame::get()->getChildByID("screens")->runAction(CCEaseOutQuint::create(
+        CCMoveTo::create(
+            SettingsPanel::TRANSITION_LENGTH, 
+            {(float)SettingsSidebar::EXPANDED_WIDTH/4,0}
+        )
+    ));
 }
 void SettingsPanel::onClose() {
     stopAllActions();
+    sidebar->stopAllActions();
     runAction(CCFadeTo::create(0.2,0));
-    OsuGame::get()->getChildByID("screens")->runAction(CCEaseOutQuint::create(CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0})));
+    runAction(CCWaitUntil::create(
+        sidebar->runAction(CCEaseOutQuint::create(
+            CCMoveTo::create(
+                SettingsPanel::TRANSITION_LENGTH,
+                {-SettingsSidebar::EXPANDED_WIDTH,0}
+            )
+        ))
+    ));
+    OsuGame::get()->getChildByID("screens")->runAction(CCEaseOutQuint::create(
+        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0})
+    ));
 }
 // wacky ik
 void SettingsPanel::onDismiss() {
-    static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->deselect();
+    // static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->deselect();
 }
