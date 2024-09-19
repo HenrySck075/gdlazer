@@ -22,7 +22,8 @@ public:
     void apply(CCNode* on) {
         CCArrayExt<Container*> nodes = getNodesToPosition(on);
 
-        auto node = static_cast<Container*>(on);
+        auto node = dynamic_cast<Container*>(on);
+        assert(("l bozo", node==nullptr));
 
         auto constraint = node->getSizeConstraints().second;
         CCSize size = {0,0};
@@ -55,6 +56,7 @@ public:
     static FillFlowContainer* create(FillDirection dir) {
         create_class(FillFlowContainer, init, dir);
     }
+    void addChild(CCNode* node);
     void setFillDirection(FillDirection dir);
     bool init(FillDirection dir);
     /*
@@ -67,12 +69,6 @@ public:
     */
 
     void setContentSize(CCSize const& size) override {
-        setSizeConstraints(
-            CCSize(
-                processUnit(size.width, m_sizeUnit.first, true),
-                processUnit(size.width, m_sizeUnit.second, false)
-            ), maximumSize
-        );
     }
 
     bool dispatchEvent(NodeEvent* event) override {

@@ -18,10 +18,10 @@ public:
 
     bool hideOverlaysOnEnter = false;//buttons == nullptr;// || Buttons.State == ButtonSystemState.Initial;
 
-    static MainMenu* create(bool flash) {
-        create_class(MainMenu, init, flash);
+    static MainMenu* create() {
+        create_class(MainMenu, init);
     }
-    bool init(bool flash);
+    bool init();
 
     // open the menu
     void onLogoClickIdle();

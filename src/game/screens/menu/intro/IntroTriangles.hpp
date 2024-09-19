@@ -1,14 +1,10 @@
-#ifndef __osulazer_intro_triangles__
-#define __osulazer_intro_triangles__
-
-#include "../../../../utils.hpp"
-
-#include "../../../../helpers/CustomActions.hpp"
+#pragma once
 #include <Geode/Geode.hpp>
+#include "../../../../framework/screens/Screen.hpp"
 
 using namespace geode::prelude;
 
-class osuIntroTriangles : public CCScene {
+class IntroTriangles : public Screen {
 private:
 
     float text_1 = 0.2;
@@ -48,10 +44,12 @@ private:
 
     // stage 3: osu! logo
     void logo_1_func();
+    void logo_scale();
+
 public:
     bool init();
-    static osuIntroTriangles* create();
+    static IntroTriangles* create();
 
+    void onExiting(ScreenTransitionEvent e);
 };
 
-#endif

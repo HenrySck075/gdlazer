@@ -4,7 +4,7 @@
 #include "OsuLogo.hpp"
 #include "../../graphics/containers/ParallaxContainer.hpp"
 
-bool MainMenu::init(bool flash) {
+bool MainMenu::init() {
     Screen::init();
     m_title = "Welcome to Geometry Dash!";
     auto logo = OsuLogo::create();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../graphics/containers/OsuOverlayContainer.hpp"
+#include "../graphics/containers/SectionsContainer.hpp"
 #include "../../utils.hpp"
 #include "settings/SettingsSidebar.hpp"
 
@@ -33,4 +34,11 @@ public:
     void onOpen() override;
     void onClose() override;
     void onDismiss() override;
+};
+
+// SectionsContainer with the fade stuff idk
+class SettingsSections : public SectionsContainer {
+public:
+    void onSectionSelect(Container* old, Container* new_) override;
+    default_create(SettingsSections);
 };

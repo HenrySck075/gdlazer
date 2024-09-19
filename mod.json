@@ -1,5 +1,5 @@
 {
-  "geode": "3.6.1",
+  "geode": "3.7.1",
   "gd": {
     "win": "2.206",
     "android": "2.206",
@@ -7,7 +7,7 @@
     "ios": "2.206"
   },
   "id": "henrysck075.osulazer",
-  "name": "osu!lazer",
+  "name": "gd!lazer",
   "version": "v0.0.7",
   "developer": "Henry Spheria",
   "description": "nico nico niii",
@@ -24,6 +24,17 @@
     "parallax": {
       "type": "bool",
       "default": true
+    },
+    "uiscale": {
+      "type": "int",
+      "name": "UI Scale",
+      "default": 1,
+      "min": 1,
+      "max": 20,
+      "control": {
+        "slider": true
+      },
+      "description": "Contradict to the way game engines implements scaling, this one goes the opposite way"
     }
   },
   "resources": {

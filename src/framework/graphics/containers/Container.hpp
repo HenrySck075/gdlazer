@@ -52,6 +52,7 @@ class ContainerLayout;
 /// in ToolbarButton and the issue is opacity cascade is enabled
 ///
 /// TODO: Add support for rounded corners
+/// TODO: Restrict children to be Containers
 class Container : public CCLayerColor, public EventTarget {
     bool m_entered = false;
     bool m_holding = false;

@@ -18,6 +18,19 @@ void FillFlowContainer::setFillDirection(FillDirection dir) {
     //CCLayer::updateLayout();
 };
 
+void FillFlowContainer::addChild(CCNode* node) {
+    auto con = dynamic_cast<Container*>(node);
+    assert(("we at osu!framework requires their child to be a Container in some occasion thanks",con==nullptr));
+    addChild(node);
+    auto cs = con->getSizeConstraints();
+    // change the constaints
+    // we will need a constraint with:
+    // - the minimumSize is the largest minimumSize in the children
+    // - the maximumSize is the smallest maximumSize in the children
+    minimumSize = std::max(cs.first, minimumSize);
+    maximumSize = std::min(cs.second, maximumSize);
+    checkConstraints();
+};
 void FillFlowContainer::updateChildPosition() {
     auto childList = getChildren();
     if (childList) {

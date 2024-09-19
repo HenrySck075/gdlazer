@@ -19,36 +19,54 @@ bool SettingsPanel::init() {
 void SettingsPanel::onOpen() {
     stopAllActions();
     sidebar->stopAllActions();
-    runAction(CCFadeTo::create(0.2,180));
-    runAction(CCWaitUntil::create(
-        sidebar->runAction(CCEaseOutQuint::create(
-            CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0})
-        ))
+    runAction(CCSequence::createWithTwoActions(
+        CCFadeTo::create(0.2,180),
+        CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH-0.2)
     ));
-    OsuGame::get()->getChildByID("screens")->runAction(CCEaseOutQuint::create(
+    sidebar->runAction(CCEaseOutQuint::create(
+        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0})
+    ));
+    auto s = OsuGame::get()->getChildByID("screens");
+    s->stopActionByTag(7);
+    s->runAction(CCEaseOutQuint::create(
         CCMoveTo::create(
             SettingsPanel::TRANSITION_LENGTH, 
             {(float)SettingsSidebar::EXPANDED_WIDTH/4,0}
         )
-    ));
+    ))->setTag(7);
 }
 void SettingsPanel::onClose() {
     stopAllActions();
     sidebar->stopAllActions();
-    runAction(CCFadeTo::create(0.2,0));
-    runAction(CCWaitUntil::create(
-        sidebar->runAction(CCEaseOutQuint::create(
-            CCMoveTo::create(
-                SettingsPanel::TRANSITION_LENGTH,
-                {-SettingsSidebar::EXPANDED_WIDTH,0}
-            )
-        ))
+    runAction(CCSequence::createWithTwoActions(
+        CCFadeTo::create(0.2,0),
+        CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH-0.2)
     ));
-    OsuGame::get()->getChildByID("screens")->runAction(CCEaseOutQuint::create(
+    sidebar->runAction(CCEaseOutQuint::create(
+        CCMoveTo::create(
+            SettingsPanel::TRANSITION_LENGTH,
+            {-SettingsSidebar::EXPANDED_WIDTH,0}
+        )
+    ));
+
+    auto s = OsuGame::get()->getChildByID("screens");
+    s->stopActionByTag(7);
+    s->runAction(CCEaseOutQuint::create(
         CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0})
-    ));
+    ))->setTag(7);
 }
 // wacky ik
 void SettingsPanel::onDismiss() {
     // static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->deselect();
 }
+
+
+/**
+ * SettingsSections
+ */
+
+void SettingsSections::onSectionSelect(Container* old, Container* new_) {
+    SectionsContainer::onSectionSelect(old, new_);
+    old->setOpacity(200);
+    new_->setOpacity(255);
+};

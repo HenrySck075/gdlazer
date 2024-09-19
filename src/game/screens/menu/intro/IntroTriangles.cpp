@@ -1,9 +1,13 @@
 #include "IntroTriangles.hpp"
+#include "../../../OsuGame.hpp"
+#include "../MainMenu.hpp"
 #include "math.h"
+#include "../../../../utils.hpp"
+#include "../../../../helpers/CustomActions.hpp"
    // this line is requested by catto
 #define delayRepeat(duration, ...) CCSequence::create(__VA_ARGS__, CCDelayTime::create(duration), nullptr)
 
-bool osuIntroTriangles::init() {
+bool IntroTriangles::init() {
     // Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
     // Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
     // osu! logo: ji
@@ -23,25 +27,26 @@ bool osuIntroTriangles::init() {
 #define delayCallFunc(delay, func) CCDelayTime::create(delay), CCCallFunc::create(this, callfunc_selector(func))
     auto seq = CCSequence::create(
         // welcome to osu! (Stage 1)
-        delayCallFunc(this->text_1, osuIntroTriangles::text_1_func),
-        delayCallFunc(this->text_2 - this->text_1, osuIntroTriangles::text_2_func),
-        delayCallFunc(this->text_3 - this->text_2, osuIntroTriangles::text_3_func),
-        delayCallFunc(this->text_4 - this->text_3, osuIntroTriangles::text_4_func),
+        delayCallFunc(this->text_1, IntroTriangles::text_1_func),
+        delayCallFunc(this->text_2 - this->text_1, IntroTriangles::text_2_func),
+        delayCallFunc(this->text_3 - this->text_2, IntroTriangles::text_3_func),
+        delayCallFunc(this->text_4 - this->text_3, IntroTriangles::text_4_func),
 
         // text glitch triangles
         CCDelayTime::create(this->text_glitch - this->text_4),
         CCRepeat::create(
-            delayRepeat(this->time_between_triangles, CCCallFunc::create(this, callfunc_selector(osuIntroTriangles::renderTriangles))),
+            delayRepeat(this->time_between_triangles, CCCallFunc::create(this, callfunc_selector(IntroTriangles::renderTriangles))),
             17
         ),
 
         // iconset showcase (Stage 2)
-        CCCallFunc::create(this, callfunc_selector(osuIntroTriangles::rulesets_1_func)),
-        delayCallFunc(this->rulesets_2 - this->rulesets_1, osuIntroTriangles::rulesets_2_func),
-        delayCallFunc(this->rulesets_3 - this->rulesets_2, osuIntroTriangles::rulesets_3_func),
+        CCCallFunc::create(this, callfunc_selector(IntroTriangles::rulesets_1_func)),
+        delayCallFunc(this->rulesets_2 - this->rulesets_1, IntroTriangles::rulesets_2_func),
+        delayCallFunc(this->rulesets_3 - this->rulesets_2, IntroTriangles::rulesets_3_func),
 
         // osu! logo (Stage 3)
-        delayCallFunc(this->logo_1 - this->rulesets_3, osuIntroTriangles::logo_1_func),
+        delayCallFunc(this->logo_1 - this->rulesets_3, IntroTriangles::logo_1_func),
+        delayCallFunc(this->logo_scale_duration, IntroTriangles::logo_scale),
         nullptr
     );
    
@@ -61,8 +66,8 @@ bool osuIntroTriangles::init() {
     return true;
 }
 
-osuIntroTriangles* osuIntroTriangles::create() {
-    auto ret = new osuIntroTriangles();
+IntroTriangles* IntroTriangles::create() {
+    auto ret = new IntroTriangles();
     if (ret && ret->init()) {
         ret->autorelease();
     }
@@ -73,24 +78,24 @@ osuIntroTriangles* osuIntroTriangles::create() {
     return ret;
 }
 
-void osuIntroTriangles::text_1_func() {
+void IntroTriangles::text_1_func() {
     static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("wel");
 }
-void osuIntroTriangles::text_2_func() {
+void IntroTriangles::text_2_func() {
     static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome");
 }
-void osuIntroTriangles::text_3_func() {
+void IntroTriangles::text_3_func() {
     static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome to");
 }
-void osuIntroTriangles::text_4_func() {
+void IntroTriangles::text_4_func() {
     static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
-    auto a = CCCallFuncP::create(0,13,5,this, callfuncp_selector(osuIntroTriangles::text_4_set_spacing));
+    auto a = CCCallFuncP::create(0,13,5,this, callfuncp_selector(IntroTriangles::text_4_set_spacing));
     a->setTag(7);
     this->runAction(a);
 #endif
 }
-void osuIntroTriangles::text_4_set_spacing(float spacing) {
+void IntroTriangles::text_4_set_spacing(float spacing) {
     auto welcomeTextNode = static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"));
     CCObject* obj;
     int c = 0;
@@ -102,7 +107,7 @@ void osuIntroTriangles::text_4_set_spacing(float spacing) {
     welcomeTextNode->setContentSize(welcomeTextNode->getContentSize() + CCSize{ (spacing * c) , 0.f });
 }
 
-void osuIntroTriangles::renderTriangles() {
+void IntroTriangles::renderTriangles() {
     auto node = static_cast<CCLayer*>(this->getChildByID("textGlitchNode"));
 
     int triangleCount = (int)(randomFloat()*3)+1; // m
@@ -133,7 +138,7 @@ void osuIntroTriangles::renderTriangles() {
 }
 
 
-void osuIntroTriangles::rulesets_1_func() {
+void IntroTriangles::rulesets_1_func() {
     // cancel every ongoing actions related to stage 1
     this->stopActionByTag(7);
 
@@ -166,31 +171,43 @@ void osuIntroTriangles::rulesets_1_func() {
     addIcon("swing.png"_spr);
     addIcon("jetpack.png"_spr);
     n->updateLayout();
-    auto a = CCCallFuncP::create(50, 30, this->rulesets_2 - this->rulesets_1 + 0.3, this, callfuncp_selector(osuIntroTriangles::rulesets_1_change_gap));
+    auto a = CCCallFuncP::create(50, 30, this->rulesets_2 - this->rulesets_1 + 0.3, this, callfuncp_selector(IntroTriangles::rulesets_1_change_gap));
     a->setTag(9);
     this->runAction(a);
 
     this->addChild(n);
 }
-void osuIntroTriangles::rulesets_1_change_gap(float gap) {
+void IntroTriangles::rulesets_1_change_gap(float gap) {
     auto n = this->getChildByID("iconsets");
     n->setLayout(RowLayout::create()->setGap(gap));
     n->updateLayout();
 }
-void osuIntroTriangles::rulesets_2_func() {
+void IntroTriangles::rulesets_2_func() {
     auto n = this->getChildByID("iconsets");
     this->stopActionByTag(9);
     n->setLayout(RowLayout::create()->setGap(15));
     n->setScale(1.1);
     n->updateLayout();
 }
-void osuIntroTriangles::rulesets_3_func() {
+void IntroTriangles::rulesets_3_func() {
     auto n = this->getChildByID("iconsets");
     n->setLayout(RowLayout::create()->setGap(5));
     n->setScale(1.6);
     n->updateLayout();
 }
 
-void osuIntroTriangles::logo_1_func() {
+void IntroTriangles::logo_1_func() {
     this->getChildByID("iconsets")->removeFromParent();
 }
+void IntroTriangles::logo_scale() {
+    
+    OsuGame::get()->pushScreen(MainMenu::create());
+}
+
+void IntroTriangles::onExiting(ScreenTransitionEvent e) {
+    runAction(
+        CCSequence::createWithTwoActions(
+            CCFadeOut::create(0.5), CCRemoveSelf::create()
+        )
+    );
+};

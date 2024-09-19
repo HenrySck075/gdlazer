@@ -3,12 +3,12 @@
  */
 #include <Geode/Geode.hpp>
 
-#include "game/screens/menu/intro/IntroTriangles.hpp"
 #include "game/overlays/dialog/PopupDialog.hpp"
 #include "game/screens/menu/MainMenu.hpp"
 #include "game/graphics/containers/WaveContainer.hpp"
 //#include "helpers/sound/SoundManager.hpp"
 //#include "game/graphics/containers/beatsync/BeatDetector.hpp"
+#include "game/screens/menu/intro/IntroTriangles.hpp"
 #include "utils.hpp"
 #include "game/OsuGame.hpp"
 #include "framework/input/events/KeyEvent.hpp"
@@ -191,7 +191,6 @@ class $modify(MyMenuLayer, MenuLayer) {
      * return type `void` and taking a `CCObject*`.
     */
     void onMyButton(CCObject*) {
-        CCDirector::get()->pushScene(osuIntroTriangles::create());
     }
     void onQuit(CCObject*) {
         PopupDialog* b = PopupDialog::createSimpleDialog(
@@ -206,7 +205,7 @@ class $modify(MyMenuLayer, MenuLayer) {
     void onMyButton2(CCObject*) {
         auto o = OsuGame::get();
         CCDirector::sharedDirector()->pushScene(o);
-        o->pushScreen(MainMenu::create(false));
+        o->pushScreen(IntroTriangles::create());
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
     }
 };
