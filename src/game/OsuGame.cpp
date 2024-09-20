@@ -104,7 +104,7 @@ concept is_screen = std::is_class_v<Screen>;
 template<typename T>
 concept is_overlay = std::is_class_v<OverlayContainer>;
 */
-void OsuGame::pushScreen(Screen* s) {
+Screen* OsuGame::pushScreen(Screen* s) {
     Screen* ls = nullptr;
     if (screenStack.size()!=0) {
         ls = screenStack[screenStack.size()-1];
@@ -117,6 +117,25 @@ void OsuGame::pushScreen(Screen* s) {
     current = s;
 
     updateTitle();
+
+    return s;
+}
+Screen* OsuGame::replaceScreen(Screen* s) {
+    Screen* ls = nullptr;
+    if (screenStack.size()!=0) {
+        ls = screenStack.pop_back();
+    }
+    auto e = ScreenTransitionEvent(ls,s);
+    if (ls) ls->onExiting(e);
+    screensContainer->addChild(s);
+    s->onEntering(e);
+    screenStack.push_back(s);
+    current = s;
+    screenPopQueue.push_back(ls);
+
+    updateTitle();
+
+    return s;
 }
 void OsuGame::pushOverlay(OverlayContainer* o) {
     overlaysContainer->addChild(o);

@@ -1,6 +1,7 @@
 #include "IntroTriangles.hpp"
 #include "../../../OsuGame.hpp"
 #include "../MainMenu.hpp"
+#include "../../../graphics/ui/OsuText.hpp"
 #include "math.h"
 #include "../../../../utils.hpp"
 #include "../../../../helpers/CustomActions.hpp"
@@ -8,11 +9,12 @@
 #define delayRepeat(duration, ...) CCSequence::create(__VA_ARGS__, CCDelayTime::create(duration), nullptr)
 
 bool IntroTriangles::init() {
+    if (!Screen::init()) return false;
     // Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
     // Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
     // osu! logo: ji
 
-    auto label = CCLabelBMFont::create("","torus-light.fnt"_spr);
+    auto label = OsuText("");
     //label->setFntFile("LazerFont.fnt"_spr);
     label->setID("welcomeText");
 #ifndef GEODE_IS_ANDROID
@@ -60,7 +62,10 @@ bool IntroTriangles::init() {
     this->addChild(trianglesNode);
 
     
-    FMODAudioEngine::sharedEngine()->playMusic("triangles.mp3"_spr,false,0.f,0);
+    auto e = FMODAudioEngine::sharedEngine();
+    e->stopAllMusic();
+    // channel 0 got interrupted by menu loop when pushing a screen that does not even play that for some reason
+    e->playMusic("triangles.mp3"_spr,false,0.f,1);
     this->runAction(seq);
 
     return true;
@@ -79,16 +84,16 @@ IntroTriangles* IntroTriangles::create() {
 }
 
 void IntroTriangles::text_1_func() {
-    static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("wel");
+    static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("wel");
 }
 void IntroTriangles::text_2_func() {
-    static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome");
+    static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("welcome");
 }
 void IntroTriangles::text_3_func() {
-    static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome to");
+    static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("welcome to");
 }
 void IntroTriangles::text_4_func() {
-    static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"))->setString("welcome to osu!");
+    static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
     auto a = CCCallFuncP::create(0,13,5,this, callfuncp_selector(IntroTriangles::text_4_set_spacing));
     a->setTag(7);
@@ -96,7 +101,7 @@ void IntroTriangles::text_4_func() {
 #endif
 }
 void IntroTriangles::text_4_set_spacing(float spacing) {
-    auto welcomeTextNode = static_cast<CCLabelBMFont*>(this->getChildByID("welcomeText"));
+    auto welcomeTextNode = static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"));
     CCObject* obj;
     int c = 0;
     CCARRAY_FOREACH(welcomeTextNode->getChildren(), obj) {
@@ -153,7 +158,7 @@ void IntroTriangles::rulesets_1_func() {
 
     auto n = CCLayer::create();
     n->setID("iconsets");
-    n->setLayout(RowLayout::create()->setGap(50));
+    n->setLayout(RowLayout::create()->setGap(50)->setAutoScale(false));
     n->setScale(0.7);
     n->setAnchorPoint(CCPoint{ 0.5,0.5 });
     n->setPosition(CCDirector::get()->getWinSize() / 2);
@@ -201,13 +206,12 @@ void IntroTriangles::logo_1_func() {
 }
 void IntroTriangles::logo_scale() {
     
-    OsuGame::get()->pushScreen(MainMenu::create());
+    OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-7);
 }
 
 void IntroTriangles::onExiting(ScreenTransitionEvent e) {
+    setOpacity(255);
     runAction(
-        CCSequence::createWithTwoActions(
-            CCFadeOut::create(0.5), CCRemoveSelf::create()
-        )
+        CCFadeOut::create(1)
     );
 };

@@ -77,8 +77,9 @@ public:
 
     void showSettings();
     void hideSettings();
-
-    void pushScreen(Screen* s);
+    // push screen and return the pushed screen if one needs to do more stuff with it (does not include removing the screen)
+    Screen* pushScreen(Screen* s);
+    Screen* replaceScreen(Screen* s);
     Screen* popManyScreens(int amount = 1, bool popOverlays = true);
     Screen* popScreen(bool popOverlays = true);
     void pushOverlay(OverlayContainer* o);

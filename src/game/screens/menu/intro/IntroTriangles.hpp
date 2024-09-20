@@ -6,7 +6,6 @@ using namespace geode::prelude;
 
 class IntroTriangles : public Screen {
 private:
-
     float text_1 = 0.2;
     float text_2 = 0.4;
     float text_3 = 0.7;

@@ -192,7 +192,9 @@ class $modify(MyMenuLayer, MenuLayer) {
     */
     void onMyButton(CCObject*) {
     }
-    void onQuit(CCObject*) {
+    void onQuit(CCObject*s) {
+        MenuLayer::onQuit(s);
+        /*
         PopupDialog* b = PopupDialog::createSimpleDialog(
             "Are you sure you want to exit GD?",
             "Last chance to turn back",
@@ -201,11 +203,13 @@ class $modify(MyMenuLayer, MenuLayer) {
             "nvm the 20-20-20 rule sucks", [this](CCNode* s) {this->endGame(); }
         );
         b->show();
+        */
     }
     void onMyButton2(CCObject*) {
         auto o = OsuGame::get();
         CCDirector::sharedDirector()->pushScene(o);
-        o->pushScreen(IntroTriangles::create());
+        auto j = IntroTriangles::create();
+        if (j) o->pushScreen(j);
     //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
     }
 };
