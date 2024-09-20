@@ -18,7 +18,7 @@ bool IntroTriangles::init() {
     //label->setFntFile("LazerFont.fnt"_spr);
     label->setID("welcomeText");
 #ifndef GEODE_IS_ANDROID
-    label->setExtraKerning(5);
+    //label->setExtraKerning(5);
 #endif
     auto d = CCDirector::sharedDirector()->getWinSize();
     label->setAnchorPoint(CCPoint{0.5,0.5});
