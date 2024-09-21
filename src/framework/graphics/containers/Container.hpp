@@ -6,9 +6,11 @@
 #include "Event.hpp"
 #include "../../input/events/MouseEvent.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
+#include "CCClippingLayer.hpp"
 #include "EventTarget.hpp"
 #include "../../../utils.hpp"
 #include "../Vector4.hpp"
+#include "../Color4.hpp"
 using namespace geode::prelude;
 
 enum class NodeLayoutUpdateType {
@@ -41,6 +43,53 @@ enum class Unit {
 namespace {
     enum class ah {Left, Center, Right};
     enum class av {Top, Center, Bottom};
+
+    struct CCRectExtra : public CCRect {
+        
+        inline constexpr CCRectExtra(float x, float y, CCSize const& size) {
+            setRect(x, y, size.width, size.height);
+        }
+        CCPoint const& getTopLeft() {
+            return {getMinX(), getMaxY()};
+        }
+        CCPoint const& getTopRight() {
+            return {getMaxX(), getMaxY()};
+        }
+        CCPoint const& getBottomLeft() {
+            return {getMinX(), getMinY()};
+        }
+        CCPoint const& getBottomRight() {
+            return {getMaxX(), getMinY()};
+        }
+    };
+
+    class balls : public CCDrawNode {
+    private:
+        float radius = 0;
+        void drawRoundedRect();
+    public:
+        bool init(float rad) {
+            if (!CCDrawNode::init()) return false;
+            setRadius(rad);
+            return true;
+        }
+        void setContentSize(CCSize const& size) {
+            bool j = size != m_obContentSize;
+            if (size < m_obContentSize) clear();
+            CCDrawNode::setContentSize(size);
+            if (j) drawRoundedRect();
+        }
+        static balls* create(float rad = 8) {
+            create_class(balls, init, rad);
+        }
+        void setRadius(float rad) {
+            if (rad == radius) return;
+            radius = std::max(rad,0.f);
+            clear();
+            drawRoundedRect();
+        }
+        float getRadius() {return radius;};
+    };
 };
 
 class ContainerLayout;
@@ -65,6 +114,8 @@ class Container : public CCLayerColor, public EventTarget {
     int clickDragDistance = 10;
 
     MouseDragEvent* currentDragEvent = nullptr;
+
+    balls* m_roundedBorderStencil = nullptr;
 public:
     // for those who need to add more checks to when dragging is enabled
     virtual bool dragEnabled() {return m_dragEnabled;}
@@ -127,6 +178,9 @@ protected:
     bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
 public:
+    void setRadius(float radius) {
+        m_roundedBorderStencil->setRadius(radius);
+    }
     void onEnter() override {
         CCLayerColor::onEnter();
         if (queuedLayoutUpdate) {

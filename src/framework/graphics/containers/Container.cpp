@@ -3,6 +3,40 @@
 #include "../../input/events/MouseEvent.hpp"
 
 /**
+ * RoundedRectDrawNode
+ */
+void balls::drawRoundedRect() {
+    // just dont do anything
+    if (m_obContentSize == CCSize{0,0}) return;
+    CCRectExtra innerRect = {radius,radius,m_obContentSize - CCSize(radius * 2, radius * 2)};
+    // location, radius, fill, outline size, outline, amount of triangles i suppose
+    Color4 color = {0,0,200,255};
+    #define peakDesign color, 0, color
+    if (radius > 0) {
+        drawCircle(innerRect.getTopLeft(), radius, peakDesign, 20);
+        drawCircle(innerRect.getTopRight(), radius, peakDesign, 20);
+        drawCircle(innerRect.getBottomLeft(), radius, peakDesign, 20);
+        drawCircle(innerRect.getBottomRight(), radius, peakDesign, 20);
+
+        drawRect(innerRect, peakDesign);
+        
+        //top
+        drawRect({radius,m_obContentSize.height,innerRect.getMaxX(),innerRect.getMaxY()},peakDesign);
+        //bottom
+        drawRect({radius,0,innerRect.getMaxX(),innerRect.getMinY()},peakDesign);
+        //left
+        drawRect({0,innerRect.getMaxY(),innerRect.getMinX(),innerRect.getMinY()},peakDesign);
+        //right
+        drawRect({innerRect.getMaxX(),innerRect.getMaxY(),m_obContentSize.width,innerRect.getMinY()},peakDesign);
+    }
+    else {
+        // do it fast
+        drawRect(innerRect, peakDesign);
+    }
+    #undef peakDesign
+}
+
+/**
  * InputHandlerImpl
  */
 void Container::initHandler() {
@@ -170,7 +204,7 @@ std::string Container::getUnitLabel(Unit unit) {
 }
 
 bool Container::init() {
-    if (!CCLayerColor::initWithColor(ccc4(255,255,255,0))) return false;
+    if (!CCLayerColor::initWithColor({255,255,255,0})) return false;
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));

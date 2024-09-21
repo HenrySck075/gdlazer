@@ -3,6 +3,7 @@
 #include "../../graphics/OsuIcon.hpp"
 #include "../../overlays/dialog/PopupDialog.hpp"
 #include "../../overlays/toolbar/ToolbarToggleButton.hpp"
+#include "../Playground.hpp"
 
 class SongSelect;
 #include "../select/SongSelect.hpp"
@@ -181,6 +182,16 @@ bool ButtonSystem::init(OsuLogo* logo) {
             Color4(154, 198, 0, 255), 
             [](CCNode* j) {
                 OsuGame::get()->hideToolbar();
+                //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
+            }
+        ),
+        MainMenuButton::create(
+            "Playground", 
+            "button-default-select.wav"_spr, 
+            OsuIcon::Debug, 
+            Color4(154, 198, 0, 255), 
+            [](CCNode* j) {
+                OsuGame::get()->pushScreen(Playground::create());
                 //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
             }
         )

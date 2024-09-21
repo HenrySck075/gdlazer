@@ -65,7 +65,7 @@ bool IntroTriangles::init() {
     auto e = FMODAudioEngine::sharedEngine();
     e->stopAllMusic();
     // channel 0 got interrupted by menu loop when pushing a screen that does not even play that for some reason
-    e->playMusic("triangles.mp3"_spr,false,0.f,1);
+    e->playMusic("triangles.mp3"_spr,false,0.f,7);
     this->runAction(seq);
 
     return true;

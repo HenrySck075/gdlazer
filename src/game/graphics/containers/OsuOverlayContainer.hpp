@@ -7,10 +7,12 @@ class OsuOverlayContainer : public OverlayContainer {
     bool shown = false;
 public:
     void show() override {
+        if (shown) return;
         shown = true;
         OsuGame::get()->pushOverlay(this);
     }
     void hide() override {
+        if (!shown) return;
         shown = false;
         // TODO: f
         OsuGame::get()->popOverlay();
