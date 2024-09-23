@@ -1,5 +1,4 @@
 #include "ButtonSystem.hpp"
-#include "ButtonArea.hpp"
 #include "../../graphics/OsuIcon.hpp"
 #include "../../overlays/dialog/PopupDialog.hpp"
 #include "../../overlays/toolbar/ToolbarToggleButton.hpp"
@@ -38,16 +37,17 @@ bool ButtonSystem::init(OsuLogo* logo) {
 
     //float w = CCDirector::sharedDirector()->getWinSize().width;
     auto an = ccp(-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2);
-    auto area = ButtonArea::create(an);
+    area = ButtonArea::create(an);
+    area->setID("buttonarea");
     this->addChild(area);
 
     // because cocos2d-x does not allows a node to be in multiple parent (everyone knows that)
     #define backBtnCreate MainMenuButton::create( \
         "Back",                                   \
         "back-to-top.wav"_spr,                    \
-        OsuIcon::PrevCircle,                         \
+        OsuIcon::PrevCircle,                      \
         Color4(51, 58, 94, 255),                  \
-        [area](CCNode*j){area->pop();},           \
+        [this](CCNode*j){area->pop();},           \
         {enumKeyCodes::KEY_Escape}                \
     )
     
@@ -81,7 +81,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             Color4(102, 68, 204, 255),
             [this](CCNode*j){
                 //this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);
-                OsuGame::get()->pushScreen(SongSelect::create());
+                OsuGame::get()->pushScreen(SongSelect::create())->setZOrder(-7);
             },
             {enumKeyCodes::KEY_M}
         ),
@@ -102,7 +102,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-play-select.wav"_spr, 
             OsuIcon::Player, 
             Color4(102, 68, 204, 255),
-            [area](CCNode*j){area->show("play_local");},
+            [this](CCNode*j){area->show("play_local");},
             {enumKeyCodes::KEY_P}
         ),
         MainMenuButton::create(
@@ -134,7 +134,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-play-select.wav"_spr, 
             OsuIcon::DailyChallenge,
             Color4(94, 63, 186, 255), 
-            [area](CCNode*j) {area->show("challenges");},
+            [this](CCNode*j) {area->show("challenges");},
             {enumKeyCodes::KEY_C}
         )
     ), "play");
@@ -213,7 +213,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-play-select.wav"_spr, 
             OsuIcon::Logo, 
             Color4(102, 68, 204, 255), 
-            [area](CCNode* j) {area->show("play");},
+            [this](CCNode* j) {area->show("play");},
             {enumKeyCodes::KEY_P, enumKeyCodes::KEY_M, enumKeyCodes::KEY_L}
         ),
         MainMenuButton::create(
@@ -221,7 +221,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-play-select.wav"_spr, 
             OsuIcon::EditCircle, 
             Color4(238, 170, 0, 255), 
-            [area](CCNode* j) {area->show("edit");},
+            [this](CCNode* j) {area->show("edit");},
             {enumKeyCodes::KEY_E}
         ),
         MainMenuButton::create(
@@ -229,7 +229,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
             "button-play-select.wav"_spr, 
             OsuIcon::Beatmap, 
             Color4(165, 204, 0, 255), 
-            [area](CCNode* j) {area->show("debug");},
+            [this](CCNode* j) {area->show("debug");},
             {enumKeyCodes::KEY_B, enumKeyCodes::KEY_D}
         ),
         MainMenuButton::create(
@@ -252,7 +252,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     logo->setPosition(ccp(an.x,0));
     logo->setScale(0.4);
     logo->setAnchor(Anchor::Center);
-    logo->setCallback([this,area](CCNode* self){
+    logo->setCallback([this](CCNode* self){
         auto cur = area->getCurrent();
         if (cur.has_value()) 
             static_cast<MainMenuButton*>(

@@ -15,6 +15,7 @@ bool CCResizableSprite::init() {
     m_sprite = CCSprite::create();
     addChild(m_sprite);
     setAnchorPoint(ccp(0.5,0.5));
+    setCascadeOpacityEnabled(true);
     return true;
 }
 

@@ -6,6 +6,7 @@
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../framework/graphics/containers/Container.hpp"
+#include "ButtonArea.hpp"
 using namespace geode::prelude;
 
 class OsuGame;
@@ -22,6 +23,7 @@ class ButtonSystem : public Container
     OsuLogo* logo;
 
   public:
+    ButtonArea* area;
     /// <summary>
     /// Assign the <see cref="OsuLogo"/> that this ButtonSystem should manage the position of.
     /// </summary>

@@ -4,7 +4,7 @@
 using namespace cocos2d;
 
 // Scale9Sprite without the 9 sprites part
-class CCResizableSprite : public CCNode {
+class CCResizableSprite : public CCNodeRGBA {
 private:
   CCSize baseSize = CCSize(0,0);
   CCSprite* m_sprite;

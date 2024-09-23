@@ -3,6 +3,8 @@
 #include <Geode/Geode.hpp>
 //#include "ButtonSystem.hpp"
 //#include "../../graphics/containers/beatsync/BeatDetector.hpp"
+#include "Background.hpp"
+#include "ButtonSystem.hpp"
 #include "../../../framework/screens/Screen.hpp"
 class OsuGame;
 #include "../../OsuGame.hpp"
@@ -11,6 +13,8 @@ using namespace geode::prelude;
 using MenuSideFlashes = CCLayer*;
 
 class MainMenu : public Screen {
+    ButtonSystem* buttonSys;
+    Background* bg;
 public:
     float FADE_IN_DURATION = 300;
 
@@ -31,8 +35,16 @@ private:
         while (OsuGame::get()->popScreen()) {/*meow*/};
     }
     void onExiting(ScreenTransitionEvent e) override {
-        setVisible(false);
+        //setVisible(false);
         if (e.Destination == nullptr) removeFromParent();
+        else {
+            setCascadeOpacityEnabled(true);
+            runAction(CCSequence::createWithTwoActions(
+                CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
+                CCFadeOut::create(1)
+            ));
+            buttonSys->area->hide(buttonSys->area->getCurrent().value(),true,true);
+        }
     }
     void testDispatch(CCObject* e) {
         auto m = new NodeEvent("googoo gaga");

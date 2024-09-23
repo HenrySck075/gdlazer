@@ -213,9 +213,11 @@ public:
 
 class CCWaitUntil : public CCFiniteTimeAction {
     CCAction* m_pInner;
+    bool actionReleased = false;
 public:
     bool initWithAction(CCAction* action) {
         m_pInner = action;
+        m_pInner->retain(); // to be sure
         return true;
     }
     static CCWaitUntil* create(CCAction* action) {
@@ -225,12 +227,23 @@ public:
         return m_pInner->isDone();
     }
     void stop() override {
+        CCFiniteTimeAction::stop();
         m_pInner->stop();
+        if (!actionReleased) {
+            m_pInner->release();
+            actionReleased = true;
+        }
     }
     CCWaitUntil* reverse() override {
         if (auto pInner = typeinfo_cast<CCFiniteTimeAction*>(m_pInner)) {
             if (auto inner = pInner->reverse()) return CCWaitUntil::create(inner);
             else return nullptr;
         } else return CCWaitUntil::create(m_pInner);
+    }
+    ~CCWaitUntil() {
+        if (!actionReleased) {
+            m_pInner->release();
+            actionReleased = true;
+        }
     }
 };

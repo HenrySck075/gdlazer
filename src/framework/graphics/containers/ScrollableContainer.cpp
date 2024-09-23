@@ -34,7 +34,7 @@ void ScrollableContainer::onMouseScroll(MouseEvent* event) {
     log::debug("[ScrollableContainer]: {}",event->position);
     lastIdlePos = body->getPosition();
     // what the fuck why is is passed in as a horizontal value
-    moveToPos(CCPoint(lastIdlePos.x, -(event->position.y)+lastIdlePos.y), true);
+    moveToPos(CCPoint(lastIdlePos.x, -(event->position.y*3)+lastIdlePos.y), true);
 }
 
 void ScrollableContainer::moveToPos(CCPoint const& pos, bool animate) {

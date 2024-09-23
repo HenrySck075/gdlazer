@@ -206,7 +206,7 @@ void IntroTriangles::logo_1_func() {
 }
 void IntroTriangles::logo_scale() {
     
-    OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-7);
+    OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-2);
 }
 
 void IntroTriangles::onExiting(ScreenTransitionEvent e) {
