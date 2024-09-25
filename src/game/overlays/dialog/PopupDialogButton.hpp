@@ -1,12 +1,12 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
-#include "../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../framework/graphics/containers/ClickableContainer.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
 using namespace geode::prelude;
 
-class PopupDialogButton : public OsuClickableContainer {
+class PopupDialogButton : public ClickableContainer {
 private:
 
     const float idle_width = 0.8f;

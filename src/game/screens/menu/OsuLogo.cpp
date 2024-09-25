@@ -7,7 +7,7 @@ float lin2dB(float linear)
     return -(clamp(log10(linear) * 20.0f, -80.f, 1.0f));
 }
 bool OsuLogo::init() {
-    OsuClickableContainer::init("osu-logo-select.wav"_spr);
+    ClickableContainer::init("osu-logo-select.wav"_spr);
     /*
     m_listener = this->template addEventListener<EventFilter<BeatEvent>>([this](float elapsed) {
         const char* sfxName;
@@ -28,7 +28,7 @@ bool OsuLogo::init() {
 
   if (logoSprite != nullptr) {
       logoSprite->setID("m");
-      this->OsuClickableContainer::setContentSize(logoSprite->getContentSize());
+      this->ClickableContainer::setContentSize(logoSprite->getContentSize());
       logoSprite->setPosition(logoSprite->getContentSize() / 2);
       logoSprite->setScale(0.8);
       this->addChild(logoSprite);

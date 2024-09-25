@@ -4,7 +4,7 @@
 #include "ButtonSystemState.hpp"
 //#include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
-#include "../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../framework/graphics/containers/ClickableContainer.hpp"
 #include "../../../utils.hpp"
 
 using namespace geode::prelude;
@@ -12,7 +12,7 @@ using namespace geode::prelude;
 /// <summary>
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public OsuClickableContainer
+class MainMenuButton : public ClickableContainer
 {
     Color4 m_color = Color4(0,0,0,0);
     float const BOUNCE_COMPRESSION = 0.9f;

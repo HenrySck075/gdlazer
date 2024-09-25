@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../framework/graphics/containers/ClickableContainer.hpp"
 #include "../../graphics/OsuIcon.hpp"
 #include "../../../framework/graphics/containers/FillFlowContainer.hpp"
 
-class ToolbarButton : public OsuClickableContainer {
+class ToolbarButton : public ClickableContainer {
     CCLabelBMFont* iconSprite;
     Container* bg;
     Container* flashBg;

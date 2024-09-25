@@ -5,6 +5,32 @@
 /**
  * RoundedRectDrawNode
  */
+void balls::drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color) {
+    const float coef = 2.0f * (float)M_PI/segments;
+    
+    CCPoint *vertices = new (std::nothrow) CCPoint[segments+2];
+    if( ! vertices )
+        return;
+    
+    for(unsigned int i = 0;i <= segments; i++) {
+        float rads = i*coef;
+        float j = radius * cosf(rads + angle) * scaleX + center.x;
+        float k = radius * sinf(rads + angle) * scaleY + center.y;
+        
+        vertices[i].x = j;
+        vertices[i].y = k;
+    }
+    if(drawLineToCenter)
+    {
+        vertices[segments+1].x = center.x;
+        vertices[segments+1].y = center.y;
+        drawPolygon(vertices, segments+2, color, 0, color);
+    }
+    else
+        drawPolygon(vertices, segments+1, color, 0, color);
+    
+    CC_SAFE_DELETE_ARRAY(vertices);
+}
 void balls::drawRoundedRect() {
     // just dont do anything
     if (m_obContentSize == CCSize{0,0}) return;
@@ -13,10 +39,12 @@ void balls::drawRoundedRect() {
     Color4 color = {0,0,200,255};
     #define peakDesign color, 0, color
     if (radius > 0) {
-        drawCircle(innerRect.getTopLeft(), radius, peakDesign, 20);
-        drawCircle(innerRect.getTopRight(), radius, peakDesign, 20);
-        drawCircle(innerRect.getBottomLeft(), radius, peakDesign, 20);
-        drawCircle(innerRect.getBottomRight(), radius, peakDesign, 20);
+        //(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color)
+
+        drawCircle(innerRect.getTopLeft(), radius, 0, 20, true, color);
+        drawCircle(innerRect.getTopRight(), radius, 0, 20, true, color);
+        drawCircle(innerRect.getBottomLeft(), radius, 0, 20, true, color);
+        drawCircle(innerRect.getBottomRight(), radius, 0, 20, true, color);
 
         drawRect(innerRect, peakDesign);
         
@@ -204,11 +232,14 @@ std::string Container::getUnitLabel(Unit unit) {
 }
 
 bool Container::init() {
-    if (!CCLayerColor::initWithColor({255,255,255,0})) return false;
+    m_roundedBorderStencil = balls::create();
+    m_roundedBorderStencil->retain();
+    if (!CCClippingLayer::init({255,255,255,0},m_roundedBorderStencil)) return false;
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){
         onLayoutUpdate(static_cast<NodeLayoutUpdate*>(j));
         checkConstraints();
+        m_roundedBorderStencil->setContentSize(CCNode::getContentSize());
     });
     initHandler();
     ignoreAnchorPointForPosition(false);

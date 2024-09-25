@@ -1,15 +1,17 @@
+/// @note Moved from osu!game because fym click sfx is only available in OsuClickableContainer
+
 #pragma once
 
 #include <Geode/Geode.hpp>
 #include "Geode/utils/MiniFunction.hpp"
-#include "../../../framework/input/events/MouseEvent.hpp"
-#include "../../../framework/graphics/containers/Container.hpp"
+#include "../../input/events/MouseEvent.hpp"
+#include "Container.hpp"
 
 using namespace geode::prelude;
 using ButtonCallback = geode::utils::MiniFunction<void(CCNode*)> ;
 
-// button base
-class OsuClickableContainer : public Container {
+// e
+class ClickableContainer : public Container {
 private:
     ButtonCallback clickCallback;
     std::string clickSfx = "";

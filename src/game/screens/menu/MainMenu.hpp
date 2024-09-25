@@ -10,7 +10,7 @@ class OsuGame;
 #include "../../OsuGame.hpp"
 #include "../../../utils.hpp"
 using namespace geode::prelude;
-using MenuSideFlashes = CCLayer*;
+using MenuSideFlashes = CCLayer;
 
 class MainMenu : public Screen {
     ButtonSystem* buttonSys;

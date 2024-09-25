@@ -2,20 +2,26 @@
 #include <Geode/cocos/include/cocos2d.h>
 using namespace cocos2d;
 
+class IStencilEnabledState {
+public:
+    virtual bool stencilEnabled() = 0;
+};
+
 // j
 class CCClippingLayer : public CCLayerColor {
-    CCNode* stencil;
-    bool inverted = false;
+    CCNode* m_pStencil;
+    bool m_bInverted = false;
+    float m_fAlphaThreshold = 0.01;
 public:
     void visit() override;
-    bool init(CCNode* stencil_) {
-        if (!CCLayerColor::initWithColor({255,255,255,0})) return false;
-        stencil = stencil_;
-        stencil->retain();
+    __declspec(noinline) bool init(ccColor4B color, CCNode* stencil) {
+        if (!CCLayerColor::initWithColor(color)) return false;
+        m_pStencil = stencil;
+        m_pStencil->retain();
         return true;
     }
     ~CCClippingLayer() {
-        stencil->release();
+        m_pStencil->release();
     }
     //static CCClippingLayer* create(float radius) {}
 };

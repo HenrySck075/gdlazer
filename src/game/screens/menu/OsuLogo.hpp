@@ -5,11 +5,11 @@
 #include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../graphics/containers/beatsync/BeatEvent.hpp"
 */
-#include "../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../framework/graphics/containers/ClickableContainer.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-class OsuLogo : public OsuClickableContainer {
+class OsuLogo : public ClickableContainer {
 private:
     //BeatDetector* instance;
     int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
@@ -25,7 +25,7 @@ public:
     static OsuLogo* create() {
         OsuLogo *ret = new OsuLogo();
         if (ret && ret->init()) {
-            ret->OsuClickableContainer::autorelease();
+            ret->ClickableContainer::autorelease();
         } else {
             if (ret) {
                 delete (ret);

@@ -58,7 +58,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     //this->addChild(clipNode);
     this->addChild(j);
     
-    OsuClickableContainer::init(clickSfx, clickCb);
+    ClickableContainer::init(clickSfx, clickCb);
     addListener("nodeLayoutUpdate", [this](NodeEvent* e){
         auto size = getContentSize();
         this->getChildByID("dialogbutton-label")->setPosition(size/2);

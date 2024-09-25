@@ -1,12 +1,12 @@
-#include "OsuClickableContainer.hpp"
+#include "ClickableContainer.hpp"
 #include "../../../utils.hpp"
 
-bool OsuClickableContainer::init(std::string clickSfx, ButtonCallback clickCb) {
-    if (!OsuClickableContainer::init(clickSfx)) return false;
+bool ClickableContainer::init(std::string clickSfx, ButtonCallback clickCb) {
+    if (!ClickableContainer::init(clickSfx)) return false;
     this->clickCallback = clickCb;
     return true;
 }
-bool OsuClickableContainer::init(std::string clickSfx) {
+bool ClickableContainer::init(std::string clickSfx) {
     if (!Container::init()) return false;
     this->clickSfx = clickSfx;
 
@@ -19,7 +19,7 @@ bool OsuClickableContainer::init(std::string clickSfx) {
 
 
 /*
-bool OsuClickableContainer::ccTouchBegan(CCTouch* t, CCEvent* idc) {
+bool ClickableContainer::ccTouchBegan(CCTouch* t, CCEvent* idc) {
     bool ret = CCTouchDelegate::ccTouchBegan(t, idc);
     if (ret) {
         log::debug("[CCNodeHover]: {}", touchStartInBounds != m_entered);
@@ -29,7 +29,7 @@ bool OsuClickableContainer::ccTouchBegan(CCTouch* t, CCEvent* idc) {
     return ret;
 }
 
-void OsuClickableContainer::ccTouchEnded(CCTouch* t, CCEvent* idc) {
+void ClickableContainer::ccTouchEnded(CCTouch* t, CCEvent* idc) {
     if (touchStartInBounds!=m_entered) return;
 }
 

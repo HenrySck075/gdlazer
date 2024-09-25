@@ -7,8 +7,8 @@
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
     m_color = color;
-    OsuClickableContainer::init(sampleClick, clickAct);
-    OsuClickableContainer::setContentSize(m);
+    ClickableContainer::init(sampleClick, clickAct);
+    ClickableContainer::setContentSize(m);
     //this->addListener(reactive_listener(updateReactive));
 
     std::transform(text.begin(), text.end(), text.begin(), [](char in) -> char {
@@ -84,7 +84,7 @@ void MainMenuButton::updateDisplayedOpacity(GLubyte parentOpacity) {
 }
 
 void MainMenuButton::setContentSize(const CCSize& size) {
-    OsuClickableContainer::setContentSize(size);
+    ClickableContainer::setContentSize(size);
     auto s = getContentSize();
     // todo: move to container
     if (auto bg = this->getChildByID("background")) {
@@ -124,7 +124,7 @@ void MainMenuButton::onMouseUp(MouseEvent* event) {
     ));
 }
 void MainMenuButton::onClick(MouseEvent* event) {
-    OsuClickableContainer::onClick(event);
+    ClickableContainer::onClick(event);
     auto node = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
     node->stopAllActions();
     node->setOpacity(255*0.9);

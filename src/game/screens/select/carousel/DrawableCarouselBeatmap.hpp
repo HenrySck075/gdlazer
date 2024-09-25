@@ -1,7 +1,7 @@
 #pragma once
 #include <Geode/Geode.hpp>
 class Container;
-#include "../../../graphics/containers/OsuClickableContainer.hpp"
+#include "../../../../framework/graphics/containers/ClickableContainer.hpp"
 #include "../../../graphics/CCResizableSprite.hpp"
 #include "../../../../utils.hpp"
 using namespace geode::prelude;
@@ -13,7 +13,7 @@ extern char const carouselItemSelect[] = "carouselItemSelect";
 using CarouselItemSelect = NamedNodeEvent<carouselItemSelect>;
 
 /// @note This is CarouselHeader
-class DrawableCarouselBeatmap : public OsuClickableContainer {
+class DrawableCarouselBeatmap : public ClickableContainer {
 private:
     GJGameLevel* m_level;
     CCClippingNode* m_main;

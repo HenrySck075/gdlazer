@@ -1,5 +1,5 @@
 #include "CCClippingLayer.hpp"
-
+#include <Geode/platform/cplatform.h>
 namespace {
     int g_sStencilBits = GL_STENCIL_BITS;
 };
@@ -17,8 +17,9 @@ static void setProgram(CCNode *n, CCGLProgram *p)
 }
 
 void CCClippingLayer::visit() {
-    // if stencil buffer disabled
-    if (g_sStencilBits < 1)
+    // if stencil buffer disabled or the stencil explicitly tells the layer to not draw anything
+    auto g = dynamic_cast<IStencilEnabledState*>(m_pStencil);
+    if (g_sStencilBits < 1 || (g && !g->stencilEnabled()))
     {
         // draw everything, as if there where no stencil
         CCNode::visit();
@@ -28,9 +29,9 @@ void CCClippingLayer::visit() {
     // return fast (draw nothing, or draw everything if in inverted mode) if:
     // - nil stencil node
     // - or stencil node invisible:
-    if (!stencil || !stencil->isVisible())
+    if (!m_pStencil || !m_pStencil->isVisible())
     {
-        if (inverted)
+        if (m_bInverted)
         {
             // draw everything
             CCNode::visit();
@@ -126,7 +127,7 @@ void CCClippingLayer::visit() {
     //     if not in inverted mode: set the current layer value to 0 in the stencil buffer
     //     if in inverted mode: set the current layer value to 1 in the stencil buffer
     glStencilFunc(GL_NEVER, mask_layer, mask_layer);
-    glStencilOp(!inverted ? GL_ZERO : GL_REPLACE, GL_KEEP, GL_KEEP);
+    glStencilOp(!m_bInverted ? GL_ZERO : GL_REPLACE, GL_KEEP, GL_KEEP);
     
     // draw a fullscreen solid rectangle to clear the stencil buffer
     //ccDrawSolidRect(CCPointZero, ccpFromSize([[CCDirector sharedDirector] winSize]), ccc4f(1, 1, 1, 1));
@@ -141,16 +142,17 @@ void CCClippingLayer::visit() {
     //     if not in inverted mode: set the current layer value to 1 in the stencil buffer
     //     if in inverted mode: set the current layer value to 0 in the stencil buffer
     glStencilFunc(GL_NEVER, mask_layer, mask_layer);
-    glStencilOp(!inverted ? GL_REPLACE : GL_ZERO, GL_KEEP, GL_KEEP);
+    glStencilOp(!m_bInverted ? GL_REPLACE : GL_ZERO, GL_KEEP, GL_KEEP);
+    
     // enable alpha test only if the alpha threshold < 1,
     // indeed if alpha threshold == 1, every pixel will be drawn anyways
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WINDOWS || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+#ifdef GEODE_IS_DESKTOP
     GLboolean currentAlphaTestEnabled = GL_FALSE;
     GLenum currentAlphaTestFunc = GL_ALWAYS;
     GLclampf currentAlphaTestRef = 1;
 #endif
-    if (0.01f < 1) {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WINDOWS || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+    if (m_fAlphaThreshold < 1) {
+#ifdef GEODE_IS_DESKTOP
         // manually save the alpha test state
         currentAlphaTestEnabled = glIsEnabled(GL_ALPHA_TEST);
         glGetIntegerv(GL_ALPHA_TEST_FUNC, (GLint *)&currentAlphaTestFunc);
@@ -160,7 +162,7 @@ void CCClippingLayer::visit() {
         // check for OpenGL error while enabling alpha test
         CHECK_GL_ERROR_DEBUG();
         // pixel will be drawn only if greater than an alpha threshold
-        glAlphaFunc(GL_GREATER, 0.01f);
+        glAlphaFunc(GL_GREATER, m_fAlphaThreshold);
 #else
         // since glAlphaTest do not exists in OES, use a shader that writes
         // pixel only if greater than an alpha threshold
@@ -168,11 +170,10 @@ void CCClippingLayer::visit() {
         GLint alphaValueLocation = glGetUniformLocation(program->getProgram(), kCCUniformAlphaTestValue);
         // set our alphaThreshold
         program->use();
-        program->setUniformLocationWith1f(alphaValueLocation, 0.01f);
+        program->setUniformLocationWith1f(alphaValueLocation, m_fAlphaThreshold);
         // we need to recursively apply this shader to all the nodes in the stencil node
         // XXX: we should have a way to apply shader to all nodes without having to do this
-        // HenrySck075: jump to the future idk
-        setProgram(stencil, program);
+        setProgram(m_pStencil, program);
        
 #endif
     }
@@ -181,13 +182,13 @@ void CCClippingLayer::visit() {
     // (according to the stencil test func/op and alpha (or alpha shader) test)
     kmGLPushMatrix();
     transform();
-    stencil->visit();
+    m_pStencil->visit();
     kmGLPopMatrix();
     
     // restore alpha test state
-    if (0.01f < 1)
+    if (m_fAlphaThreshold < 1)
     {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC || CC_TARGET_PLATFORM == CC_PLATFORM_WINDOWS || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+#ifdef GEODE_IS_DESKTOP
         // manually restore the alpha test state
         glAlphaFunc(currentAlphaTestFunc, currentAlphaTestRef);
         if (!currentAlphaTestEnabled)

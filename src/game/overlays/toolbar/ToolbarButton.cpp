@@ -10,7 +10,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     bgWrapper = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr));
     bgWrapper->getStencil()->setAnchorPoint({0,0});
     bgWrapper->setAlphaThreshold(0.03f);
-    OsuClickableContainer::init("toolbar-select.wav"_spr);
+    ClickableContainer::init("toolbar-select.wav"_spr);
     addListener("nodeLayoutUpdate", [this](NodeEvent* e){
         bgWrapper->setContentSize(CCNode::getContentSize());
         bgWrapper->getStencil()->setContentSize(CCNode::getContentSize());
@@ -72,7 +72,7 @@ void ToolbarButton::onMouseExit() {
     tooltipContainer->runAction(CCFadeTo::create(0.2, 0));
 }
 void ToolbarButton::onClick(MouseEvent* e) {
-    OsuClickableContainer::onClick(e);
+    ClickableContainer::onClick(e);
     flashBg->runAction(CCSequence::createWithTwoActions(
         CCFadeTo::create(0.05,100),
         CCFadeTo::create(0.8,0)
