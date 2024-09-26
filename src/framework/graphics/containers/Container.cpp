@@ -33,7 +33,7 @@ void balls::drawCircle(const CCPoint& center, float radius, float angle, unsigne
 }
 void balls::drawRoundedRect() {
     // just dont do anything
-    if (m_obContentSize == CCSize{0,0}) return;
+    if (m_obContentSize == CCSize{0,0} || !stencilEnabled()) return;
     CCRectExtra innerRect = {radius,radius,m_obContentSize - CCSize(radius * 2, radius * 2)};
     // location, radius, fill, outline size, outline, amount of triangles i suppose
     Color4 color = {0,0,200,255};
@@ -49,13 +49,13 @@ void balls::drawRoundedRect() {
         drawRect(innerRect, peakDesign);
         
         //top
-        drawRect({radius,m_obContentSize.height,innerRect.getMaxX(),innerRect.getMaxY()},peakDesign);
+        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX(),radius},peakDesign);
         //bottom
         drawRect({radius,0,innerRect.getMaxX(),innerRect.getMinY()},peakDesign);
         //left
-        drawRect({0,innerRect.getMaxY(),innerRect.getMinX(),innerRect.getMinY()},peakDesign);
+        drawRect({0,innerRect.getMaxY(),radius,innerRect.getMaxY()},peakDesign);
         //right
-        drawRect({innerRect.getMaxX(),innerRect.getMaxY(),m_obContentSize.width,innerRect.getMinY()},peakDesign);
+        drawRect({innerRect.getMaxX(),innerRect.getMinY(),radius,innerRect.getMaxY()},peakDesign);
     }
     else {
         // do it fast

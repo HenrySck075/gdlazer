@@ -1,5 +1,7 @@
 // Source: https://github.com/ppy/osu/blob/5633297d1c04a539abb0a46b921b4a2c951631e8/osu.Game/Graphics/Osucolor.cs
 
+#pragma once
+
 #include <Geode/Geode.hpp>
 #include <cmath>
 #include "../../framework/graphics/Color4.hpp"

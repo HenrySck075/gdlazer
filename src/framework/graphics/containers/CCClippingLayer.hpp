@@ -14,7 +14,7 @@ class CCClippingLayer : public CCLayerColor {
     float m_fAlphaThreshold = 0.01;
 public:
     void visit() override;
-    __declspec(noinline) bool init(ccColor4B color, CCNode* stencil) {
+    bool init(ccColor4B color, CCNode* stencil) {
         if (!CCLayerColor::initWithColor(color)) return false;
         m_pStencil = stencil;
         m_pStencil->retain();

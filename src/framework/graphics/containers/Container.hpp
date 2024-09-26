@@ -62,6 +62,8 @@ namespace {
             return {getMaxX(), getMinY()};
         }
     };
+};
+
 
     class balls : public CCDrawNode, public IStencilEnabledState {
     private:
@@ -84,7 +86,7 @@ namespace {
             CCDrawNode::setContentSize(size);
             if (j) drawRoundedRect();
         }
-        static balls* create(float rad = 0) {
+        static balls* create(float rad = 8) {
             create_class(balls, init, rad);
         }
         void setRadius(float rad) {
@@ -95,7 +97,6 @@ namespace {
         }
         float getRadius() {return radius;};
     };
-};
 
 class ContainerLayout;
 /// @brief CCLayer that implements some more shit

@@ -314,10 +314,10 @@ class $modify(AppDelegate) {
         AppDelegate::applicationWillResignActive();
         OsuGame::get()->onLoseFocus();
     }
-    void platformShutdown() {
+    void trySaveGame(bool p0) {
         log::info("[hook: AppDelegate]: shutdown app");
         OsuGame::get()->release();
-        AppDelegate::platformShutdown();
+        AppDelegate::trySaveGame(p0);
     }
 };
 #endif
