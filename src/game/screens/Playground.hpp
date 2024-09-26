@@ -8,6 +8,7 @@ class Playground : public Screen {
 public:
     bool init() {
         if (!Screen::init()) return false;
+        title("Widgets playground");
         addChild(SettingsButton::create("me", OsuColor::PinkDark));
         return true;
     }

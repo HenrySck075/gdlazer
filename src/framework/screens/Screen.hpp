@@ -15,7 +15,7 @@ public:
 class Screen : public Container {
 protected:
     // title
-    std::string m_title = "";
+    std::string m_title = "Screen name goes here (if they forget to change this laugh at them)";
     
 public:
     std::string title() {return m_title;}

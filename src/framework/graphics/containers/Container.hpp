@@ -64,39 +64,38 @@ namespace {
     };
 };
 
-
-    class balls : public CCDrawNode, public IStencilEnabledState {
-    private:
-        float radius = 0;
-        void drawRoundedRect();
-    public:
-        void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color);
-        void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const ccColor4F &color) {
-            drawCircle(center, radius, angle, segments, drawLineToCenter, 1.f, 1.f, color);
-        };
-        bool stencilEnabled() override {return radius!=0;}
-        bool init(float rad) {
-            if (!CCDrawNode::init()) return false;
-            setRadius(rad);
-            return true;
-        }
-        void setContentSize(const CCSize& size) override {
-            bool j = size != m_obContentSize;
-            if (size < m_obContentSize) clear();
-            CCDrawNode::setContentSize(size);
-            if (j) drawRoundedRect();
-        }
-        static balls* create(float rad = 8) {
-            create_class(balls, init, rad);
-        }
-        void setRadius(float rad) {
-            if (rad == radius) return;
-            radius = std::max(rad,0.f);
-            clear();
-            drawRoundedRect();
-        }
-        float getRadius() {return radius;};
+class balls : public CCDrawNode, public IStencilEnabledState {
+private:
+    float radius = 0;
+    void drawRoundedRect();
+public:
+    void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color);
+    void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const ccColor4F &color) {
+        drawCircle(center, radius, angle, segments, drawLineToCenter, 1.f, 1.f, color);
     };
+    bool stencilEnabled() override {return radius!=0;}
+    bool init(float rad) {
+        if (!CCDrawNode::init()) return false;
+        setRadius(rad);
+        return true;
+    }
+    void setContentSize(const CCSize& size) override {
+        bool j = size != m_obContentSize;
+        if (size < m_obContentSize) clear();
+        CCDrawNode::setContentSize(size);
+        if (j) drawRoundedRect();
+    }
+    static balls* create(float rad = 0) {
+        create_class(balls, init, rad);
+    }
+    void setRadius(float rad) {
+        if (rad == radius) return;
+        radius = std::max(rad,0.f);
+        clear();
+        drawRoundedRect();
+    }
+    float getRadius() {return radius;};
+};
 
 class ContainerLayout;
 /// @brief CCLayer that implements some more shit

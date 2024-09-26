@@ -51,11 +51,11 @@ void balls::drawRoundedRect() {
         //top
         drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX(),radius},peakDesign);
         //bottom
-        drawRect({radius,0,innerRect.getMaxX(),innerRect.getMinY()},peakDesign);
+        drawRect({radius,0,innerRect.getMaxX(),radius},peakDesign);
         //left
-        drawRect({0,innerRect.getMaxY(),radius,innerRect.getMaxY()},peakDesign);
+        drawRect({0,radius,radius,innerRect.getMaxY()},peakDesign);
         //right
-        drawRect({innerRect.getMaxX(),innerRect.getMinY(),radius,innerRect.getMaxY()},peakDesign);
+        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()},peakDesign);
     }
     else {
         // do it fast
