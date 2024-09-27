@@ -66,14 +66,14 @@ namespace {
 
 class balls : public CCDrawNode, public IStencilEnabledState {
 private:
-    float radius = 0;
+    float m_radius = 0;
     void drawRoundedRect();
 public:
     void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color);
     void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const ccColor4F &color) {
         drawCircle(center, radius, angle, segments, drawLineToCenter, 1.f, 1.f, color);
     };
-    bool stencilEnabled() override {return radius!=0;}
+    bool stencilEnabled() override {return m_radius!=0;}
     bool init(float rad) {
         if (!CCDrawNode::init()) return false;
         setRadius(rad);
@@ -89,12 +89,12 @@ public:
         create_class(balls, init, rad);
     }
     void setRadius(float rad) {
-        if (rad == radius) return;
-        radius = std::max(rad,0.f);
+        if (rad == m_radius) return;
+        m_radius = std::max(rad,0.f);
         clear();
         drawRoundedRect();
     }
-    float getRadius() {return radius;};
+    float getRadius() {return m_radius;};
 };
 
 class ContainerLayout;
