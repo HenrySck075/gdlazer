@@ -1,9 +1,9 @@
 #include "Triangles.hpp"
-#include "../../../../utils.hpp"
+#include "../../../utils.hpp"
 
-Triangles* Triangles::create(CCSize size, int quantity, ccColor3B baseColor) {
+Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
     auto ret = new Triangles();
-    if (ret && ret->init(size, quantity, baseColor)) {
+    if (ret && ret->init(quantity, baseColor)) {
         ret->autorelease();
     }
     else {
@@ -13,12 +13,11 @@ Triangles* Triangles::create(CCSize size, int quantity, ccColor3B baseColor) {
     return ret;
 }
 
-bool Triangles::init(CCSize size, int quantity, ccColor3B color) {
+bool Triangles::init(int quantity, ccColor3B color) {
     m_color = color;
     int triangles = quantity;
 
     this->setCascadeOpacityEnabled(true);
-    this->setContentSize(size);
     for (int idc = 0; idc < triangles; idc++) {
         auto tri = makeTriangle();
         this->addChild(tri);

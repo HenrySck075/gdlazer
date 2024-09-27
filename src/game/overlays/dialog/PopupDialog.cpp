@@ -1,5 +1,5 @@
 #include "PopupDialog.hpp"
-#include "../../graphics/ui/deco/Triangles.hpp"
+#include "../../graphics/backgrounds/Triangles.hpp"
 #include "../../../framework/graphics/containers/FillFlowContainer.hpp"
 
 float PopupDialog::width = 250.f;

@@ -1,15 +1,15 @@
 #ifndef __osu_ui_deco_triangles__
 #define __osu_ui_deco_triangles__
 
-#include "Geode/Geode.hpp"
+#include <Geode/Geode.hpp>
 using namespace geode::prelude;
-#include "../../../../helpers/CustomActions.hpp"
+#include "../../../helpers/CustomActions.hpp"
 
 class Triangles : public CCLayerRGBA {
 private:
     ccColor3B m_color;
 
-    bool init(CCSize size, int quantity, ccColor3B color);
+    bool init(int quantity, ccColor3B color);
 
     // TODO: tweak this because cocos2d space is not based on real window size
     float triangle_size = 100;
@@ -20,7 +20,11 @@ private:
     // mf crashes when the node does not have a parent :laugh:
     void assignAction(CCNode* node, float startTime);
 public:
-    static Triangles* create(CCSize size, int quantity, ccColor3B baseColor);
+    static Triangles* create(int quantity, ccColor3B baseColor);
+    void setParent(CCNode* parent) override {
+        CCNode::setParent(parent);
+        setContentSize(parent->CCNode::getContentSize());
+    }
 };
 
 #endif

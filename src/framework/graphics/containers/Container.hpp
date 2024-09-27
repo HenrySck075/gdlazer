@@ -73,7 +73,7 @@ public:
     void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const ccColor4F &color) {
         drawCircle(center, radius, angle, segments, drawLineToCenter, 1.f, 1.f, color);
     };
-    bool stencilEnabled() override {return m_radius!=0;}
+    bool stencilEnabled() override {return false;}
     bool init(float rad) {
         if (!CCDrawNode::init()) return false;
         setRadius(rad);

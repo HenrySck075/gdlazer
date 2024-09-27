@@ -1,5 +1,7 @@
 #include "CCClippingLayer.hpp"
 #include <Geode/platform/cplatform.h>
+#include <Geode/loader/Log.hpp>
+
 namespace {
     int g_sStencilBits = GL_STENCIL_BITS;
 };
@@ -150,6 +152,9 @@ void CCClippingLayer::visit() {
     GLboolean currentAlphaTestEnabled = GL_FALSE;
     GLenum currentAlphaTestFunc = GL_ALWAYS;
     GLclampf currentAlphaTestRef = 1;
+#else 
+    auto oldProgram = m_pStencil->getShaderProgram();
+    oldProgram->retain();
 #endif
     if (m_fAlphaThreshold < 1) {
 #ifdef GEODE_IS_DESKTOP
@@ -197,6 +202,9 @@ void CCClippingLayer::visit() {
         }
 #else
 // XXX: we need to find a way to restore the shaders of the stencil node and its childs
+        oldProgram->use();
+        oldProgram->release();
+        m_pStencil->setShaderProgram(oldProgram);
 #endif
     }
     
