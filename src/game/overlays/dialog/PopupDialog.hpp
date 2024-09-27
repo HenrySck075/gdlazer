@@ -10,14 +10,15 @@
 using namespace geode::prelude;
 
 /// TODO: Use OverlaysContainer
-class PopupDialog : public OsuOverlayContainer, public EventTarget {
+class PopupDialog : public OsuOverlayContainer {
 private:
     float volume;   
     bool hiding = false;
     CCClippingNode* m_bgSpriteClip;
     CCLayerRGBA* m_bodyLayout;
     std::vector<PopupDialogButton*> m_buttons;
-
+    CCScale9Sprite* m_bgSprite;
+    CCLabelTTF* m_title;
 
 protected:
     bool init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons);

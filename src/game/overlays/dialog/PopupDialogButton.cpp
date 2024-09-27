@@ -1,6 +1,6 @@
 #include "PopupDialogButton.hpp"
 #include "../../../utils.hpp"
-#include "../../graphics/ui/deco/Triangles.hpp"
+#include "../../graphics/backgrounds/Triangles.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
 PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
@@ -32,7 +32,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     auto clipNode = CCClippingNode::create();
     clipNode->setID("dialogbutton-clipnode");
-    clipNode->addChild(Triangles::create(d->getContentSize(),4,color));
+    clipNode->addChild(Triangles::create(4,color));
 
     auto j = CCLabelBMFont::create(label, "torus-bold.fnt"_spr);
     j->setID("dialogbutton-label");
