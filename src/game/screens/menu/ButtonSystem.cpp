@@ -238,7 +238,13 @@ bool ButtonSystem::init(OsuLogo* logo) {
             OsuIcon::CrossCircle, 
             Color4(238, 51, 153, 255), 
             [this](CCNode* j) {
-                m_menuLayerPtr->onQuit(this);
+                PopupDialog::createSimpleDialog(
+                    "Are you sure you want to exit GD?",
+                    "Last chance to turn back",
+
+                    "lemme out i need to take a bath",
+                    "nvm the 20-20-20 rule sucks", [this](CCNode* s) {m_menuLayerPtr->endGame(); }
+                )->show();
             },
             {enumKeyCodes::KEY_Q  }
         )

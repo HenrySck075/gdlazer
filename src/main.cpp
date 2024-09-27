@@ -192,19 +192,6 @@ class $modify(MyMenuLayer, MenuLayer) {
     */
     void onMyButton(CCObject*) {
     }
-    void onQuit(CCObject*s) {
-        MenuLayer::onQuit(s);
-        /*
-        PopupDialog* b = PopupDialog::createSimpleDialog(
-            "Are you sure you want to exit GD?",
-            "Last chance to turn back",
-
-            "lemme out i need to take a bath",
-            "nvm the 20-20-20 rule sucks", [this](CCNode* s) {this->endGame(); }
-        );
-        b->show();
-        */
-    }
     void onMyButton2(CCObject*) {
         auto o = OsuGame::get();
         CCDirector::sharedDirector()->pushScene(o);
