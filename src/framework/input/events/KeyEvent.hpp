@@ -2,6 +2,7 @@
 
 #include <Geode/cocos/include/cocos2d.h>
 #include "../../graphics/containers/Event.hpp"
+#include "Geode/cocos/keypad_dispatcher/CCKeypadDispatcher.h"
 using namespace cocos2d;
 
 struct KeyInfo {
@@ -19,4 +20,10 @@ class KeyboardEvent final : public NodeEvent {
 public:
     KeyInfo key;
     KeyboardEvent(KeyInfo k) : NodeEvent("keyboardEvent"), key(k) {};
+};
+
+class KeypadEvent final : public NodeEvent {
+public:
+    ccKeypadMSGType key;
+    KeypadEvent(ccKeypadMSGType k) : NodeEvent("keyadEvent"), key(k) {};
 };

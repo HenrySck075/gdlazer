@@ -3,6 +3,7 @@
  */
 #include <Geode/Geode.hpp>
 
+#include "Geode/cocos/keypad_dispatcher/CCKeypadDispatcher.h"
 #include "game/overlays/dialog/PopupDialog.hpp"
 #include "game/screens/menu/MainMenu.hpp"
 #include "game/graphics/containers/WaveContainer.hpp"
@@ -407,6 +408,11 @@ class $modify(catdispatch, CCKeyboardDispatcher) {
 #else
 #include <Geode/modify/CCTouchDispatcher.hpp>
 class $modify(the,CCTouchDispatcher) {
+    static void onModify(ModifyBase<ModifyDerive<the,CCTouchDispatcher>>& self) {
+        if (auto e = self.getHook("cocos2d::CCTouchDispatcher::touches")) {
+            e.unwrap()->setAutoEnable(false);
+        }
+    }
     void broadcastPos(MouseEventType type, CCPoint pos) {
         OsuGame::get()->dispatchEvent(new MouseEvent(type,pos));
     };
@@ -421,8 +427,15 @@ class $modify(the,CCTouchDispatcher) {
         }
         the::broadcastPos(type,static_cast<CCTouch*>(*t->begin())->getLocation());
     }
-   };
+};
 
+#include <Geode/modify/CCKeypadDispatcher.hpp>
+class $modify(mimimi, CCKeypadDispatcher) {
+    void dispatchKeypadMSG(ccKeypadMSGType nMsgType) {
+        CCKeypadDispatcher::dispatchKeypadMSG(nMsgType);
+        OsuGame::get()->dispatchEvent(new KeypadEvent(key));
+    }
+};
 #endif 
 
 $execute {
