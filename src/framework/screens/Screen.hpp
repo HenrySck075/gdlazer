@@ -24,11 +24,8 @@ public:
     static Screen* create() {
         create_class(Screen, init);
     };
-    bool init() override {
-        if (!Container::init()) return false;
-        setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
-        return true;
-    };
+    virtual void backButton() {}
+    bool init() override;
     virtual void onEntering(ScreenTransitionEvent e) {};
     virtual void onExiting(ScreenTransitionEvent e) {};
 

@@ -18,40 +18,6 @@
  * Brings cocos2d and all Geode namespaces to the current scope.
  */
 using namespace geode::prelude;
-
-#ifdef GEODE_IS_WINDOWS
-#define MAX_LEN         (cocos2d::kMaxLogLen + 1)
-void CCLog2(char const * pszFormat, ...)
-{
-    char szBuf[MAX_LEN];
-
-    va_list ap;
-    va_start(ap, pszFormat);
-    vsnprintf_s(szBuf, MAX_LEN, MAX_LEN, pszFormat, ap);
-    va_end(ap);
-
-    WCHAR wszBuf[MAX_LEN] = {0};
-    MultiByteToWideChar(CP_UTF8, 0, szBuf, -1, wszBuf, sizeof(wszBuf));
-    OutputDebugStringW(wszBuf);
-    OutputDebugStringA("\n");
-
-    WideCharToMultiByte(CP_ACP, 0, wszBuf, sizeof(wszBuf), szBuf, sizeof(szBuf), NULL, FALSE);
-    log::info("[CCLog]: {}", szBuf);
-}
-#if 0
-$execute {
-    if (!Mod::get()->hook(
-        reinterpret_cast<void*>(geode::base::getCocos()+0x73e10), // address
-        &CCLog2, // detour
-        "cocos2d::CCLog", // display name, shows up on the console
-        tulip::hook::TulipConvention::Cdecl // calling convention
-    ).isErr()) {
-        log::debug("hook: Get ready for the brand new jam!");
-    };
-}
-#endif
-#endif
-
 #include <Geode/modify/PauseLayer.hpp>
 class $modify(nPauseLayer,PauseLayer) {
     struct Fields {
@@ -415,15 +381,16 @@ class $modify(the,CCTouchDispatcher) {
         the::broadcastPos(type,static_cast<CCTouch*>(*t->begin())->getLocation());
     }
 };
+#endif 
 
-#include <Geode/modify/CCKeypadDispatcher.hpp>
-class $modify(mimimi, CCKeypadDispatcher) {
-    void dispatchKeypadMSG(ccKeypadMSGType nMsgType) {
-        CCKeypadDispatcher::dispatchKeypadMSG(nMsgType);
-        OsuGame::get()->dispatchEvent(new KeypadEvent(key));
+class keypaddelegat : public CCKeypadDelegate{
+    void keyBackClicked() override {
+        OsuGame::get()->dispatchEvent(new KeypadEvent(ccKeypadMSGType::kTypeBackClicked));
+    }
+    void keyMenuClicked() override {
+        OsuGame::get()->dispatchEvent(new KeypadEvent(ccKeypadMSGType::kTypeMenuClicked));
     }
 };
-#endif 
 
 $execute {
     new EventListener<EventFilter<AssetsLoadedEvent>>(+[](AssetsLoadedEvent* e){
@@ -433,6 +400,7 @@ $execute {
             if (hook->getDisplayName().starts_with("cocos2d::CCMouseDispatcher")) hook->enable();
             if (hook->getDisplayName().starts_with("cocos2d::CCTouchDispatcher")) hook->enable();
         }
+        CCDirector::get()->getKeypadDispatcher()->forceAddDelegate(new keypaddelegat());
         return ListenerResult::Propagate;
     });
 }
