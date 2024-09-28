@@ -383,7 +383,7 @@ class $modify(the,CCTouchDispatcher) {
 };
 #endif 
 
-class keypaddelegat : public CCKeypadDelegate{
+class keypaddelegat : public CCKeypadDelegate, public CCObject {
     void keyBackClicked() override {
         OsuGame::get()->dispatchEvent(new KeypadEvent(ccKeypadMSGType::kTypeBackClicked));
     }
@@ -400,7 +400,9 @@ $execute {
             if (hook->getDisplayName().starts_with("cocos2d::CCMouseDispatcher")) hook->enable();
             if (hook->getDisplayName().starts_with("cocos2d::CCTouchDispatcher")) hook->enable();
         }
-        CCDirector::get()->getKeypadDispatcher()->forceAddDelegate(new keypaddelegat());
+        auto j = new keypaddelegat();
+        j->autorelease();
+        CCDirector::get()->getKeypadDispatcher()->forceAddDelegate(j);
         return ListenerResult::Propagate;
     });
 }
