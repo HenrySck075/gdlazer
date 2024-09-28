@@ -277,7 +277,7 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
 void OsuGame::updateTitle() {
     auto currentScreen = dynamic_cast<Screen*>(current);
     if (currentScreen) {
-        auto title = currentScreen->title() + " | osu!lazer";
+        auto title = fmt::format("{}{}osu!lazer", currentScreen->title(), currentScreen->title().empty()?"":" | ");
         
         #ifdef GEODE_IS_WINDOWS
 

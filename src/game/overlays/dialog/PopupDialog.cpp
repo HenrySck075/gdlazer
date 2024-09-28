@@ -8,7 +8,7 @@ float PopupDialog::height = 230.f;
 
 bool PopupDialog::init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
     if (!OsuOverlayContainer::init()) return false;
-    CCSize size = {250,230};
+    CCSize size = CCSize{250,230};
     // sizes the dialog overlay to fullscreen aka not counting the toolbar height
     setContentSizeWithUnit({1,1},Unit::Viewport,Unit::Viewport);
     setUserObject("popupdialog"_spr, CCBool::create(true));
@@ -17,6 +17,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_buttons = buttons;
 
     m_bgSprite = CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr);
+    log::debug("[PopupDialog]: {}", m_bgSprite);
     m_bgSprite->setColor(ccc3(33, 26, 32));
     m_bgSprite->setContentSize(size);
     main->addChild(m_bgSprite);

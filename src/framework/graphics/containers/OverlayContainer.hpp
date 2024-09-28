@@ -12,6 +12,8 @@ public:
         if (!Container::init()) return false;
         main = Container::create();
         main->setContentSize({0,0});
+        main->setAnchorPoint({0.5,0.5});
+        main->setPositionWithUnit({50,50},Unit::Percent,Unit::Percent);
         addChild(main);
         setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
         setCascadeOpacityEnabled(false);

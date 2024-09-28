@@ -40,8 +40,7 @@
   "resources": {
     "spritesheets": {
       "MainMenuSheet": [
-        "resources/textures/menu/*.png",
-        "resources/textures/menu/*.jpg"
+        "resources/textures/menu/*.png"
       ],
       "UISheet": [
         "resources/textures/ui/*.png"
