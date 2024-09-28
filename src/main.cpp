@@ -232,10 +232,14 @@ class $modify(FMODAudioEngine) {
 class $modify(CCNodeRGBA) {
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
         GLubyte oldOpacity = _displayedOpacity;
+
         CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
-        CCBool* _b = static_cast<CCBool*>(getUserObject("opacityCascadeBlacklist"));
+
+        CCBool* _b = typeinfo_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
                     
-        if (!(_b!=nullptr && _b->getValue())) _displayedOpacity = oldOpacity;
+        if (_b!=nullptr && _b->getValue()) {
+            _displayedOpacity = oldOpacity;
+        }
     }
 };
 
@@ -243,10 +247,14 @@ class $modify(CCNodeRGBA) {
 class $modify(CCLayerRGBA) {
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
         GLubyte oldOpacity = _displayedOpacity;
+
         CCLayerRGBA::updateDisplayedOpacity(parentOpacity);
-        CCBool* _b = static_cast<CCBool*>(getUserObject("opacityCascadeBlacklist"));
+
+        CCBool* _b = typeinfo_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
                     
-        if (!(_b!=nullptr && _b->getValue())) _displayedOpacity = oldOpacity;
+        if (_b!=nullptr && _b->getValue()) {
+            _displayedOpacity = oldOpacity;
+        }
     }
 };
 
