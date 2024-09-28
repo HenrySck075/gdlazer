@@ -8,7 +8,8 @@ using namespace geode::prelude;
 enum class FontType {
     Regular,
     Bold,
-    Italic
+    Italic,
+    Light
 };
 
 

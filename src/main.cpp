@@ -231,42 +231,22 @@ class $modify(FMODAudioEngine) {
 #include <Geode/modify/CCNodeRGBA.hpp>
 class $modify(CCNodeRGBA) {
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-        _displayedOpacity = _realOpacity * parentOpacity/255.0;
-        
-        if (_cascadeOpacityEnabled)
-        {
-            CCObject* pObj;
-            CCARRAY_FOREACH(m_pChildren, pObj)
-            {
-                if (CCRGBAProtocol* item = typeinfo_cast<CCRGBAProtocol*>(pObj))
-                {
-                    CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+        GLubyte oldOpacity = _displayedOpacity;
+        CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
+        CCBool* _b = static_cast<CCBool*>(getUserObject("opacityCascadeBlacklist"));
                     
-                    if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
-                }
-            }
-        }
+        if (!(_b!=nullptr && _b->getValue())) _displayedOpacity = oldOpacity;
     }
 };
 
 #include <Geode/modify/CCLayerRGBA.hpp>
 class $modify(CCLayerRGBA) {
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-        _displayedOpacity = _realOpacity * parentOpacity/255.0;
-        
-        if (_cascadeOpacityEnabled)
-        {
-            CCObject* pObj;
-            CCARRAY_FOREACH(m_pChildren, pObj)
-            {
-                if (CCRGBAProtocol* item = typeinfo_cast<CCRGBAProtocol*>(pObj))
-                {
-                    CCBool* _b = static_cast<CCBool*>(typeinfo_cast<CCNode*>(item)->getUserObject("opacityCascadeBlacklist"));
+        GLubyte oldOpacity = _displayedOpacity;
+        CCLayerRGBA::updateDisplayedOpacity(parentOpacity);
+        CCBool* _b = static_cast<CCBool*>(getUserObject("opacityCascadeBlacklist"));
                     
-                    if (!(_b!=nullptr && _b->getValue())) item->updateDisplayedOpacity(_displayedOpacity);
-                }
-            }
-        }
+        if (!(_b!=nullptr && _b->getValue())) _displayedOpacity = oldOpacity;
     }
 };
 

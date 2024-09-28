@@ -10,5 +10,7 @@ bool Screen::init() {
             backButton();
         }
     });
+    // screen generally are not something that has opacity but if you have any opinions feel free to tell me
+    setUserObject("opacityCascadeBlacklist", CCBool::create(true));
     return true;
 };

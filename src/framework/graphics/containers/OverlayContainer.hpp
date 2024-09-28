@@ -28,7 +28,6 @@ public:
 
     void onClick(MouseEvent* e) override {
         auto j = boundingBoxFromContentSize(main);
-        log::debug("[OverlayContainer]: {} | {}", j, j.containsPoint(e->position));
         if (!j.containsPoint(e->position)) onDismiss();
     }
     virtual void onDismiss() {hide();}

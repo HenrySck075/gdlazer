@@ -2,6 +2,7 @@
 #include "../../../utils.hpp"
 #include "../../graphics/backgrounds/Triangles.hpp"
 #include "../../../helpers/CustomActions.hpp"
+#include "../../graphics/ui/OsuText.hpp"
 
 PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
     auto ret = new PopupDialogButton();
@@ -34,26 +35,24 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     clipNode->setID("dialogbutton-clipnode");
     clipNode->addChild(Triangles::create(4,color));
 
-    auto j = CCLabelBMFont::create(label, "torus-bold.fnt"_spr);
+    auto j = OsuText(label, FontType::Bold);
     j->setID("dialogbutton-label");
     j->setAnchorPoint(ccp(0.5, 0.5));
     j->setScale(0.4);
-    // unskew yourself
 
     // Gradient layers
 #define gradientSetup(side) \
     auto grad##side = CCLayerGradient::create(ccc4BFromccc4F(ccc4FFromccc3B(color)), ccc4(color.r, color.g, color.b, 0), ccp(1, 0)); \
     grad##side->setContentSize(CCSize(0,height)); \
     grad##side->setID("gradient"#side); \
-    grad##side->setOpacity(0)
+    grad##side->setOpacity(0); \
+    addChild(grad##side)
     
     gradientSetup(Left);
     gradientSetup(Right);
 #undef gradientSetup
     gradLeft->setScaleX(-1);
 
-    this->addChild(gradLeft);
-    this->addChild(gradRight);
     if (d!=nullptr) this->addChild(d);
     //this->addChild(clipNode);
     this->addChild(j);
@@ -81,7 +80,6 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
     this->setCascadeOpacityEnabled(true);
-
 
     return true;
 

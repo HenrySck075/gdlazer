@@ -9,6 +9,7 @@ float PopupDialog::height = 230.f;
 bool PopupDialog::init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
     if (!OsuOverlayContainer::init()) return false;
     CCSize size = CCSize{250,230};
+    main->setContentSize(size);
     // sizes the dialog overlay to fullscreen aka not counting the toolbar height
     setContentSizeWithUnit({1,1},Unit::Viewport,Unit::Viewport);
     setUserObject("popupdialog"_spr, CCBool::create(true));
@@ -17,14 +18,14 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_buttons = buttons;
 
     m_bgSprite = CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr);
-    log::debug("[PopupDialog]: {}", m_bgSprite);
+    m_bgSprite->setAnchorPoint({0,0});
     m_bgSprite->setColor(ccc3(33, 26, 32));
     m_bgSprite->setContentSize(size);
     main->addChild(m_bgSprite);
 
     m_bodyLayout = CCLayerRGBA::create();
     m_bodyLayout->setContentSize(size);
-    m_bodyLayout->setAnchorPoint({0.5, 0.5});
+    m_bodyLayout->setAnchorPoint({0, 0});
     m_bodyLayout->setPosition(m_bgSprite->getPosition());
     m_bodyLayout->ignoreAnchorPointForPosition(false);
     m_bodyLayout->setZOrder(2);
@@ -34,12 +35,13 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     main->addChild(m_bodyLayout);
 
     //auto batchNode = getChildOfType<CCSpriteBatchNode>(main,0);
-    m_bgSpriteClip = CCClippingNode::create(m_bgSprite);
-    assert(("ok", m_bgSpriteClip!=nullptr));
+    m_bgSpriteClip = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr));
     m_bgSpriteClip->setAlphaThreshold(0.02f);
     m_bgSpriteClip->setPosition(m_bgSprite->getPosition());
     m_bgSpriteClip->setContentSize(size);
-    m_bgSpriteClip->setAnchorPoint(m_bgSprite->getAnchorPoint()); // in case inherited dialogs also modifies this (who will do this)
+    m_bgSpriteClip->getStencil()->setContentSize(size);
+    m_bgSpriteClip->getStencil()->setAnchorPoint({0,0});
+    m_bgSpriteClip->setAnchorPoint({0,0}); // in case inherited dialogs also modifies this (who will do this)
     //m_bgSprite->removeFromParent();
     main->addChild(m_bgSpriteClip);
 
@@ -49,7 +51,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_title = OsuText(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter);
     m_title->setPosition({size.width / 2, size.height - 71});
 
-    auto label = CCLabelBMFont::create(content.c_str(), "torus-regular.fnt"_spr);
+    auto label = OsuText(content.c_str());
     label->setPosition(m_title->getPosition()-CCPoint{0,12});
     label->setScale(0.4);
     label->setZOrder(0);
@@ -78,9 +80,10 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
         btnLayer->addChild(btn); 
     }
     btnLayer->setID("buttonLayer");
+    btnLayer->updateLayout();
 
     m_bodyLayout->updateLayout();
-    label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
+    //label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
 
     // block keyboard inputs
     addListener("keyboardEvent", [](NodeEvent* e){e->preventDefault();});

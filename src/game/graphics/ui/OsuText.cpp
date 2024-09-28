@@ -1,9 +1,21 @@
 #include "OsuText.hpp"
-// silly workaround but requires the font to be installed, which is not happening on mobile devices
-std::map<FontType, const char*> fontTypeMap = {
-    {FontType::Regular, "torus-regular.ttf"_spr },  
-    {FontType::Bold, "torus-bold.ttf"_spr },
-    {FontType::Italic, "torus-italic.ttf"_spr },
+#ifdef GEODE_IS_WINDOWS
+    #define torusRegular "Torus Pro Regular"
+    #define torusBold "Torus Pro Bold"
+    #define torusItalic "Torus Pro Italic"
+    #define torusLight "Torus Pro Light"
+#else 
+    #define torusRegular "torus-regular.ttf"_spr
+    #define torusBold "torus-bold.ttf"_spr
+    #define torusItalic "torus-italic.ttf"_spr
+    #define torusLight "torus-light.ttf"_spr
+#endif
+// silly workaround for windows
+static std::map<FontType, const char*> fontTypeMap = {
+    {FontType::Regular, torusRegular },  
+    {FontType::Bold, torusBold },
+    {FontType::Italic, torusItalic },
+    {FontType::Light, torusLight }
 };
 
 // todo: figure out why custom ttf isnt loaded in

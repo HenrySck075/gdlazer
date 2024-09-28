@@ -43,10 +43,6 @@ bool OsuGame::init() {
         newWindowProcSet = true;
     }
 #endif
-    addListener("nodeLayoutUpdate",[this](NodeEvent* e){
-        screensContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
-        overlaysContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
-    });
     // making m_pChildren non-nullptr
     overlaysContainer->addChild(CCNode::create());
     overlaysContainer->removeAllChildren();
@@ -248,28 +244,15 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
         return true;
     }
     updateDispatchFlow(event, DispatchingFlow::Down);
-    /*
-    if (event->eventName() == "mouseEvent") {
-        toolbar->dispatchEvent(event);
-        if (currentScreen) currentScreen->dispatchEvent(event);
-        return;
-    }
-    */
-    // messy way to get popupdialogs
-    if (auto c = getChildren()) {
-        c->reverseObjects();
-        for (auto* i : CCArrayExt<CCNode*>(c)) {
-            if (static_cast<CCBool*>(i->getUserObject("popupdialog"_spr))) {
-                // EventTarget is not a cocos2d object
-                dynamic_cast<EventTarget*>(i)->dispatchEvent(event);
-            }
-        }
-        c->reverseObjects();
-    }
-    //EventTarget::dispatchEvent(event);
+
     toolbar->dispatchEvent(event);
-    if (current != nullptr) {
-        current->dispatchEvent(event);
+    if (event->eventName() != "nodeLayoutUpdate") {
+        if (current != nullptr) {
+            current->dispatchEvent(event);
+        }
+    } else {
+        screensContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
+        overlaysContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
     }
     return true;
 }
