@@ -230,30 +230,71 @@ class $modify(FMODAudioEngine) {
 
 #include <Geode/modify/CCNodeRGBA.hpp>
 class $modify(CCNodeRGBA) {
+    struct Fields {
+        GLubyte m_oldOpacity = 255.f;
+        bool m_root = false;
+    };
+    void setOpacity(GLubyte opacity) {
+        m_fields->m_oldOpacity = _displayedOpacity;
+        m_fields->m_root = true;
+        CCNodeRGBA::setOpacity(opacity);
+        m_fields->m_root = false;
+    };
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-        GLubyte oldOpacity = _displayedOpacity;
-
+        auto oldOpacity = (GLubyte)(int)_displayedOpacity;
         CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
 
-        CCBool* _b = typeinfo_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
-                    
+        CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
         if (_b!=nullptr && _b->getValue()) {
-            _displayedOpacity = oldOpacity;
+            _displayedOpacity = m_fields->m_root?m_fields->m_oldOpacity:oldOpacity;
+            log::debug("[hook: CCNodeRGBA]: check passed for {}, retaining opacity value {}", this, _displayedOpacity);
         }
     }
 };
 
 #include <Geode/modify/CCLayerRGBA.hpp>
 class $modify(CCLayerRGBA) {
+    struct Fields {
+        GLubyte m_oldOpacity = 255.f;
+        bool m_root = false;
+    };
+    void setOpacity(GLubyte opacity) {
+        m_fields->m_oldOpacity = _displayedOpacity;
+        m_fields->m_root = true;
+        CCLayerRGBA::setOpacity(opacity);
+        m_fields->m_root = false;
+    };
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-        GLubyte oldOpacity = _displayedOpacity;
-
+        auto oldOpacity = _displayedOpacity;
         CCLayerRGBA::updateDisplayedOpacity(parentOpacity);
 
-        CCBool* _b = typeinfo_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
-                    
+        CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
         if (_b!=nullptr && _b->getValue()) {
-            _displayedOpacity = oldOpacity;
+            _displayedOpacity = m_fields->m_root?m_fields->m_oldOpacity:oldOpacity;
+            log::debug("[hook: CCLayerRGBA]: check passed for {}, retaining opacity value {}", this, _displayedOpacity);
+        }
+    }
+};
+
+#include <Geode/modify/CCScale9Sprite.hpp>
+class $modify(CCScale9Sprite) {
+    void setOpacity(GLubyte opacity) {
+        CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
+        if (!_scale9Image || (_b!=nullptr && _b->getValue()))
+        {
+            return;
+        }
+        _opacity = opacity;
+
+        CCObject* child;
+        CCArray* children = _scale9Image->getChildren();
+        CCARRAY_FOREACH(children, child)
+        {
+            CCRGBAProtocol* pNode = dynamic_cast<CCRGBAProtocol*>(child);
+            if (pNode)
+            {
+                pNode->setOpacity(opacity);
+            }
         }
     }
 };

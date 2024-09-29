@@ -37,12 +37,13 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     var->setSkewX(7);                                                       \
     var->setContentSize(m);                                                 \
     var->setAnchorPoint(CCPoint(0.5,0.5));                                  \
-    var->setPosition(m/2)
+    var->setPosition(m/2);                                                  \
 
     bgSetup(s9, "background", color);
     bgSetup(s9hover, "hover", ccc3(255,255,255));
-    s9hover->setUserObject("opacityCascadeBlacklist", CCBool::create(true));
     s9hover->setOpacity(0);
+    s9hover->setUserObject("opacityCascadeBlacklist", CCBool::create(true));
+    setOpacity(0);
     setUserObject("opacityCascadeBlacklist", CCBool::create(true));
     this->addChild(s9);
     this->addChild(s9hover);
