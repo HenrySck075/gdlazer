@@ -247,7 +247,6 @@ class $modify(CCNodeRGBA) {
         CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
         if (_b!=nullptr && _b->getValue()) {
             _displayedOpacity = m_fields->m_root?m_fields->m_oldOpacity:oldOpacity;
-            log::debug("[hook: CCNodeRGBA]: check passed for {}, retaining opacity value {}", this, _displayedOpacity);
         }
     }
 };
@@ -271,31 +270,16 @@ class $modify(CCLayerRGBA) {
         CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
         if (_b!=nullptr && _b->getValue()) {
             _displayedOpacity = m_fields->m_root?m_fields->m_oldOpacity:oldOpacity;
-            log::debug("[hook: CCLayerRGBA]: check passed for {}, retaining opacity value {}", this, _displayedOpacity);
         }
     }
 };
 
 #include <Geode/modify/CCScale9Sprite.hpp>
 class $modify(CCScale9Sprite) {
-    void setOpacity(GLubyte opacity) {
+    void updateDisplayedOpacity(GLubyte parentOpacity) {
+        CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
         CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
-        if (!_scale9Image || (_b!=nullptr && _b->getValue()))
-        {
-            return;
-        }
-        _opacity = opacity;
-
-        CCObject* child;
-        CCArray* children = _scale9Image->getChildren();
-        CCARRAY_FOREACH(children, child)
-        {
-            CCRGBAProtocol* pNode = dynamic_cast<CCRGBAProtocol*>(child);
-            if (pNode)
-            {
-                pNode->setOpacity(opacity);
-            }
-        }
+        if (!(_b!=nullptr && _b->getValue())) setOpacity(parentOpacity);
     }
 };
 
