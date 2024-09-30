@@ -92,6 +92,9 @@ bool Background::init() {
         }
     }, "<Background:BGImageGet>")
     );
+    setUserObject("opacityCascadeBlacklist", CCBool::create(true));
+    setCascadeOpacityEnabled(true);
+    setOpacity(255);
     setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     return true;
 }
