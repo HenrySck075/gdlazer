@@ -31,7 +31,7 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
 bool ButtonSystem::init(OsuLogo* logo) {
     Container::init();
     setOsuLogo(logo);
-    this->m_menuLayerPtr = getChildOfType<MenuLayer>(MenuLayer::scene(true),0);
+    this->m_menuLayerPtr = GameManager::sharedState()->m_menuLayer;
     if (m_menuLayerPtr == nullptr) {log::info("[ButtonSystem]: nope doesnt work");}
     this->m_creatorLayerPtr = CreatorLayer::create();
 

@@ -232,13 +232,18 @@ class $modify(FMODAudioEngine) {
 class $modify(CCNodeRGBA) {
     struct Fields {
         GLubyte m_oldOpacity = 255.f;
+        GLubyte m_opacity = 255.f;
         bool m_root = false;
     };
     void setOpacity(GLubyte opacity) {
         m_fields->m_oldOpacity = _displayedOpacity;
         m_fields->m_root = true;
+        m_fields->m_opacity = opacity;
         CCNodeRGBA::setOpacity(opacity);
         m_fields->m_root = false;
+    };
+    GLubyte getOpacity() {
+        return m_fields->m_opacity;
     };
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
         auto oldOpacity = (GLubyte)(int)_displayedOpacity;
@@ -255,13 +260,18 @@ class $modify(CCNodeRGBA) {
 class $modify(CCLayerRGBA) {
     struct Fields {
         GLubyte m_oldOpacity = 255.f;
+        GLubyte m_opacity = 255.f;
         bool m_root = false;
     };
     void setOpacity(GLubyte opacity) {
         m_fields->m_oldOpacity = _displayedOpacity;
         m_fields->m_root = true;
+        m_fields->m_opacity = opacity;
         CCLayerRGBA::setOpacity(opacity);
         m_fields->m_root = false;
+    };
+    GLubyte getOpacity() {
+        return m_fields->m_opacity;
     };
     virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
         auto oldOpacity = _displayedOpacity;
@@ -276,6 +286,17 @@ class $modify(CCLayerRGBA) {
 
 #include <Geode/modify/CCScale9Sprite.hpp>
 class $modify(CCScale9Sprite) {
+    struct Fields {
+        GLubyte m_opacity = 255.f;
+    };
+    void setOpacity(GLubyte opacity) {
+        m_fields->m_opacity = opacity;
+        CCScale9Sprite::setOpacity(opacity);
+    };
+    // either my devtools build bricked or this but just for safety i will put this here
+    GLubyte getOpacity() {
+        return m_fields->m_opacity;
+    };
     void updateDisplayedOpacity(GLubyte parentOpacity) {
         CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
         CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
