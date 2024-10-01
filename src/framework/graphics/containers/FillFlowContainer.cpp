@@ -30,6 +30,7 @@ void FillFlowContainer::addChild(CCNode* node) {
     minimumSize = std::max(cs.first, minimumSize);
     maximumSize = std::min(cs.second, maximumSize);
     checkConstraints();
+    CCLayer::updateLayout();
 };
 void FillFlowContainer::updateChildPosition() {
     auto childList = getChildren();

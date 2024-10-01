@@ -160,7 +160,11 @@ void IntroTriangles::rulesets_1_func() {
 
     auto n = CCLayer::create();
     n->setID("iconsets");
-    n->setLayout(RowLayout::create()->setGap(50)->setAutoScale(false));
+    n->setLayout(
+        RowLayout::create()
+        ->setGap(50)
+        ->setAutoScale(false)
+    );
     n->setScale(0.7);
     n->setAnchorPoint(CCPoint{ 0.5,0.5 });
     n->setPosition(CCDirector::get()->getWinSize() / 2);
@@ -186,19 +190,19 @@ void IntroTriangles::rulesets_1_func() {
 }
 void IntroTriangles::rulesets_1_change_gap(float gap) {
     auto n = this->getChildByID("iconsets");
-    n->setLayout(RowLayout::create()->setGap(gap));
+   static_cast<RowLayout*>(n->getLayout())->setGap(gap);
     n->updateLayout();
 }
 void IntroTriangles::rulesets_2_func() {
     auto n = this->getChildByID("iconsets");
     this->stopActionByTag(9);
-    n->setLayout(RowLayout::create()->setGap(15));
+    static_cast<RowLayout*>(n->getLayout())->setGap(15);
     n->setScale(1.1);
     n->updateLayout();
 }
 void IntroTriangles::rulesets_3_func() {
     auto n = this->getChildByID("iconsets");
-    n->setLayout(RowLayout::create()->setGap(5));
+    static_cast<RowLayout*>(n->getLayout())->setGap(5);
     n->setScale(1.6);
     n->updateLayout();
 }

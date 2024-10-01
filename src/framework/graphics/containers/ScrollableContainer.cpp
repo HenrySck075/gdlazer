@@ -1,4 +1,5 @@
 #include "ScrollableContainer.hpp"
+#include <algorithm>
 void ScrollableContainer::onDragStart(MouseDragEvent* event) {
     lastIdlePos = body->getPosition();
     //log::debug("[ScrollableContainer]: sp {}", lastIdlePos);
@@ -15,18 +16,7 @@ void ScrollableContainer::onDragEnd(MouseDragEvent* event) {
     auto pos = body->getPosition();
     auto distY = lastOffset.y - pos.y;
     bool neg = distY < 0;
-    /*
-    runAction(CCRepeat::create(CCCallFuncL::create([this,&distY,&pos,&neg](){
-        moveToPos(CCPoint(lastOffset.x, pos.y+distY), false);
-        if (neg) {
-            distY++;
-            if (distY >= 0) distY = 0;
-        } else {
-            distY--;
-            if (distY <= 0) distY = 0;
-        }
-    }),std::max(distY,(float)1)));
-    */
+    float dist = 0.5;
     m_dragging = false;
 }
 
