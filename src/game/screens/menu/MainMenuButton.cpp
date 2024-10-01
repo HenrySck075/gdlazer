@@ -42,9 +42,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     bgSetup(s9, "background", color);
     bgSetup(s9hover, "hover", ccc3(255,255,255));
     s9hover->setOpacity(0);
-    s9hover->setUserObject("opacityCascadeBlacklist", CCBool::create(true));
     setOpacity(0);
-    setUserObject("opacityCascadeBlacklist", CCBool::create(true));
     this->addChild(s9);
     this->addChild(s9hover);
     this->addChild(the);

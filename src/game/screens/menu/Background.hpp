@@ -22,6 +22,6 @@ public:
     };
     bool init();
     void setOpacity(GLubyte opacity) override {
-      m_background->setOpacity(opacity);
+        if (m_background) m_background->setOpacity(opacity);
     }
 };

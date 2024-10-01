@@ -6,10 +6,10 @@ using namespace geode::prelude;
 #include <cstdio>
 
 struct Color4 {
-  int r;
-  int g;
-  int b;
-  int a;
+  int r = 255;
+  int g = 255;
+  int b = 255;
+  int a = 255;
 
   Color4 clamp() {
 #define c(v) std::max(std::min(v,255),0)

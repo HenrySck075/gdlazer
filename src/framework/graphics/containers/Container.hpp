@@ -163,7 +163,6 @@ protected:
     bool m_includeShadow = false;
 
     Anchor m_anchor = Anchor::BottomLeft;
-    
 
     virtual void onLayoutUpdate(NodeLayoutUpdate*e);
     CCPoint m_position;
@@ -309,6 +308,15 @@ public:
         CCLayer::setParent(parent);
         dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::All));
     };
+private:
+    Color4 m_color4;
+public:
+    void setColor(ccColor3B color) {
+        setColor(Color4{color});
+    }
+    void setColor(Color4 color) {
+        m_color4 = color;
+    }
 
     ~Container() {
         m_roundedBorderStencil->release();

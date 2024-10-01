@@ -164,6 +164,7 @@ void IntroTriangles::rulesets_1_func() {
         RowLayout::create()
         ->setGap(50)
         ->setAutoScale(false)
+        ->setAxisAlignment(AxisAlignment::Center)
     );
     n->setScale(0.7);
     n->setAnchorPoint(CCPoint{ 0.5,0.5 });

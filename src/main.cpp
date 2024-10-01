@@ -227,62 +227,6 @@ class $modify(FMODAudioEngine) {
 };
 */
 
-
-#include <Geode/modify/CCNodeRGBA.hpp>
-class $modify(CCNodeRGBA) {
-    struct Fields {
-        GLubyte m_oldOpacity = 255.f;
-        bool m_root = false;
-    };
-    void setOpacity(GLubyte opacity) {
-        m_fields->m_oldOpacity = _displayedOpacity;
-        m_fields->m_root = true;
-        CCNodeRGBA::setOpacity(opacity);
-        m_fields->m_root = false;
-    };
-    virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-        auto oldOpacity = (GLubyte)(int)_displayedOpacity;
-        CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
-
-        CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
-        if (_b!=nullptr && _b->getValue()) {
-            _displayedOpacity = m_fields->m_root?m_fields->m_oldOpacity:oldOpacity;
-        }
-    }
-};
-
-#include <Geode/modify/CCLayerRGBA.hpp>
-class $modify(CCLayerRGBA) {
-    struct Fields {
-        GLubyte m_oldOpacity = 255.f;
-        bool m_root = false;
-    };
-    void setOpacity(GLubyte opacity) {
-        m_fields->m_oldOpacity = _displayedOpacity;
-        m_fields->m_root = true;
-        CCLayerRGBA::setOpacity(opacity);
-        m_fields->m_root = false;
-    };
-    virtual void updateDisplayedOpacity(GLubyte parentOpacity) {
-        auto oldOpacity = _displayedOpacity;
-        CCLayerRGBA::updateDisplayedOpacity(parentOpacity);
-
-        CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
-        if (_b!=nullptr && _b->getValue()) {
-            _displayedOpacity = m_fields->m_root?m_fields->m_oldOpacity:oldOpacity;
-        }
-    }
-};
-
-#include <Geode/modify/CCScale9Sprite.hpp>
-class $modify(CCScale9Sprite) {
-    void updateDisplayedOpacity(GLubyte parentOpacity) {
-        CCNodeRGBA::updateDisplayedOpacity(parentOpacity);
-        CCBool* _b = static_cast<CCBool*>(this->getUserObject("opacityCascadeBlacklist"));
-        if (!(_b!=nullptr && _b->getValue())) setOpacity(parentOpacity);
-    }
-};
-
 #include "game/OsuGame.hpp"
 #include "framework/input/events/KeyEvent.hpp"
 #include "framework/input/events/MouseEvent.hpp"

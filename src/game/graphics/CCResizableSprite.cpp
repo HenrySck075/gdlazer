@@ -20,7 +20,7 @@ bool CCResizableSprite::init() {
 }
 
 bool CCResizableSprite::initWithSpriteFrameName(const char* pszSpriteFrameName) {
-    CCNode::init();
+    CCNodeRGBA::init();
     m_sprite = CCSprite::createWithSpriteFrameName(pszSpriteFrameName);
     baseSize = m_sprite->getContentSize();
     m_sprite->setPosition(baseSize/2);
