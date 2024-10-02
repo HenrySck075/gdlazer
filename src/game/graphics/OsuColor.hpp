@@ -59,7 +59,7 @@ public:
         {5.8f, Color4::fromHex("c645b8")},
         {6.7f, Color4::fromHex("6563de")},
         {7.7f, Color4::fromHex("18158e")},
-        {9.0f, Color4Defined().Black}
+        {9.0f, Color4::Black}
     }, (float)ceil(starDifficulty));};
 
     /// <summary>
@@ -100,35 +100,34 @@ public:
     /// </summary>
     Color4 forHitResult(HitResult result)
     {
-        Color4Defined c;
         switch (result)
         {
             case HitResult::IgnoreMiss:
             case HitResult::SmallTickMiss:
-                return c.Gray;
+                return Color4::Gray;
 
             case HitResult::Miss:
             case HitResult::LargeTickMiss:
             case HitResult::ComboBreak:
-                return c.Red;
+                return Color4::Red;
 
             case HitResult::Meh:
-                return c.Yellow;
+                return Color4::Yellow;
 
             case HitResult::Ok:
-                return c.Green;
+                return Color4::Green;
 
             case HitResult::Good:
-                return c.LightGreen;
+                return Color4::LightGreen;
 
             case HitResult::SmallTickHit:
             case HitResult::LargeTickHit:
             case HitResult::SliderTailHit:
             case HitResult::Great:
-                return c.Blue;
+                return Color4::Blue;
 
             default:
-                return c.LightBlue;
+                return Color4::LightBlue;
         }
     }
 
@@ -145,7 +144,7 @@ public:
         switch (status)
         {
             case BeatmapOnlineStatus::LocallyModified:
-                return Color4Defined().OrangeRed;
+                return Color4::OrangeRed;
 
             case BeatmapOnlineStatus::Ranked:
             case BeatmapOnlineStatus::Approved:
@@ -164,10 +163,10 @@ public:
                 return Color4::fromHex("ff9966");
 
             case BeatmapOnlineStatus::Graveyard:
-                return Color4Defined().Black;
+                return Color4::Black;
 
             default:
-                return Color4Defined().Black;
+                return Color4::Black;
         }
     }
 
@@ -206,7 +205,7 @@ public:
     /// </summary>
     Color4 forRoomCategory(RoomCategory roomCategory)
     {
-      Color4Defined c;
+      //Color4Defined c;
       switch (roomCategory)
       {
         case RoomCategory::Spotlight:
@@ -216,7 +215,7 @@ public:
           return FeaturedArtistColor;
 
         default:
-          return c.Black;
+          return Color4::Black;
       }
     }
 

@@ -11,7 +11,6 @@ private:
   bool m_preserveRatio = false;
 public:
   static CCResizableSprite* create(); 
-  static CCResizableSprite* createWithSpriteFrame(CCSpriteFrame *pSpriteFrame);
   static CCResizableSprite* createWithSpriteFrameName(const char* frameName); 
   bool initWithSpriteFrameName(const char* frameName);
   bool init();

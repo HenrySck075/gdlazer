@@ -6,11 +6,6 @@ bool MainMenu::init() {
     Screen::init();
     m_title = "Welcome to Geometry Dash!";
     auto logo = OsuLogo::create();
-    //logo->setPosition(CCDirector::sharedDirector()->getWinSize() / 2);
-    //logo->setCallback([this](CCNode* j) {onLogoClickIdle(); });
-    //auto g = MainMenuButton::create("g","button-play-select.wav"_spr, OsuIcon().Logo, Color4Defined::Green, [this](CCNode* idk) {});
-    //detector = BeatDetector::Instance();
-    //detector->LoadSongFromSystem();
 
     auto bgParal = ParallaxContainer::create();
     bg = Background::create();

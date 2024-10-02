@@ -33,15 +33,6 @@ bool Background::init() {
     });
 
 
-    addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
-        auto e = static_cast<NodeLayoutUpdate*>(ev);
-        //log::debug("[Background]: {}", (int)(e->type));
-        //if (e->type == NodeLayoutUpdateType::Size || e->type == NodeLayoutUpdateType::All) {
-            auto s = CCNode::getContentSize();
-            m_background->setPosition(s/2);
-            m_background->setContentSize(s);
-        //n}
-    });
 
     // set the task
     m_backgroundGetListener.setFilter(
@@ -92,9 +83,14 @@ bool Background::init() {
         }
     }, "<Background:BGImageGet>")
     );
-    setUserObject("opacityCascadeBlacklist", CCBool::create(true));
     setCascadeOpacityEnabled(true);
     setOpacity(255);
+    addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
+        auto e = static_cast<NodeLayoutUpdate*>(ev);
+        auto s = CCNode::getContentSize();
+        m_background->setPosition(s/2);
+        m_background->setContentSize(s);
+    });
     setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     return true;
 }

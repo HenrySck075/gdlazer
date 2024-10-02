@@ -21,7 +21,4 @@ public:
         create_class(Background, init);
     };
     bool init();
-    void setOpacity(GLubyte opacity) override {
-        if (m_background) m_background->setOpacity(opacity);
-    }
 };

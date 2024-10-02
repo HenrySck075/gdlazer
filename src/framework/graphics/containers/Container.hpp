@@ -309,47 +309,26 @@ public:
         dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::All));
     };
 private:
-    Color4 m_color4;
+    Color4 m_color4 = {255,255,255,255};
 public:
     void setColor(ccColor3B color) {
         setColor(Color4{color});
     }
     void setColor(Color4 color) {
         m_color4 = color;
+        updateColor();
+    }
+    // the
+    void updateColor() override {
+        for( unsigned int i=0; i < 4; i++ ) {
+            m_pSquareColors[i].r = m_color4.r/255;
+            m_pSquareColors[i].g = m_color4.g/255;
+            m_pSquareColors[i].b = m_color4.b/255;
+            m_pSquareColors[i].a = (m_color4.a/ (_displayedOpacity == 0 ? 255 : _displayedOpacity))/255;
+        }
     }
 
     ~Container() {
         m_roundedBorderStencil->release();
     }
 };
-
-template<class T>
-concept is_node = std::is_base_of_v<CCNode, T> && !std::is_base_of_v<Container, T>;
-
-/*
-// wraps a node inside a container
-// @warning this currently does not work for some reason. So if you dont need to also resize the node, wrap it in a Container instead.
-class ContainerNodeWrapper : public Container {
-private:
-    CCNode* m_node;
-public:
-    static ContainerNodeWrapper* create(CCNode* node) {
-        create_class(ContainerNodeWrapper, init, node);
-    }
-
-    bool init(CCNode* node);
-
-    void setContentSize(CCSize const& size) override {
-        m_node->setContentSize(CCSize(
-            processUnit(size.width, m_sizeUnit.first, true),
-            processUnit(size.height, m_sizeUnit.second, false)
-        ));
-        Container::setContentSize(size);
-    }
-
-    CCNode* getWrappingNode() {return m_node;}
-
-    void dispatchToChild(NodeEvent* event) override;
-
-};
-*/

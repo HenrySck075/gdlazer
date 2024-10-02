@@ -43,6 +43,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     bgSetup(s9hover, "hover", ccc3(255,255,255));
     s9hover->setOpacity(0);
     setOpacity(0);
+    setColor(Color4{255,255,255,0});
     this->addChild(s9);
     this->addChild(s9hover);
     this->addChild(the);

@@ -11,7 +11,7 @@ bool Screen::init() {
         }
     });
     // screen generally are not something that has opacity but if you have any opinions feel free to tell me
-    // wait i just realized that intro screens did it
-    setUserObject("opacityCascadeBlacklist", CCBool::create(true));
+    // the only screens that does that are intro screens
+    setColor({0,0,0,0});
     return true;
 };

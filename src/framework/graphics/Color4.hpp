@@ -6,13 +6,13 @@ using namespace geode::prelude;
 #include <cstdio>
 
 struct Color4 {
-  int r = 255;
-  int g = 255;
-  int b = 255;
-  int a = 255;
+  GLubyte r = 255;
+  GLubyte g = 255;
+  GLubyte b = 255;
+  GLubyte a = 255;
 
   Color4 clamp() {
-#define c(v) std::max(std::min(v,255),0)
+#define c(v) std::max(std::min((int)v,255),0)
     return {c(r),c(g),c(b),c(a)};
   }
   Color4 lighten(int amount) {
@@ -67,6 +67,23 @@ struct Color4 {
     return Color4(r+c.r,g+c.g,b+c.b,a+c.a).clamp();
   }
 
+  Color4 operator/(Color4 e) {
+    return {
+      r/e.r,
+      g/e.g,
+      b/e.b,
+      a/e.a
+    };
+  }
+  Color4 operator/(int div) {
+    return {
+      r/div,
+      g/div,
+      b/div,
+      a/div
+    };
+  }
+
 
   // convert to cocos2d color because we're making this for cocos2d ofc
   operator ccColor3B() const {
@@ -93,8 +110,7 @@ struct Color4 {
       a+c.a
     ).clamp();
   }
-};
-struct Color4Defined {
+  
     /// <summary>
     /// Gets the system color with (R, G, B, A) = (255, 255, 255, 0).
     /// </summary>

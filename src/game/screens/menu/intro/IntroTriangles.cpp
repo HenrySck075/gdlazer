@@ -10,7 +10,7 @@
 
 bool IntroTriangles::init() {
     if (!Screen::init()) return false;
-    setUserObject("opacityCascadeBlacklist", nullptr);
+    setColor({255,255,255,255});
 
     // Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
     // Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
