@@ -31,7 +31,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     the->updateLayout();
     
     #define bgSetup(var, id, col)                                           \
-    auto var = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr); \
+    var = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr); \
     var->setID(id);                                                         \
     var->setColor(col);                                                     \
     var->setSkewX(7);                                                       \
@@ -39,17 +39,20 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     var->setAnchorPoint(CCPoint(0.5,0.5));                                  \
     var->setPosition(m/2);                                                  \
 
-    bgSetup(s9, "background", color);
-    bgSetup(s9hover, "hover", ccc3(255,255,255));
-    s9hover->setOpacity(0);
-    setOpacity(0);
+    bgSetup(background, "background", color);
+    bgSetup(hover, "hover", ccc3(255,255,255));
+    this->setCascadeOpacityEnabled(true);
     setColor(Color4{255,255,255,0});
-    this->addChild(s9);
-    this->addChild(s9hover);
+    this->addChild(background);
+    this->addChild(hover);
     this->addChild(the);
+    hover->setOpacity(0);
+    hover->setOpacity(0);
+    hover->setOpacity(0);
+    hover->setOpacity(0);
+    hover->setOpacity(0);
     
     this->setAnchorPoint(ccp(0.5,0.5));
-    this->setCascadeOpacityEnabled(true);
     setHoverEnabled(false);
     setClickEnabled(false);
 
@@ -69,13 +72,13 @@ void MainMenuButton::setContentSize(const CCSize& size) {
     ClickableContainer::setContentSize(size);
     auto s = getContentSize();
     // todo: move to container
-    if (auto bg = this->getChildByID("background")) {
-        bg->setContentSize(s);
-        bg->setPosition(s/2);
+    if (background) {
+        background->setContentSize(s);
+        background->setPosition(s/2);
     }
-    if (auto bgh = this->getChildByID("hover")) {
-        bgh->setContentSize(s);
-        this->getChildByID("hover")->setPosition(s/2);
+    if (hover) {
+        hover->setContentSize(s);
+        hover->setPosition(s/2);
     }
     if (auto ui = this->getChildByID("ui")) ui->setPosition(s/2);
     if (m_askForUpdate) m_pParent->updateLayout();

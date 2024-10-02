@@ -10,12 +10,13 @@
 
 bool IntroTriangles::init() {
     if (!Screen::init()) return false;
-    setColor({255,255,255,255});
+    setColor({0,0,0,255});
 
     // Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
     // Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
     // osu! logo: ji
 
+    setOpacity(255);
     auto label = OsuText("");
     //label->setFntFile("LazerFont.fnt"_spr);
     label->setID("welcomeText");
@@ -217,7 +218,7 @@ void IntroTriangles::logo_scale() {
 }
 
 void IntroTriangles::onExiting(ScreenTransitionEvent e) {
-    setOpacity(255);
+    setColor({255,255,255,255});
     runAction(
         CCFadeOut::create(1)
     );

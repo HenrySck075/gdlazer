@@ -306,7 +306,7 @@ public:
 
     void setParent(CCNode* parent) override {
         CCLayer::setParent(parent);
-        dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::All));
+        dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::Size));
     };
 private:
     Color4 m_color4 = {255,255,255,255};

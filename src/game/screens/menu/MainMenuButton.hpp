@@ -12,13 +12,15 @@ using namespace geode::prelude;
 /// <summary>
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public ClickableContainer
-{
+class MainMenuButton : public ClickableContainer {
     Color4 m_color = Color4(0,0,0,0);
     float const BOUNCE_COMPRESSION = 0.9f;
     float const HOVER_SCALE = 1.2f;
     float const BOUNCE_ROTATION = 8;
     bool m_askForUpdate = false;
+
+    CCScale9Sprite* background;
+    CCScale9Sprite* hover;
 /*
     public readonly Key[] TriggerKeys;
 
@@ -62,9 +64,6 @@ private:
     void onMouseDown(MouseEvent* event) override;
     void onMouseUp(MouseEvent* event) override;
     void onClick(MouseEvent* e) override;
-
-    CCNode* background;
-    CCNode* boxHoverLayer; // ?
 
     CCSize initialSize = CCSize(0,0);//baseSize + content->getContentSize();
 
