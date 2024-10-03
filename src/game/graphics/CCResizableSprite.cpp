@@ -40,8 +40,8 @@ void CCResizableSprite::setContentSize(CCSize const& size) {
     float wRatio = size.width / baseSize.width;
     float hRatio = size.height / baseSize.height;
     if (m_preserveRatio) {
-        if (size.width > size.height) hRatio = wRatio;
-        if (size.height > size.width) wRatio = hRatio;
+        if (wRatio > hRatio) {hRatio = wRatio;}
+        else wRatio = hRatio;
     }
     
     m_sprite->setScaleX(wRatio);

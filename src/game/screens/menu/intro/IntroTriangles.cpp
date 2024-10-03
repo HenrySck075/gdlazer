@@ -166,6 +166,7 @@ void IntroTriangles::rulesets_1_func() {
         ->setGap(50)
         ->setAutoScale(false)
         ->setAxisAlignment(AxisAlignment::Center)
+        ->setCrossAxisAlignment(AxisAlignment::Center)
     );
     n->setScale(0.7);
     n->setAnchorPoint(CCPoint{ 0.5,0.5 });
@@ -192,7 +193,7 @@ void IntroTriangles::rulesets_1_func() {
 }
 void IntroTriangles::rulesets_1_change_gap(float gap) {
     auto n = this->getChildByID("iconsets");
-   static_cast<RowLayout*>(n->getLayout())->setGap(gap);
+    static_cast<RowLayout*>(n->getLayout())->setGap(gap);
     n->updateLayout();
 }
 void IntroTriangles::rulesets_2_func() {

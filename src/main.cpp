@@ -251,7 +251,6 @@ class $modify(meowview, CCEGLView) {
         }
     }
     CCPoint getMousePosition() {return lastKnownCursorPos;}
-    #if 0
     void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
         //log::debug("hi chat");
         CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
@@ -276,7 +275,6 @@ class $modify(meowview, CCEGLView) {
             m_click = false;
         }
     };
-    #endif
     void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height) {
         CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
         OsuGame::get()->setContentSize(getDesignResolutionSize());

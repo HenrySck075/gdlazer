@@ -23,4 +23,5 @@ public:
 
   void preserveRatio(bool enable) {m_preserveRatio = enable;}
   CCSprite* getSprite(){return m_sprite;}
+  void setSprite(CCSprite* spr){m_sprite = spr;}
 };
