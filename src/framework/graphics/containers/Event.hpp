@@ -28,7 +28,9 @@ public:
     NodeEvent() {
         throw "kill yourself";
     }; // i cant delete this
-    NodeEvent(std::string name) : m_eventName(name) {};
+    NodeEvent(std::string name) : m_eventName(name) {
+        autorelease();
+    };
     virtual std::string eventName() {return m_eventName;};
     virtual void eventName(std::string newName) {m_eventName = newName;};
 
