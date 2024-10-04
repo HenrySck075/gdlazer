@@ -177,6 +177,25 @@ public:
     }
 };
 
+class CCMoveToModifiable : public CCMoveTo {
+public:
+    static CCMoveToModifiable* create(float duration, CCPoint const& position) {
+        create_class(CCMoveToModifiable, initWithDuration, duration, position);
+    }
+    void startWithTarget(CCNode* pTarget) {
+        m_startPosition = pTarget->getPosition();
+        CCMoveBy::startWithTarget(pTarget);
+    }
+    void update(float dt) {
+        if (m_pTarget) {
+            m_pTarget->setPosition(m_startPosition+(m_endPosition*dt));
+        }
+    }
+    void setPosition(CCPoint const& endPosition) {
+        m_endPosition = endPosition;
+    }
+};
+
 class CCRepeatUntil : public CCRepeatForever {
 private:
     geode::utils::MiniFunction<bool()> m_predicate;

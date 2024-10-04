@@ -1,10 +1,7 @@
 #pragma once
 #include <Geode/Geode.hpp>
-#include <vector>
 #include "OsuLogo.hpp"
 #include "MainMenuButton.hpp"
-#include "ButtonConstants.hpp"
-#include "../../../helpers/CustomActions.hpp"
 #include "../../../framework/graphics/containers/Container.hpp"
 #include "ButtonArea.hpp"
 using namespace geode::prelude;
@@ -15,7 +12,7 @@ class OsuGame;
 class ButtonSystem : public Container
 {
   public:
-    float WEDGE_WIDTH = 20;
+    static float WEDGE_WIDTH;
 
     //Action<ButtonSystemState>? StateChanged;
 

@@ -9,12 +9,15 @@
 class OsuGame;
 #include "../../OsuGame.hpp"
 #include "../../../utils.hpp"
+#include "../../graphics/containers/ParallaxContainer.hpp"
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer;
 
 class MainMenu : public Screen {
     ButtonSystem* buttonSys;
     Background* bg;
+    ParallaxContainer* buttonSysParallax;
+    CCMoveToModifiable* logoMoveAction;
 public:
     float FADE_IN_DURATION = 300;
 

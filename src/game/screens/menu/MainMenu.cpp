@@ -1,6 +1,8 @@
 #include "MainMenu.hpp"
 #include "OsuLogo.hpp"
-#include "../../graphics/containers/ParallaxContainer.hpp"
+#include "ButtonConstants.hpp"
+
+static CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
 
 bool MainMenu::init() {
     Screen::init();
@@ -20,15 +22,16 @@ bool MainMenu::init() {
     j->updateLayout();
     this->addChildAtPosition(j, Anchor::TopLeft);
     
-    auto btnParal = ParallaxContainer::create(0.01f);
+    buttonSysParallax = ParallaxContainer::create(0.01f);
     buttonSys = ButtonSystem::create(logo);
-    btnParal->addChild(buttonSys);
-    this->addChild(btnParal);
+    buttonSysParallax->addChild(buttonSys);
+    this->addChild(buttonSysParallax);
 
     return true;
 }
 
 void MainMenu::onLogoClickIdle() {
     auto logo = getChildOfType<OsuLogo>(this, 0);
-    //auto btns = ButtonSystem
+    logoMoveAction = CCMoveToModifiable::create(0.5, pos);
+    logo->runAction(logoMoveAction);
 }

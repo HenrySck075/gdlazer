@@ -3,6 +3,9 @@
 #include "../../overlays/dialog/PopupDialog.hpp"
 #include "../../overlays/toolbar/ToolbarToggleButton.hpp"
 #include "../Playground.hpp"
+#include "ButtonConstants.hpp"
+
+float ButtonSystem::WEDGE_WIDTH = 20;
 
 class SongSelect;
 #include "../select/SongSelect.hpp"
@@ -32,7 +35,6 @@ bool ButtonSystem::init(OsuLogo* logo) {
     Container::init();
     setOsuLogo(logo);
     this->m_menuLayerPtr = GameManager::sharedState()->m_menuLayer;
-    if (m_menuLayerPtr == nullptr) {log::info("[ButtonSystem]: nope doesnt work");}
     this->m_creatorLayerPtr = CreatorLayer::create();
 
     //float w = CCDirector::sharedDirector()->getWinSize().width;
