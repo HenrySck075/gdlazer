@@ -105,6 +105,8 @@ void ButtonArea::show(std::string tag) {
 
     // expand
     if (shownIndex<index) {
+        this->addChild(buttonsMenus[tag]);
+        tagsStack.push_back(tag);
         for (int idx = 0; idx<j.size(); idx++) {
             auto i = j[idx];
             if (i->retainCount() == 0) {
@@ -124,8 +126,6 @@ void ButtonArea::show(std::string tag) {
             ));
         }
         buttonsMenus[tag]->setZOrder(curZOrder--);
-        this->addChild(buttonsMenus[tag]);
-        tagsStack.push_back(tag);
     }
     // return
     else {

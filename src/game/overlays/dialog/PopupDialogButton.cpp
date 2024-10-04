@@ -76,10 +76,12 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
         gradRight->setPosition(ccp(size.width-gradWidth, 0));
     });
 
-    this->setContentSizeWithUnit(CCSize{ 100,height },Unit::Percent,Unit::OpenGL);
+    this->setContentSizeWithUnit(CCSize{ 100,height },Unit::Percent,Unit::UIKit);
     this->setAnchorPoint(CCPoint{ 0.5,0.5 });
 
     this->setCascadeOpacityEnabled(true);
+
+    setSizeConstraints({-1,height}, {-1,height});
 
     return true;
 

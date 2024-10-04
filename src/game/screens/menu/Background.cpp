@@ -10,7 +10,7 @@ bool Background::init() {
     addChild(m_background);
     m_backgroundGetListener.bind([this](meow::Event* e){
         if (auto img = e->getValue()) {
-            m_background->preserveRatio(true);
+            m_background->setBoxFit(BoxFit::Cover);
             auto name = *img;
             if (name.starts_with("https://")) {
                 ImageCache::instance()->download(name, {}, "", [this](CCImage* i, std::string) {
@@ -85,13 +85,14 @@ bool Background::init() {
     );
     setCascadeOpacityEnabled(true);
     setOpacity(255);
+    setColor({0,0,0});
+    setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
-        auto e = static_cast<NodeLayoutUpdate*>(ev);
-        auto s = CCNode::getContentSize();
+        //auto e = static_cast<NodeLayoutUpdate*>(ev);
+        auto s = CCLayer::getContentSize();
         m_background->setPosition(s/2);
         m_background->setContentSize(s);
     });
-    setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     return true;
 }
 

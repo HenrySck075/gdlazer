@@ -185,13 +185,7 @@ public:
     void setRadius(float radius) {
         m_roundedBorderStencil->setRadius(radius);
     }
-    void onEnter() override {
-        CCLayerColor::onEnter();
-        if (queuedLayoutUpdate) {
-            dispatchToChild(queuedLayoutUpdate);
-            queuedLayoutUpdate->release();
-        }
-    }
+    void onEnter() override;
 
     // @param value Value in specified unit
     // @param unit The unit in question
@@ -201,11 +195,6 @@ public:
     bool dispatchEvent(NodeEvent* event) override;
     // Dispatches the event to the child. 
     virtual bool dispatchToChild(NodeEvent* event);
-
-    void addChild(CCNode* e) override {
-        e->setParent(nullptr);
-        CCNode::addChild(e);
-    }
 
     /// nvm
     void updateLayout() {
@@ -286,12 +275,7 @@ public:
         if (position == m_position) return;
         m_position = position;
         dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Position));
-        /*
-        CCLayer::setPosition(CCPoint(
-            processUnit(position.x, m_positionUnit.first, true),
-            processUnit(position.y, m_positionUnit.second, false)
-        ));
-        */
+
     }
     void setPositionY(float pos) override {
         setPosition(ccp(m_position.x,pos));
@@ -304,31 +288,15 @@ public:
         return m_position;
     }
 
-    void setParent(CCNode* parent) override {
-        CCLayer::setParent(parent);
-        dispatchEvent(new NodeLayoutUpdate( NodeLayoutUpdateType::Size));
-    };
-private:
+    void setParent(CCNode *parent) override;
+
+  private:
     Color4 m_color4 = {255,255,255,255};
 public:
-    void setColor(ccColor3B color) {
-        setColor(Color4{color});
-    }
-    void setColor(Color4 color) {
-        m_color4 = color;
-        updateColor();
-    }
-    // the
-    void updateColor() override {
-        for( unsigned int i=0; i < 4; i++ ) {
-            m_pSquareColors[i].r = m_color4.r/255;
-            m_pSquareColors[i].g = m_color4.g/255;
-            m_pSquareColors[i].b = m_color4.b/255;
-            m_pSquareColors[i].a = (m_color4.a/ (_displayedOpacity == 0 ? 255 : _displayedOpacity))/255;
-        }
-    }
+  void setColor(ccColor3B color);
+  void setColor(Color4 color);
+  // the
+  void updateColor() override;
 
-    ~Container() {
-        m_roundedBorderStencil->release();
-    }
+  ~Container() { m_roundedBorderStencil->release(); }
 };

@@ -277,24 +277,14 @@ bool Container::dispatchEvent(NodeEvent* event) {
     //
     // TODO: use some sort of a global event listeners mapper
     // so we can just do everything in 1 call
-    #define dispatch                                                                                    \
-        switch (event->m_dispatchingFlow) {                                                             \
-            case DispatchingFlow::Up:                                                                   \
-                if (auto p = dynamic_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);    \
-            case DispatchingFlow::Down:                                                                 \
-                return dispatchToChild(event);                                                          \
-        }                                                                                               \
-        event->release()
-    if (event->eventName() == "nodeLayoutUpdate") {
-        if (isRunning()) {
-            dispatch;
-        } else {
-            if (queuedLayoutUpdate) queuedLayoutUpdate->release();
-            queuedLayoutUpdate = event;
-        }
-    } else {
-        dispatch;
+    switch (event->m_dispatchingFlow) {
+        case DispatchingFlow::Up:
+            if (auto p = dynamic_cast<EventTarget*>(m_pParent)) return p->dispatchEvent(event);
+        case DispatchingFlow::Down:
+            return dispatchToChild(event);
     }
+    event->release();
+
     return true;
 }
 
@@ -307,10 +297,10 @@ bool Container::dispatchToChildInList(NodeEvent* event, CCArray* children) {
     
     while (rev_iter_start != rev_iter_end) {
         auto node = *rev_iter_start++;
-        if (auto target = typeinfo_cast<Container*>(node)) {
-            if (event->m_log) log::debug("[Container]: {}",target);
+        if (auto target = typeinfo_cast<EventTarget*>(node)) {
             if (!target->dispatchEvent(event)) return false;
         } else {
+            // recursively finding a valid EventTarget
             if (!dispatchToChildInList(event,node->getChildren())) return false;
         }
     }
@@ -323,7 +313,7 @@ bool Container::dispatchToChild(NodeEvent* event) {
 };
 
 void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
-    if (m_pParent == nullptr) return;
+    if (m_pParent == nullptr || !isRunning()) return;
     CCPoint oldP = CCNode::getPosition();
     CCPoint resP = ccp(0,0);
     auto anchor = m_anchors[m_anchor];
@@ -481,5 +471,30 @@ void Container::updatePositionUnitLabel() {
                                  " | "
                                  "Y: " +
                                  getUnitLabel(m_positionUnit.second)));
+}
+
+void Container::updateColor() {
+    for (unsigned int i = 0; i < 4; i++) {
+        m_pSquareColors[i].r = m_color4.r / 255.f;
+        m_pSquareColors[i].g = m_color4.g / 255.f;
+        m_pSquareColors[i].b = m_color4.b / 255.f;
+        m_pSquareColors[i].a = (m_color4.a * (_displayedOpacity / 255.f)) / 255;
+    }
+}
+
+void Container::setColor(ccColor3B color) { setColor(Color4{color}); }
+
+void Container::setColor(Color4 color) {
+    m_color4 = color;
+    updateColor();
+}
+
+void Container::setParent(CCNode *parent) {
+    CCLayer::setParent(parent);
+    dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::All));
+};
+void Container::onEnter() {
+  CCLayerColor::onEnter();
+  dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::All));
 }
 

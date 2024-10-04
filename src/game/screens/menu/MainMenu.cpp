@@ -13,11 +13,9 @@ bool MainMenu::init() {
     this->addChild(bgParal);
 
     auto back = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this, menu_selector(MainMenu::debugReturn));
-    auto test = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this, menu_selector(MainMenu::testDispatch));
 
     auto j = CCMenu::create();
     j->addChild(back);
-    j->addChild(test);
     j->setLayout(RowLayout::create()->setGap(3)->setAxisAlignment(AxisAlignment::End));
     j->updateLayout();
     this->addChildAtPosition(j, Anchor::TopLeft);

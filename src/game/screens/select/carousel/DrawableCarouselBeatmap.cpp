@@ -40,7 +40,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     levelName->setPosition(ccp(0,getContentSize().height));
 
     m_thumbnail = CCResizableSprite::create();
-    m_thumbnail->preserveRatio(true);
+    m_thumbnail->setBoxFit(BoxFit::FitWidth);
     m_thumbnail->setAnchorPoint(CCPoint(0,0));
     addChild(m_thumbnail);
 

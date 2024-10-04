@@ -45,6 +45,8 @@ bool IntroTriangles::init() {
         ),
 
         // iconset showcase (Stage 2)
+        // TODO: OpenGL wackery (?) to use the 
+        // current iconset
         CCCallFunc::create(this, callfunc_selector(IntroTriangles::rulesets_1_func)),
         delayCallFunc(this->rulesets_2 - this->rulesets_1, IntroTriangles::rulesets_2_func),
         delayCallFunc(this->rulesets_3 - this->rulesets_2, IntroTriangles::rulesets_3_func),
@@ -68,6 +70,7 @@ bool IntroTriangles::init() {
     auto e = FMODAudioEngine::sharedEngine();
     e->stopAllMusic();
     // channel 0 got interrupted by menu loop when pushing a screen that does not even play that for some reason
+    // me in the future here: dont create a new MenuLayer thanks
     e->playMusic("triangles.mp3"_spr,false,0.f,7);
     this->runAction(seq);
 
@@ -213,6 +216,7 @@ void IntroTriangles::rulesets_3_func() {
 void IntroTriangles::logo_1_func() {
     this->getChildByID("iconsets")->removeFromParent();
 }
+/// @warning Not really logo_scale
 void IntroTriangles::logo_scale() {
     
     OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-2);
@@ -220,6 +224,7 @@ void IntroTriangles::logo_scale() {
 
 void IntroTriangles::onExiting(ScreenTransitionEvent e) {
     setColor({255,255,255,255});
+    setOpacity(255);
     runAction(
         CCFadeOut::create(1)
     );

@@ -15,7 +15,7 @@ private:
     const float hover_duration = 0.3f;
     const float click_duration = 0.2f;
 
-    float height = 16;
+    float height = 50;
     ccColor3B m_color;
     const char* m_sfx;
 
