@@ -17,7 +17,7 @@ public:
         addChild(main);
         setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
         setCascadeOpacityEnabled(false);
-        setColor({0,0,0});
+        setColor({0,0,0,127});
         return true;
     }
     virtual void onOpen() = 0;

@@ -71,7 +71,9 @@ bool IntroTriangles::init() {
     e->stopAllMusic();
     // channel 0 got interrupted by menu loop when pushing a screen that does not even play that for some reason
     // me in the future here: dont create a new MenuLayer thanks
-    e->playMusic("triangles.mp3"_spr,false,0.f,7);
+    
+    // e->playMusic("triangles.mp3"_spr,false,0.f,7);
+    OsuGame::get()->startMusicSequence();
     this->runAction(seq);
 
     return true;

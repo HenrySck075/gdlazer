@@ -2,6 +2,7 @@
 #include "../helpers/CustomActions.hpp"
 #include "overlays/toolbar/ToolbarConstants.hpp"
 #include "overlays/SettingsPanel.hpp"
+#include "overlays/MusicController.hpp"
 
 #include "../framework/graphics/containers/OverlayContainer.hpp"
 #ifdef GEODE_IS_WINDOWS
@@ -46,8 +47,6 @@ public:
         return m_audioPath;
     }
 };
-
-
 
 OsuGame* OsuGame::instance = nullptr;
 
@@ -99,15 +98,17 @@ bool OsuGame::init() {
     std::vector<int> levelDownloadCount;
     CCDictElement* e;
     CCDICT_FOREACH(onlineLevels, e) {
-        log::debug(e->getStrKey());
         auto level = static_cast<GJGameLevel*>(e->getObject());
         decltype(addedSong)::iterator pos = std::find(addedSong.begin(),addedSong.end(),level->m_audioTrack);
         if (pos!=addedSong.end()) {
             // replace if the stored level download count is lower than the current one
             int idx = pos-addedSong.begin();
-            if (levelDownloadCount[idx]<level->m_downloads) {
+            if (level->m_downloads >= 1000 && levelDownloadCount[idx]<level->m_downloads) {
+                addedSong.erase(pos);
                 addedSong.insert(pos, level->m_audioTrack);
+                levelDownloadCount.erase(levelDownloadCount.begin()+idx);
                 levelDownloadCount.insert(levelDownloadCount.begin()+idx, level->m_downloads);    
+                mainPlaylist.inner()->replaceObjectAtIndex(idx+1, level);
             }
         }
         else {
@@ -120,9 +121,16 @@ bool OsuGame::init() {
     // j
     scheduleUpdate();
     return true;
-
 }
-
+void OsuGame::startMusicSequence() {
+    playlistIndex = -1;
+    nextMusic();
+    addListener(MusicEnded::eventname, std::bind(&OsuGame::nextMusic,this));
+};
+void OsuGame::nextMusic() {
+    playlistIndex++;
+    MusicController::get()->playFromLevel(mainPlaylist[playlistIndex],0);
+}
 void OsuGame::showToolbar() {
     toolbar->show();
     offset = screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false);

@@ -349,12 +349,10 @@ class keypaddelegat : public CCKeypadDelegate, public CCObject {
     }
 };
 
-$on_mod(Loaded) {
-    // load everything
-    OsuGame::get();
-}
 $execute {
     new EventListener<EventFilter<AssetsLoadedEvent>>(+[](AssetsLoadedEvent* e){
+        // load everything
+        OsuGame::get();
         for (auto* hook : Mod::get()->getHooks()) {
             if (hook->getDisplayName().starts_with("cocos2d::CCEGLView")) hook->enable();
             if (hook->getDisplayName().starts_with("cocos2d::CCKeyboardDispatcher")) hook->enable();

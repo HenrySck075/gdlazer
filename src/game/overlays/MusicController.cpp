@@ -1,6 +1,7 @@
 #include "MusicController.hpp"
 #include <Geode/cocos/actions/CCActionManager.h>
 #include "../../helpers/CustomActions.hpp"
+#include "../OsuGame.hpp"
 
 static MusicController* instance;
 MusicController* MusicController::get() {
@@ -19,10 +20,12 @@ bool MusicController::init() {
     
     sys->createDSPByType(FMOD_DSP_TYPE_FFT, &dsp);
     masterChannel->addDSP(7, dsp);
+
     return true;
 }
 void MusicController::playFromLevel(GJGameLevel* level, float fadeTime) {
     currentLevel = level;
+    log::debug("[MusicController]: {}", level->m_levelName);
 
     songName = currentLevel
         ? tools->getAudioTitle(currentLevel->m_audioTrack)
@@ -41,11 +44,36 @@ void MusicController::playFromLevel(GJGameLevel* level, float fadeTime) {
     );
 }
 
+FMOD_RESULT F_CALLBACK fmodSoundCallback(
+    FMOD_CHANNELCONTROL* channel,
+    FMOD_CHANNELCONTROL_TYPE type,
+    FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType,
+    void *, void *
+) {
+    if (cbType == FMOD_CHANNELCONTROL_CALLBACK_END && type == FMOD_CHANNELCONTROL_CHANNEL) {
+        MusicController* ctrl;
+        reinterpret_cast<FMOD::Channel*>(channel)->getUserData((void**)&ctrl);
+        ctrl->onSongEnd();
+    }
+    return FMOD_RESULT::FMOD_OK;
+};
+
+void MusicController::onSongEnd() {
+    paused = true;
+    OsuGame::get()->dispatchEvent(new MusicEnded());
+}
+
 void MusicController::set(gd::string filePath, float fadeTime) {
     unsigned int prevFadePoint = 0;
     auto playNewSound = [this,filePath,fadeTime,&prevFadePoint]{
+        if (sound) sound->release();
+        bool channelNotCreated = !channel;
         sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
         sys->playSound(sound,nullptr,true,&channel);
+        if (channelNotCreated) {
+            channel->setUserData(this);
+            channel->setCallback(&fmodSoundCallback);
+        }
         if (fadeTime>0) {
             // fading
             unsigned int* pos;

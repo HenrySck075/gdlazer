@@ -4,6 +4,13 @@
 #include <Geode/binding/GameLevelManager.hpp>
 #include <Geode/cocos/include/cocos2d.h>
 
+#include "../../framework/graphics/containers/Event.hpp"
+
+namespace {
+    extern char const music_ended[] = "musicEnded";
+}
+using MusicEnded = NamedNodeEvent<music_ended>;
+
 /// FMODAudioEngine 2
 ///
 /// Inheriting CCNode is for the ActionManager, 
@@ -28,6 +35,8 @@ class MusicController : public cocos2d::CCNode {
     FMOD::Sound* sound;
 
     bool paused = false;
+
+    void onSongEnd();
 public:
     static MusicController* get();
     bool init();
@@ -47,4 +56,11 @@ public:
     inline gd::string getSongAuthor() {return songAuthor;}
     inline gd::string getLevelName() {return levelName;}
     inline gd::string getLevelAuthor() {return levelAuthor;}
+
+    friend FMOD_RESULT fmodSoundCallback(
+        FMOD_CHANNELCONTROL* channel,
+        FMOD_CHANNELCONTROL_TYPE type,
+        FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType,
+        void *, void *
+    );
 };

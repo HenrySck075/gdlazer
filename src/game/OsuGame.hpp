@@ -45,6 +45,7 @@ private:
 
     /// list of level songs to play
     CCArrayExt<GJGameLevel*> mainPlaylist;
+    int playlistIndex = 0;
     
 public:
     static OsuGame* get() {
@@ -59,6 +60,9 @@ public:
         }
         return instance;
     }
+
+    void startMusicSequence();
+    void nextMusic();
 
     void e() {
         auto m = CCDirector::sharedDirector()->getOpenGLView()->getDesignResolutionSize();
