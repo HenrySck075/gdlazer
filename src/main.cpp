@@ -349,6 +349,10 @@ class keypaddelegat : public CCKeypadDelegate, public CCObject {
     }
 };
 
+$on_mod(Loaded) {
+    // load everything
+    OsuGame::get();
+}
 $execute {
     new EventListener<EventFilter<AssetsLoadedEvent>>(+[](AssetsLoadedEvent* e){
         for (auto* hook : Mod::get()->getHooks()) {

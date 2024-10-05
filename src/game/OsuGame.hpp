@@ -37,13 +37,15 @@ private:
     float volMult = 1;
     bool volMultChange = false;
 
-    // be responsible for your action and do NOT change these value yourself
-    // 
-    // can be overlay or screen
+    /// can be overlay or screen
     Container* current = nullptr;
   
-    // preloaded overlays
+    /// preloaded overlays
     CCDictionaryExt<std::string, OverlayContainer*> overlays;
+
+    /// list of level songs to play
+    CCArrayExt<GJGameLevel*> mainPlaylist;
+    
 public:
     static OsuGame* get() {
         if (instance == nullptr) {
@@ -67,7 +69,6 @@ public:
     }
 
 
-public:
     bool dispatchEvent(NodeEvent* event) override;
 
     bool init();

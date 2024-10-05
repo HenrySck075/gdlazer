@@ -21,6 +21,34 @@ HWND getWindowHandle() {
 }
 #endif
 
+#include <Geode/binding/GJGameLevel.hpp>
+
+class FakedGJGameLevel : public GJGameLevel {
+    std::string m_audioPath = "";
+public:
+    static FakedGJGameLevel* create(
+        gd::string levelName, 
+        gd::string levelAuthor, 
+        gd::string audioPath,
+        int audioTrack
+    ) {
+        FakedGJGameLevel *ret = static_cast<FakedGJGameLevel*>(GJGameLevel::create());
+        if (ret) {
+            ret->autorelease();
+            ret->m_levelName = levelName;
+            ret->m_creatorName = levelAuthor;
+            ret->m_audioPath = audioPath;
+            ret->m_audioTrack = audioTrack;
+        }
+        return ret;
+    }
+    gd::string getAudioFileName() {
+        return m_audioPath;
+    }
+};
+
+
+
 OsuGame* OsuGame::instance = nullptr;
 
 bool OsuGame::init() {
@@ -56,6 +84,38 @@ bool OsuGame::init() {
 
     // preload overlays
     overlays["settings"] = SettingsPanel::create();
+
+    // lag the game by adding every 1000+ downloads saved levels to the playlist
+    mainPlaylist.push_back(FakedGJGameLevel::create(
+        "Triangles",
+        "gd!lazer",
+        "triangles.wav"_spr,
+        -7
+    ));
+
+    auto onlineLevels = GameLevelManager::sharedState()->m_onlineLevels;
+    // 1st: song id
+    std::vector<int> addedSong;
+    std::vector<int> levelDownloadCount;
+    CCDictElement* e;
+    CCDICT_FOREACH(onlineLevels, e) {
+        log::debug(e->getStrKey());
+        auto level = static_cast<GJGameLevel*>(e->getObject());
+        decltype(addedSong)::iterator pos = std::find(addedSong.begin(),addedSong.end(),level->m_audioTrack);
+        if (pos!=addedSong.end()) {
+            // replace if the stored level download count is lower than the current one
+            int idx = pos-addedSong.begin();
+            if (levelDownloadCount[idx]<level->m_downloads) {
+                addedSong.insert(pos, level->m_audioTrack);
+                levelDownloadCount.insert(levelDownloadCount.begin()+idx, level->m_downloads);    
+            }
+        }
+        else {
+            mainPlaylist.push_back(level);
+            addedSong.push_back(level->m_audioTrack);
+            levelDownloadCount.push_back(level->m_downloads);
+        }
+    }
 
     // j
     scheduleUpdate();

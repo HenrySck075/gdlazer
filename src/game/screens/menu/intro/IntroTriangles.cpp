@@ -218,7 +218,6 @@ void IntroTriangles::logo_1_func() {
 }
 /// @warning Not really logo_scale
 void IntroTriangles::logo_scale() {
-    
     OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-2);
 }
 
