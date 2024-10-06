@@ -57,10 +57,20 @@ public:
     inline gd::string getLevelName() {return levelName;}
     inline gd::string getLevelAuthor() {return levelAuthor;}
 
+    float getSongDuration() {
+        if (!sound) return 0;
+        unsigned int ret;
+        sound->getLength(&ret, FMOD_TIMEUNIT_MS);
+        return ret/1000;
+    }
+    void seek(float position) {
+        if (channel) channel->setPosition((unsigned int)(position*1000), FMOD_TIMEUNIT_MS);
+    }
+
     friend FMOD_RESULT fmodSoundCallback(
-        FMOD_CHANNELCONTROL* channel,
-        FMOD_CHANNELCONTROL_TYPE type,
-        FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType,
+        FMOD_CHANNELCONTROL*,
+        FMOD_CHANNELCONTROL_TYPE ,
+        FMOD_CHANNELCONTROL_CALLBACK_TYPE,
         void *, void *
     );
 };

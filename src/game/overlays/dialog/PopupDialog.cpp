@@ -61,13 +61,15 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_bodyLayout->addChild(m_title);
     m_bodyLayout->addChild(label);
 
-    auto btnLayer = CCLayerColor::create();
+    auto btnLayer = FillFlowContainer::create(FillDirection::Vertical);
+    /*
     btnLayer->setLayout(
         ColumnLayout::create()
         ->setAutoScale(false)
         ->setAxisReverse(true)
         ->setGap(0)
     );
+    */
     btnLayer->setAnchorPoint(ccp(0.5, 0.5));
     btnLayer->setPosition(size/2);
     btnLayer->setContentSize(size);

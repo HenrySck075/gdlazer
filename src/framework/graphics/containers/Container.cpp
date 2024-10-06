@@ -360,7 +360,7 @@ float Container::processUnit(float value, Unit unit, bool width) {
     case Unit::OpenGL:
         return value;
     case Unit::UIKit:
-        return value * (CCDirector::sharedDirector()->getContentScaleFactor()) * Mod::get()->template getSettingValue<int64_t>("uiscale");
+        return value / (CCDirector::sharedDirector()->getContentScaleFactor()) * Mod::get()->template getSettingValue<int64_t>("uiscale");
     case Unit::Viewport:
         return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
     case Unit::Percent:

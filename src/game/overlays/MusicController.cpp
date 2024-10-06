@@ -14,8 +14,7 @@ MusicController* MusicController::get() {
 
 bool MusicController::init() {
     sys = FMODAudioEngine::sharedEngine()->m_system;
-    FMOD::ChannelGroup* masterChannel;
-    sys->getMasterChannelGroup(&masterChannel);
+    FMOD::ChannelGroup* masterChannel = FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel;
     tools = new LevelTools();
     
     sys->createDSPByType(FMOD_DSP_TYPE_FFT, &dsp);
@@ -25,7 +24,7 @@ bool MusicController::init() {
 }
 void MusicController::playFromLevel(GJGameLevel* level, float fadeTime) {
     currentLevel = level;
-    log::debug("[MusicController]: {}", level->m_levelName);
+    log::debug("[MusicController]: {}", tools->getAudioFileName(level->m_audioTrack).c_str());
 
     songName = currentLevel
         ? tools->getAudioTitle(currentLevel->m_audioTrack)
@@ -38,7 +37,7 @@ void MusicController::playFromLevel(GJGameLevel* level, float fadeTime) {
 
     set(
         CCFileUtils::sharedFileUtils()->fullPathForFilename(
-            level->getAudioFileName().c_str(),false
+            tools->getAudioFileName(level->m_audioTrack).c_str(),false
         ),
         fadeTime
     );
@@ -50,7 +49,9 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
     FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType,
     void *, void *
 ) {
-    if (cbType == FMOD_CHANNELCONTROL_CALLBACK_END && type == FMOD_CHANNELCONTROL_CHANNEL) {
+    if (cbType == FMOD_CHANNELCONTROL_CALLBACK_END) {
+        log::debug("[fmodSoundCallback()]: song ended");
+        if (type != FMOD_CHANNELCONTROL_CHANNEL) return FMOD_RESULT::FMOD_OK;
         MusicController* ctrl;
         reinterpret_cast<FMOD::Channel*>(channel)->getUserData((void**)&ctrl);
         ctrl->onSongEnd();
@@ -73,6 +74,7 @@ void MusicController::set(gd::string filePath, float fadeTime) {
         if (channelNotCreated) {
             channel->setUserData(this);
             channel->setCallback(&fmodSoundCallback);
+            channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
         }
         if (fadeTime>0) {
             // fading

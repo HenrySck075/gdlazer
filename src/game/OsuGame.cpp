@@ -24,27 +24,35 @@ HWND getWindowHandle() {
 
 #include <Geode/binding/GJGameLevel.hpp>
 
-class FakedGJGameLevel : public GJGameLevel {
-    std::string m_audioPath = "";
-public:
-    static FakedGJGameLevel* create(
-        gd::string levelName, 
-        gd::string levelAuthor, 
-        gd::string audioPath,
-        int audioTrack
-    ) {
-        FakedGJGameLevel *ret = static_cast<FakedGJGameLevel*>(GJGameLevel::create());
-        if (ret) {
-            ret->autorelease();
-            ret->m_levelName = levelName;
-            ret->m_creatorName = levelAuthor;
-            ret->m_audioPath = audioPath;
-            ret->m_audioTrack = audioTrack;
+#include <Geode/modify/LevelTools.hpp>
+struct LevelToolsCustomSong : geode::Modify<LevelToolsCustomSong, LevelTools> {
+    static gd::string getAudioTitle(int trackID) {
+        switch (trackID) {
+            case -7: return "Triangles";
+            case -8: return "circles!";
+            default: return LevelTools::getAudioTitle(trackID);
         }
-        return ret;
     }
-    gd::string getAudioFileName() {
-        return m_audioPath;
+    static int artistForAudio(int trackID) {
+        switch (trackID) {
+            case -7: return -1;
+            case -8: return -2;
+            default: return LevelTools::artistForAudio(trackID);
+        }
+    }
+    static gd::string getAudioFileName(int trackID) {
+        switch (trackID) {
+            case -7: return "triangles.mp3"_spr;
+            case -8: return "StereoMadness.mp3";
+            default: return LevelTools::getAudioFileName(trackID);
+        }
+    }
+    static gd::string nameForArtist(int artistID) {
+        switch (artistID) {
+            case -1: return "cYsmix";
+            case -2: return "nekodex";
+            default: return LevelTools::nameForArtist(artistID);
+        }
     }
 };
 
@@ -85,12 +93,13 @@ bool OsuGame::init() {
     overlays["settings"] = SettingsPanel::create();
 
     // lag the game by adding every 1000+ downloads saved levels to the playlist
-    mainPlaylist.push_back(FakedGJGameLevel::create(
-        "Triangles",
-        "gd!lazer",
-        "triangles.wav"_spr,
-        -7
-    ));
+    do {
+        auto triangles = GJGameLevel::create();
+        triangles->m_levelName = "Triangles";
+        triangles->m_creatorName = "gd!lazer";
+        triangles->m_audioTrack = -7;
+        mainPlaylist.push_back(triangles);
+    } while (0);
 
     auto onlineLevels = GameLevelManager::sharedState()->m_onlineLevels;
     // 1st: song id

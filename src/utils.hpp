@@ -19,6 +19,12 @@ CCRect boundingBoxFromContentSize(CCNode* node);
 // this mf uses ypos the other way
 CCRect flipRect(CCRect rect);
 
+#ifdef __GNUC__
+  #define uninline __attribute__((noinline))
+#else 
+  #define uninline __declspec(noinline) 
+#endif
+
 #define create_class(classname, initfunc, ...) \
     classname* ret = new classname();          \
     if (ret && ret->initfunc(__VA_ARGS__)) {   \
@@ -29,7 +35,7 @@ CCRect flipRect(CCRect rect);
     return ret
 
 #define default_create(classname) \
-  static classname* create() {    \
+  static uninline classname* create() {    \
     create_class(classname, init);\
   }
 
