@@ -141,7 +141,7 @@ void Container::initHandler() {
 
         if (dragEnabled() && type == MouseEventType::Move && m_entered && m_holding) {
             if (CCPointExtensions::distance(
-                mouseDownPos.equals(ccp(0,0)) ? event->position : mouseDownPos, 
+                mouseDownPos.equals({0,0}) ? event->position : mouseDownPos, 
                 event->position
             ) > clickDragDistance) {
                 if (!currentDragEvent) {
@@ -248,7 +248,7 @@ bool Container::init() {
     });
     initHandler();
     ignoreAnchorPointForPosition(false);
-    setAnchorPoint(ccp(0,0));
+    setAnchorPoint({0,0});
     updateAnchorLabel();
     updateSizeUnitLabel();
     updatePositionUnitLabel();
@@ -315,7 +315,7 @@ bool Container::dispatchToChild(NodeEvent* event) {
 void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     if (m_pParent == nullptr || !isRunning()) return;
     CCPoint oldP = CCNode::getPosition();
-    CCPoint resP = ccp(0,0);
+    CCPoint resP = {0,0};
     auto anchor = m_anchors[m_anchor];
     auto openglPos = CCPoint(
         processUnit(m_position.x,m_positionUnit.first,true),
@@ -356,11 +356,23 @@ float Container::processUnit(float value, Unit unit, bool width) {
         // does not have a parent
         return value;
     }
+    auto ccsize = [](CCSize size, bool w) {
+        return w ? size.width : size.height;
+    };
     switch (unit) {
     case Unit::OpenGL:
         return value;
     case Unit::UIKit:
-        return value / (CCDirector::sharedDirector()->getContentScaleFactor()) * Mod::get()->template getSettingValue<int64_t>("uiscale");
+        return 
+            value 
+            / 
+            (
+                ccsize(CCDirector::sharedDirector()->getOpenGLView()->getFrameSize(),width)
+                /
+                ccsize(CCDirector::sharedDirector()->getWinSize(),width)
+            )
+            * 
+            Mod::get()->template getSettingValue<int64_t>("uiscale");
     case Unit::Viewport:
         return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
     case Unit::Percent:
@@ -439,8 +451,8 @@ bool ContainerNodeWrapper::init(CCNode* node)  {
     setContentSize(node->getContentSize());
     setPosition(node->getPosition());
     setAnchorPoint(node->getAnchorPoint());
-    node->setPosition(ccp(0,0));
-    node->setAnchorPoint(ccp(0,0));
+    node->setPosition({0,0});
+    node->setAnchorPoint({0,0});
     return true;
 }
 

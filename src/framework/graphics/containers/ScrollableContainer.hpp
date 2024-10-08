@@ -43,7 +43,7 @@ public:
         removeChild(body);
         body = static_cast<Container*>(child);
         CCNode::addChild(body);
-        body->setAnchorPoint(ccp(0,1));
+        body->setAnchorPoint({0,1});
         body->setAnchor(Anchor::TopLeft);
         //body->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
         body->setPositionWithUnit(offset,Unit::OpenGL,Unit::OpenGL);

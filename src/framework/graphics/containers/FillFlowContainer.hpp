@@ -33,9 +33,9 @@ public:
                 throw std::invalid_argument(fmt::format("[FillFlowContainer/Layout]: Child {} has the size dependent on the parent, but the parent does not have a maximum size constraint. Please set the maximum constraint to non-zero.", geode::format_as(c)));
             }
             c->setAnchor(Anchor::TopLeft);
-            c->setPosition(ccp(0,0));
+            c->setPosition({0,0});
             c->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
-            c->setAnchorPoint(ccp(0,1));
+            c->setAnchorPoint({0,1});
             auto cs = c->CCNode::getContentSize();
             c->setPosition({0,size.height});
             auto ns = size.height+cs.height;

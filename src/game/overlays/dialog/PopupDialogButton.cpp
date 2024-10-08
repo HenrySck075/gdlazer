@@ -23,7 +23,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     auto d = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
     if (d!=nullptr) {
         d->setID("dialogbutton-background");
-        d->setAnchorPoint(ccp(0.5, 0.5));
+        d->setAnchorPoint({0.5, 0.5});
         d->setContentHeight(height);
         d->setColor(color);
         d->setSkewX(7);
@@ -37,12 +37,12 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     auto j = OsuText(label, FontType::Bold);
     j->setID("dialogbutton-label");
-    j->setAnchorPoint(ccp(0.5, 0.5));
+    j->setAnchorPoint({0.5, 0.5});
     j->setScale(0.4);
 
     // Gradient layers
 #define gradientSetup(side) \
-    auto grad##side = CCLayerGradient::create(ccc4BFromccc4F(ccc4FFromccc3B(color)), ccc4(color.r, color.g, color.b, 0), ccp(1, 0)); \
+    auto grad##side = CCLayerGradient::create(ccc4BFromccc4F(ccc4FFromccc3B(color)), ccc4(color.r, color.g, color.b, 0), {1, 0}); \
     grad##side->setContentSize(CCSize(0,height)); \
     grad##side->setID("gradient"#side); \
     grad##side->setOpacity(0); \
@@ -67,13 +67,13 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
             d->setPosition(size / 2);
         }
 
-        auto gradWidth = size.width * 0.125;
+        float gradWidth = size.width * 0.125f;
         
         auto gradLeft = static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"));
         gradLeft->setContentWidth(gradWidth);
         auto gradRight = static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"));
         gradRight->setContentWidth(gradWidth);
-        gradRight->setPosition(ccp(size.width-gradWidth, 0));
+        gradRight->setPosition({size.width-gradWidth, 0.f});
     });
 
     this->setContentSizeWithUnit(CCSize{ 100,height },Unit::Percent,Unit::UIKit);

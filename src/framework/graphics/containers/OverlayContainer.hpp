@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Container.hpp"
+#include "../../input/events/KeyEvent.hpp"
 
 // yeah thats it
 // @note Cascade opacity has been disabled
@@ -18,6 +19,9 @@ public:
         setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
         setCascadeOpacityEnabled(false);
         setColor({0,0,0,127});
+        addListener("keyboardEvent", [this](NodeEvent* e){
+            if (static_cast<KeyboardEvent*>(e)->key.key == enumKeyCodes::KEY_Escape) hide();
+        });
         return true;
     }
     virtual void onOpen() = 0;

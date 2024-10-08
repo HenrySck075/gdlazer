@@ -24,7 +24,7 @@ bool OsuLogo::init() {
     });
     */
   auto logoSprite = CCSprite::createWithSpriteFrameName("logo.png"_spr);
-  this->setAnchorPoint(ccp(0.5, 0.5));
+  this->setAnchorPoint({0.5, 0.5});
 
   if (logoSprite != nullptr) {
       logoSprite->setID("m");

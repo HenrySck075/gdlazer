@@ -114,7 +114,7 @@ class Container : public CCClippingLayer, public EventTarget {
     bool m_hoverEnabled = true;
 
     bool m_dragEnabled = false;
-    CCPoint mouseDownPos = ccp(0,0);
+    CCPoint mouseDownPos = {0,0};
     // according to osu!framework
     int clickDragDistance = 10;
 
@@ -278,10 +278,10 @@ public:
 
     }
     void setPositionY(float pos) override {
-        setPosition(ccp(m_position.x,pos));
+        setPosition({m_position.x,pos});
     }
     void setPositionX(float pos) override {
-        setPosition(ccp(pos,m_position.y));
+        setPosition({pos,m_position.y});
     }
     // Get the actual node position
     CCPoint const& getPosition() override{

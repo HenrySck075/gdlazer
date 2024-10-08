@@ -38,7 +38,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     this->m_creatorLayerPtr = CreatorLayer::create();
 
     //float w = CCDirector::sharedDirector()->getWinSize().width;
-    auto an = ccp(-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2);
+    CCPoint an = {-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
     area = ButtonArea::create(an);
     area->setID("buttonarea");
     this->addChild(area);
@@ -257,7 +257,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
     logo->setZOrder(1);
-    logo->setPosition(ccp(an.x,0));
+    logo->setPosition({an.x,0});
     logo->setScale(0.4);
     logo->setAnchor(Anchor::Center);
     logo->setCallback([this](CCNode* self){
@@ -270,9 +270,9 @@ bool ButtonSystem::init(OsuLogo* logo) {
     
     //this->setPositionX(0);
     //auto me = CCMenu::createWithItem(logo);
-    //me->setPosition(ccp(0,0));
+    //me->setPosition({0,0});
     this->addChild(logo);
-    setAnchorPoint(ccp(0.5,0.5));
+    setAnchorPoint({0.5,0.5});
 
     return true;
 }

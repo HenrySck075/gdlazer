@@ -23,7 +23,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     symbol->setScale(0.62);
     the->setLayout(ColumnLayout::create()->setGap(3)->setAutoScale(false)->setAxisReverse(true));
     the->addChild(symbol);
-    the->setAnchorPoint(ccp(0.5,0.5));
+    the->setAnchorPoint({0.5,0.5});
     the->setPosition(m/2);
     auto label = OsuText(text.c_str(), FontType::Regular);
     label->setScale(0.4);
@@ -52,7 +52,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFo
     hover->setOpacity(0);
     hover->setOpacity(0);
     
-    this->setAnchorPoint(ccp(0.5,0.5));
+    this->setAnchorPoint({0.5,0.5});
     setHoverEnabled(false);
     setClickEnabled(false);
 

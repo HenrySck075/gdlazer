@@ -32,7 +32,7 @@ protected:
 
 public:
     // pretend to be clicking
-    void click() {dispatchEvent(new MouseEvent(MouseEventType::Click, ccp(9,9)));};
+    void click() {dispatchEvent(new MouseEvent(MouseEventType::Click, {9,9}));};
     void setClickSFX(std::string sfx) { clickSfx = sfx; };
     void setCallback(ButtonCallback clickCb) { clickCallback = clickCb; };
     /// <param name="clickCb">| the</param>

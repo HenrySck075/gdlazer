@@ -15,7 +15,7 @@ bool SongSelect::init() {
     //addChild(DrawableCarouselBeatmap::create(glm->getMainLevel(1,true)));
     auto carousel = BeatmapCarousel::create(mainList);
     carousel->setAnchor(Anchor::Right);
-    carousel->setAnchorPoint(ccp(1,0.5));
+    carousel->setAnchorPoint({1,0.5});
 
     auto grid = GridContainer::create({
         Dimension(),

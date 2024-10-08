@@ -13,7 +13,7 @@ private:
 
     OverlayColorProvider* provider;
 
-    CCPoint touchLoc = ccp(0,0);
+    CCPoint touchLoc = {0,0};
     CCRect touchBoundary;
 
     CCDrawNode* wave1;

@@ -14,7 +14,7 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
     this->m_parallaxAmount = parallaxAmount;
     this->parallax = Mod::get()->getSettingValue<bool>("parallax");
     this->director = CCDirector::sharedDirector();
-    this->setAnchorPoint(ccp(0.5, 0.5));
+    this->setAnchorPoint({0.5, 0.5});
     //this->setPosition(director->getWinSize() / 2);
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);

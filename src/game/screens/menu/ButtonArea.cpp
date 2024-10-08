@@ -10,7 +10,7 @@
 bool ButtonArea::init(const CCPoint& anchorPos) {
     Container::init();
     anchorPosition = anchorPos;
-    setAnchorPoint(ccp(0.5,0.5));
+    setAnchorPoint({0.5,0.5});
     this->setAnchor(Anchor::Center);
     this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
     colorBg = CCLayerColor::create();
@@ -31,9 +31,9 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
 
 void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
     auto b = CCLayer::create();
-    auto gap = ccp(20,0);
+    CCPoint gap = {20,0};
     b->ignoreAnchorPointForPosition(true);
-    b->setAnchorPoint(ccp(0,0.5));
+    b->setAnchorPoint({0,0.5});
     b->setPosition(anchorPosition+gap);
     b->setLayout(RowLayout::create()->setGap(-1)->setAutoScale(false)->setAxisAlignment(AxisAlignment::Start)->setAxisReverse(true));
     int buttonsCount = buttons.size();
@@ -46,10 +46,10 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
     
     auto t = CCLayer::create();
     t->ignoreAnchorPointForPosition(false);
-    t->setAnchorPoint(ccp(1,0.5));
+    t->setAnchorPoint({1,0.5});
     t->setPosition(anchorPosition-gap);
     t->addChild(buttons[0]);
-    buttons[0]->setAnchorPoint(ccp(1,0.5));
+    buttons[0]->setAnchorPoint({1,0.5});
     t->setLayout(RowLayout::create()
         ->setGap(-1)
         ->setAutoScale(false)
@@ -65,7 +65,7 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
     j->addChild(b);
     j->setID("buttonarea_"+tag);
     j->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
-    j->setPositionWithUnit(ccp(50,0),Unit::Percent,Unit::OpenGL);
+    j->setPositionWithUnit({50,0},Unit::Percent,Unit::OpenGL);
     buttonsMenus[tag] = j;
     _buttons[tag] = buttons.inner();
     log::info("[ButtonArea]: Button menu \"{}\" registered.", tag);
@@ -146,7 +146,7 @@ void ButtonArea::show(std::string tag) {
         }
         // the node is still there so we dont need to add them
         // however
-        auto gap = ccp(20,0);
+        CCPoint gap = {20,0};
 
         auto btnLayer = buttonsMenus[tag];
         auto btnL1 = btnLayer->getChildByTag(1);
@@ -179,7 +179,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
                 i->runAction(
                     EasingEffect::create(
                         CCSpawn::createWithTwoActions(
-                            CCMoveTo::create(animationSpeed, ccp(idx!=0?-15:pos.x+15,pos.y)),
+                            CCMoveTo::create(animationSpeed, {idx!=0?-15:pos.x+15,pos.y}),
                             CCFadeOut::create(animationSpeed)
                         )
                     )

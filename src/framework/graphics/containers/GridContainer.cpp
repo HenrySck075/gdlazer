@@ -78,7 +78,7 @@ void GridLayout::apply(CCNode* on) {
     // setup
     for (auto* c : nodes) {
         c->ignoreAnchorPointForPosition(false);
-        c->setAnchorPoint(ccp(0,1));
+        c->setAnchorPoint({0,1});
         if (auto cc = typeinfo_cast<Container*>(c)) {
             cc->setAnchor(Anchor::TopLeft);
             cc->setSizeUnit(Unit::OpenGL, Unit::OpenGL);

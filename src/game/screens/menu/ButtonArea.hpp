@@ -13,7 +13,7 @@ private:
     CCDictionaryExt<std::string, Container*> buttonsMenus;
     CCDictionaryExt<std::string, CCArray*> _buttons;
     std::vector<std::string> tagsStack;
-    CCPoint anchorPosition = ccp(0,0);
+    CCPoint anchorPosition = {0,0};
     float animationSpeed = 0.5;
     using EasingEffect = CCEaseExponentialOut;
     CCLayerColor* colorBg;

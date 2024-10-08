@@ -7,7 +7,7 @@
 bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     auto d = CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr);
     d->setColor(ccc3(40, 86, 102));
-    d->setAnchorPoint(ccp(0,0));
+    d->setAnchorPoint({0,0});
     m_main = CCClippingNode::create(d);
     m_main->setAlphaThreshold(0.03);
     m_shadow = CCScale9Sprite::createWithSpriteFrameName("roundshadow.png"_spr);
@@ -19,21 +19,21 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     m_level = level;
     colorBg = CCLayerColor::create();
     colorBg->setZOrder(999);
-    colorBg->setAnchorPoint(ccp(0.5,0.5));
+    colorBg->setAnchorPoint({0.5,0.5});
 
-    auto gradient = CCLayerGradient::create(ccc4(0,0,0,255),ccc4(0,0,0,0),ccp(1, 0));
+    auto gradient = CCLayerGradient::create(ccc4(0,0,0,255),ccc4(0,0,0,0),{1, 0});
     gradient->setZOrder(1000);
     gradient->setID("dcb_gradient");
 
     m_main->addChild(colorBg);
     m_main->addChild(gradient);
-    setAnchorPoint(ccp(0,0));
+    setAnchorPoint({0,0});
     setContentSizeWithUnit(CCSize(100,h), Unit::Percent, Unit::UIKit);
     setOpacity(0);
     setColor(OsuColor::Blue);
 
     auto levelName = OsuText(level->m_levelName.c_str(), FontType::Regular);
-    levelName->setAnchorPoint(ccp(0,1));
+    levelName->setAnchorPoint({0,1});
     levelName->setScale(0.4);
     levelName->setZOrder(50);
     addChild(levelName);
@@ -64,7 +64,7 @@ bool DrawableCarouselBeatmap::init(GJGameLevel* level) {
     addListener("nodeLayoutUpdate", [this,levelName](NodeEvent* event){
         auto s = CCNode::getContentSize();
         m_thumbnail->setContentSize(s);
-        levelName->setPosition(ccp(0,s.height));
+        levelName->setPosition({0,s.height});
         m_main->setContentSize(s);
         m_main->getChildByID("dcb_gradient")->setContentSize(s);
         if(auto stencil = m_main->getStencil()) stencil->setContentSize(s);

@@ -244,7 +244,7 @@ class $modify(FMODAudioEngine) {
 #ifndef GEODE_IS_ANDROID
 // fields does not work on non-CCNode :pensive:
 bool m_click = false;
-CCPoint lastKnownCursorPos = ccp(0,0);
+CCPoint lastKnownCursorPos = {0,0};
 
 #include <Geode/modify/CCEGLView.hpp>
 class $modify(meowview, CCEGLView) {

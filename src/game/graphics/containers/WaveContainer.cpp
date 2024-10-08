@@ -14,19 +14,19 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
     bool rotateLeft = angle<0;
     angle = abs(angle);
     auto h = node->getContentHeight();
-    auto left = ccp(0,h);
+    CCPoint left = {0,h};
     auto right = ccp(node->getContentWidth(),h);
 
     // i still have naming skill issues
-    CCPoint last;
+    CCPoint last = {0,0};
     if (rotateLeft) {
         last = right.rotateByAngle(left, degreeToRadius(angle));
         float remainingDistRatio = last.x/right.x;
-        last = ccp(right.x,last.y*remainingDistRatio);
+        last = CCPoint{right.x,last.y*remainingDistRatio};
     } else {
         last = left.rotateByAngle(right, -degreeToRadius(angle));
         float remainingDistRatio = last.x/right.x;
-        last = ccp(left.x,last.y);
+        last = CCPoint{left.x,last.y};
     }
     CCPoint j[3] = {left, right, last};
     auto color4f = ccc4FFromccc4B(color);
@@ -53,8 +53,8 @@ CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor
     CCDrawNode* wave;
     float offset;
     std::tie(wave, offset) = drawWave(size, col, angle); 
-    wave->setAnchorPoint(ccp(0.5,1)); 
-    wave->setPosition(ccp(w,-offset-2));
+    wave->setAnchorPoint({0.5,1}); 
+    wave->setPosition({w,-offset-2});
     return wave;
 }
 
@@ -86,8 +86,8 @@ bool WaveContainer::customSetup(CCNode* pBody) {
     this->addChild(wave4);
 
     this->body = pBody; // mb
-    body->setAnchorPoint(ccp(0.5,1));
-    body->setPosition(ccp(s.width/2, 0));
+    body->setAnchorPoint({0.5,1});
+    body->setPosition({s.width/2, 0});
     this->addChild(body);
     body->setContentSize(k);
 

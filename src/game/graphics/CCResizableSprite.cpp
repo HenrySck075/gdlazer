@@ -27,7 +27,7 @@ bool CCResizableSprite::initWithSpriteFrameName(const char* pszSpriteFrameName) 
 bool CCResizableSprite::finishInit() {
     addChild(m_sprite);
     setCascadeOpacityEnabled(true);
-    setAnchorPoint(ccp(0.5,0.5));
+    setAnchorPoint({0.5,0.5});
     return true;
 }
 

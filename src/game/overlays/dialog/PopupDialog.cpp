@@ -70,7 +70,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
         ->setGap(0)
     );
     */
-    btnLayer->setAnchorPoint(ccp(0.5, 0.5));
+    btnLayer->setAnchorPoint({0.5, 0.5});
     btnLayer->setPosition(size/2);
     btnLayer->setContentSize(size);
     btnLayer->setCascadeOpacityEnabled(true);
