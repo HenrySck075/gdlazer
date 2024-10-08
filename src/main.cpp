@@ -146,6 +146,16 @@ class $modify(MyMenuLayer, MenuLayer) {
         menu->updateLayout();
 
         //glfwSetWindowFocusCallback();
+        geode::Loader::get()->queueInMainThread([this]{
+            // schedule on the next frame to replace the menuLayer with our scene
+            auto o = OsuGame::get();
+            // replace
+            CCDirector::sharedDirector()->replaceScene(o);
+            auto j = IntroTriangles::create();
+            setVisible(true);
+            if (j) o->pushScreen(j);
+        });
+        this->setVisible(false);
         /**
          * We return `true` to indicate that the class was properly initialized.
          */
