@@ -16,7 +16,7 @@ class ToolbarButton : public ClickableContainer {
 protected:
     CCClippingNode* bgWrapper;
 public:
-    bool init(IconConstructor icon, std::string text, std::string sub);
+    bool init(IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start);
     void onMouseEnter() override;
     void onMouseExit() override;
     void setTooltipAlignment(AxisAlignment align) {
@@ -38,7 +38,7 @@ public:
      * @param text Toolbar text
      * @param sub scribe
      */
-    static ToolbarButton* create(IconConstructor icon, std::string text, std::string sub) {
-        create_class(ToolbarButton, init, icon, text, sub);
+    static ToolbarButton* create(IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start) {
+        create_class(ToolbarButton, init, icon, text, sub, align);
     }
 };

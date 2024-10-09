@@ -12,7 +12,7 @@ public:
             auto e = static_cast<KeyboardEvent*>(ev);
             if (e->key.ctrl && e->key.key == enumKeyCodes::KEY_O) select();
         });
-        return ToolbarToggleButton::init(OsuIcon::Settings, "Settings", "the", {205,29,72});
+        return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the", {205,29,72});
     }
     static ToolbarSettingsButton* create() {
         create_class(ToolbarSettingsButton, init);
@@ -28,6 +28,21 @@ public:
     }
     bool init() {
         setID("home");
-        return ToolbarButton::init(OsuIcon::Home, "Home", "Return to the main menu");
+        return ToolbarButton::init(OsuIcon::Home, "home", "return to the main menu");
+    }
+};
+class ToolbarMusicButton : public ToolbarToggleButton {
+public:
+    static ToolbarMusicButton* create() {
+        create_class(ToolbarMusicButton, init);
+    }
+    bool init() {
+        setID("music");
+        return ToolbarButton::init(
+            OsuIcon::Music, 
+            "now playing", 
+            "manage the currently playing track (F6)", 
+            AxisAlignment::End
+        );
     }
 };

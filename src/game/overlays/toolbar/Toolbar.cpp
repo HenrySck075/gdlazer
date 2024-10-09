@@ -21,9 +21,6 @@ bool Toolbar::init() {
     gradient->ignoreAnchorPointForPosition(false);
     gradient->setPosition({0,-j});
     gradient->setScaleY(-1);
-    addListener("nodeLayoutUpdate",[this,j](NodeEvent*e){
-        gradient->setContentSize({CCNode::getContentSize().width,j});
-    });
     addChild(gradient);
 
     auto left = CCLayer::create();
@@ -39,8 +36,8 @@ bool Toolbar::init() {
     right->addChild(ToolbarHomeButton::create());
 
     // this will also cause issues
-    right->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::Start)->setGap(-0.5));
-    right->setAnchorPoint({0,0});
+    right->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::End)->setGap(-0.5));
+    right->setAnchorPoint({1,0});
 #ifdef GEODE_IS_ANDROID
     left->setPositionX(10);
 #endif
@@ -49,6 +46,11 @@ bool Toolbar::init() {
     addChild(right);
     setColor(bgColor);
     setOpacity(255);
+
+    addListener("nodeLayoutUpdate",[this,j,right](NodeEvent*e){
+        gradient->setContentSize({CCNode::getContentSize().width,j});
+        right->setPositionX(CCNode::getContentSize().width);
+    });
 
     return true;
 }
