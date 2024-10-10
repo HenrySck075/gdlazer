@@ -14,7 +14,6 @@ public:
     void hide() override {
         if (!shown) return;
         shown = false;
-        // TODO: f
-        OsuGame::get()->popOverlay();
+        OverlayContainer::hide();
     }
 };

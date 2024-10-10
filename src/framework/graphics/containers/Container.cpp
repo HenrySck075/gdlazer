@@ -312,6 +312,13 @@ bool Container::dispatchToChild(NodeEvent* event) {
     return dispatchToChildInList(event, m_pChildren);
 };
 
+CCSize const& Container::contentSizeWithPadding(CCSize const& size, Vector4 padding) {
+    return {
+        size.width - processUnit(padding.l + padding.r, Unit::UIKit, true),
+        size.height - processUnit(padding.t + padding.d, Unit::UIKit, false)
+    };
+}
+
 void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
     if (m_pParent == nullptr || !isRunning()) return;
     CCPoint oldP = CCNode::getPosition();
@@ -321,24 +328,27 @@ void Container::onLayoutUpdate(NodeLayoutUpdate* e) {
         processUnit(m_position.x,m_positionUnit.first,true),
         processUnit(m_position.y,m_positionUnit.second,false)
     );
+
+    auto parentSize = m_pParent->CCNode::getContentSize();
+
     // getContentWidth/Height get its values from getContentSize so like
     switch(anchor.first) {
         case ah::Left:
             resP.x = openglPos.x; 
             break;
         case ah::Center:
-            resP.x = m_pParent->CCNode::getContentSize().width/2+openglPos.x; 
+            resP.x = parentSize.width/2+openglPos.x; 
             break;
         case ah::Right:
-            resP.x = m_pParent->CCNode::getContentSize().width-openglPos.x; 
+            resP.x = parentSize.width-openglPos.x; 
             break;
     };
     switch(anchor.second) {
         case av::Top:
-            resP.y = m_pParent->CCNode::getContentSize().height-openglPos.y; 
+            resP.y = parentSize.height-openglPos.y; 
             break;
         case av::Center:
-            resP.y = m_pParent->CCNode::getContentSize().height/2-openglPos.y; 
+            resP.y = parentSize.height/2-openglPos.y; 
             break;
         case av::Bottom:
             resP.y = openglPos.y; 
@@ -376,7 +386,18 @@ float Container::processUnit(float value, Unit unit, bool width) {
     case Unit::Viewport:
         return value * (width ? CCDirector::sharedDirector()->getWinSize().width : CCDirector::sharedDirector()->getWinSize().height);
     case Unit::Percent:
-        return (value / 100) * (width ? m_pParent->CCNode::getContentSize().width : m_pParent->CCNode::getContentSize().height);
+        auto m_pParentContainer = dynamic_cast<Container*>(m_pParent);
+        return 
+        (value / 100) 
+        * 
+        ccsize(
+            contentSizeWithPadding(
+                m_pParent->CCNode::getContentSize(),
+                m_pParentContainer ? m_pParentContainer->getPadding() : Vector4{0}
+            ),
+            width
+        )
+        ;
     };
 }
 
@@ -429,8 +450,8 @@ void Container::checkConstraints() {
 
 bool Container::resetContentSize() {
     auto newS = CCSize(
-        processUnit(m_size.width, m_sizeUnit.first, true) - processUnit(m_padding.l + m_padding.r, Unit::UIKit, true),
-        processUnit(m_size.height,m_sizeUnit.second, false) - processUnit(m_padding.t + m_padding.d, Unit::UIKit, false)
+        processUnit(m_size.width, m_sizeUnit.first, true),
+        processUnit(m_size.height,m_sizeUnit.second, false)
     );
     if (newS.equals(CCNode::getContentSize())) return false;
     CCLayerColor::setContentSize(newS);

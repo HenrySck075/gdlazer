@@ -15,4 +15,8 @@ private:
     MusicController* ctrl;
 public:
     bool init();
+    default_create(NowPlayingOverlay);
+
+    void onOpen() {};
+    void onClose() {};
 };

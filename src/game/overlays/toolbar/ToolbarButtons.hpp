@@ -3,6 +3,7 @@
 #include "ToolbarButton.hpp"
 #include "ToolbarToggleButton.hpp"
 #include "../../../framework/input/events/KeyEvent.hpp"
+#include "../NowPlayingOverlay.hpp"
 
 class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
@@ -32,12 +33,14 @@ public:
     }
 };
 class ToolbarMusicButton : public ToolbarToggleButton {
+    NowPlayingOverlay* o;
 public:
     static ToolbarMusicButton* create() {
         create_class(ToolbarMusicButton, init);
     }
     bool init() {
         setID("music");
+        o = NowPlayingOverlay::create();
         return ToolbarButton::init(
             OsuIcon::Music, 
             "now playing", 

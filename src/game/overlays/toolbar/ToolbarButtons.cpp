@@ -22,10 +22,10 @@ void ToolbarSettingsButton::deselect() {
 
 void ToolbarMusicButton::select() {
     ToolbarToggleButton::select();
-    OsuGame::get()->;
+    OsuGame::get()->pushOverlay(o);
 }
 
 void ToolbarMusicButton::deselect() {
     ToolbarToggleButton::deselect();
-    OsuGame::get()->hideMusic();
+    OsuGame::get()->popOverlay(o);
 }

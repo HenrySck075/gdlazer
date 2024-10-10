@@ -5,7 +5,7 @@
 
 using namespace ToolbarConstants;
 
-bool ToolbarButton::init(IconConstructor icon, std::string label, std::string sub, AxisAlignment align) {
+bool ToolbarButton::init(IconConstructor icon, std::string label, std::string sub, AxisAlignment tooltipAlignment) {
     setPadding({3});
     bgWrapper = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr));
     bgWrapper->getStencil()->setAnchorPoint({0,0});
@@ -41,7 +41,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
         ->setGap(2)
         ->setAutoScale(false)
         ->setAxisReverse(true)
-        ->setCrossAxisLineAlignment(align)
+        ->setCrossAxisLineAlignment(tooltipAlignment)
     );
     tooltipContainer->setCascadeOpacityEnabled(true);
     tooltipContainer->setOpacity(0);

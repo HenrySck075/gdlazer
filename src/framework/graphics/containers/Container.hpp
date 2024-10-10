@@ -154,6 +154,8 @@ private:
     void updateSizeUnitLabel();
     void updatePositionUnitLabel();
 
+    CCSize const& contentSizeWithPadding(CCSize const& size, Vector4 padding);
+
 protected:
     CCSize minimumSize = CCSize(0,0);
     CCSize maximumSize = CCSize(0,0);

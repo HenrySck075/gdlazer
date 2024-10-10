@@ -40,7 +40,7 @@ public:
         else removeFromParent();
     };
 
-    void checkActions() {
+    void checkActions(float) {
         if (m_pActionManager->numberOfRunningActionsInTarget(this)==0) {
             removeFromParent();
             m_pScheduler->unscheduleSelector(schedule_selector(OverlayContainer::checkActions), this);
