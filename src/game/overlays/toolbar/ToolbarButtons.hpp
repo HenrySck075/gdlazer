@@ -45,4 +45,6 @@ public:
             AxisAlignment::End
         );
     }
+    void select() override;
+    void deselect() override;
 };

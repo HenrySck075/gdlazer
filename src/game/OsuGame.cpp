@@ -214,30 +214,19 @@ void OsuGame::pushOverlay(OverlayContainer* o) {
     overlaysContainer->addChild(o);
     overlayStack.push_back(o);
     o->onOpen();
-    current = o;
 }
-OverlayContainer* OsuGame::popOverlay() {return popManyOverlays(1);}
-OverlayContainer* OsuGame::popManyOverlays(int amount) {
+OverlayContainer* OsuGame::popOverlay(OverlayContainer* overlay) {
     if (overlayStack.size()==0) {
         return nullptr;
     }
     OverlayContainer* cs = overlayStack[overlayStack.size()-1];
-    OverlayContainer* s = nullptr;
-    for (;amount>0;amount--) {
-        if (overlayStack.size()!=0) {
-            auto s = overlayStack.pop_back();
-            s->onClose();
-            if (m_pActionManager->numberOfRunningActionsInTarget(s)!=0) overlayPopQueue.push_back(s);
-            else overlaysContainer->removeChild(s);
-        }
-        else break;
+    OverlayContainer* s = overlay;
+    if (overlayStack.size()!=0) {
+        if (!s) s = overlayStack.pop_back();
+        s->hide();
+        //if (m_pActionManager->numberOfRunningActionsInTarget(s)!=0) overlayPopQueue.push_back(s);
     }
-    OverlayContainer* ps = nullptr;
-    if (overlayStack.size()!=0) ps = overlayStack[overlayStack.size()-1];
     
-    if (ps) current = ps;
-    else current = *(screenStack.begin()+screenStack.size()-1);
-
     return s;
 }
 

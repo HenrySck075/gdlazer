@@ -89,7 +89,7 @@ public:
     Screen* popScreen(bool popOverlays = true);
     void pushOverlay(OverlayContainer* o);
     OverlayContainer* popManyOverlays(int amount = 1);
-    OverlayContainer* popOverlay();
+    OverlayContainer* popOverlay(OverlayContainer* overlay = nullptr);
     template<typename T>
     T* popUntilScreenType();
 
