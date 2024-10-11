@@ -32,8 +32,7 @@ bool Toolbar::init() {
     left->setAnchorPoint({0,0});
 
     auto right = CCLayer::create();
-    right->addChild(ToolbarSettingsButton::create());
-    right->addChild(ToolbarHomeButton::create());
+    right->addChild(ToolbarMusicButton::create());
 
     // this will also cause issues
     right->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::End)->setGap(-0.5));
@@ -49,7 +48,13 @@ bool Toolbar::init() {
 
     addListener("nodeLayoutUpdate",[this,j,right](NodeEvent*e){
         gradient->setContentSize({CCNode::getContentSize().width,j});
-        right->setPositionX(CCNode::getContentSize().width);
+        right->setPositionX(
+            CCNode::getContentSize().width
+
+#ifdef GEODE_IS_ANDROID
+            -10
+#endif
+        );
     });
 
     return true;

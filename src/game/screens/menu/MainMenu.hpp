@@ -33,26 +33,18 @@ public:
     // open the menu
     void onLogoClickIdle();
 private:
-    void debugReturn(CCObject* t) {
-        CCDirector::sharedDirector()->popSceneWithTransition(0.5,PopTransition::kPopTransitionFade);
-        while (OsuGame::get()->popScreen()) {/*meow*/};
+  void debugReturn(CCObject *t);
+  void onExiting(ScreenTransitionEvent e) override {
+    // setVisible(false);
+    if (e.Destination == nullptr)
+      removeFromParent();
+    else {
+      setCascadeOpacityEnabled(true);
+      runAction(CCSequence::createWithTwoActions(
+          CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
+          CCFadeOut::create(1)));
+      buttonSys->area->hide(buttonSys->area->getCurrent().value(), true, true);
     }
-    void onExiting(ScreenTransitionEvent e) override {
-        //setVisible(false);
-        if (e.Destination == nullptr) removeFromParent();
-        else {
-            setCascadeOpacityEnabled(true);
-            runAction(CCSequence::createWithTwoActions(
-                CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
-                CCFadeOut::create(1)
-            ));
-            buttonSys->area->hide(buttonSys->area->getCurrent().value(),true,true);
-        }
-    }
-    void testDispatch(CCObject* e) {
-        auto m = new NodeEvent("googoo gaga");
-        m->setDispatchingFlow(DispatchingFlow::Down);
-        dispatchEvent(m);
     }
     //BeatDetector* detector;
 

@@ -1,9 +1,10 @@
 #include "ToolbarToggleButton.hpp"
+#include "../../graphics/OsuColor.hpp"
 
-bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::string sub, ccColor3B stateColor) {
-    ToolbarButton::init(icon, text, sub);
+bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::string sub, AxisAlignment align) {
+    ToolbarButton::init(icon, text, sub, align);
     toggleBg = Container::create();
-    toggleBg->setColor(stateColor);
+    toggleBg->setColor(OsuColor::Carmine.opacity(180));
     toggleBg->setContentSizeWithUnit(CCSize(100,100), Unit::Percent, Unit::Percent);
     toggleBg->setOpacity(0);
     bgWrapper->addChild(toggleBg,-4);

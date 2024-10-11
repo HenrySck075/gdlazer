@@ -35,3 +35,7 @@ void MainMenu::onLogoClickIdle() {
     logoMoveAction = CCMoveToModifiable::create(0.5, pos);
     logo->runAction(logoMoveAction);
 }
+void MainMenu::debugReturn(CCObject *t) { 
+    OsuGame::get()->addChild(GameManager::get()->m_menuLayer);
+}
+

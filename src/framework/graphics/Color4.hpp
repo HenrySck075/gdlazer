@@ -6,22 +6,26 @@ using namespace geode::prelude;
 #include <cstdio>
 
 struct Color4 {
-  GLubyte r = 255;
-  GLubyte g = 255;
-  GLubyte b = 255;
-  GLubyte a = 255;
+    GLubyte r = 255;
+    GLubyte g = 255;
+    GLubyte b = 255;
+    GLubyte a = 255;
 
   Color4 clamp() {
 #define c(v) std::max(std::min((int)v,255),0)
     return {c(r),c(g),c(b),c(a)};
+#undef c
   }
   Color4 lighten(int amount) {
-    int scalar = std::max(255,255+amount);
-    return Color4{r*scalar,g*scalar,b*scalar,a}.clamp();
+      int scalar = std::max(255,255+amount);
+      return Color4{r*scalar,g*scalar,b*scalar,a}.clamp();
   }
   Color4 darken(int amount) {
-    int scalar = std::max(255,255+amount);
-    return Color4{r/scalar,g/scalar,b/scalar,a}.clamp();
+        int scalar = std::max(255,255+amount);
+        return Color4{r/scalar,g/scalar,b/scalar,a}.clamp();
+  }
+  Color4 opacity(int opacity) {
+      return Color4(r,g,b,opacity).clamp();
   }
 
   // converters

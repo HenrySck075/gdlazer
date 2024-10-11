@@ -1,7 +1,6 @@
 #pragma once
 
-#include <Geode/binding/FMODAudioEngine.hpp>
-#include <Geode/binding/GameLevelManager.hpp>
+#include <Geode/Geode.hpp>
 #include <Geode/cocos/include/cocos2d.h>
 
 #include "../../framework/graphics/containers/Event.hpp"

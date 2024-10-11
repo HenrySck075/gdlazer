@@ -8,9 +8,9 @@ class ToolbarToggleButton : public ToolbarButton {
     Container* toggleBg;
     bool toggled = false;
 public:
-    bool init(IconConstructor icon, std::string text, std::string sub, ccColor3B stateColor);
-    static ToolbarToggleButton* create(IconConstructor icon, std::string text, std::string sub, ccColor3B stateColor) {
-        create_class(ToolbarToggleButton, init, icon, text, sub, stateColor);
+    bool init(IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start);
+    static ToolbarToggleButton* create(IconConstructor icon, std::string text, std::string sub, ccColor3B stateColor, AxisAlignment align = AxisAlignment::Start) {
+        create_class(ToolbarToggleButton, init, icon, text, sub, align);
     };
     void onClick(MouseEvent* e) override;
 

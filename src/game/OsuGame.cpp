@@ -234,7 +234,7 @@ Screen* OsuGame::popManyScreens(int amount, bool popOverlays) {
     if (screenStack.size()==0) {
         return nullptr;
     }
-    if (popOverlays) popManyOverlays(overlaysContainer->getChildrenCount());
+    if (popOverlays); //popManyOverlays(overlaysContainer->getChildrenCount());
     bool schedulePause = screenStack.size()==1;
     Screen* cs = screenStack[screenStack.size()-1];
     Screen* s = nullptr;

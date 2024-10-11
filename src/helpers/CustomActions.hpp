@@ -35,6 +35,7 @@ public:
 class CCActionSkip : public CCActionEase {
 private:
     float m_fStartTime;
+    float m_fInnerDuration;
 
     bool initWithACatgirl(CCActionInterval* action, float startTime);
     void update(float time);

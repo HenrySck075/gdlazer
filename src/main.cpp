@@ -170,11 +170,7 @@ class $modify(MyMenuLayer, MenuLayer) {
     void onMyButton(CCObject*) {
     }
     void onMyButton2(CCObject*) {
-        auto o = OsuGame::get();
-        CCDirector::sharedDirector()->pushScene(o);
-        auto j = IntroTriangles::create();
-        if (j) o->pushScreen(j);
-    //WaveContainer::create(OverlayColorScheme::Red,CCSprite::createWithSpriteFrameName("GJ_logo_001.png"))->show();
+        removeFromParentAndCleanup(false);
     }
 };
 /*

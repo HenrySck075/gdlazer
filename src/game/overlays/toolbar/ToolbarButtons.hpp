@@ -13,7 +13,7 @@ public:
             auto e = static_cast<KeyboardEvent*>(ev);
             if (e->key.ctrl && e->key.key == enumKeyCodes::KEY_O) select();
         });
-        return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the", {205,29,72});
+        return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the");
     }
     static ToolbarSettingsButton* create() {
         create_class(ToolbarSettingsButton, init);
@@ -35,13 +35,12 @@ public:
 class ToolbarMusicButton : public ToolbarToggleButton {
     NowPlayingOverlay* o;
 public:
-    static ToolbarMusicButton* create() {
-        create_class(ToolbarMusicButton, init);
-    }
+    default_create(ToolbarMusicButton);
     bool init() {
         setID("music");
         o = NowPlayingOverlay::create();
-        return ToolbarButton::init(
+        o->retain();
+        return ToolbarToggleButton::init(
             OsuIcon::Music, 
             "now playing", 
             "manage the currently playing track (F6)", 
@@ -50,4 +49,8 @@ public:
     }
     void select() override;
     void deselect() override;
+
+    ~ToolbarMusicButton() {
+        o->release();
+    }
 };

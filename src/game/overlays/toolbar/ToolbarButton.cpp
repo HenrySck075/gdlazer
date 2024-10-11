@@ -30,7 +30,10 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     addChild(bgWrapper);
 
     tooltipContainer = CCLayerRGBA::create();
-    tooltipContainer->setAnchorPoint({0,1});
+    tooltipContainer->setAnchorPoint({
+        (float)(int)(tooltipAlignment==AxisAlignment::End),
+        1 
+    });
     tooltipContainer->setContentHeight(ToolbarConstants::TOOLTIP_HEIGHT);
     text = OsuText(label.c_str(), FontType::Bold, 10);
     subtext = OsuText(sub.c_str(), FontType::Regular, 10);
@@ -51,6 +54,9 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     iconSprite->setScale(0.3);
     addListener("nodeLayoutUpdate",[this](NodeEvent* e){
         iconSprite->setPosition(CCNode::getContentSize()/2);
+        if (static_cast<AxisLayout*>(tooltipContainer->getLayout())->getCrossAxisLineAlignment()==AxisAlignment::End) {
+            tooltipContainer->setPosition({CCNode::getContentSize().width,0});
+        }
     });
     
     setContentSizeWithUnit(CCSize(HEIGHT,HEIGHT),Unit::UIKit,Unit::UIKit);
