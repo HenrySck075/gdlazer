@@ -9,6 +9,7 @@ public:
   virtual CCArray* getChildren() = 0;
 };
 
+
 // The base implementation for a class (preferably in a node tree) that receives events
 // i realized i never made this to be used outside of a node tree
 class EventTarget {

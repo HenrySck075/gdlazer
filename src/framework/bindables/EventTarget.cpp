@@ -4,13 +4,11 @@ void EventTarget::addListener(std::string eventName, const Callback& listener) {
     m_listeners[eventName].push_back(listener);
 };
 void EventTarget::removeListener(std::string eventName, const Callback& listener) {
-    /*
     auto the = m_listeners[eventName];
     auto it = std::find(the.begin(),the.end(), listener);
     if (it != the.end()) {
         the.erase(it);
-    }
-    */
+    };
 }
 
 bool EventTarget::tryDispatch(Callback& cb, NodeEvent* event) {
@@ -29,6 +27,7 @@ bool EventTarget::listenersExists(NodeEvent* event) {
 };
 
 bool EventTarget::dispatchEvent(NodeEvent* event) {
+    if (event == nullptr) return false;
     bool ltExist = listenersExists(event);
     if (!ltExist) return true;
     event->m_cancelled = false;

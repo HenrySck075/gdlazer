@@ -73,6 +73,9 @@ float uiHeightToGL(float length) {
   return length / d->getOpenGLView()->getFrameSize().height * d->getWinSize().height;
 }
 
+#ifndef GEODE_IS_WINDOWS
+#include <cxxabi.h>
+#endif
 std::string getNodeName(CCObject* node){
 #ifdef GEODE_IS_WINDOWS
     return typeid(*node).name() + 6;

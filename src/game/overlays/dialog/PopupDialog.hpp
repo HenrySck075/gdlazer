@@ -4,7 +4,7 @@
 #include "PopupDialogButton.hpp"
 #include "../../../helpers/colors.hpp"
 #include "../../../utils.hpp"
-#include "../../../framework/graphics/containers/EventTarget.hpp"
+#include "../../../framework/bindables/EventTarget.hpp"
 #include "../../graphics/containers/OsuOverlayContainer.hpp"
 
 using namespace geode::prelude;

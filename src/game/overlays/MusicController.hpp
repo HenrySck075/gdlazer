@@ -3,7 +3,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/cocos/include/cocos2d.h>
 
-#include "../../framework/graphics/containers/Event.hpp"
+#include "../../framework/bindables/Event.hpp"
 
 namespace {
     extern char const music_ended[] = "musicEnded";

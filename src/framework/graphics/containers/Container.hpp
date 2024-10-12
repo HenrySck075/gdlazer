@@ -3,11 +3,11 @@
 // we javascripting
 
 #include <Geode/Geode.hpp>
-#include "Event.hpp"
+#include "../../bindables/Event.hpp"
 #include "../../input/events/MouseEvent.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
 #include "CCClippingLayer.hpp"
-#include "EventTarget.hpp"
+#include "../../bindables/EventTarget.hpp"
 #include "../../../utils.hpp"
 #include "../Vector4.hpp"
 #include "../Color4.hpp"
@@ -154,7 +154,7 @@ private:
     void updateSizeUnitLabel();
     void updatePositionUnitLabel();
 
-    CCSize const& contentSizeWithPadding(CCSize const& size, Vector4 padding);
+    inline CCSize const& contentSizeWithPadding(CCSize const& size, Vector4 padding);
 
 protected:
     CCSize minimumSize = CCSize(0,0);

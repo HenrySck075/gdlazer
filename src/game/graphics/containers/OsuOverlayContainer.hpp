@@ -4,16 +4,13 @@
 #include "../../../framework/graphics/containers/OverlayContainer.hpp"
 
 class OsuOverlayContainer : public OverlayContainer {
-    bool shown = false;
 public:
     void show() override {
-        if (shown) return;
-        shown = true;
+        OverlayContainer::show();
         OsuGame::get()->pushOverlay(this);
     }
     void hide() override {
-        if (!shown) return;
-        shown = false;
         OverlayContainer::hide();
+        OsuGame::get()->popOverlay(this);
     }
 };

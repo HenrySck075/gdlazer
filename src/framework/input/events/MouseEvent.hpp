@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Geode/cocos/include/cocos2d.h>
-#include "../../graphics/containers/Event.hpp"
+#include "../../bindables/Event.hpp"
 using namespace cocos2d;
 
 enum MouseEventType {

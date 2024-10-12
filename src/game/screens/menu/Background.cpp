@@ -26,7 +26,7 @@ bool Background::init() {
                 m_background->getSprite()->setTexture(spriteFrame->getTexture());
                 m_background->getSprite()->setTextureRect(spriteFrame->getRect());
             }
-            m_background->setContentSize(getContentSize());
+            m_background->setContentSize(CCNode::getContentSize());
         } else if (e->isCancelled()) {
             return;
         }

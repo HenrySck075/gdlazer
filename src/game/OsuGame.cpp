@@ -22,6 +22,48 @@ HWND getWindowHandle() {
 }
 #endif
 
+extern char const returnEventsToScreen[] = "returnEventsToScreen";
+
+using ReturnFromOverlay = NamedNodeEvent<returnEventsToScreen>;
+
+/// we assume shit in here
+class OverlaysWatcherContainer : public Container {
+    CCArrayExt<OverlayContainer*> overlayPopQueue;
+    CCArrayExt<OverlayContainer*> overlayStack;
+public:
+    default_create(OverlaysWatcherContainer);
+
+    bool init() {
+        if (!Container::init()) return false;
+        setColor({0,0,0,127});
+        setOpacity(0);
+        scheduleUpdate();
+        return true;
+    }
+
+    void update(float dt) override {
+        for (OverlayContainer* i : overlayPopQueue) {
+            if (m_pActionManager->numberOfRunningActionsInTarget(i) == 0) {
+                CCNode::removeChild(i);
+            }
+        }
+    }
+
+    void addChild(CCNode* child) {
+        if (m_pChildren->count()==0) runAction(CCFadeIn::create(0.25));
+        Container::addChild(child);
+    }
+    void removeChild(CCNode* child) {
+        if (m_pChildren->count()==1) {
+            runAction(CCFadeOut::create(0.25));
+            static_cast<OsuGame*>(m_pParent)->dispatchEvent(new ReturnFromOverlay());
+        }
+        auto c = static_cast<OverlayContainer*>(child);
+        c->onClose();
+        if (m_pActionManager->numberOfRunningActionsInTarget(c) != 0) overlayPopQueue.push_back(c);
+    }
+};
+
 #include <Geode/binding/GJGameLevel.hpp>
 
 #include <Geode/modify/LevelTools.hpp>
@@ -65,7 +107,7 @@ bool OsuGame::init() {
     screensContainer->setContentSize(getContentSize());
     this->addChild(screensContainer);
 
-    overlaysContainer = Container::create();
+    overlaysContainer = OverlaysWatcherContainer::create();
     overlaysContainer->setID("overlays");
     overlaysContainer->setContentSize(getContentSize());
     this->addChild(overlaysContainer);
@@ -81,6 +123,7 @@ bool OsuGame::init() {
     // making m_pChildren non-nullptr
     overlaysContainer->addChild(CCNode::create());
     overlaysContainer->removeAllChildren();
+    overlaysContainer->setColor({0,0,0,127});
 
     overlaysContainer->setCascadeOpacityEnabled(false);
     screensContainer->setCascadeOpacityEnabled(false);
@@ -142,11 +185,8 @@ void OsuGame::nextMusic() {
 }
 void OsuGame::showToolbar() {
     toolbar->show();
-    offset = screensContainer->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false);
-    screensContainer->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset)
-    ));
-    overlaysContainer->runAction(CCEaseOutQuint::create(
+    offset = main->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false);
+    main->runAction(CCEaseOutQuint::create(
         CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset)
     ));
 }
@@ -154,10 +194,7 @@ void OsuGame::showToolbar() {
 void OsuGame::hideToolbar() {
     toolbar->hide();
     offset = 0;
-    screensContainer->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight())
-    ));
-    overlaysContainer->runAction(CCEaseOutQuint::create(
+    main->runAction(CCEaseOutQuint::create(
         CCResizeTo::create(0.5,getContentWidth(),getContentHeight())
     ));
 }
@@ -212,21 +249,13 @@ Screen* OsuGame::replaceScreen(Screen* s) {
 }
 void OsuGame::pushOverlay(OverlayContainer* o) {
     overlaysContainer->addChild(o);
-    overlayStack.push_back(o);
-    o->onOpen();
+    current = o;
 }
 OverlayContainer* OsuGame::popOverlay(OverlayContainer* overlay) {
-    if (overlayStack.size()==0) {
-        return nullptr;
-    }
-    OverlayContainer* cs = overlayStack[overlayStack.size()-1];
-    OverlayContainer* s = overlay;
-    if (overlayStack.size()!=0) {
-        if (!s) s = overlayStack.pop_back();
-        s->hide();
-        //if (m_pActionManager->numberOfRunningActionsInTarget(s)!=0) overlayPopQueue.push_back(s);
-    }
-    
+    overlaysContainer->removeChild(overlay);
+    if (ps) current = ps;
+    else current = *(screenStack.begin()+screenStack.size()-1);
+
     return s;
 }
 

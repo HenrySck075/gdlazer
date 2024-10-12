@@ -3,7 +3,7 @@
 #include <Geode/cocos/include/cocos2d.h>
 #include "../utils.hpp"
 #include "../framework/graphics/containers/Container.hpp"
-#include "../framework/graphics/containers/EventTarget.hpp"
+#include "../framework/bindables/EventTarget.hpp"
 using namespace cocos2d;
 
 // widgets
@@ -29,8 +29,9 @@ private:
     CCArrayExt<Screen*> screenPopQueue;
     Container* screensContainer;
     Container* overlaysContainer;
-    CCArrayExt<OverlayContainer*> overlayPopQueue;
-    CCArrayExt<OverlayContainer*> overlayStack;
+
+    Container* main;
+    
 
     float bgVol = 1;
     float sfxVol = 1;
