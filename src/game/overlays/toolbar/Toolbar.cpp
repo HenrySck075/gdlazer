@@ -33,6 +33,7 @@ bool Toolbar::init() {
 
     auto right = CCLayer::create();
     right->addChild(ToolbarMusicButton::create());
+    right->addChild(ToolbarGeodeButton::create());
 
     // this will also cause issues
     right->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::End)->setGap(-0.5));

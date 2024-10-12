@@ -15,9 +15,7 @@ public:
         });
         return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the");
     }
-    static ToolbarSettingsButton* create() {
-        create_class(ToolbarSettingsButton, init);
-    }
+    default_create(ToolbarSettingsButton);
     void select() override;
     void deselect() override;
 };
@@ -32,6 +30,29 @@ public:
         return ToolbarButton::init(OsuIcon::Home, "home", "return to the main menu");
     }
 };
+
+
+//
+
+class ToolbarGeodeButton : public ToolbarButton {
+public:
+    default_create(ToolbarGeodeButton);
+    bool init() { 
+        return ToolbarButton::init(
+            OsuIcon::Gear,
+            "geode mod loader",
+            "manages the mods (F12)",
+            AxisAlignment::End
+        );
+    }
+    void onClick(MouseEvent* e) override {
+        ToolbarButton::onClick(e);
+        static_cast<CCMenuItemSpriteExtra*>(
+            GameManager::sharedState()->m_menuLayer->getChildByIDRecursive("geode.loader/geode-button")
+        )->activate();
+    }
+};
+
 class ToolbarMusicButton : public ToolbarToggleButton {
     NowPlayingOverlay* o;
 public:

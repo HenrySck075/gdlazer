@@ -110,6 +110,9 @@ class $modify(Camila, LoadingLayer) {
 
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
+    struct Fields {
+        CCScene* m_menuLayerScene;
+    };
     bool init() {
         if (!MenuLayer::init()) {
             return false;
@@ -145,7 +148,6 @@ class $modify(MyMenuLayer, MenuLayer) {
         */
         menu->updateLayout();
 
-        //glfwSetWindowFocusCallback();
         geode::Loader::get()->queueInMainThread([this]{
             // schedule on the next frame to replace the menuLayer with our scene
             auto o = OsuGame::get();
@@ -154,6 +156,7 @@ class $modify(MyMenuLayer, MenuLayer) {
             auto j = IntroTriangles::create();
             setVisible(true);
             if (j) o->pushScreen(j);
+            retain();
         });
         this->setVisible(false);
         /**
