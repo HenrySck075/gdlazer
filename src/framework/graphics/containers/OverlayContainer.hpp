@@ -14,18 +14,16 @@ protected:
     Bindable<bool> shown = false;
 public:
     bool init();
-    virtual void onOpen() = 0;
-    virtual void onClose() = 0;
+    virtual void onOpen() {};
+    virtual void onClose() {};
+
+    bool isOpen() {return shown;}
 
     virtual void show() {
         shown = true;
     };
     virtual void hide() {
         shown = false;
-        if (m_pActionManager->numberOfRunningActionsInTarget(this)!=0) {
-            m_pScheduler->scheduleSelector(schedule_selector(OverlayContainer::checkActions),this,1,false);
-        }
-        else removeFromParent();
     };
 
     void checkActions(float) {

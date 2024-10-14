@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include "../../../utils.hpp"
-#include "../../../framework/graphics/containers/Container.hpp"
+#include "../../../framework/graphics/containers/OverlayContainer.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
@@ -11,7 +11,7 @@
 using namespace geode::prelude;
 
 
-class Toolbar : public Container {
+class Toolbar : public OverlayContainer {
 private:
     double const transition_time = 0.5;
     CCLayerGradient2* gradient;
@@ -22,8 +22,6 @@ public:
     }
     bool init() override;
 
-    void show();
-    void hide();
     /// The docstring for the HoverInterceptor in the osu! repo is this:
 
     /// <summary>
@@ -37,10 +35,12 @@ public:
     /// (like excluding the padding portion), and it will solve the problem.
 
     void onMouseEnter() override {
+        if (!isOpen()) return;
         gradient->stopAllActions();
         gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(2.5,255)));
     }
     void onMouseExit() override {
+        if (!isOpen()) return;
         gradient->stopAllActions();
         gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(0.2,0)));
     }

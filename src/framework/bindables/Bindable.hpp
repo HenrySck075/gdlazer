@@ -33,6 +33,8 @@ public:
         }
     }
 
+    operator T() {return value;}
+
     void addCallback(const Callback& callback) {
         addListener(valueChanged, callback);
     }

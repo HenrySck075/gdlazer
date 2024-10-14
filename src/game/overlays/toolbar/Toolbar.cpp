@@ -11,7 +11,6 @@ bool Toolbar::init() {
     this->setContentSizeWithUnit(CCSize(1,HEIGHT),Unit::Viewport,Unit::UIKit);
     this->setAnchorPoint({0.5,1});
     this->setPositionUnit(Unit::OpenGL,Unit::UIKit);
-    this->setPositionY(-HEIGHT);
     this->setAnchor(Anchor::Top);
 
     //auto j = processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false);
@@ -59,14 +58,4 @@ bool Toolbar::init() {
     });
 
     return true;
-}
-void Toolbar::show() {
-    this->runAction(CCEaseOutQuart::create(
-        CCMoveFromTo::create(transition_time,{0,-HEIGHT},{0,0})
-    ));
-}
-void Toolbar::hide() {
-    this->runAction(CCEaseOutQuart::create(
-        CCMoveFromTo::create(transition_time/4,{0,0},{0,-HEIGHT})
-    ));
 }

@@ -17,7 +17,15 @@ bool OverlayContainer::init() {
     });
     shown.addCallback([this](ValueChangedEvent<bool>* e){
         if (e) onOpen();
-        else onClose();
+        else {
+            onClose(); 
+            if (m_pActionManager->numberOfRunningActionsInTarget(this)!=0) {
+                m_pScheduler->scheduleSelector(
+                    schedule_selector(OverlayContainer::checkActions),this,1,false
+                );
+            }
+            else removeFromParent();
+        }
     });
     return true;
 }
