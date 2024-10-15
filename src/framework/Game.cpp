@@ -46,11 +46,11 @@ public:
         }
     }
 
-    void addChild(CCNode* child) {
-        if (m_pChildren->count()==0) runAction(CCFadeIn::create(0.25));
+    void addChild(CCNode* child) override {
+        if (m_pChildren && m_pChildren->count()==0) runAction(CCFadeIn::create(0.25));
         Container::addChild(child);
     }
-    void removeChild(CCNode* child) {
+    void removeChild(CCNode* child) override {
         if (m_pChildren->count()==1) {
             runAction(CCFadeOut::create(0.25));
             static_cast<Game*>(m_pParent)->dispatchEvent(new ReturnFromOverlay());

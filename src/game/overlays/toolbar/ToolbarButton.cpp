@@ -8,6 +8,7 @@ using namespace ToolbarConstants;
 bool ToolbarButton::init(IconConstructor icon, std::string label, std::string sub, AxisAlignment tooltipAlignment) {
     setPadding({3});
     bgWrapper = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr));
+    if (bgWrapper->getStencil()==nullptr) return false;
     bgWrapper->getStencil()->setAnchorPoint({0,0});
     bgWrapper->setAlphaThreshold(0.03f);
     ClickableContainer::init("toolbar-select.wav"_spr);

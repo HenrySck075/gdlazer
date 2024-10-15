@@ -19,16 +19,13 @@ public:
 private:
     std::map<std::string, std::vector<Callback>> m_listeners;
 protected:
-    // @returns true if one of the callback cancels the event, either via `preventDefault()` or `stopImmediatePropagate()` (for `DispatchingFlow::Down`)
-    virtual bool tryDispatch(Callback& cb, NodeEvent* event);
-    virtual bool listenersExists(NodeEvent* event);
 
     void updateDispatchFlow(NodeEvent* event, DispatchingFlow flow) {
         event->m_dispatchingFlow = flow;
     }
 public:
-    void addListener(std::string eventName, const Callback& listener);
-    void removeListener(std::string eventName, const Callback& listener);
+    void addListener(std::string eventName, Callback listener);
+    void removeListener(std::string eventName, Callback listener);
     /// @returns true if the event is successfully dispatched or false if any of the handler cancels the event in any way
     virtual bool dispatchEvent(NodeEvent* event);
 

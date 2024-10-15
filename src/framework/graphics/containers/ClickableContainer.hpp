@@ -34,7 +34,7 @@ public:
     // pretend to be clicking
     void click() {dispatchEvent(new MouseEvent(MouseEventType::Click, {9,9}));};
     void setClickSFX(std::string sfx) { clickSfx = sfx; };
-    void setCallback(ButtonCallback& clickCb) { clickCallback = clickCb; };
+    void setCallback(ButtonCallback clickCb) { clickCallback = clickCb; };
     /// <param name="clickCb">| the</param>
     /// <param name="self">| the node to be used as the clickCb parameter</param>
     bool init(std::string clickSfx, ButtonCallback clickCb);

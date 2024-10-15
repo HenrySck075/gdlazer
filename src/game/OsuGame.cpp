@@ -6,47 +6,6 @@
 
 #include "../framework/graphics/containers/OverlayContainer.hpp"
 
-extern char const returnEventsToScreen[] = "returnEventsToScreen";
-
-using ReturnFromOverlay = NamedNodeEvent<returnEventsToScreen>;
-
-/// we assume shit in here
-class OverlaysWatcherContainer : public Container {
-    CCArrayExt<OverlayContainer*> overlayPopQueue;
-    CCArrayExt<OverlayContainer*> overlayStack;
-public:
-    default_create(OverlaysWatcherContainer);
-
-    bool init() {
-        if (!Container::init()) return false;
-        setColor({0,0,0,127});
-        setOpacity(0);
-        scheduleUpdate();
-        return true;
-    }
-
-    void update(float dt) override {
-        for (OverlayContainer* i : overlayPopQueue) {
-            if (m_pActionManager->numberOfRunningActionsInTarget(i) == 0) {
-                CCNode::removeChild(i);
-            }
-        }
-    }
-
-    void addChild(CCNode* child) {
-        if (m_pChildren->count()==0) runAction(CCFadeIn::create(0.25));
-        Container::addChild(child);
-    }
-    void removeChild(CCNode* child) {
-        if (m_pChildren->count()==1) {
-            runAction(CCFadeOut::create(0.25));
-            static_cast<OsuGame*>(m_pParent)->dispatchEvent(new ReturnFromOverlay());
-        }
-        auto c = static_cast<OverlayContainer*>(child);
-        if (m_pActionManager->numberOfRunningActionsInTarget(c) != 0) overlayPopQueue.push_back(c);
-    }
-};
-
 #include <Geode/binding/GJGameLevel.hpp>
 
 #include <Geode/modify/LevelTools.hpp>
