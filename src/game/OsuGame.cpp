@@ -96,7 +96,7 @@ bool OsuGame::init() {
     // but then when they try to "fix" it they eventually stumble upon the exact same solution
 
     toolbar = Toolbar::create();
-    overlaysContainer->addChild(toolbar);
+    toolbar->addChild(toolbar);
 
     // preload overlays
     overlays["settings"] = SettingsPanel::create();

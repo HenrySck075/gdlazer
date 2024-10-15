@@ -17,9 +17,8 @@ public:
 /// also this does not automatically retain cocos objects do it yourself
 template<typename T>
 class Bindable : public EventTarget {
-    T& value;
+    T value;
 public:
-    using Callback = MiniFunction<void(ValueChangedEvent<T>*)>;
     Bindable(const T& val) : value(val) {};
 
     // lel
@@ -35,11 +34,11 @@ public:
 
     operator T() {return value;}
 
-    void addCallback(const Callback& callback) {
+    void addCallback(Callback callback) {
         addListener(valueChanged, callback);
     }
 
-    void removeCallback(const Callback& callback) {
+    void removeCallback(Callback callback) {
         removeListener(valueChanged, callback);
     }
 };

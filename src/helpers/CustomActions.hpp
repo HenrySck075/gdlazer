@@ -199,7 +199,7 @@ public:
 
 class CCRepeatUntil : public CCRepeatForever {
 private:
-    geode::utils::MiniFunction<bool()> m_predicate;
+  std::function<bool()> m_predicate;
     bool m_predicateCheckValid = false;
     CCAction* m_pAction;
 public:

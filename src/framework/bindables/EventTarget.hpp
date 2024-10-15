@@ -1,5 +1,6 @@
 #pragma once
 #include "Event.hpp"
+#include "Geode/utils/MiniFunction.hpp"
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
@@ -14,7 +15,7 @@ public:
 // i realized i never made this to be used outside of a node tree
 class EventTarget {
 public:
-    using Callback = geode::utils::MiniFunction<void(NodeEvent*)>;
+    using Callback = std::function<void(NodeEvent*)>;
 private:
     std::map<std::string, std::vector<Callback>> m_listeners;
 protected:

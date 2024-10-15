@@ -2,8 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include "../../../utils.hpp"
-#include "../../../framework/graphics/containers/OverlayContainer.hpp"
-#include "../../graphics/OsuColor.hpp"
+#include "../../../framework/graphics/containers/Container.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
@@ -11,10 +10,11 @@
 using namespace geode::prelude;
 
 
-class Toolbar : public OverlayContainer {
+class Toolbar : public Container {
 private:
     double const transition_time = 0.5;
     CCLayerGradient2* gradient;
+    bool shown = false;
 public:
     
     static Toolbar* create() {
@@ -33,14 +33,20 @@ public:
 
     /// Genuinely speaking, it would be better to handle inputs in the visible boundary
     /// (like excluding the padding portion), and it will solve the problem.
+    void show() {
+        shown = true;
+    }
+    void hide() {
+        shown = false;
+    }
 
     void onMouseEnter() override {
-        if (!isOpen()) return;
+        if (!shown) return;
         gradient->stopAllActions();
         gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(2.5,255)));
     }
     void onMouseExit() override {
-        if (!isOpen()) return;
+        if (!shown) return;
         gradient->stopAllActions();
         gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(0.2,0)));
     }

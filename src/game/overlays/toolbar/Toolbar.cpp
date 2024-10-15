@@ -1,6 +1,5 @@
 #include "Toolbar.hpp"
-#include "ToolbarButton.hpp"
-
+#include "../../graphics/OsuColor.hpp"
 #include "ToolbarButtons.hpp"
 
 using namespace ToolbarConstants;
@@ -8,14 +7,15 @@ bool Toolbar::init() {
     Container::init();
     m_anchor = Anchor::Top;
     auto bgColor = OsuColor::Gray(0.1f*255);
-    this->setContentSizeWithUnit(CCSize(1,HEIGHT),Unit::Viewport,Unit::UIKit);
-    this->setAnchorPoint({0.5,1});
-    this->setPositionUnit(Unit::OpenGL,Unit::UIKit);
-    this->setAnchor(Anchor::Top);
+    setContentSizeWithUnit({1,HEIGHT},Unit::Viewport,Unit::UIKit);
+    setAnchorPoint({0.5,1});
+    setPositionUnit(Unit::OpenGL,Unit::UIKit);
+    setAnchor(Anchor::Top);
+    setPositionY(-HEIGHT);
 
     //auto j = processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false);
     auto j = TOOLTIP_HEIGHT;
-    gradient = CCLayerGradient2::create(ccc4(0,0,0,0),ccc4(0,0,0,0),{0,1},CCLG2Target::Start);
+    gradient = CCLayerGradient2::create({0,0,0,0},{0,0,0,0},{0,1},CCLG2Target::Start);
     gradient->setAnchorPoint({0,1});// keeping it at the bottom
     gradient->ignoreAnchorPointForPosition(false);
     gradient->setPosition({0,-j});
@@ -26,8 +26,13 @@ bool Toolbar::init() {
     left->addChild(ToolbarSettingsButton::create());
     left->addChild(ToolbarHomeButton::create());
 
+    auto lay = 
+        RowLayout::create()
+        ->setAutoScale(false)
+        ->setAxisAlignment(AxisAlignment::Start)
+        ->setGap(-0.5);
     // this will cause issues
-    left->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::Start)->setGap(-0.5));
+    left->setLayout(lay);
     left->setAnchorPoint({0,0});
 
     auto right = CCLayer::create();
@@ -35,7 +40,10 @@ bool Toolbar::init() {
     right->addChild(ToolbarGeodeButton::create());
 
     // this will also cause issues
-    right->setLayout(RowLayout::create()->setAutoScale(false)->setAxisAlignment(AxisAlignment::End)->setGap(-0.5));
+    right->setLayout(
+        lay
+        ->setAxisAlignment(AxisAlignment::End)
+    );
     right->setAnchorPoint({1,0});
 #ifdef GEODE_IS_ANDROID
     left->setPositionX(10);
@@ -50,7 +58,6 @@ bool Toolbar::init() {
         gradient->setContentSize({CCNode::getContentSize().width,j});
         right->setPositionX(
             CCNode::getContentSize().width
-
 #ifdef GEODE_IS_ANDROID
             -10
 #endif

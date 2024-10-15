@@ -8,7 +8,7 @@ using namespace geode::prelude;
 template<typename T>
 class Reactive {
     T _value;
-    using Callback = MiniFunction<void(T,T)>;
+    using Callback = std::function<void(T,T)>;
     /// void callback(T old, T new)
     std::vector<Callback> callbacks;
 public:
