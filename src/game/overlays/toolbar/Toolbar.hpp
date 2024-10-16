@@ -33,12 +33,8 @@ public:
 
     /// Genuinely speaking, it would be better to handle inputs in the visible boundary
     /// (like excluding the padding portion), and it will solve the problem.
-    void show() {
-        shown = true;
-    }
-    void hide() {
-        shown = false;
-    }
+    void show();
+    void hide();
 
     void onMouseEnter() override {
         if (!shown) return;

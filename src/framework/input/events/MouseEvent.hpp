@@ -17,6 +17,6 @@ public:
     bool leftClick = true;
 
     MouseEvent(MouseEventType event, CCPoint pos) : NodeEvent("mouseEvent"), position(pos), eventType(event) {
-        //m_log = true;
+        setDispatchingFlow(DispatchingFlow::Down);
     };
 };

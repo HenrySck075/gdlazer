@@ -7,8 +7,8 @@ namespace {
 
 template<typename T>
 class ValueChangedEvent : public NamedNodeEvent<valueChanged> {
-    const T& value;
 public:
+    const T& value;
     ValueChangedEvent(const T& val) : NamedNodeEvent(), value(val) {}
 };
 
@@ -19,17 +19,21 @@ template<typename T>
 class Bindable : public EventTarget {
     T value;
 public:
-    Bindable(const T& val) : value(val) {};
+    Bindable(const T& val) : value(val) {
+        log::debug("[Bindable]: hi chat im alive");
+    };
 
     // lel
     T operator->() {return value;}
 
     T& operator=(const T& C)
     {
+        log::debug("[Bindable]: lel");
         if (C != value) {
             value = C;
             dispatchEvent(new ValueChangedEvent(C));
         }
+        return value;
     }
 
     operator T() {return value;}

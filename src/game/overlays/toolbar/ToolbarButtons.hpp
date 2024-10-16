@@ -53,6 +53,26 @@ public:
     }
 };
 
+class ToolbarModDisableButton : public ToolbarButton {
+public:
+    default_create(ToolbarModDisableButton);
+    bool init() { 
+        // for why im not hooking/patching ModsLayer to override its onBack to pop the scene,
+        // idk
+        return ToolbarButton::init(
+            OsuIcon::CrossCircle,
+            "(Prerelease feature) Disable mod",
+            "disable this mf",
+            AxisAlignment::End
+        );
+    }
+    void onClick(MouseEvent* e) override {
+        ToolbarButton::onClick(e);
+        Mod::get()->disable();
+        game::restart();
+    }
+};
+
 class ToolbarMusicButton : public ToolbarToggleButton {
     NowPlayingOverlay* o;
 public:

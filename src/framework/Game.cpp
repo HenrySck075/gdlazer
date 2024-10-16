@@ -85,6 +85,8 @@ bool Game::init() {
     overlaysContainer->setID("overlays");
     overlaysContainer->setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     main->addChild(overlaysContainer);
+    
+    addChild(main);
 
 #ifdef GEODE_IS_WINDOWS
     if (!newWindowProcSet) {
@@ -99,10 +101,6 @@ bool Game::init() {
 
     overlaysContainer->setCascadeOpacityEnabled(false);
     screensContainer->setCascadeOpacityEnabled(false);
-
-    auto curSize = getContentSize();
-    screensContainer->setContentSize(curSize);
-    overlaysContainer->setContentSize(curSize);
 
     // j
     scheduleUpdate();
@@ -235,10 +233,7 @@ void Game::checkForQueue() {
 bool Game::dispatchEvent(NodeEvent* event) {
     if (event->target() != nullptr) return false;
     if (!this->isRunning()) return true;
-    if (event->eventName().starts_with("og")) {
-        EventTarget::dispatchEvent(event);
-        return true;
-    }
+    EventTarget::dispatchEvent(event);
     updateDispatchFlow(event, DispatchingFlow::Down);
 
     if (event->eventName() != "nodeLayoutUpdate") {

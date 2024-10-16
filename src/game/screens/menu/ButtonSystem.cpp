@@ -83,7 +83,11 @@ bool ButtonSystem::init(OsuLogo* logo) {
             Color4(102, 68, 204, 255),
             [this](CCNode*j){
                 //this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);
-                OsuGame::get()->pushScreen(SongSelect::create())->setZOrder(-7);
+                if (Mod::get()->getSettingValue<bool>("devmode")) {
+                    OsuGame::get()->pushScreen(SongSelect::create())->setZOrder(-7);
+                } else {
+                    m_menuLayerPtr->onPlay(nullptr);
+                }
             },
             {enumKeyCodes::KEY_M}
         ),

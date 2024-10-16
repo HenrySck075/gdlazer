@@ -19,11 +19,15 @@ struct KeyInfo {
 class KeyboardEvent final : public NodeEvent {
 public:
     KeyInfo key;
-    KeyboardEvent(KeyInfo k) : NodeEvent("keyboardEvent"), key(k) {};
+    KeyboardEvent(KeyInfo k) : NodeEvent("keyboardEvent"), key(k) {
+        setDispatchingFlow(DispatchingFlow::Down);
+    };
 };
 
 class KeypadEvent final : public NodeEvent {
 public:
     ccKeypadMSGType key;
-    KeypadEvent(ccKeypadMSGType k) : NodeEvent("keyadEvent"), key(k) {};
+    KeypadEvent(ccKeypadMSGType k) : NodeEvent("keyadEvent"), key(k) {
+        setDispatchingFlow(DispatchingFlow::Down);
+    };
 };

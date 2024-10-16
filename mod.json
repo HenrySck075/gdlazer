@@ -19,12 +19,18 @@
       "one-of": [
         "English",
         "Vietnamese"
-      ]
+      ],
+      "description": "does nothing"
     },
     "parallax": {
-      "type": "bool",
+      "type": "bool", 
       "default": true,
       "description": "Enables parallax effects"
+    },
+    "devmode": {
+      "name": "this menu does not work dont enable",
+      "type": "bool",
+      "default": true
     },
     "uiscale": {
       "type": "int",
@@ -35,7 +41,7 @@
       "control": {
         "slider": true
       },
-      "description": "Contradict to the way game engines implements scaling, this one goes the opposite way"
+      "description": "It's gonna be int for the time being because the compiler is ass"
     }
   },
   "resources": {

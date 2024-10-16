@@ -4,7 +4,7 @@
 
 using namespace ToolbarConstants;
 bool Toolbar::init() {
-    Container::init();
+    if (!Container::init()) return false;
     m_anchor = Anchor::Top;
     auto bgColor = OsuColor::Gray(0.1f*255);
     setContentSizeWithUnit({1,HEIGHT},Unit::Viewport,Unit::UIKit);
@@ -38,6 +38,7 @@ bool Toolbar::init() {
     auto right = CCLayer::create();
     right->addChild(ToolbarMusicButton::create());
     right->addChild(ToolbarGeodeButton::create());
+    right->addChild(ToolbarModDisableButton::create());
 
     // this will also cause issues
     right->setLayout(
@@ -65,4 +66,18 @@ bool Toolbar::init() {
     });
 
     return true;
+}
+
+void Toolbar::show() {
+    if (!shown) runAction(CCEaseOutQuint::create(
+        CCMoveTo::create(0.5,{0,0})
+    ));
+    shown = true;
+}
+
+void Toolbar::hide() {
+    if (shown) runAction(CCEaseOutQuint::create(
+        CCMoveTo::create(0.5,{0,-HEIGHT})
+    ));
+    shown = false;
 }

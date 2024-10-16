@@ -68,6 +68,7 @@ void MusicController::set(gd::string filePath, float fadeTime) {
     unsigned int prevFadePoint = 0;
     auto playNewSound = [this,filePath,fadeTime,&prevFadePoint]{
         if (sound) sound->release();
+        seek(0);
         bool channelNotCreated = !channel;
         sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
         sys->playSound(sound,nullptr,true,&channel);

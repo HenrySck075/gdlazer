@@ -16,7 +16,8 @@ bool OverlayContainer::init() {
         if (static_cast<KeypadEvent*>(e)->key==ccKeypadMSGType::kTypeBackClicked) hide();
     });
     shown.addCallback([this](NodeEvent* e){
-        if (e) onOpen();
+        log::debug("[OverlayContainer]: ");
+        if (static_cast<ValueChangedEvent<bool>*>(e)->value) onOpen();
         else {
             onClose(); 
             if (m_pActionManager->numberOfRunningActionsInTarget(this)!=0) {

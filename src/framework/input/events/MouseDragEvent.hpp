@@ -6,5 +6,6 @@ class MouseDragEvent : public cocos2d::CCObject {
 public:
     CCPoint startPos;
     CCPoint current;
-    MouseDragEvent(decltype(startPos) start, decltype(current) cur) : startPos(start), current(cur) {}
+    MouseDragEvent(CCPoint start, CCPoint cur) : startPos(start), current(cur) {
+    }
 };

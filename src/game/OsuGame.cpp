@@ -55,7 +55,9 @@ bool OsuGame::init() {
     // but then when they try to "fix" it they eventually stumble upon the exact same solution
 
     toolbar = Toolbar::create();
-    toolbar->addChild(toolbar);
+    this->addChild(toolbar);
+
+    addListener("mouseEvent", [this](NodeEvent* e){toolbar->dispatchEvent(e);});
 
     // preload overlays
     overlays["settings"] = SettingsPanel::create();
