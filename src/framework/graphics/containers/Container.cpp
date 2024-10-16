@@ -69,6 +69,34 @@ void balls::drawRoundedRect() {
     #undef drawCircConfig
 }
 
+bool balls::stencilEnabled() { return true; }
+
+bool balls::init(float rad) {
+  if (!CCDrawNode::init())
+    return false;
+  setRadius(rad);
+  return true;
+}
+
+void balls::setContentSize(const CCSize &size) {
+  bool j = size != m_obContentSize;
+  if (size < m_obContentSize)
+    clear();
+  CCDrawNode::setContentSize(size);
+  if (j)
+    drawRoundedRect();
+}
+
+void balls::setRadius(float rad) {
+  if (rad == m_radius)
+    return;
+  m_radius = std::max(rad, 0.f);
+  clear();
+  drawRoundedRect();
+}
+
+float balls::getRadius() { return m_radius; };
+
 /**
  * InputHandlerImpl
  */
@@ -239,6 +267,7 @@ std::string Container::getUnitLabel(Unit unit) {
 bool Container::init() {
     m_roundedBorderStencil = balls::create();
     m_roundedBorderStencil->retain();
+    //m_roundedBorderStencil->setRadius(8);
     if (!CCClippingLayer::init({255,255,255,0},m_roundedBorderStencil)) return false;
 
     addListener("nodeLayoutUpdate", [this](NodeEvent*j){

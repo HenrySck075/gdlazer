@@ -73,28 +73,14 @@ public:
     void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const ccColor4F &color) {
         drawCircle(center, radius, angle, segments, drawLineToCenter, 1.f, 1.f, color);
     };
-    bool stencilEnabled() override {return false;}
-    bool init(float rad) {
-        if (!CCDrawNode::init()) return false;
-        setRadius(rad);
-        return true;
-    }
-    void setContentSize(const CCSize& size) override {
-        bool j = size != m_obContentSize;
-        if (size < m_obContentSize) clear();
-        CCDrawNode::setContentSize(size);
-        if (j) drawRoundedRect();
-    }
+    bool stencilEnabled() override;
+    bool init(float rad);
+    void setContentSize(const CCSize &size) override;
     static balls* create(float rad = 0) {
         create_class(balls, init, rad);
     }
-    void setRadius(float rad) {
-        if (rad == m_radius) return;
-        m_radius = std::max(rad,0.f);
-        clear();
-        drawRoundedRect();
-    }
-    float getRadius() {return m_radius;};
+    void setRadius(float rad);
+    float getRadius();
 };
 
 class ContainerLayout;

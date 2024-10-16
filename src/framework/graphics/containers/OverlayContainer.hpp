@@ -19,12 +19,8 @@ public:
 
     bool isOpen() {return shown;}
 
-    virtual void show() {
-        shown = true;
-    };
-    virtual void hide() {
-        shown = false;
-    };
+    virtual void show();
+    virtual void hide();
 
     void checkActions(float) {
         log::debug("ballin'");

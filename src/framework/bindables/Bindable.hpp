@@ -15,6 +15,7 @@ public:
 /// An [EventTarget] holding a value
 ///
 /// also this does not automatically retain cocos objects do it yourself
+/// TODO: Remove Reactive
 template<typename T>
 class Bindable : public EventTarget {
     T value;
@@ -26,8 +27,7 @@ public:
     // lel
     T operator->() {return value;}
 
-    T& operator=(const T& C)
-    {
+    T operator=(T C) {
         log::debug("[Bindable]: lel");
         if (C != value) {
             value = C;

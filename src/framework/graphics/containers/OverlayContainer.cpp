@@ -30,3 +30,11 @@ bool OverlayContainer::init() {
     });
     return true;
 }
+void OverlayContainer::show() {
+  shown = true;
+  log::debug("[OverlayContainer]: lel");
+};
+void OverlayContainer::hide() {
+  shown = false;
+  log::debug("[OverlayContainer]: not lel");
+};
