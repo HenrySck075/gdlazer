@@ -29,7 +29,13 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_bodyLayout->setPosition(m_bgSprite->getPosition());
     m_bodyLayout->ignoreAnchorPointForPosition(false);
     m_bodyLayout->setZOrder(2);
-    m_bodyLayout->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(2)->setAxisReverse(true));
+    m_bodyLayout->setLayout(
+        ColumnLayout::create()
+        ->setAutoScale(false)
+        ->setGap(2)
+        ->setAxisReverse(true)
+        ->setCrossAxisOverflow(false)
+    );
     m_bodyLayout->setCascadeOpacityEnabled(true);
     
     main->addChild(m_bodyLayout);

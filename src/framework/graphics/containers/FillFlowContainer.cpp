@@ -1,5 +1,31 @@
 #include "FillFlowContainer.hpp"
 
+
+void FillFlowLayout::apply(CCNode* on) {
+    CCArrayExt<Container*> nodes = getNodesToPosition(on);
+
+    auto node = dynamic_cast<Container*>(on);
+    assert(("l bozo", node==nullptr));
+
+    auto constraint = node->getSizeConstraints().second;
+    CCSize size = {0,0};
+    for (auto c : nodes) {
+        //log::debug("[FillFlowLayout]: {}",size.height);
+        if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
+            throw std::invalid_argument(fmt::format("[FillFlowContainer/Layout]: Child {} has the size dependent on the parent, but the parent does not have a maximum size constraint. Please set the maximum constraint to non-zero.", geode::format_as(c)));
+        }
+        c->setAnchor(Anchor::TopLeft);
+        c->setPosition({0,0});
+        c->setAnchorPoint({0,1});
+        auto cs = c->CCNode::getContentSize();
+        c->setPositionWithUnit({0,size.height}, Unit::OpenGL, Unit::OpenGL);
+        auto ns = size.height+cs.height;
+        size.height = constraint.height!=0?std::min(constraint.height, ns):ns;
+    }
+    size.width = node->CCNode::getContentSize().width;
+    node->CCNode::setContentSize(size);
+}
+
 bool FillFlowContainer::init(FillDirection dir) {
     Container::init();
     //setContentSizeWithUnit(CCSize)
@@ -23,24 +49,18 @@ void FillFlowContainer::addChild(CCNode* node) {
     assert(("we at osu!framework requires their child to be a Container in some occasion thanks",con==nullptr));
     CCNode::addChild(node);
     auto cs = con->getSizeConstraints();
-    // change the constaints
+    // change the constraints
     // we will need a constraint with:
     // - the minimumSize is the largest minimumSize in the children
     // - the maximumSize is the smallest maximumSize in the children
-    minimumSize = std::max(cs.first, minimumSize);
-    maximumSize = std::min(cs.second, maximumSize);
+    minimumSize = cs.first + minimumSize;
+    maximumSize = cs.second + maximumSize;
     checkConstraints();
     CCLayer::updateLayout();
 };
 void FillFlowContainer::updateChildPosition() {
     auto childList = getChildren();
     if (childList) {
-        for (auto* c : CCArrayExt<CCNode*>(childList)) {
-            if (auto cc = typeinfo_cast<Container*>(c)) {
-                cc->dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::Size));
-                cc->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
-            }
-        }
         CCLayer::updateLayout();
     }
 };

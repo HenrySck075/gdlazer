@@ -2,7 +2,7 @@
 #include "../helpers/CustomActions.hpp"
 #include "overlays/toolbar/ToolbarConstants.hpp"
 #include "overlays/SettingsPanel.hpp"
-#include "overlays/MusicController.hpp"
+#include "../framework/audio/AudioManager.hpp"
 
 #include "../framework/graphics/containers/OverlayContainer.hpp"
 
@@ -106,7 +106,7 @@ void OsuGame::startMusicSequence() {
 };
 void OsuGame::nextMusic() {
     playlistIndex++;
-    MusicController::get()->playFromLevel(mainPlaylist[playlistIndex],0);
+    AudioManager::get()->playFromLevel(mainPlaylist[playlistIndex],0);
 }
 void OsuGame::showToolbar() {
     toolbar->show();

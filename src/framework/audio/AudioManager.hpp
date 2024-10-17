@@ -1,9 +1,11 @@
+/// @note Interface is from MusicController in the osu!game repo
+
 #pragma once
 
 #include <Geode/Geode.hpp>
 #include <Geode/cocos/include/cocos2d.h>
 
-#include "../../framework/bindables/Event.hpp"
+#include "../bindables/Event.hpp"
 
 namespace {
     extern char const music_ended[] = "musicEnded";
@@ -16,7 +18,7 @@ using MusicEnded = NamedNodeEvent<music_ended>;
 /// which requires a CCNode as a target just because some CCActions uses CCNode as a target
 /// 
 /// but still why is GJGameLevel inherits CCNode
-class MusicController : public cocos2d::CCNode {
+class AudioManager : public cocos2d::CCNode {
     GameLevelManager* levelManager;
     GJGameLevel* currentLevel;
     LevelTools* tools;
@@ -34,10 +36,11 @@ class MusicController : public cocos2d::CCNode {
     FMOD::Sound* sound;
 
     bool paused = false;
+    bool ended = false;
 
     void onSongEnd();
 public:
-    static MusicController* get();
+    static AudioManager* get();
     bool init();
 
     void set(gd::string filePath, float fadeTime = 0.25);

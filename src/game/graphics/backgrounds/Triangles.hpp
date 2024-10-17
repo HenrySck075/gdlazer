@@ -1,13 +1,12 @@
-#ifndef __osu_ui_deco_triangles__
-#define __osu_ui_deco_triangles__
-
+#pragma once
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 #include "../../../helpers/CustomActions.hpp"
+#include "../../../framework/graphics/containers/Container.hpp"
 
-class Triangles : public CCLayerRGBA {
+class Triangles : public Container {
 private:
-    ccColor3B m_color;
+    ccColor3B m_triangleColor;
 
     bool init(int quantity, ccColor3B color);
 
@@ -21,10 +20,5 @@ private:
     void assignAction(CCNode* node, float startTime);
 public:
     static Triangles* create(int quantity, ccColor3B baseColor);
-    void setParent(CCNode* parent) override {
-        CCNode::setParent(parent);
-        setContentSize(parent->CCNode::getContentSize());
-    }
 };
 
-#endif

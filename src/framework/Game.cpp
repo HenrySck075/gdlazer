@@ -153,7 +153,7 @@ Screen* Game::replaceScreen(Screen* s) {
 }
 void Game::pushOverlay(OverlayContainer* o) {
     // call show if the overlay isn't open
-    if (o->isOpen()) {
+    if (!o->isOpen()) {
         o->show();
         return;
     }

@@ -50,16 +50,14 @@ void balls::drawRoundedRect() {
 
         drawRect(innerRect, peakDesign);
         
-        /*
         //top
-        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX(),radius},peakDesign);
+        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX()-radius,radius},peakDesign);
         //bottom
-        drawRect({radius,0,innerRect.getMaxX(),radius},peakDesign);
+        drawRect({radius,0,innerRect.getMaxX()-radius,radius},peakDesign);
         //left
-        drawRect({0,radius,radius,innerRect.getMaxY()},peakDesign);
+        drawRect({0,radius,radius,innerRect.getMaxY()-radius},peakDesign);
         //right
-        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()},peakDesign);
-        */
+        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()-radius},peakDesign);
     }
     else {
         // do it fast
@@ -69,7 +67,18 @@ void balls::drawRoundedRect() {
     #undef drawCircConfig
 }
 
-bool balls::stencilEnabled() { return true; }
+bool balls::stencilEnabled() { 
+    return 
+    #ifndef GEODE_IS_ANDROID
+    m_radius!=0
+    #else
+    // stencil code in the repo does not work on android
+    // so this is a temporary return until that issue is resolved 
+    // (by getting the re code from libcocos2dcpp.so)
+    true 
+    #endif
+    ; 
+}
 
 bool balls::init(float rad) {
   if (!CCDrawNode::init())
@@ -79,12 +88,10 @@ bool balls::init(float rad) {
 }
 
 void balls::setContentSize(const CCSize &size) {
-  bool j = size != m_obContentSize;
-  if (size < m_obContentSize)
-    clear();
-  CCDrawNode::setContentSize(size);
-  if (j)
-    drawRoundedRect();
+    bool j = size != m_obContentSize;
+    if (j) clear();
+    CCDrawNode::setContentSize(size);
+    if (j) drawRoundedRect();
 }
 
 void balls::setRadius(float rad) {

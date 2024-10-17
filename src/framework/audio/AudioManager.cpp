@@ -1,18 +1,18 @@
-#include "MusicController.hpp"
+#include "AudioManager.hpp"
 #include <Geode/cocos/actions/CCActionManager.h>
 #include "../../helpers/CustomActions.hpp"
-#include "../OsuGame.hpp"
+#include "../Game.hpp"
 
-static MusicController* instance;
-MusicController* MusicController::get() {
+static AudioManager* instance;
+AudioManager* AudioManager::get() {
     if (!instance) {
-        instance = new MusicController();
+        instance = new AudioManager();
         if (!instance->init()) delete instance;
     }
     return instance;
 };
 
-bool MusicController::init() {
+bool AudioManager::init() {
     sys = FMODAudioEngine::sharedEngine()->m_system;
     FMOD::ChannelGroup* masterChannel = FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel;
     tools = new LevelTools();
@@ -22,9 +22,9 @@ bool MusicController::init() {
 
     return true;
 }
-void MusicController::playFromLevel(GJGameLevel* level, float fadeTime) {
+void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
     currentLevel = level;
-    log::debug("[MusicController]: {}", tools->getAudioFileName(level->m_audioTrack).c_str());
+    log::debug("[AudioManager]: {}", tools->getAudioFileName(level->m_audioTrack).c_str());
 
     songName = currentLevel
         ? tools->getAudioTitle(currentLevel->m_audioTrack)
@@ -52,19 +52,20 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
     if (cbType == FMOD_CHANNELCONTROL_CALLBACK_END) {
         log::debug("[fmodSoundCallback()]: song ended");
         if (type != FMOD_CHANNELCONTROL_CHANNEL) return FMOD_RESULT::FMOD_OK;
-        MusicController* ctrl;
+        AudioManager* ctrl;
         reinterpret_cast<FMOD::Channel*>(channel)->getUserData((void**)&ctrl);
         ctrl->onSongEnd();
     }
     return FMOD_RESULT::FMOD_OK;
 };
 
-void MusicController::onSongEnd() {
+void AudioManager::onSongEnd() {
     paused = true;
-    OsuGame::get()->dispatchEvent(new MusicEnded());
+    ended = true;
+    Game::get()->dispatchEvent(new MusicEnded());
 }
 
-void MusicController::set(gd::string filePath, float fadeTime) {
+void AudioManager::set(gd::string filePath, float fadeTime) {
     unsigned int prevFadePoint = 0;
     auto playNewSound = [this,filePath,fadeTime,&prevFadePoint]{
         if (sound) sound->release();
@@ -77,6 +78,7 @@ void MusicController::set(gd::string filePath, float fadeTime) {
             channel->setCallback(&fmodSoundCallback);
             channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
         }
+        ended = false;
         if (fadeTime>0) {
             // fading
             unsigned int* pos;
@@ -94,7 +96,7 @@ void MusicController::set(gd::string filePath, float fadeTime) {
         }
         channel->setPaused(paused);
     };
-    if (sound && fadeTime>0) {
+    if (sound && fadeTime>0 && !ended) {
         runAction(cocos2d::CCSequence::create(
             CCCallFuncL::create([this,fadeTime,&prevFadePoint]{
                 unsigned int pos = 0;

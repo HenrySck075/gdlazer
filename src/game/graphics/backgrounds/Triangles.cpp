@@ -14,15 +14,13 @@ Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
 }
 
 bool Triangles::init(int quantity, ccColor3B color) {
-    m_color = color;
+    Container::init();
+    m_triangleColor = color;
     int triangles = quantity;
 
     this->setCascadeOpacityEnabled(true);
-    for (int idc = 0; idc < triangles; idc++) {
-        auto tri = makeTriangle();
-        this->addChild(tri);
-        assignAction(tri, randomFloat()*13+5);
-    }
+
+    setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     return true;
 }
 void Triangles::spawnTriangle() {
@@ -31,38 +29,47 @@ void Triangles::spawnTriangle() {
     assignAction(tri, 0);
 }
 void Triangles::assignAction(CCNode* node, float startTime) {
-    auto space = this->getContentSize();
+    auto space = CCNode::getContentSize();
 
     auto dur = randomFloat() * 15 + 10;
     if (startTime > dur) {
         startTime = dur - 3;
     }
     float offset = randomFloat()*2;
-    auto moveToAction = CCMoveTo::create(dur, CCPoint{ node->getPositionX() + (offset*randomBool()), space.height + node->getContentHeight() * node->getScale()});
+    auto moveToAction = CCMoveTo::create(
+        dur, 
+        { 
+            node->getPositionX() + offset*randomBool(), 
+            space.height + node->getContentHeight()*node->getScale()
+        }
+    );
 
-#define no(...) node->runAction(CCSequence::create( \
-        __VA_ARGS__, \
-        CCCallFunc::create(this, callfunc_selector(Triangles::spawnTriangle)), \
-        CCRemoveSelf::create(), \
-        nullptr \
-    ))
-    no(CCActionSkip::create(startTime, moveToAction));
+    node->runAction(CCSequence::create( 
+        CCActionSkip::create(startTime, moveToAction), 
+        CCCallFunc::create(this, callfunc_selector(Triangles::spawnTriangle)), 
+        CCRemoveSelf::create(), 
+        nullptr 
+    ));
  
 
 }
 CCSprite* Triangles::makeTriangle() {
     auto s = CCSprite::createWithSpriteFrameName("tri_fill.png"_spr);
-    int shiftValue = randomFloat()*10;
-    s->setColor(ccc3(m_color.r+shiftValue, m_color.g + shiftValue, m_color.b + shiftValue));
+    int shiftValue = randomFloat()*20;
+    ccColor3B triangleColor = m_triangleColor;
+    triangleColor.r += shiftValue;
+    triangleColor.g += shiftValue;
+    triangleColor.b += shiftValue;
+    s->setColor(triangleColor);
     
     auto size = randomFloat() * 2+0.5;
     if (size == 0) { size = 1; }
     s->setScale(size);
 
-    auto space = this->getContentSize();
+    auto space = CCNode::getContentSize();
 
-    s->setPosition(CCPoint{ randomFloat() * space.width, 0});
-    s->setAnchorPoint(CCPoint{ 0.5, 1 });
+    s->setPosition({ randomFloat() * space.width, 0});
+    s->setAnchorPoint({ 0.5, 1 });
     
     return s;
 }

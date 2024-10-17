@@ -19,37 +19,12 @@ public:
         create_class(FillFlowLayout, init);
     }
     CCSize getSizeHint(CCNode* on) const override {return on->getContentSize();}
-    void apply(CCNode* on) {
-        CCArrayExt<Container*> nodes = getNodesToPosition(on);
-
-        auto node = dynamic_cast<Container*>(on);
-        assert(("l bozo", node==nullptr));
-
-        auto constraint = node->getSizeConstraints().second;
-        CCSize size = {0,0};
-        for (auto c : nodes) {
-            //log::debug("[FillFlowLayout]: {}",size.height);
-            if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
-                throw std::invalid_argument(fmt::format("[FillFlowContainer/Layout]: Child {} has the size dependent on the parent, but the parent does not have a maximum size constraint. Please set the maximum constraint to non-zero.", geode::format_as(c)));
-            }
-            c->setAnchor(Anchor::TopLeft);
-            c->setPosition({0,0});
-            c->setPositionUnit(Unit::OpenGL, Unit::OpenGL);
-            c->setAnchorPoint({0,1});
-            auto cs = c->CCNode::getContentSize();
-            c->setPosition({0,size.height});
-            auto ns = size.height+cs.height;
-            size.height = constraint.height!=0?std::min(constraint.height, ns):ns;
-        }
-        size.width = node->CCNode::getContentSize().width;
-        node->CCNode::setContentSize(size);
-    };
+    void apply(CCNode* on);
 };
 
 // wrapper container around geode's layout system
 class FillFlowContainer : public Container {
 private:
-    CCSize minimumSize;
     FillDirection direction;
     void updateChildPosition();
 public:

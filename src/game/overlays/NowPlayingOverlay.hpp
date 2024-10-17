@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../graphics/containers/OsuOverlayContainer.hpp"
-#include "MusicController.hpp"
+#include "../../framework/audio/AudioManager.hpp"
 
 class NowPlayingOverlay : public OsuOverlayContainer {
 private:
@@ -12,7 +12,7 @@ private:
     const float bottom_black_area_height = 55;
     const float margin = 10;
 
-    MusicController* ctrl;
+    AudioManager* ctrl;
 public:
     bool init();
     default_create(NowPlayingOverlay);
