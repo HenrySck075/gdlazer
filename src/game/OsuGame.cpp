@@ -169,6 +169,10 @@ class $modify(AppDelegate) {
     void trySaveGame(bool p0) {
         log::info("[hook: AppDelegate]: shutdown app");
         OsuGame::get()->release();
+        do {
+            GameManager::sharedState()->m_menuLayer->release();
+        // lel
+        } while (GameManager::sharedState()->m_menuLayer && GameManager::sharedState()->m_menuLayer->retainCount()>0);
         AppDelegate::trySaveGame(p0);
     }
 };

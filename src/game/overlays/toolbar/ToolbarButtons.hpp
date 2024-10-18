@@ -35,6 +35,8 @@ public:
 /// temporary impl
 class ToolbarGeodeButton : public ToolbarButton {
     void ModsLayer_onBack(CCObject *);
+    SEL_MenuHandler ModsLayer_onBack_original;
+    CCLayer* m_modsLayer;
 public:
     default_create(ToolbarGeodeButton);
     bool init() { 

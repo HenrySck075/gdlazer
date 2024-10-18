@@ -107,14 +107,14 @@ class $modify(Camila, LoadingLayer) {
             // replace
             CCDirector::sharedDirector()->replaceScene(o);
             auto j = IntroTriangles::create();
-            setVisible(true);
             if (j) o->pushScreen(j);
-            retain();
+            // this will probably leak but if not then m_menuLayer will be nullptr
+            GameManager::sharedState()->m_menuLayer->retain();
         });
     }
     void updateSmallTextLabel(float the) {
         auto sl1 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"));
-        // if the node somehow doesn't exists (geode runtime flag or user666 doing) 
+        // if the node somehow doesn't exists (geode launch flag or user666 doing) 
         // then don't do anything
         if (!sl1) return;
         auto sl2 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label-2"));
@@ -124,8 +124,18 @@ class $modify(Camila, LoadingLayer) {
 
 };
 
+#include <Geode/modify/CCTransitionScene.hpp>
+struct CCTransitionSceneExposed : geode::Modify<CCTransitionSceneExposed, CCTransitionScene>{
+    bool initWithDuration(float t, CCScene* scene) {
+        bool ret = CCTransitionScene::initWithDuration(t, scene);
+        setUserObject("m_pInScene", m_pInScene);
+        setUserObject("m_pOutScene", m_pOutScene);
+        return ret;
+    }
+};
+
 #include <Geode/modify/MenuLayer.hpp>
-class $modify(MyMenuLayer, MenuLayer) {
+struct MyMenuLayer : geode::Modify<MyMenuLayer, MenuLayer> {
     struct Fields {
         CCScene* m_menuLayerScene;
     };

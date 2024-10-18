@@ -36,9 +36,18 @@ void ToolbarMusicButton::deselect() {
  * ToolbarGeodeButton
  */
 
-// TODO: There are kore than this
+bool tempSwapReplace = false;
+#include <Geode/modify/CCDirector.hpp>
+struct hook51 : Modify<hook51, CCDirector>{
+    void replaceScene(CCScene* scene) {
+        if (tempSwapReplace) popScene();
+        else replaceScene(scene);
+    }
+};
 void ToolbarGeodeButton::ModsLayer_onBack(CCObject *) {
-    CCDirector::get()->popScene();
+    tempSwapReplace = true;
+    (m_modsLayer->*ModsLayer_onBack_original)(nullptr);
+    tempSwapReplace = false;
 };
 void ToolbarGeodeButton::onClick(MouseEvent *e) {
     ToolbarButton::onClick(e);
@@ -48,16 +57,22 @@ void ToolbarGeodeButton::onClick(MouseEvent *e) {
         )
     )->activate();
 
-    queueInMainThread([]{
+    queueInMainThread([this]{
         auto s = CCDirector::get()->getRunningScene();
         if (auto transition = dynamic_cast<CCTransitionScene*>(s)) {
-            static_cast<CCMenuItemSpriteExtra*>(
-                reinterpret_cast<CCScene*>(
-                    reinterpret_cast<uintptr_t>(transition)+0x148
-                )->getChildByIDRecursive("back-button")
-            )->m_pfnSelector = menu_selector(
+            auto b = static_cast<CCScene*>(
+                // see main.cpp:127
+                transition->getUserObject("m_pInScene")
+            );
+            m_modsLayer = static_cast<CCLayer*>(b->getChildByID("ModsLayer"));
+            auto node = static_cast<CCMenuItemSpriteExtra*>(
+                b->getChildByIDRecursive("back-button")
+            );
+            ModsLayer_onBack_original = node->m_pfnSelector;
+            node->m_pfnSelector = menu_selector(
                 ToolbarGeodeButton::ModsLayer_onBack
             );
+            
         }
     });
 }
