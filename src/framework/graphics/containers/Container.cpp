@@ -75,7 +75,7 @@ bool balls::stencilEnabled() {
     // stencil code in the repo does not work on android
     // so this is a temporary return until that issue is resolved 
     // (by getting the re code from libcocos2dcpp.so)
-    true 
+    false 
     #endif
     ; 
 }

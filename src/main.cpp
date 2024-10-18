@@ -96,6 +96,22 @@ class $modify(Camila, LoadingLayer) {
             m_fields->j = true;
         }
     }
+    void loadAssets() {
+        if (m_loadStep < 14) {
+            return LoadingLayer::loadAssets();
+        }
+        LoadingLayer::loadAssets();
+        geode::Loader::get()->queueInMainThread([this]{
+            // schedule on the next frame to replace the menuLayer with our scene
+            auto o = OsuGame::get();
+            // replace
+            CCDirector::sharedDirector()->replaceScene(o);
+            auto j = IntroTriangles::create();
+            setVisible(true);
+            if (j) o->pushScreen(j);
+            retain();
+        });
+    }
     void updateSmallTextLabel(float the) {
         auto sl1 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"));
         // if the node somehow doesn't exists (geode runtime flag or user666 doing) 
@@ -148,17 +164,7 @@ class $modify(MyMenuLayer, MenuLayer) {
         */
         menu->updateLayout();
 
-        geode::Loader::get()->queueInMainThread([this]{
-            // schedule on the next frame to replace the menuLayer with our scene
-            auto o = OsuGame::get();
-            // replace
-            CCDirector::sharedDirector()->replaceScene(o);
-            auto j = IntroTriangles::create();
-            setVisible(true);
-            if (j) o->pushScreen(j);
-            retain();
-        });
-        this->setVisible(false);
+
         /**
          * We return `true` to indicate that the class was properly initialized.
          */

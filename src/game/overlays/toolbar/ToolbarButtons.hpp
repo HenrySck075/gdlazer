@@ -32,9 +32,9 @@ public:
 };
 
 
-//
-
+/// temporary impl
 class ToolbarGeodeButton : public ToolbarButton {
+    void ModsLayer_onBack(CCObject *);
 public:
     default_create(ToolbarGeodeButton);
     bool init() { 
@@ -45,12 +45,7 @@ public:
             AxisAlignment::End
         );
     }
-    void onClick(MouseEvent* e) override {
-        ToolbarButton::onClick(e);
-        static_cast<CCMenuItemSpriteExtra*>(
-            GameManager::sharedState()->m_menuLayer->getChildByIDRecursive("geode.loader/geode-button")
-        )->activate();
-    }
+    void onClick(MouseEvent *e) override;
 };
 
 class ToolbarModDisableButton : public ToolbarButton {
