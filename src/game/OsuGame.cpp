@@ -3,6 +3,7 @@
 #include "overlays/toolbar/ToolbarConstants.hpp"
 #include "overlays/SettingsPanel.hpp"
 #include "../framework/audio/AudioManager.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 #include "../framework/graphics/containers/OverlayContainer.hpp"
 
@@ -53,6 +54,13 @@ bool OsuGame::init() {
     // and so every other lead dev ridicules them 
 
     // but then when they try to "fix" it they eventually stumble upon the exact same solution
+
+    addListener("keyboardEvent", [this](NodeEvent* e){
+        KeyInfo& k = static_cast<KeyboardEvent*>(e)->key;
+        if (k.key == KEY_R && k.ctrl && k.shift) {
+            game::restart();
+        }
+    });
 
     toolbar = Toolbar::create();
     this->addChild(toolbar);
@@ -111,16 +119,16 @@ void OsuGame::nextMusic() {
 void OsuGame::showToolbar() {
     toolbar->show();
     offset = main->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false);
-    main->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset)
+    main->runAction(easingsActions::CCEaseOut::create(
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset),5
     ));
 }
 
 void OsuGame::hideToolbar() {
     toolbar->hide();
     offset = 0;
-    main->runAction(CCEaseOutQuint::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight())
+    main->runAction(easingsActions::CCEaseOut::create(
+        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()),5
     ));
 }
 

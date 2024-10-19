@@ -20,9 +20,9 @@ CCRect boundingBoxFromContentSize(CCNode* node);
 CCRect flipRect(CCRect rect);
 
 #ifdef __GNUC__
-  #define uninline __attribute__((noinline))
+  #define noinline __attribute__((noinline))
 #else 
-  #define uninline __declspec(noinline) 
+  #define noinline __declspec(noinline) 
 #endif
 
 #define create_class(classname, initfunc, ...) \
@@ -35,7 +35,7 @@ CCRect flipRect(CCRect rect);
     return ret
 
 #define default_create(classname) \
-  static uninline classname* create() {    \
+  static noinline classname* create() {    \
     create_class(classname, init);\
   }
 

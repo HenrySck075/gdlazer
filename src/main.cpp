@@ -174,6 +174,7 @@ struct MyMenuLayer : geode::Modify<MyMenuLayer, MenuLayer> {
         */
         menu->updateLayout();
 
+        setVisible(false);
 
         /**
          * We return `true` to indicate that the class was properly initialized.
@@ -375,6 +376,7 @@ class keypaddelegat : public CCKeypadDelegate, public CCObject {
 };
 
 $execute {
+    //CCDirector::get()->updateContentScale(TextureQuality::kTextureQualityHigh);
     new EventListener<EventFilter<AssetsLoadedEvent>>(+[](AssetsLoadedEvent* e){
         // load everything
         OsuGame::get();

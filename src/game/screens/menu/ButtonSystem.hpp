@@ -9,17 +9,17 @@ using namespace geode::prelude;
 class OsuGame;
 #include "../../OsuGame.hpp"
 
-class ButtonSystem : public Container
+class ButtonSystem final : public Container
 {
-  public:
+public:
     static float WEDGE_WIDTH;
 
     //Action<ButtonSystemState>? StateChanged;
 
-  private:
+private:
     OsuLogo* logo;
 
-  public:
+public:
     ButtonArea* area;
     /// <summary>
     /// Assign the <see cref="OsuLogo"/> that this ButtonSystem should manage the position of.
@@ -32,7 +32,7 @@ class ButtonSystem : public Container
     }
     bool init(OsuLogo* logo);
 
-  private:
+private:
     MenuLayer* m_menuLayerPtr;
     CreatorLayer* m_creatorLayerPtr;
     //void resize(ReactiveNode* calledNode, Property props);

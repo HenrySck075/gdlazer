@@ -1,21 +1,8 @@
 #pragma once
-
+#include "../../../framework/graphics/sprites/IconConstructor.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-std::string unicode_to_utf8(int unicode);
-
-// j
-struct IconConstructor {
-    std::string glyphChar;
-    std::string fontName;
-
-    IconConstructor(std::string glyph, std::string font) : glyphChar(glyph), fontName(font) {};
-
-    operator CCLabelBMFont*() {
-        return CCLabelBMFont::create(glyphChar.c_str(), fontName.c_str());
-    }
-};
 
 #define iconFont(name, charid, fontname) static IconConstructor name = {unicode_to_utf8(charid).c_str(),fontname}
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)

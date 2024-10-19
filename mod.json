@@ -63,6 +63,9 @@
       "resources/sfx/gameplay/pause-loop.mp3",
       "resources/glyphs/*.fnt",
       "resources/glyphs/*.png",
+      "resources/fonts/FontAwesome5/*.fnt",
+      "resources/fonts/FontAwesome5/*.png",
+      "resources/fonts/*.png",
       "resources/torus/*.ttf"
     ]
   },
@@ -71,6 +74,12 @@
       "id": "henrysck075.imagecache",
       "importance": "required",
       "version": "v1.0.0"
+    },
+    {
+      "id": "henrysck075.easings",
+      "importance": "required",
+      "version": "v1.0.0"
     }
-  ]
+  ],
+  "tags": ["enhancement","interface","cheats"]
 }

@@ -1,7 +1,7 @@
 #include "OverlayContainer.hpp"
 
 bool OverlayContainer::init() {
-    if (!Container::init()) return false;
+    if (!VisibilityContainer::init()) return false;
     main = Container::create();
     main->setContentSize({0,0});
     main->setAnchorPoint({0.5,0.5});
@@ -15,24 +15,22 @@ bool OverlayContainer::init() {
     addListener("keypadEvent", [this](NodeEvent* e){
         if (static_cast<KeypadEvent*>(e)->key==ccKeypadMSGType::kTypeBackClicked) hide();
     });
-    shown.addCallback([this](NodeEvent* e){
-        log::debug("[OverlayContainer]: ");
-        if (static_cast<ValueChangedEvent<bool>*>(e)->value) onOpen();
-        else {
-            onClose(); 
-            if (m_pActionManager->numberOfRunningActionsInTarget(this)!=0) {
-                m_pScheduler->scheduleSelector(
-                    schedule_selector(OverlayContainer::checkActions),this,1,false
-                );
-            }
-            else removeFromParent();
-        }
-    });
     return true;
 }
-void OverlayContainer::show() {
-  shown = true;
-};
-void OverlayContainer::hide() {
-  shown = false;
-};
+
+void OverlayContainer::onClose() {
+    if (m_pActionManager->numberOfRunningActionsInTarget(this)!=0) {
+        m_pScheduler->scheduleSelector(
+            schedule_selector(OverlayContainer::checkActions),this,1,false
+        );
+    }
+    else removeFromParent();
+}
+
+void OverlayContainer::checkActions(float) {
+    log::debug("ballin'");
+    if (m_pActionManager->numberOfRunningActionsInTarget(this)==0) {
+        removeFromParent();
+        m_pScheduler->unscheduleSelector(schedule_selector(OverlayContainer::checkActions), this);
+    }
+}

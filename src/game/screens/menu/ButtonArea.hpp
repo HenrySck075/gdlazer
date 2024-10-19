@@ -8,7 +8,7 @@
 
 using namespace cocos2d;
 
-class ButtonArea : public Container {
+class ButtonArea final : public Container {
 private:
     CCDictionaryExt<std::string, Container*> buttonsMenus;
     CCDictionaryExt<std::string, CCArray*> _buttons;

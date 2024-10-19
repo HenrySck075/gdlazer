@@ -34,8 +34,17 @@ void balls::drawCircle(const CCPoint& center, float radius, float angle, unsigne
 void balls::drawRoundedRect() {
     // just dont do anything
     if (m_obContentSize == CCSize{0,0} || !stencilEnabled()) return;
-    float radius = m_radius * (CCDirector::sharedDirector()->getWinSize().width / CCDirector::sharedDirector()->getOpenGLView()->getFrameSize().width);
-    CCRectExtra innerRect = {radius,radius,m_obContentSize - CCSize(radius * 2, radius * 2)};
+    // determine whether radius percentage should follow the width or the height
+    auto useWidth = m_obContentSize.width > m_obContentSize.height;
+    float radius = (m_radius/100) * (
+        useWidth ? m_obContentSize.width : m_obContentSize.height
+    );
+
+    CCRectExtra innerRect = {
+        radius,
+        radius,
+        m_obContentSize - CCSize(radius * 2, radius * 2)
+    };
     // location, radius, fill, outline size, outline, amount of triangles i suppose
     Color4 color = {0,0,200,255};
     #define peakDesign color, 0, color
@@ -61,7 +70,8 @@ void balls::drawRoundedRect() {
     }
     else {
         // do it fast
-        drawRect(innerRect, peakDesign);
+        // actually the stencil is disabled at this point so dont even bother doing this
+        // drawRect(innerRect, peakDesign);
     }
     #undef peakDesign
     #undef drawCircConfig
@@ -291,6 +301,10 @@ bool Container::init() {
     //setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
     setCascadeOpacityEnabled(true);
     return true;
+}
+
+Container* Container::create() {
+    create_class(Container, init);
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {
@@ -543,6 +557,7 @@ void Container::updatePositionUnitLabel() {
 }
 
 void Container::updateColor() {
+    _realColor = m_color4;
     for (unsigned int i = 0; i < 4; i++) {
         m_pSquareColors[i].r = m_color4.r / 255.f;
         m_pSquareColors[i].g = m_color4.g / 255.f;
@@ -551,19 +566,22 @@ void Container::updateColor() {
     }
 }
 
-void Container::setColor(ccColor3B color) { setColor(Color4{color}); }
-
-void Container::setColor(Color4 color) {
+void Container::setColor(const ccColor3B& color) { 
     m_color4 = color;
     updateColor();
 }
+
+void Container::setColor(const Color4& color) {
+    m_color4 = color;
+    updateColor();
+} 
 
 void Container::setParent(CCNode *parent) {
     CCLayer::setParent(parent);
     dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::All));
 };
 void Container::onEnter() {
-  CCLayerColor::onEnter();
-  dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::All));
+    CCLayerColor::onEnter();
+    dispatchEvent(new NodeLayoutUpdate(NodeLayoutUpdateType::All));
 }
 

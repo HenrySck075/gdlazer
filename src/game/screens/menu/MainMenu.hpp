@@ -13,7 +13,7 @@ class OsuGame;
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer;
 
-class MainMenu : public Screen {
+class MainMenu final : public Screen {
     ButtonSystem* buttonSys;
     Background* bg;
     ParallaxContainer* buttonSysParallax;
@@ -25,26 +25,26 @@ public:
 
     bool hideOverlaysOnEnter = false;//buttons == nullptr;// || Buttons.State == ButtonSystemState.Initial;
 
-    static MainMenu* create() {
-        create_class(MainMenu, init);
-    }
+    static MainMenu* create();
     bool init();
 
     // open the menu
     void onLogoClickIdle();
 private:
-  void debugReturn(CCObject *t);
-  void onExiting(ScreenTransitionEvent e) override {
-    // setVisible(false);
-    if (e.Destination == nullptr)
-      removeFromParent();
-    else {
-      setCascadeOpacityEnabled(true);
-      runAction(CCSequence::createWithTwoActions(
-          CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
-          CCFadeOut::create(1)));
-      buttonSys->area->hide(buttonSys->area->getCurrent().value(), true, true);
-    }
+    void debugReturn(CCObject *t);
+    void onExiting(ScreenTransitionEvent e) override {
+        // setVisible(false);
+        if (e.Destination == nullptr) removeFromParent();
+        else {
+            setCascadeOpacityEnabled(true);
+            runAction(CCSequence::createWithTwoActions(
+                CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
+                CCFadeOut::create(1)
+            ));
+            buttonSys->area->hide(
+                buttonSys->area->getCurrent().value(), true, true
+            );
+        }
     }
     //BeatDetector* detector;
 
@@ -54,5 +54,5 @@ private:
 
 protected:
     int idkTho = 0;
-  //ButtonSystem buttons;
+    //ButtonSystem buttons;
 };

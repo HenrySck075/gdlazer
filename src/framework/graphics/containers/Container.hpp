@@ -191,9 +191,7 @@ public:
 
     bool init();
 
-    static Container* create() {
-        create_class(Container, init);
-    }
+    static Container* create();
     // Sets the position anchor
     void setAnchor(Anchor anchor) {
         m_anchor = anchor;
@@ -278,13 +276,15 @@ public:
 
     void setParent(CCNode *parent) override;
 
-  private:
+private:
     Color4 m_color4 = {255,255,255,255};
 public:
-  void setColor(ccColor3B color);
-  void setColor(Color4 color);
-  // the
-  void updateColor() override;
+    void setColor(const ccColor3B& color) override;
+    void setColor(const Color4& color);
+    const ccColor3B& getColor() override {return m_color4;};
+    const Color4& getColor4() {return m_color4;};
+    // the
+    void updateColor() override;
 
-  ~Container() { m_roundedBorderStencil->release(); }
+    ~Container() { m_roundedBorderStencil->release(); }
 };

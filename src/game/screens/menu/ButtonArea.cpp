@@ -6,6 +6,7 @@
 #include <Geode/utils/ranges.hpp>
 #include "ButtonConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 bool ButtonArea::init(const CCPoint& anchorPos) {
     Container::init();
@@ -167,7 +168,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
         CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
         if (close) {
-            colorBg->runAction(CCEaseOutQuint::create(CCScaleTo::create(0.3,1,0)));
+            colorBg->runAction(easingsActions::CCEaseOut::create(CCScaleTo::create(0.3,1,0), 5));
             hidden = true;
         }
         if (collapse) {

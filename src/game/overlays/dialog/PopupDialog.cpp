@@ -2,6 +2,7 @@
 #include "../../graphics/backgrounds/Triangles.hpp"
 #include "../../../framework/graphics/containers/FillFlowContainer.hpp"
 #include "../../graphics/ui/OsuText.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 float PopupDialog::width = 250.f;
 float PopupDialog::height = 230.f;
@@ -104,7 +105,7 @@ void PopupDialog::onOpen() {
     m_bgSprite->setOpacity(0);
 
     main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
-    m_bgSprite->runAction(CCEaseOutQuint::create(CCFadeIn::create(0.2)));
+    m_bgSprite->runAction(easingsActions::CCEaseOut::create(CCFadeIn::create(0.2), 5));
 
     for (auto* btn : CCArrayExt<PopupDialogButton*>(main->getChildByID("buttonLayer")->getChildren())) {
         btn->runAction(CCSequence::createWithTwoActions(
@@ -131,10 +132,10 @@ void PopupDialog::onClose() {
         btn->setClickEnabled(false);
     }
     for (auto* obj : CCArrayExt<CCNode*>(main->getChildren())) {
-        obj->runAction(CCEaseOutQuint::create(CCFadeOut::create(0.4)));
+        obj->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
     }
     main->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
-    getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(CCEaseOutQuint::create(CCFadeOut::create(0.4)));
+    getChildOfType<Triangles>(m_bgSpriteClip, 0)->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
     
     auto en = FMODAudioEngine::sharedEngine();
     en->playEffect("dialog-pop-out.wav"_spr);

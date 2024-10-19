@@ -3,6 +3,7 @@
 #include "../../../framework/input/events/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
@@ -97,15 +98,15 @@ void MainMenuButton::onMouseExit() {
 }
 void MainMenuButton::onMouseDown(MouseEvent* event) {
     auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
-    n->runAction(CCEaseOutQuint::create(
-        CCFadeTo::create(1,255*0.1)
+    n->runAction(easingsActions::CCEaseOut::create(
+        CCFadeTo::create(1,255*0.1),5
     ));
 }
 void MainMenuButton::onMouseUp(MouseEvent* event) {
     //if (!static_cast<CCBool*>(this->getUserObject("clicking"_spr))) return;
     auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
-    n->runAction(CCEaseOutQuint::create(
-        CCFadeTo::create(1,0)
+    n->runAction(easingsActions::CCEaseOut::create(
+        CCFadeTo::create(1,0),5
     ));
 }
 void MainMenuButton::onClick(MouseEvent* event) {

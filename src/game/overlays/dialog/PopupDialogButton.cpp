@@ -3,6 +3,7 @@
 #include "../../graphics/backgrounds/Triangles.hpp"
 #include "../../../helpers/CustomActions.hpp"
 #include "../../graphics/ui/OsuText.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
     auto ret = new PopupDialogButton();
@@ -107,15 +108,16 @@ void PopupDialogButton::onMouseEnter() {
     if (!getHoverEnabled()) return;
     FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
     this->getChildByID("dialogbutton-background")->runAction(
-        CCEaseOutQuint::create(
+        easingsActions::CCEaseOut::create(
             CCResizeTo::create(
                 0.1f,
                 m_pParent->getParent()->getContentWidth()*hover_width, 
                 height
-            )
+            ),
+            5
         )
     );
-    #define gradAct CCEaseOutQuint::create(CCFadeOut::create(0.1f))
+    #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
     this->getChildByID("gradientLeft")->runAction(gradAct);
     this->getChildByID("gradientRight")->runAction(gradAct);
     #undef gradAct
@@ -123,27 +125,29 @@ void PopupDialogButton::onMouseEnter() {
 void PopupDialogButton::onMouseExit() {
     if (!getHoverEnabled()) return;
     this->getChildByID("dialogbutton-background")->runAction(
-        CCEaseOutQuint::create(
+        easingsActions::CCEaseOut::create(
             CCResizeTo::create(
                 0.1f, 
                 m_pParent->getParent()->getContentWidth()*idle_width,
                 height
-            )
+            ),
+            5
         )
     );
-    #define gradAct CCEaseOutQuint::create(CCFadeOut::create(0.1f))
+    #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
     this->getChildByID("gradientLeft")->runAction(gradAct);
     this->getChildByID("gradientRight")->runAction(gradAct);
     #undef gradAct
 }
 void PopupDialogButton::onMouseDown(MouseEvent* event) {
     this->getChildByID("dialogbutton-background")->runAction(
-        CCEaseOutQuart::create(
+        easingsActions::CCEaseOut::create(
             CCResizeTo::create(
                 click_duration*4, 
                 m_pParent->getParent()->getContentWidth()*hover_width*0.98f,
                 height
-            )
+            ),
+            4
         )
     );
 }

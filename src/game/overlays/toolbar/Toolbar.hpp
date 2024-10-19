@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include "../../../utils.hpp"
-#include "../../../framework/graphics/containers/Container.hpp"
+#include "../../../framework/graphics/containers/VisibilityContainer.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
@@ -10,11 +10,10 @@
 using namespace geode::prelude;
 
 
-class Toolbar : public Container {
+class Toolbar : public VisibilityContainer {
 private:
     double const transition_time = 0.5;
     CCLayerGradient2* gradient;
-    bool shown = false;
 public:
     
     static Toolbar* create() {
@@ -36,14 +35,6 @@ public:
     void show();
     void hide();
 
-    void onMouseEnter() override {
-        if (!shown) return;
-        gradient->stopAllActions();
-        gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(2.5,255)));
-    }
-    void onMouseExit() override {
-        if (!shown) return;
-        gradient->stopAllActions();
-        gradient->runAction(CCEaseOutQuint::create(CCFadeTo::create(0.2,0)));
-    }
+    void onMouseEnter() override;
+    void onMouseExit() override;
 };

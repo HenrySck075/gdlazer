@@ -1,6 +1,7 @@
 #include "SettingsPanel.hpp"
 #include "../OsuGame.hpp"
 #include "../overlays/toolbar/ToolbarToggleButton.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 const float SettingsPanel::sidebar_width = SettingsSidebar::EXPANDED_WIDTH;
 const float SettingsPanel::TRANSITION_LENGTH = 0.6;
@@ -23,16 +24,16 @@ void SettingsPanel::onOpen() {
         CCFadeTo::create(0.2,180),
         CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH-0.2)
     ));
-    sidebar->runAction(CCEaseOutQuint::create(
-        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0})
+    sidebar->runAction(easingsActions::CCEaseOut::create(
+        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
     ));
     auto s = OsuGame::get()->getChildByID("screens");
     s->stopActionByTag(7);
-    s->runAction(CCEaseOutQuint::create(
+    s->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(
             SettingsPanel::TRANSITION_LENGTH, 
             {(float)SettingsSidebar::EXPANDED_WIDTH/4,0}
-        )
+        ),5
     ))->setTag(7);
 }
 void SettingsPanel::onClose() {
@@ -42,17 +43,17 @@ void SettingsPanel::onClose() {
         CCFadeTo::create(0.2,0),
         CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH-0.2)
     ));
-    sidebar->runAction(CCEaseOutQuint::create(
+    sidebar->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(
             SettingsPanel::TRANSITION_LENGTH,
             {-SettingsSidebar::EXPANDED_WIDTH,0}
-        )
+        ),5
     ));
 
     auto s = OsuGame::get()->getChildByID("screens");
     s->stopActionByTag(7);
-    s->runAction(CCEaseOutQuint::create(
-        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0})
+    s->runAction(easingsActions::CCEaseOut::create(
+        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0}),5
     ))->setTag(7);
 }
 // wacky ik

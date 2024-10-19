@@ -82,27 +82,7 @@ protected:
     float m_fDeltaX;
     float m_fDeltaY;
 };
-// CCActionEase, done right!
-// Q: why dont you hook ActionEase
-// A: idk
-class CCEaseOutQuart : public CCEaseOut {
-public:
-    static CCEaseOutQuart* create(CCActionInterval* action) {
-        create_class(CCEaseOutQuart, initWithAction, action, 4);
-    }
-    void update(float time) override {
-        m_pInner->update(1-powf(1-time,4));
-    }
-};
-class CCEaseOutQuint : public CCEaseOut {
-public:
-    static CCEaseOutQuint* create(CCActionInterval* action) {
-        create_class(CCEaseOutQuint, initWithAction, action, 5);
-    }
-    void update(float time) override {
-        m_pInner->update(1-powf(1-time,5));
-    }
-};
+
 
 typedef std::function<void()> SEL_CallFuncL;
 

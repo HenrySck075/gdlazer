@@ -1,6 +1,7 @@
 #include "Toolbar.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "ToolbarButtons.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 using namespace ToolbarConstants;
 bool Toolbar::init() {
@@ -69,15 +70,26 @@ bool Toolbar::init() {
 }
 
 void Toolbar::show() {
-    if (!shown) runAction(CCEaseOutQuint::create(
-        CCMoveTo::create(0.5,{0,0})
+    if (!shown) runAction(easingsActions::CCEaseOut::create(
+        CCMoveTo::create(0.5,{0,0}), 5
     ));
-    shown = true;
+    VisibilityContainer::show();
 }
 
 void Toolbar::hide() {
-    if (shown) runAction(CCEaseOutQuint::create(
-        CCMoveTo::create(0.5,{0,-HEIGHT})
+    if (shown) runAction(easingsActions::CCEaseOut::create(
+        CCMoveTo::create(0.5,{0,-HEIGHT}), 5
     ));
-    shown = false;
+    VisibilityContainer::hide();
+}
+
+void Toolbar::onMouseEnter() {
+    if (!shown) return;
+    gradient->stopAllActions();
+    gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(2.5,255), 5));
+}
+void Toolbar::onMouseExit() {
+    if (!shown) return;
+    gradient->stopAllActions();
+    gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(0.2,0), 5));
 }
