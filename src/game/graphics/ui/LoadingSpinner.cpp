@@ -7,7 +7,7 @@ bool LoadingSpinner::init(bool boxed, bool invert) {
     
     GLubyte boxColor = invert ? 255 : 0;
     GLubyte spinnerColor = invert ? 0 : 255;
-    setColor({255,255,255});
+    setColor({255,255,255,255});
     if (boxed) {
         setColor({boxColor,boxColor,boxColor,255});
         setRadius(20);
@@ -15,8 +15,9 @@ bool LoadingSpinner::init(bool boxed, bool invert) {
     setScale(0.8);
     setAnchorPoint({0.5,0.5});
     setOpacity(255);
-    /*    
-    spinner = static_cast<CCLabelBMFont*>(FontAwesome::Solid::CircleNotch);
+    //setUserObject("breakhere",CCBool::create(true));
+    /*
+    spinner = static_cast<CCSprite*>(FontAwesome::Solid::CircleNotch);
     if (boxed) spinner->setScale(0.6);
     spinner->setColor({spinnerColor,spinnerColor,spinnerColor});
     addListener("nodeLayoutUpdate", [this](NodeEvent* e){
@@ -25,7 +26,6 @@ bool LoadingSpinner::init(bool boxed, bool invert) {
     });
     addChild(spinner);
     */
-    log::debug("[LoadingSpinner]: {}", getColor());
     return true;
 }
 

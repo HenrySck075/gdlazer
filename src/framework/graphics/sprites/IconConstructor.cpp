@@ -83,3 +83,29 @@ std::string unicode_to_utf8(int unicode)
 
     return "";
 }
+
+/// Each key is a font name, and its value is the CCLabelBMFont with that font
+static geode::cocos::CCDictionaryExt<std::string, CCLabelBMFont*> labels;
+
+IconConstructor::operator CCSprite*() {
+    const char* g = glyphChar.c_str();
+    const char* f = fontName.c_str();
+    // since CCDictionaryExt internally assigns a CCNode as the value
+    if (!labels.contains(fontName)) labels.inner()->setObject(CCLabelBMFont::create("",f),fontName);
+    
+    CCLabelBMFont* label = labels[fontName];
+    CCSprite* ret = nullptr;
+    if (!label) {
+        geode::log::error("[IconConstructor]: Font {} does not exist (according to cocos2d)", fontName);
+        delete label;
+        label = nullptr;
+    } else {
+        label->setString(g);
+        geode::log::debug("[IconConstructor]:{}\n{}", unicode, label->getChildren());
+        // that will add the glyph sprite, so we can extract it now
+        CCSprite* c = static_cast<CCSprite*>(label->getChildren()->objectAtIndex(0));
+        ret = CCSprite::createWithTexture(c->getTexture());
+        ret->setTextureRect(c->getTextureRect());
+    }
+    return ret;
+}

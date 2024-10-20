@@ -64,14 +64,16 @@ public:
 
 #include <Geode/modify/LoadingLayer.hpp>
 #include "game/graphics/ui/OsuText.hpp"
+#include "game/graphics/ui/LoadingSpinner.hpp"
 class $modify(Camila, LoadingLayer) {
     struct Fields {
         CCLabelTTF* m_smallLabel = nullptr;
         CCLabelTTF* m_smallLabel2 = nullptr;
+        LoadingSpinner* m_spinner = nullptr;
         bool j = false;
     };
     bool init(bool idk) {
-        bool res = LoadingLayer::init(idk);
+        if (!LoadingLayer::init(idk)) return false;
         CCLog("meow");
         this->setAnchorPoint({0,2});
         this->ignoreAnchorPointForPosition(false);
@@ -80,14 +82,22 @@ class $modify(Camila, LoadingLayer) {
         auto winSize = CCDirector::sharedDirector()->getWinSize();
 
         m_fields->m_smallLabel = OsuText("",FontType::Regular, 14, CCTextAlignment::kCCTextAlignmentRight);
-        m_fields->m_smallLabel->setPosition(winSize-CCPoint{30,-5-winSize.height});
+        m_fields->m_smallLabel->setPosition(winSize-CCPoint{40,-5-winSize.height});
         m_fields->m_smallLabel->setAnchorPoint({1,0});
         addChild(m_fields->m_smallLabel);
         m_fields->m_smallLabel2 = OsuText("",FontType::Regular, 10, CCTextAlignment::kCCTextAlignmentRight);
-        m_fields->m_smallLabel2->setPosition(winSize-CCPoint{30,-22-winSize.height});
+        m_fields->m_smallLabel2->setPosition(winSize-CCPoint{40,-22-winSize.height});
         m_fields->m_smallLabel2->setAnchorPoint({1,0});
         addChild(m_fields->m_smallLabel2);
-        return res;
+
+        /*
+        m_fields->m_spinner = LoadingSpinner::create(true, true);
+        m_fields->m_spinner->setPosition(winSize-CCPoint{30,-13-winSize.height});
+        m_fields->m_spinner->setContentSize({27,27});
+        addChild(m_fields->m_spinner);
+        m_fields->m_spinner->show();
+        */
+        return true;
     }
     void updateProgress(int p0) {
         LoadingLayer::updateProgress(p0);
@@ -100,6 +110,7 @@ class $modify(Camila, LoadingLayer) {
         if (m_loadStep < 14) {
             return LoadingLayer::loadAssets();
         }
+        #if 1
         LoadingLayer::loadAssets();
         geode::Loader::get()->queueInMainThread([this]{
             // schedule on the next frame to replace the menuLayer with our scene
@@ -111,6 +122,36 @@ class $modify(Camila, LoadingLayer) {
             // this will probably leak but if not then m_menuLayer will be nullptr
             GameManager::sharedState()->m_menuLayer->retain();
         });
+        #else
+        runAction(
+            CCSequence::create(
+                CCCallFuncL::create([this]{
+                    m_fields->m_spinner->hide();
+                    m_fields->m_smallLabel->runAction(
+                        CCFadeOut::create(m_fields->m_spinner->TRANSITION_DURATION)
+                    );
+                    m_fields->m_smallLabel2->runAction(
+                        CCFadeOut::create(m_fields->m_spinner->TRANSITION_DURATION)
+                    );
+                }),
+                CCDelayTime::create(m_fields->m_spinner->TRANSITION_DURATION),
+                CCCallFuncL::create([this]{
+                    LoadingLayer::loadAssets();
+                    geode::Loader::get()->queueInMainThread([this]{
+                        // schedule on the next frame to replace the menuLayer with our scene
+                        auto o = OsuGame::get();
+                        // replace
+                        CCDirector::sharedDirector()->replaceScene(o);
+                        auto j = IntroTriangles::create();
+                        if (j) o->pushScreen(j);
+                        // this will probably leak but if not then m_menuLayer will be nullptr
+                        GameManager::sharedState()->m_menuLayer->retain();
+                    });
+                }),
+                nullptr
+            )
+        );
+        #endif
     }
     void updateSmallTextLabel(float the) {
         auto sl1 = static_cast<CCLabelBMFont*>(getChildByIDRecursive("geode-small-label"));

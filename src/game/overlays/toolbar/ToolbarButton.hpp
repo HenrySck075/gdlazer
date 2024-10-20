@@ -5,7 +5,7 @@
 #include "../../../framework/graphics/containers/FillFlowContainer.hpp"
 
 class ToolbarButton : public ClickableContainer {
-    CCLabelBMFont* iconSprite;
+    CCSprite* iconSprite;
     Container* bg;
     Container* flashBg;
 

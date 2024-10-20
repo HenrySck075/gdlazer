@@ -8,7 +8,7 @@ namespace FontAwesome {
 
     namespace Brands
     {
-        #define Get(icon) IconConstructor{unicode_to_utf8(icon), "FontAwesome-Brands.fnt"_spr}
+        #define Get(icon) IconConstructor{icon, "FontAwesome-Brands.fnt"_spr}
 
         /// 500px
         static IconConstructor Icon500Px = Get(0xf26e);
@@ -1296,7 +1296,7 @@ namespace FontAwesome {
 
     namespace Regular
     {
-        #define Get(icon) IconConstructor{unicode_to_utf8(icon), "FontAwesome-Regular.fnt"_spr};
+        #define Get(icon) IconConstructor{icon, "FontAwesome-Regular.fnt"_spr};
 
         /// Address Book
         static IconConstructor AddressBook = Get(0xf2b9);
@@ -1759,7 +1759,7 @@ namespace FontAwesome {
 
     namespace Solid
     {
-        #define Get(icon) IconConstructor{unicode_to_utf8(icon), "FontAwesome-Solid.fnt"_spr};
+        #define Get(icon) IconConstructor{icon, "FontAwesome-Solid.fnt"_spr};
 
         /// Ad
         static IconConstructor Ad = Get(0xf641);

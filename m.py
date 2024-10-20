@@ -12,6 +12,8 @@ out = ""
 pages = 1
 def from_bytes_little(b: bytes):
     return int.from_bytes(b,"little")
+def from_bytes_big(b: bytes):
+    return int.from_bytes(b,"big")
 
 while True:
     blockTypeRaw = content.read(1)
@@ -93,10 +95,9 @@ while True:
                     from_bytes_little(content.read(2)), # yoffset
                     from_bytes_little(content.read(2)), # xadvance
                     from_bytes_little(content.read(1)), # page
-                    15                    # channel
+                    from_bytes_little(content.read(1))  # channel
                 )
             )
-            content.seek(1,1)
         out+="\n".join(charInfo)
     elif (blockType == 5):
         kernings = int(blockSize/10)

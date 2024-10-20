@@ -281,8 +281,10 @@ private:
 public:
     void setColor(const ccColor3B& color) override;
     void setColor(const Color4& color);
-    const ccColor3B& getColor() override {return m_color4;};
-    const Color4& getColor4() {return m_color4;};
+    ccColor3B const& getColor() override {
+        return _realColor;
+    };
+    Color4 const& getColor4() {return m_color4;};
     // the
     void updateColor() override;
 

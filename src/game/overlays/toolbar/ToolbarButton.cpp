@@ -51,7 +51,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     tooltipContainer->setOpacity(0);
     addChild(tooltipContainer);
 
-    iconSprite = static_cast<CCLabelBMFont*>(icon);
+    iconSprite = icon;
     iconSprite->setScale(0.3);
     addListener("nodeLayoutUpdate",[this](NodeEvent* e){
         iconSprite->setPosition(CCNode::getContentSize()/2);

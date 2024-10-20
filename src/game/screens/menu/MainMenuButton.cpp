@@ -5,7 +5,7 @@
 #include "../../../helpers/CustomActions.hpp"
 #include <henrysck075.easings/include/easings.hpp>
 
-bool MainMenuButton::init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
+bool MainMenuButton::init(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
     m_color = color;
     ClickableContainer::init(sampleClick, clickAct);

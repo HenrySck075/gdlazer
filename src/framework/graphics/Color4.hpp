@@ -101,12 +101,12 @@ struct Color4 {
   }
 
   Color4(int red, int green, int blue, int alpha) : r(red), g(green), b(blue), a(alpha) {};
-  Color4(ccColor3B c) : r(c.r), g(c.g), b(c.b), a(255) {};
-  Color4(ccColor4B c) : r(c.r), g(c.g), b(c.b), a(c.a) {};
+  Color4(ccColor3B const& c) : r(c.r), g(c.g), b(c.b), a(255) {};
+  Color4(ccColor4B const& c) : r(c.r), g(c.g), b(c.b), a(c.a) {};
 
   // @note my addition
   // currently doing additive
-  Color4 blend(Color4 c) {
+  Color4 blend(Color4 const& c) {
     return Color4(
       r+(int)(c.r*(c.a/255)), 
       g+(int)(c.g*(c.a/255)), 

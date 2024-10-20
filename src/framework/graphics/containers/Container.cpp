@@ -549,20 +549,34 @@ void Container::updateSizeUnitLabel() {
 }
 
 void Container::updatePositionUnitLabel() {
-  setUserObject("of/pu",
-                CCString::create("X: " + getUnitLabel(m_positionUnit.first) +
-                                 " | "
-                                 "Y: " +
-                                 getUnitLabel(m_positionUnit.second)));
+    setUserObject("of/pu",
+        CCString::create("X: " + getUnitLabel(m_positionUnit.first) +
+                            " | "
+                            "Y: " +
+                            getUnitLabel(m_positionUnit.second)));
 }
 
+#include <csignal>
 void Container::updateColor() {
-    _realColor = m_color4;
+    _displayedColor = _realColor = m_color4;
+    //"C_Cpp.default.cppStandard": ""
+    auto goog = static_cast<CCBool*>(getUserObject("breakhere"));
+    if (goog && goog->getValue()) {
+        // Generate an interrupt
+        #ifdef GEODE_IS_WINDOWS
+        DebugBreak();
+        #else
+        std::raise(SIGTRAP);
+        #endif
+    };
     for (unsigned int i = 0; i < 4; i++) {
         m_pSquareColors[i].r = m_color4.r / 255.f;
         m_pSquareColors[i].g = m_color4.g / 255.f;
         m_pSquareColors[i].b = m_color4.b / 255.f;
-        m_pSquareColors[i].a = (m_color4.a * (_displayedOpacity / 255.f)) / 255;
+        /** TODO: 
+         * currently using _realOpacity because _displayedOpacity somehow being set to 0.
+         * diagnose the issue so opacity cascading can work normally.*/
+        m_pSquareColors[i].a = (m_color4.a * (_realOpacity / 255.f)) / 255;
     }
 }
 

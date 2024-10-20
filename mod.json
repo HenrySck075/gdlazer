@@ -58,7 +58,7 @@
       ]
     },
     "files": [
-      "resources/triangles.mp3",
+      "resources/*.mp3",
       "resources/sfx/**/*.wav",
       "resources/sfx/gameplay/pause-loop.mp3",
       "resources/glyphs/*.fnt",

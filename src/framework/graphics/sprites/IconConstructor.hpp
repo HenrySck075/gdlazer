@@ -1,24 +1,18 @@
+#pragma once
+
 #include <string>
 #include <Geode/cocos/label_nodes/CCLabelBMFont.h>
 #include <Geode/loader/Log.hpp>
 std::string unicode_to_utf8(int unicode);
+using namespace cocos2d;
 
 // j
 struct IconConstructor {
     std::string glyphChar;
+    int unicode;
     std::string fontName;
 
-    IconConstructor(std::string glyph, std::string font) : glyphChar(glyph), fontName(font) {};
+    IconConstructor(int unicode, std::string font) : unicode(unicode), glyphChar(unicode_to_utf8(unicode)), fontName(font) {};
 
-    operator cocos2d::CCLabelBMFont*() {
-        const char* g = glyphChar.c_str();
-        const char* f = fontName.c_str();
-        cocos2d::CCLabelBMFont* ret = cocos2d::CCLabelBMFont::create(g, f);
-        if (!ret) {
-            geode::log::error("[IconConstructor]: Icon does not exists on font {}", fontName);
-            delete ret;
-            ret = nullptr;
-        }
-        return ret;
-    }
+    operator CCSprite*();
 };

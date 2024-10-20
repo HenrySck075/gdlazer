@@ -70,18 +70,12 @@ private:
     const char* sampleHover = "button-hover.wav"_spr;
     // list of key that causes the click event
     std::vector<enumKeyCodes> activationKeys = {};
-    /*
-    public override bool IsPresent => base.IsPresent
-                                        // Allow keyboard interaction based on state rather than waiting for delayed animations.
-                                        || state == ButtonState.Expanded;
 
-    public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => background.ReceivePositionalInputAt(screenSpacePos);
-*/
 public:
-    static MainMenuButton* create(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
+    static MainMenuButton* create(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
         create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
     };
-    bool init(std::string text, std::string sampleClick, CCLabelBMFont* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
+    bool init(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
     void setContentSize(const CCSize& s) override;
     void setOpacity(GLubyte opacity) override {
         GLubyte old = hover->getOpacity();

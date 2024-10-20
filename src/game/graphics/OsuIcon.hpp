@@ -4,7 +4,7 @@
 using namespace geode::prelude;
 
 
-#define iconFont(name, charid, fontname) static IconConstructor name = {unicode_to_utf8(charid).c_str(),fontname}
+#define iconFont(name, charid, fontname) static IconConstructor name = {charid,fontname}
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)
 #define iconOsuIcon(name, charid) iconFont(name,charid,"osuIcon.fnt"_spr)
 #define iconOsuEditor(name, charid) iconFont(name,charid,"osuEditor.fnt"_spr)
