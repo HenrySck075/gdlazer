@@ -3,8 +3,6 @@
 #include "../../../framework/graphics/containers/VisibilityContainer.hpp"
 
 class LoadingSpinner final: public VisibilityContainer {
-    
-
     CCSprite* spinner;
 public:
     const float TRANSITION_DURATION = 0.5;

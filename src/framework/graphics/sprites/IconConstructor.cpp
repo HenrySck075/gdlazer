@@ -105,7 +105,7 @@ IconConstructor::operator CCSprite*() {
         // that will add the glyph sprite, so we can extract it now
         CCSprite* c = static_cast<CCSprite*>(label->getChildren()->objectAtIndex(0));
         ret = CCSprite::createWithTexture(c->getTexture());
-        ret->setTextureRect(c->getTextureRect());
+        //ret->setTextureRect(c->getTextureRect());
     }
     return ret;
 }
