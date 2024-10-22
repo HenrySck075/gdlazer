@@ -102,7 +102,6 @@ class $modify(Camila, LoadingLayer) {
     void updateProgress(int p0) {
         LoadingLayer::updateProgress(p0);
         if (p0 > 0) {
-            if (!m_fields->j) AssetsLoadedEvent().post();
             m_fields->j = true;
         }
     }
@@ -112,6 +111,7 @@ class $modify(Camila, LoadingLayer) {
         }
         #if 1
         LoadingLayer::loadAssets();
+        AssetsLoadedEvent().post();
         geode::Loader::get()->queueInMainThread([this]{
             // schedule on the next frame to replace the menuLayer with our scene
             auto o = OsuGame::get();
