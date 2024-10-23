@@ -4,6 +4,7 @@
 
 class LoadingSpinner final: public VisibilityContainer {
     CCSprite* spinner;
+    bool boxed = false;
 public:
     const float TRANSITION_DURATION = 0.5;
 

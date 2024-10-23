@@ -7,7 +7,6 @@
 ///
 /// to not increase file size i will convert all lambdas into class members instead
 class VisibilityContainer : public Container {
-    void visibilityUpdate(NodeEvent* e);
 protected:
     Bindable<bool> shown = false;
 public: 

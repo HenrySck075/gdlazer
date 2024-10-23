@@ -68,7 +68,7 @@ void BMGlyphFontConfig::parseCharacterDefinition(std::string line, ccBMFontDefEx
     index = line.find("page=");
     index2 = line.find(' ', index);
     value = line.substr(index, index2-index);
-    sscanf(value.c_str(), "page=%f", &characterDefinition->page);
+    sscanf(value.c_str(), "page=%hd", &characterDefinition->page);
 };
 
 std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(const char *controlFile) {    
@@ -287,11 +287,11 @@ bool BMGlyphManager::init(const char *fntFile, CCPoint imageOffset) {
         
         for (auto const& [pageId, t] : m_pConfiguration->getAtlasNames()) {
             auto goog = CCTextureCache::sharedTextureCache()->addImage(t.c_str(),false);
-            if (!goog) {
+            if (goog == nullptr) {
                 log::error("[BMGlyphManager]: No font bitmap named {}", t);
                 return false;
             };
-            m_dTextures[pageId] = goog;
+            m_dTextures.inner()->setObject(goog, pageId);
         }
     }
 
@@ -308,11 +308,11 @@ CCSprite* BMGlyphManager::getCharacter(int id) {
 
     if (IsDebuggerPresent()) DebugBreak();
 
-    if (m_pConfiguration->m_pCharacterSet->contains(id)) {
+    if (m_pConfiguration->m_pFontDefDictionary.contains(id)) {
         charDef = m_pConfiguration->m_pFontDefDictionary[id];
         texture = m_dTextures[charDef.page];
         spr = CCSprite::createWithTexture(texture);
-        spr->setTextureRect(CC_RECT_PIXELS_TO_POINTS(charDef.rect));
+        //spr->setTextureRect(CC_RECT_PIXELS_TO_POINTS(charDef.rect));
     } else {
     }
     return spr;
