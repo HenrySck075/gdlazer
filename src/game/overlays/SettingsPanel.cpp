@@ -28,7 +28,7 @@ void SettingsPanel::onOpen() {
         CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
     ));
     auto s = OsuGame::get()->getChildByID("screens");
-    s->stopActionByTag(7);
+    if (s->getActionByTag(7)) s->stopActionByTag(7);
     s->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(
             SettingsPanel::TRANSITION_LENGTH, 

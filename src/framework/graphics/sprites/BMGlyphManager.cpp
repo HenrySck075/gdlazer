@@ -68,7 +68,7 @@ void BMGlyphFontConfig::parseCharacterDefinition(std::string line, ccBMFontDefEx
     index = line.find("page=");
     index2 = line.find(' ', index);
     value = line.substr(index, index2-index);
-    sscanf(value.c_str(), "page=%hd", &characterDefinition->page);
+    sscanf(value.c_str(), "page=%u", &characterDefinition->page);
 };
 
 std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(std::string controlFile) {    
@@ -203,7 +203,6 @@ void BMGlyphFontConfig::parseImageFileName(std::string line, std::string fntFile
     int index2 = line.find(' ', index);
     std::string value = line.substr(index, index2-index);
     pageId = std::stoi(value);
-    CCAssert(atoi(value.c_str()) == 0, "LabelBMFont file could not be found");
     // file 
     index = line.find('"')+1;
     index2 = line.find('"', index);
@@ -307,14 +306,13 @@ CCSprite* BMGlyphManager::getCharacter(int id) {
     CCSprite* spr = nullptr;
     ccBMFontDefExt charDef;
     CCTexture2D* texture;
-
     if (IsDebuggerPresent()) DebugBreak();
 
     if (m_pConfiguration->m_pFontDefDictionary.contains(id)) {
         charDef = m_pConfiguration->m_pFontDefDictionary[id];
         texture = m_dTextures[charDef.page];
         spr = CCSprite::createWithTexture(texture);
-        //spr->setTextureRect(CC_RECT_PIXELS_TO_POINTS(charDef.rect));
+        spr->setTextureRect(CC_RECT_PIXELS_TO_POINTS(charDef.rect));
     } else {
     }
     return spr;

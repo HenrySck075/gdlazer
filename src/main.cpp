@@ -14,6 +14,8 @@
 #include "game/OsuGame.hpp"
 #include "framework/input/events/KeyEvent.hpp"
 
+#include "framework/graphics/sprites/BMGlyphManager.hpp"
+
 /**
  * Brings cocos2d and all Geode namespaces to the current scope.
  */
@@ -430,6 +432,11 @@ $execute {
         auto j = new keypaddelegat();
         j->autorelease();
         CCDirector::get()->getKeypadDispatcher()->forceAddDelegate(j);
+
+        // preload large glyphs (fontawesome)
+        // BMGlyphManager::getForFontName("FontAwesome-Brands.fnt"_spr);
+        BMGlyphManager::getForFontName("FontAwesome-Solid.fnt"_spr);
+
         return ListenerResult::Propagate;
     });
 }

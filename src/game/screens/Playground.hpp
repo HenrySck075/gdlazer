@@ -13,7 +13,7 @@ public:
         title("Widgets playground");
         addChild(SettingsButton::create("me", OsuColor::PinkDark));
 
-        auto spinner = LoadingSpinner::create(false, false);
+        auto spinner = LoadingSpinner::create(true, false);
         spinner->setPosition({50,150});
         spinner->setContentSize({50,50});
         addChild(spinner);
