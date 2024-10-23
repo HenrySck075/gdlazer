@@ -17,10 +17,9 @@ bool LoadingSpinner::init(bool boxedP, bool invert) {
     }
     setScale(0.8);
     setAnchorPoint({0.5,0.5});
-    setOpacity(255);
     //setUserObject("breakhere",CCBool::create(true));
     
-    spinner = CCSprite::createWithSpriteFrameName("square.png"_spr);
+    spinner = FontAwesome::Solid::CircleNotch;
     if (boxed) spinner->setScale(0.6);
     spinner->setColor({spinnerColor,spinnerColor,spinnerColor});
     addListener("nodeLayoutUpdate", [this](NodeEvent* e){
@@ -28,6 +27,7 @@ bool LoadingSpinner::init(bool boxedP, bool invert) {
     });
     addChild(spinner);
     setCascadeColorEnabled(false);
+    setCascadeOpacityEnabled(false);
     return true;
 }   
 

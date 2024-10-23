@@ -74,7 +74,7 @@ public:
      *  @js NA
      *  @lua NA
      */
-    const char * description(){
+    std::string  description(){
         return fmt::format(
             "<BMGlyphFontConfig [BMGlyphManager] | Glphys:{} Kernings:{} | Images = {}>",
             m_pFontDefDictionary.size(),
@@ -84,12 +84,12 @@ public:
     };
 
     /** allocates a BMGlyphFontConfig with a FNT file */
-    static BMGlyphFontConfig * create(const char *FNTfile) {
+    static BMGlyphFontConfig * create(std::string FNTfile) {
         create_class(BMGlyphFontConfig, initWithFNTfile, FNTfile);
     };
 
     /** initializes a BitmapFontConfiguration with a FNT file */
-    bool initWithFNTfile(const char *FNTfile){
+    bool initWithFNTfile(std::string FNTfile){
         m_pKerningDictionary = NULL;
         m_pFontDefDictionary = {};
         
@@ -108,11 +108,11 @@ public:
     
     std::set<unsigned int>* getCharacterSet() const {return m_pCharacterSet;};
 private:
-    std::set<unsigned int>* parseConfigFile(const char *controlFile);
+    std::set<unsigned int>* parseConfigFile(std::string controlFile);
     void parseCharacterDefinition(std::string line, ccBMFontDefExt *characterDefinition);
     void parseInfoArguments(std::string line);
     void parseCommonArguments(std::string line);
-    void parseImageFileName(std::string line, const char *fntFile);
+    void parseImageFileName(std::string line, std::string fntFile);
     void parseKerningEntry(std::string line);
     void purgeKerningDictionary();
     void purgeFontDefDictionary();
@@ -155,15 +155,15 @@ public:
     */
     static void purgeCachedData() {};
 
-    static BMGlyphManager* getForFontName(const char *fntFile);
+    static BMGlyphManager* getForFontName(std::string fntFile);
 private:
     /** creates a bitmap font atlas with an initial string and the FNT file */
-    static BMGlyphManager* create(const char *fntFile, CCPoint imageOffset = {0,0}) {
+    static BMGlyphManager* create(std::string fntFile, CCPoint imageOffset = {0,0}) {
         create_class(BMGlyphManager, init, fntFile, imageOffset);
     };
 
     /** init a bitmap font atlas with an initial string and the FNT file */
-    bool init(const char *fntFile, CCPoint imageOffset = CCPointZero);
+    bool init(std::string fntFile, CCPoint imageOffset = CCPointZero);
 public:
     CCSprite* getCharacter(int id);
 

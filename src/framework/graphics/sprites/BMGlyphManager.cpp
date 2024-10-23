@@ -2,7 +2,7 @@
 
 static CCDictionaryExt<std::string, BMGlyphFontConfig*> s_dConfigurations;
 
-BMGlyphFontConfig* FNTConfigLoadFile2( const char *fntFile) {
+BMGlyphFontConfig* FNTConfigLoadFile2( std::string fntFile) {
     BMGlyphFontConfig* pRet = NULL;
     //DebugBreak();
     if(!s_dConfigurations.contains(fntFile)) {
@@ -71,8 +71,8 @@ void BMGlyphFontConfig::parseCharacterDefinition(std::string line, ccBMFontDefEx
     sscanf(value.c_str(), "page=%hd", &characterDefinition->page);
 };
 
-std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(const char *controlFile) {    
-    std::string fullpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(controlFile,false);
+std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(std::string controlFile) {    
+    std::string fullpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(controlFile.c_str(),false);
     CCString *contents = CCString::createWithContentsOfFile(fullpath.c_str());
 
     if (!contents) {
@@ -191,7 +191,7 @@ void BMGlyphFontConfig::parseCommonArguments(std::string line) {
     // packed (ignore) What does this mean ??
 };
 
-void BMGlyphFontConfig::parseImageFileName(std::string line, const char *fntFile) {
+void BMGlyphFontConfig::parseImageFileName(std::string line, std::string fntFile) {
     //////////////////////////////////////////////////////////////////////////
     // line to parse:
     // page id=0 file="bitmapFontTest.png"
@@ -208,7 +208,7 @@ void BMGlyphFontConfig::parseImageFileName(std::string line, const char *fntFile
     index = line.find('"')+1;
     index2 = line.find('"', index);
     value = line.substr(index, index2-index);
-    m_sAtlasNames[pageId] = CCFileUtils::sharedFileUtils()->fullPathFromRelativeFile(value.c_str(), fntFile);
+    m_sAtlasNames[pageId] = CCFileUtils::sharedFileUtils()->fullPathFromRelativeFile(value.c_str(), fntFile.c_str());
 };
 
 void BMGlyphFontConfig::parseKerningEntry(std::string line) {        
@@ -261,17 +261,19 @@ void BMGlyphFontConfig::purgeFontDefDictionary() {
 
 static CCDictionaryExt<std::string, BMGlyphManager*> s_dGlyphs;
 
-BMGlyphManager* BMGlyphManager::getForFontName(const char *fntFile) {
+BMGlyphManager* BMGlyphManager::getForFontName(std::string fntFile) {
     if (!s_dGlyphs.contains(fntFile)) {
         s_dGlyphs.inner()->setObject(BMGlyphManager::create(fntFile), fntFile);
     }
     return s_dGlyphs[fntFile];
 }
 
-bool BMGlyphManager::init(const char *fntFile, CCPoint imageOffset) {
-    assert( ("Invalid params for CCLabelBMFont", fntFile==NULL));
+bool BMGlyphManager::init(std::string fntFile, CCPoint imageOffset) {
+    log::debug("[BMGlyphManager]: {}", fntFile);
+    //assert( ("Invalid params for CCLabelBMFont", fntFile==nullptr));
     
-    if (fntFile)
+    // idk what else
+    if (!fntFile.empty())
     {
         BMGlyphFontConfig *newConf = FNTConfigLoadFile2(fntFile);
         if (!newConf)
