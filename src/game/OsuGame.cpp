@@ -104,6 +104,9 @@ bool OsuGame::init() {
             levelDownloadCount.push_back(level->m_downloads);
         }
     }
+    addListener(MusicEnded::eventname, [this](NodeEvent*){
+        nextMusic();
+    });
 
     return true;
 }
@@ -112,6 +115,7 @@ void OsuGame::startMusicSequence() {
     nextMusic();
     addListener(MusicEnded::eventname, std::bind(&OsuGame::nextMusic,this));
 };
+// currently only supports sequenced, shuffle soon idk
 void OsuGame::nextMusic() {
     playlistIndex++;
     AudioManager::get()->playFromLevel(mainPlaylist[playlistIndex],0);

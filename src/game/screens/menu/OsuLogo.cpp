@@ -1,5 +1,5 @@
 #include "OsuLogo.hpp"
-#include "../../graphics/CCResizableSprite.hpp"
+#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
 #include <cmath>
 
 float lin2dB(float linear)

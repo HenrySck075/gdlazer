@@ -5,7 +5,7 @@
 #include "../../../helpers/CustomActions.hpp"
 #include <henrysck075.easings/include/easings.hpp>
 
-bool MainMenuButton::init(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
+bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
     auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
     m_color = color;
     ClickableContainer::init(sampleClick, clickAct);
@@ -21,9 +21,10 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, CCSprite* s
     auto the = CCLayerRGBA::create();
     the->setCascadeOpacityEnabled(true);
     the->setID("ui");
-    symbol->setScale(0.62);
+    CCResizableSprite* icon = symbol;
+    icon->setScale(0.62);
     the->setLayout(ColumnLayout::create()->setGap(3)->setAutoScale(false)->setAxisReverse(true));
-    the->addChild(symbol);
+    the->addChild(icon);
     the->setAnchorPoint({0.5,0.5});
     the->setPosition(m/2);
     auto label = OsuText(text.c_str(), FontType::Regular);

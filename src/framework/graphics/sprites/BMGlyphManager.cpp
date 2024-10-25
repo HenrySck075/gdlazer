@@ -302,16 +302,16 @@ bool BMGlyphManager::init(std::string fntFile, CCPoint imageOffset) {
 
 };
 
-CCSprite* BMGlyphManager::getCharacter(int id) {
-    CCSprite* spr = nullptr;
+CCResizableSprite* BMGlyphManager::getCharacter(int id) {
+    CCResizableSprite* spr = nullptr;
     ccBMFontDefExt charDef;
     CCTexture2D* texture;
-    if (IsDebuggerPresent()) DebugBreak();
+    //if (IsDebuggerPresent()) DebugBreak();
 
     if (m_pConfiguration->m_pFontDefDictionary.contains(id)) {
         charDef = m_pConfiguration->m_pFontDefDictionary[id];
         texture = m_dTextures[charDef.page];
-        spr = CCSprite::createWithTexture(texture);
+        spr = CCResizableSprite::createWithTexture(texture);
         spr->setTextureRect(CC_RECT_PIXELS_TO_POINTS(charDef.rect));
     } else {
     }

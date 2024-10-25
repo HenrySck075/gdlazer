@@ -5,7 +5,7 @@
 #include "../../../utils.hpp"
 #include <henrysck075.imagecache/include/ImageCache.hpp>
 #include <matjson.hpp>
-#include "../../graphics/CCResizableSprite.hpp"
+#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
 
 using meow = Task<std::string>;
 

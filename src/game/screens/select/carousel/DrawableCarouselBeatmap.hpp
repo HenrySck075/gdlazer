@@ -2,7 +2,7 @@
 #include <Geode/Geode.hpp>
 class Container;
 #include "../../../../framework/graphics/containers/ClickableContainer.hpp"
-#include "../../../graphics/CCResizableSprite.hpp"
+#include "../../../../framework/graphics/sprites/CCResizableSprite.hpp"
 #include "../../../../utils.hpp"
 using namespace geode::prelude;
 

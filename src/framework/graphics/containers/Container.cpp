@@ -47,26 +47,27 @@ void balls::drawRoundedRect() {
     };
     // location, radius, fill, outline size, outline, amount of triangles i suppose
     Color4 color = {0,0,200,255};
-    #define peakDesign color, 0, color
-    #define drawCircConfig radius, 0, 10, true, color
+    #define drawRectConfig(...) __VA_ARGS__, 0, __VA_ARGS__
+    #define peakDesign drawRectConfig(color)
+    #define drawCircConfig(...) radius, 0, 10, true, __VA_ARGS__
     if (radius > 0) {
         //(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color)
 
-        drawCircle(innerRect.getTopLeft(), drawCircConfig);
-        drawCircle(innerRect.getTopRight(), drawCircConfig);
-        drawCircle(innerRect.getBottomLeft(), drawCircConfig);
-        drawCircle(innerRect.getBottomRight(), drawCircConfig);
+        drawCircle(innerRect.getTopLeft(), drawCircConfig({ 206, 98, 98, 255 }));
+        drawCircle(innerRect.getTopRight(), drawCircConfig({ 18, 206, 27, 255 }));
+        drawCircle(innerRect.getBottomLeft(), drawCircConfig({ 70, 195, 233, 255 }));
+        drawCircle(innerRect.getBottomRight(), drawCircConfig({ 189, 231, 38, 255 }));
 
-        drawRect(innerRect, peakDesign);
+        //drawRect(innerRect, peakDesign);
         
         //top
-        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX()-radius,radius},peakDesign);
+        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX()-radius,radius},drawRectConfig({255,0,0,255}));
         //bottom
-        drawRect({radius,0,innerRect.getMaxX()-radius,radius},peakDesign);
+        drawRect({radius,0,innerRect.getMaxX()-radius,radius},drawRectConfig({0,255,0,255}));
         //left
-        drawRect({0,radius,radius,innerRect.getMaxY()-radius},peakDesign);
+        drawRect({0,radius,radius,innerRect.getMaxY()-radius},drawRectConfig({0,0,255,255}));
         //right
-        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()-radius},peakDesign);
+        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()-radius},drawRectConfig({255,255,255,255}));
     }
     else {
         // do it fast
@@ -75,9 +76,11 @@ void balls::drawRoundedRect() {
     }
     #undef peakDesign
     #undef drawCircConfig
+    #undef drawRectConfig
 }
 
 bool balls::stencilEnabled() { 
+    if (static_cast<CCBool*>(getUserObject("stencil"_spr)))
     return 
     #ifndef GEODE_IS_ANDROID
     m_radius!=0

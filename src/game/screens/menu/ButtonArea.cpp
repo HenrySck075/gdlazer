@@ -103,7 +103,6 @@ void ButtonArea::show(std::string tag) {
     auto menuLayout = buttonsMenus[tag]->getLayout();
     buttonsMenus[tag]->setLayout(nullptr);
     */
-
     // expand
     if (shownIndex<index) {
         this->addChild(buttonsMenus[tag]);

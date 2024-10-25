@@ -1,9 +1,10 @@
 #pragma once
 
 #include "../../../framework/graphics/containers/VisibilityContainer.hpp"
+#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
 
 class LoadingSpinner final: public VisibilityContainer {
-    CCSprite* spinner;
+    CCResizableSprite* spinner;
     bool boxed = false;
 public:
     const float TRANSITION_DURATION = 0.5;

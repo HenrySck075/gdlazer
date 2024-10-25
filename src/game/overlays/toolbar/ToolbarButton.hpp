@@ -3,9 +3,10 @@
 #include "../../../framework/graphics/containers/ClickableContainer.hpp"
 #include "../../graphics/OsuIcon.hpp"
 #include "../../../framework/graphics/containers/FillFlowContainer.hpp"
+#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
 
 class ToolbarButton : public ClickableContainer {
-    CCSprite* iconSprite;
+    CCResizableSprite* iconSprite;
     Container* bg;
     Container* flashBg;
 

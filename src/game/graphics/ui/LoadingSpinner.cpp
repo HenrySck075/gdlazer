@@ -45,7 +45,7 @@ void LoadingSpinner::onOpen() {
             ), 5
         )
     )->setTag(7);
-    if (boxed) {
+    if (false) {
         runAction(CCRepeatForever::create(
             CCSequence::create(
                 easingsActions::CCEaseInOut::create(

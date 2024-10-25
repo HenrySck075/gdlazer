@@ -5,6 +5,8 @@
 //#include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../framework/graphics/Color4.hpp"
 #include "../../../framework/graphics/containers/ClickableContainer.hpp"
+#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
+#include "../../../framework/graphics/sprites/IconConstructor.hpp"
 #include "../../../utils.hpp"
 
 using namespace geode::prelude;
@@ -29,7 +31,6 @@ class MainMenuButton : public ClickableContainer {
     */
 
     const char* label;
-    CCSprite* icon;
 
     /// <summary>
     /// The menu state for which we are visible for (assuming only one).
@@ -72,10 +73,10 @@ private:
     std::vector<enumKeyCodes> activationKeys = {};
 
 public:
-    static MainMenuButton* create(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
+    static MainMenuButton* create(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
         create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
     };
-    bool init(std::string text, std::string sampleClick, CCSprite* symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
+    bool init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
     void setContentSize(const CCSize& s) override;
     void setOpacity(GLubyte opacity) override {
         GLubyte old = hover->getOpacity();

@@ -1,5 +1,5 @@
 #include "CCResizableSprite.hpp"
-#include "../../utils.hpp"
+#include "../../../utils.hpp"
 
 CCResizableSprite* CCResizableSprite::create() {
     create_class(CCResizableSprite, init);
@@ -9,10 +9,21 @@ CCResizableSprite* CCResizableSprite::createWithSpriteFrameName(const char *pszS
 {
     create_class(CCResizableSprite, initWithSpriteFrameName, pszSpriteFrameName);
 }
+CCResizableSprite* CCResizableSprite::createWithTexture(CCTexture2D* texture) {
+    create_class(CCResizableSprite, initWithTexture, texture);
+};
 
 bool CCResizableSprite::init() {
     CCNode::init();
     m_sprite = CCSprite::create();
+    return finishInit();
+}
+
+bool CCResizableSprite::initWithTexture(CCTexture2D* texture) {
+    CCNode::init();
+    m_sprite = CCSprite::createWithTexture(texture);
+    baseSize = m_sprite->getContentSize();
+    m_sprite->setPosition(baseSize/2);
     return finishInit();
 }
 
@@ -27,6 +38,7 @@ bool CCResizableSprite::initWithSpriteFrameName(const char* pszSpriteFrameName) 
 bool CCResizableSprite::finishInit() {
     addChild(m_sprite);
     setCascadeOpacityEnabled(true);
+    setCascadeColorEnabled(true);
     setAnchorPoint({0.5,0.5});
     return true;
 }

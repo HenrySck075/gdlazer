@@ -67,8 +67,8 @@ namespace {
 class balls : public CCDrawNode, public IStencilEnabledState {
 private:
     float m_radius = 0;
-    void drawRoundedRect();
 public:
+    void drawRoundedRect();
     void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color);
     void drawCircle(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, const ccColor4F &color) {
         drawCircle(center, radius, angle, segments, drawLineToCenter, 1.f, 1.f, color);

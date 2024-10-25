@@ -86,12 +86,12 @@ std::string unicode_to_utf8(int unicode)
 }
 
 
-IconConstructor::operator CCSprite*() {
+IconConstructor::operator CCResizableSprite*() {
     const char* g = glyphChar.c_str();
     const char* f = fontName.c_str();
     // since CCDictionaryExt internally assigns a CCNode as the value
     BMGlyphManager* label = BMGlyphManager::getForFontName(fontName.c_str());
-    CCSprite* ret = nullptr;
+    CCResizableSprite* ret = nullptr;
     if (!label) {
         geode::log::error("[IconConstructor]: Font {} does not exist (according to cocos2d)", fontName);
         delete label;

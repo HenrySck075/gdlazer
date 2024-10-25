@@ -10,6 +10,7 @@
 #include <iostream>
 #include <vector>
 #include "../../../utils.hpp"
+#include "CCResizableSprite.hpp"
 
 /**
  * @addtogroup GUI
@@ -165,7 +166,7 @@ private:
     /** init a bitmap font atlas with an initial string and the FNT file */
     bool init(std::string fntFile, CCPoint imageOffset = CCPointZero);
 public:
-    CCSprite* getCharacter(int id);
+    CCResizableSprite* getCharacter(int id);
 
 	BMGlyphFontConfig* getConfiguration() const {return m_pConfiguration;};
     

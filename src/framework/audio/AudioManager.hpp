@@ -8,9 +8,9 @@
 #include "../bindables/Event.hpp"
 
 namespace {
-    extern char const music_ended[] = "musicEnded";
+    extern char const musicEnded[] = "musicEnded";
 }
-using MusicEnded = NamedNodeEvent<music_ended>;
+using MusicEnded = NamedNodeEvent<musicEnded>;
 
 /// FMODAudioEngine 2
 ///

@@ -61,9 +61,11 @@ public:
     GeodeEvent(T event, std::string name) : NodeEvent(name), m_event(event) {}
 };
 
+/// TODO: Use Event typeinfo for event name
 template<char const* name>
 class NamedNodeEvent : public NodeEvent {
 public:
     NamedNodeEvent() : NodeEvent(name) {}
+    ///! Use this to get the name of the event
     static constexpr auto eventname = name;
 };

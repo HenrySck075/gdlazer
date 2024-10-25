@@ -52,9 +52,7 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
     if (cbType == FMOD_CHANNELCONTROL_CALLBACK_END) {
         log::debug("[fmodSoundCallback()]: song ended");
         if (type != FMOD_CHANNELCONTROL_CHANNEL) return FMOD_RESULT::FMOD_OK;
-        AudioManager* ctrl;
-        reinterpret_cast<FMOD::Channel*>(channel)->getUserData((void**)&ctrl);
-        ctrl->onSongEnd();
+        if(instance) instance->onSongEnd();
     }
     return FMOD_RESULT::FMOD_OK;
 };
@@ -62,6 +60,7 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
 void AudioManager::onSongEnd() {
     paused = true;
     ended = true;
+    log::debug("[AudioManager]: song ended, dispatching music ended event");
     Game::get()->dispatchEvent(new MusicEnded());
 }
 
@@ -74,7 +73,6 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
         sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
         sys->playSound(sound,nullptr,true,&channel);
         if (channelNotCreated) {
-            channel->setUserData(this);
             channel->setCallback(&fmodSoundCallback);
             channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
         }

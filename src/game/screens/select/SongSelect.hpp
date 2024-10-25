@@ -3,7 +3,7 @@
 #include "../../../framework/screens/Screen.hpp"
 #include "../../../framework/graphics/containers/GridContainer.hpp"
 #include "../../../utils.hpp"
-#include "../../graphics/CCResizableSprite.hpp"
+#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
 #include "carousel/DrawableCarouselBeatmap.hpp"
 #include "BeatmapCarousel.hpp"
 

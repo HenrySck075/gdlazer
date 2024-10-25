@@ -5,6 +5,7 @@
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../framework/graphics/containers/Container.hpp"
 #include "MainMenuButton.hpp"
+#include <henrysck075.easings/include/easings.hpp>
 
 using namespace cocos2d;
 
@@ -15,7 +16,7 @@ private:
     std::vector<std::string> tagsStack;
     CCPoint anchorPosition = {0,0};
     float animationSpeed = 0.5;
-    using EasingEffect = CCEaseExponentialOut;
+    using EasingEffect = easingsActions::CCEaseExponentialOut;
     CCLayerColor* colorBg;
 
     bool hidden = true;
