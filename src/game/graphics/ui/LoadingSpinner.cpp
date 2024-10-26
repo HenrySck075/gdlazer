@@ -23,10 +23,10 @@ bool LoadingSpinner::init(bool boxedP, bool invert) {
     if (boxed) spinner->setScale(0.6);
     spinner->setColor({spinnerColor,spinnerColor,spinnerColor});
     addListener("nodeLayoutUpdate", [this](NodeEvent* e){
+        spinner->setContentSize(CCNode::getContentSize());
         spinner->setPosition(CCNode::getContentSize()/2);
     });
     addChild(spinner);
-    setCascadeColorEnabled(false);
     setCascadeOpacityEnabled(false);
     return true;
 }   
@@ -45,7 +45,7 @@ void LoadingSpinner::onOpen() {
             ), 5
         )
     )->setTag(7);
-    if (false) {
+    if (boxed) {
         runAction(CCRepeatForever::create(
             CCSequence::create(
                 easingsActions::CCEaseInOut::create(
@@ -65,7 +65,6 @@ void LoadingSpinner::onOpen() {
             )
         ));
     }
-    log::debug("{}", _displayedOpacity);
     spinner->setOpacity(255);
     spinner->runAction(CCRepeatForever::create(
         CCSequence::createWithTwoActions(

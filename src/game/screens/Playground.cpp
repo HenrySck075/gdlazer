@@ -1,7 +1,6 @@
 #include "Playground.hpp"
 bool Playground::init() {
     if (!Screen::init()) return false;
-    setColor({255,255,255,255});
     setOpacity(255);
     // you fucking maniacs
     setCascadeColorEnabled(false);

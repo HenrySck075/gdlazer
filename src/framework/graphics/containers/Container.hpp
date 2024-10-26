@@ -49,17 +49,17 @@ namespace {
         inline constexpr CCRectExtra(float x, float y, CCSize const& size) {
             setRect(x, y, size.width, size.height);
         }
-        CCPoint const& getTopLeft() {
-            return {getMinX(), getMaxY()};
+        inline constexpr CCPoint const& getTopLeft() {
+            return CCPoint{getMinX(), getMaxY()};
         }
-        CCPoint const& getTopRight() {
-            return {getMaxX(), getMaxY()};
+        inline constexpr CCPoint const& getTopRight() {
+            return CCPoint{getMaxX(), getMaxY()};
         }
-        CCPoint const& getBottomLeft() {
-            return {getMinX(), getMinY()};
+        inline constexpr CCPoint const& getBottomLeft() {
+            return CCPoint{getMinX(), getMinY()};
         }
-        CCPoint const& getBottomRight() {
-            return {getMaxX(), getMinY()};
+        inline constexpr CCPoint const& getBottomRight() {
+            return CCPoint{getMaxX(), getMinY()};
         }
     };
 };
@@ -287,6 +287,4 @@ public:
     Color4 const& getColor4() {return m_color4;};
     // the
     void updateColor() override;
-
-    ~Container() { m_roundedBorderStencil->release(); }
 };

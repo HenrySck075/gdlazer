@@ -31,7 +31,11 @@ void CCClippingLayer::visit() {
     // return fast (draw nothing, or draw everything if in inverted mode) if:
     // - nil stencil node
     // - or stencil node invisible:
-    if (!m_pStencil || !m_pStencil->isVisible())
+    if (!m_pStencil) {
+        CCNode::visit();
+        return;
+    }
+    if (!m_pStencil->isVisible())
     {
         if (m_bInverted)
         {

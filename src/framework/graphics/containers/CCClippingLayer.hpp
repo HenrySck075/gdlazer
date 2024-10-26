@@ -17,7 +17,7 @@ public:
     bool init(ccColor4B color, CCNode* stencil) {
         if (!CCLayerColor::initWithColor(color)) return false;
         m_pStencil = stencil;
-        m_pStencil->retain();
+        if (stencil) m_pStencil->retain();
         return true;
     }
     ~CCClippingLayer() {

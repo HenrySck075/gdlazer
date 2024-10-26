@@ -35,7 +35,7 @@ void balls::drawRoundedRect() {
     // just dont do anything
     if (m_obContentSize == CCSize{0,0} || !stencilEnabled()) return;
     // determine whether radius percentage should follow the width or the height
-    auto useWidth = m_obContentSize.width > m_obContentSize.height;
+    auto useWidth = m_obContentSize.width < m_obContentSize.height;
     float radius = (m_radius/100) * (
         useWidth ? m_obContentSize.width : m_obContentSize.height
     );
@@ -46,28 +46,38 @@ void balls::drawRoundedRect() {
         m_obContentSize - CCSize(radius * 2, radius * 2)
     };
     // location, radius, fill, outline size, outline, amount of triangles i suppose
-    Color4 color = {0,0,200,255};
-    #define drawRectConfig(...) __VA_ARGS__, 0, __VA_ARGS__
-    #define peakDesign drawRectConfig(color)
-    #define drawCircConfig(...) radius, 0, 10, true, __VA_ARGS__
+    ccColor4F color = {0.f,0.f,200.f/255.f,1.f};
+    #define drawRectConfig color, 0, color
+    #define drawCircConfig radius, 0, 30, true, color
     if (radius > 0) {
         //(const CCPoint& center, float radius, float angle, unsigned int segments, bool drawLineToCenter, float scaleX, float scaleY, const ccColor4F &color)
 
-        drawCircle(innerRect.getTopLeft(), drawCircConfig({ 206, 98, 98, 255 }));
-        drawCircle(innerRect.getTopRight(), drawCircConfig({ 18, 206, 27, 255 }));
-        drawCircle(innerRect.getBottomLeft(), drawCircConfig({ 70, 195, 233, 255 }));
-        drawCircle(innerRect.getBottomRight(), drawCircConfig({ 189, 231, 38, 255 }));
+        log::debug(
+            "[RoundedBorderStencil]:\n{} | {} \n{} | {} | {} | {}", 
+            innerRect.origin, innerRect.size,
+            innerRect.getMinX(),innerRect.getMinY(),innerRect.getMaxX(),innerRect.getMaxY()
+        );
 
-        //drawRect(innerRect, peakDesign);
+        CCPoint tl {innerRect.getMinX(),innerRect.getMaxY()};
+        CCPoint tr {innerRect.getMaxX(),innerRect.getMaxY()};
+        CCPoint bl {innerRect.getMinX(),innerRect.getMinY()};
+        CCPoint br {innerRect.getMaxX(),innerRect.getMinY()};
+
+        drawCircle(tl, drawCircConfig);
+        drawCircle(tr, drawCircConfig);
+        drawCircle(bl, drawCircConfig);
+        drawCircle(br, drawCircConfig);
+
+        drawRect(innerRect, drawRectConfig);
         
         //top
-        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX()-radius,radius},drawRectConfig({255,0,0,255}));
+        drawRect({radius,innerRect.getMaxY(),innerRect.getMaxX()-radius,radius},drawRectConfig);
         //bottom
-        drawRect({radius,0,innerRect.getMaxX()-radius,radius},drawRectConfig({0,255,0,255}));
+        drawRect({radius,0,innerRect.getMaxX()-radius,radius},drawRectConfig);
         //left
-        drawRect({0,radius,radius,innerRect.getMaxY()-radius},drawRectConfig({0,0,255,255}));
+        drawRect({0,radius,radius,innerRect.getMaxY()-radius},drawRectConfig);
         //right
-        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()-radius},drawRectConfig({255,255,255,255}));
+        drawRect({innerRect.getMaxX(),radius,radius,innerRect.getMaxY()-radius},drawRectConfig);
     }
     else {
         // do it fast
@@ -80,8 +90,8 @@ void balls::drawRoundedRect() {
 }
 
 bool balls::stencilEnabled() { 
-    if (static_cast<CCBool*>(getUserObject("stencil"_spr)))
-    return 
+    //if (static_cast<CCBool*>(getUserObject("stencil"_spr)))
+    return
     #ifndef GEODE_IS_ANDROID
     m_radius!=0
     #else
@@ -94,10 +104,11 @@ bool balls::stencilEnabled() {
 }
 
 bool balls::init(float rad) {
-  if (!CCDrawNode::init())
-    return false;
-  setRadius(rad);
-  return true;
+    if (!CCDrawNode::init())
+        return false;
+    setOpacity(255);
+    setRadius(rad);
+    return true;
 }
 
 void balls::setContentSize(const CCSize &size) {
@@ -286,7 +297,6 @@ std::string Container::getUnitLabel(Unit unit) {
 
 bool Container::init() {
     m_roundedBorderStencil = balls::create();
-    m_roundedBorderStencil->retain();
     //m_roundedBorderStencil->setRadius(8);
     if (!CCClippingLayer::init({255,255,255,0},m_roundedBorderStencil)) return false;
 
@@ -561,7 +571,6 @@ void Container::updatePositionUnitLabel() {
 
 #include <csignal>
 void Container::updateColor() {
-    _displayedColor = _realColor = m_color4;
     //"C_Cpp.default.cppStandard": ""
     auto goog = static_cast<CCBool*>(getUserObject("breakhere"));
     if (goog && goog->getValue()) {
@@ -584,12 +593,12 @@ void Container::updateColor() {
 }
 
 void Container::setColor(const ccColor3B& color) { 
-    m_color4 = color;
-    updateColor();
+    setColor(Color4{color});
 }
 
 void Container::setColor(const Color4& color) {
     m_color4 = color;
+    _displayedColor = _realColor = m_color4;
     updateColor();
 } 
 
