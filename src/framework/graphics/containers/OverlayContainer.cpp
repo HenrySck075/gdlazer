@@ -1,4 +1,5 @@
 #include "OverlayContainer.hpp"
+#include "../../Game.hpp"
 
 bool OverlayContainer::init() {
     if (!VisibilityContainer::init()) return false;
@@ -10,10 +11,18 @@ bool OverlayContainer::init() {
     setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     setCascadeOpacityEnabled(false);
     addListener("keyboardEvent", [this](NodeEvent* e){
-        if (static_cast<KeyboardEvent*>(e)->key.key == enumKeyCodes::KEY_Escape) hide();
+        if (static_cast<KeyboardEvent*>(e)->key.key == KEY_Escape) hide();
     });
     addListener("keypadEvent", [this](NodeEvent* e){
-        if (static_cast<KeypadEvent*>(e)->key==ccKeypadMSGType::kTypeBackClicked) hide();
+        if (static_cast<KeypadEvent*>(e)->key == kTypeBackClicked) hide();
+    });
+    shown.addCallback([this](NodeEvent* e){
+        if (static_cast<ValueChangedEvent<bool>*>(e)->value) {
+            Game::get()->pushOverlay(this);
+        }
+        else {
+            Game::get()->popOverlay(this);
+        }
     });
     return true;
 }
@@ -28,9 +37,11 @@ void OverlayContainer::onClose() {
 }
 
 void OverlayContainer::checkActions(float) {
-    log::debug("ballin'");
     if (m_pActionManager->numberOfRunningActionsInTarget(this)==0) {
         removeFromParent();
-        m_pScheduler->unscheduleSelector(schedule_selector(OverlayContainer::checkActions), this);
+        m_pScheduler->unscheduleSelector(
+            schedule_selector(OverlayContainer::checkActions), 
+            this
+        );
     }
 }

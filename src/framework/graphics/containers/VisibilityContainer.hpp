@@ -10,15 +10,7 @@ class VisibilityContainer : public Container {
 protected:
     Bindable<bool> shown = false;
 public: 
-    bool init() {
-        if (!Container::init()) return false;
-        shown.addCallback([this](NodeEvent* e) {
-            log::debug("[VisibilityContainer]: ");
-            if (static_cast<ValueChangedEvent<bool>*>(e)->value) onOpen();
-            else onClose(); 
-        });
-        return true;
-    }
+    bool init();
     bool isOpen() {return shown;}
     virtual void show();
     virtual void hide();

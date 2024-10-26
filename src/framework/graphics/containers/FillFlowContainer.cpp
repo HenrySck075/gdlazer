@@ -12,7 +12,12 @@ void FillFlowLayout::apply(CCNode* on) {
     for (auto c : nodes) {
         //log::debug("[FillFlowLayout]: {}",size.height);
         if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
-            throw std::invalid_argument(fmt::format("[FillFlowContainer/Layout]: Child {} has the size dependent on the parent, but the parent does not have a maximum size constraint. Please set the maximum constraint to non-zero.", geode::format_as(c)));
+            throw std::invalid_argument(fmt::format(
+                "[FillFlowContainer/Layout]: Child {} has the size dependent "
+                "on the parent, but the parent does not have a maximum size constraint. "
+                "Please set the maximum constraint to non-zero.", 
+                geode::format_as(c)
+            ));
         }
         c->setAnchor(Anchor::TopLeft);
         c->setPosition({0,0});
@@ -46,7 +51,10 @@ void FillFlowContainer::setFillDirection(FillDirection dir) {
 
 void FillFlowContainer::addChild(CCNode* node) {
     auto con = dynamic_cast<Container*>(node);
-    assert(("we at osu!framework requires their child to be a Container in some occasion thanks",con==nullptr));
+    assert((
+        "we at osu!framework requires their child to be a Container in some occasion thanks",
+        con==nullptr
+    ));
     CCNode::addChild(node);
     auto cs = con->getSizeConstraints();
     // change the constraints

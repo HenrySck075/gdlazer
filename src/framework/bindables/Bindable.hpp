@@ -28,7 +28,6 @@ public:
     T operator->() {return value;}
 
     T operator=(T C) {
-        log::debug("[Bindable]: lel");
         if (C != value) {
             value = C;
             dispatchEvent(new ValueChangedEvent(C));

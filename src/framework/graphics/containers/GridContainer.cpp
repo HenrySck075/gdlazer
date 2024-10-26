@@ -1,12 +1,14 @@
 #include "GridContainer.hpp"
 
-float calcSize(float size, float s, Dimension dim) {
+float calcSize(float size, float s, Dimension const& dim) {
     if (dim.mode == GridSizeMode::Relative) return s*size;
     return s;
 } 
 
 
-std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& dimensions) {
+std::vector<float> getCellSizes(
+    CCNode* on, float size, std::vector<Dimension>& dimensions
+) {
     int idx = 0;
     std::vector<float> SizeF;
     std::vector<int> Queue;
@@ -18,8 +20,14 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
 
     for (;idx<numItems;idx++) {
         auto dim = dimensions[idx];
-        if (dim.mode == GridSizeMode::Absolute || dim.mode == GridSizeMode::Relative) {
-            auto s = calcSize(size,std::max((float)dim.size, (float)dim.minSize),dim);
+        if (
+            dim.mode == GridSizeMode::Absolute 
+            || 
+            dim.mode == GridSizeMode::Relative
+        ) {
+            auto s = calcSize(
+                size, std::max((float)dim.size, (float)dim.minSize), dim
+            );
             // might be better to just let it take the entire space, 
             // but i didnt support multicell allocation yet,
             // nor did the osu!framework implementation
@@ -32,8 +40,12 @@ std::vector<float> getCellSizes(CCNode* on, float size, std::vector<Dimension>& 
             remainingSize -= s;
         } else {
             log::debug("[getCellSizes (GridLayout)]: crazy");
-            if (dim.mode == GridSizeMode::AutoSize) {AutoSizeQueue.push_back(idx);}
-            else {Queue.push_back(idx);}
+            if (dim.mode == GridSizeMode::AutoSize) {
+                AutoSizeQueue.push_back(idx);
+            }
+            else {
+                Queue.push_back(idx);
+            }
         }
     }
     auto qcount = Queue.size();
@@ -96,7 +108,9 @@ void GridLayout::apply(CCNode* on) {
     int x = 0, y = 0;
     for (auto* c : nodes) {
         c->setContentSize(CCSize{colSize[colidx], rowSize[rowidx]});
-        c->setPosition(x,typeinfo_cast<Container*>(c)!=nullptr?y:nodeSize.height-y);
+        c->setPosition(
+            x,typeinfo_cast<Container*>(c)!=nullptr?y:nodeSize.height-y
+        );
         x+=colSize[colidx];
         colidx++;
         if (colidx==numcols) {
@@ -108,12 +122,18 @@ void GridLayout::apply(CCNode* on) {
     }
 };
 
-bool GridContainer::init(std::vector<Dimension> columnDimensions, std::vector<Dimension> rowDimensions) {
+bool GridContainer::init(
+    std::vector<Dimension> columnDims, std::vector<Dimension> rowDims
+) {
     if (!Container::init()) return false;
-    setLayout(GridLayout::create(columnDimensions, rowDimensions));
+    setLayout(GridLayout::create(columnDims, rowDims));
     addListener("nodeLayoutUpdate",[this](NodeEvent* ee){
         auto e = static_cast<NodeLayoutUpdate*>(ee);
-        if (e->type == NodeLayoutUpdateType::Size || e->type == NodeLayoutUpdateType::All) updateLayout();
+        if (
+            e->type == NodeLayoutUpdateType::Size 
+            || 
+            e->type == NodeLayoutUpdateType::All
+        ) updateLayout();
     });
     return true;
 };
