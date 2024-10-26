@@ -1,6 +1,7 @@
 #include "OsuLogo.hpp"
 #include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
 #include <cmath>
+#include <numeric>
 
 float lin2dB(float linear)
 {
@@ -30,25 +31,33 @@ bool OsuLogo::init() {
       logoSprite->setID("m");
       this->ClickableContainer::setContentSize(logoSprite->getContentSize());
       logoSprite->setPosition(logoSprite->getContentSize() / 2);
-      logoSprite->setScale(0.8);
+      logoSprite->setScale(0.6);
       this->addChild(logoSprite);
   }
+  audio = AudioManager::get();
+
+  // run update
+  scheduleUpdate();
   return true;
 }
 void OsuLogo::update(float delta) {
-  CCNode::update(delta);
-  /*
-  auto spectrum = instance->getCurrentSpectrum();
-  auto ss = instance->getSampleSize();
-  float vol = 0;
-  // todo: average
-  for (int i = 0; i<ss; i++) {
-    float m = spectrum[i];
-    if (m>vol) vol=m;
-  }
-  float sc = lin2dB(vol);
-  
-  static_cast<CCResizableSprite*>(this->getChildByID("m"))->setScale(0.8+sc/40/10);
+    CCNode::update(delta);
+    float dominantVol;
+    // currently always return 0
+    audio->getDSP()->getParameterFloat(3, &dominantVol,nullptr,0);
+    setScale(0.9+(dominantVol/2));
+    /*
+    auto spectrum = instance->getCurrentSpectrum();
+    auto ss = instance->getSampleSize();
+    float vol = 0;
+    // todo: average
+    for (int i = 0; i<ss; i++) {
+        float m = spectrum[i];
+        if (m>vol) vol=m;
+    }
+    float sc = lin2dB(vol);
+    
+    static_cast<CCResizableSprite*>(this->getChildByID("m"))->setScale(0.8+sc/40/10);
   */
 }
 /*

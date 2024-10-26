@@ -27,7 +27,7 @@ void SettingsPanel::onOpen() {
     sidebar->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
     ));
-    auto s = OsuGame::get()->getChildByID("screens");
+    auto s = OsuGame::get()->getChildByIDRecursive("screens");
     if (s->getActionByTag(7)) s->stopActionByTag(7);
     s->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(
@@ -50,7 +50,7 @@ void SettingsPanel::onClose() {
         ),5
     ));
 
-    auto s = OsuGame::get()->getChildByID("screens");
+    auto s = OsuGame::get()->getChildByIDRecursive("screens");
     s->stopActionByTag(7);
     s->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0}),5

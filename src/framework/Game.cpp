@@ -53,7 +53,7 @@ public:
     void removeChild(CCNode* child) override {
         if (m_pChildren->count()==1) {
             runAction(CCFadeOut::create(0.25));
-            static_cast<Game*>(m_pParent)->dispatchEvent(new ReturnFromOverlay());
+            Game::get()->g();
         }
         auto c = static_cast<OverlayContainer*>(child);
         if (m_pActionManager->numberOfRunningActionsInTarget(c) != 0) overlayPopQueue.push_back(c);
@@ -105,10 +105,12 @@ bool Game::init() {
     // j
     scheduleUpdate();
 
-    addListener(returnEventsToScreen, [this](NodeEvent* e){
-        current = *(screenStack.begin()+screenStack.size()-1);
-    });
     return true;
+}
+
+void Game::g() {
+    log::debug("[Game]: fwenujiowonoeeeeee");
+    current = static_cast<Screen*>(screenStack.inner()->lastObject());
 }
 
 /*
@@ -128,6 +130,7 @@ Screen* Game::pushScreen(Screen* s) {
     screensContainer->addChild(s);
     s->onEntering(e);
     screenStack.push_back(s);
+    log::debug("[Game]: {}", screenStack.size());
     current = s;
 
     updateTitle();
@@ -241,7 +244,6 @@ bool Game::dispatchEvent(NodeEvent* event) {
             current->dispatchEvent(event);
         }
     } else {
-        screensContainer->setContentSize({getContentWidth(),getContentHeight()-offset});
         main->setContentSize({getContentWidth(),getContentHeight()-offset});
     }
     return true;

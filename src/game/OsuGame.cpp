@@ -123,16 +123,18 @@ void OsuGame::nextMusic() {
 void OsuGame::showToolbar() {
     toolbar->show();
     offset = main->processUnit(ToolbarConstants::HEIGHT,Unit::UIKit,false);
+    auto s = CCNode::getContentSize();
     main->runAction(easingsActions::CCEaseOut::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()-offset),5
+        CCResizeTo::create(0.5,s.width,s.height-offset),5
     ));
 }
 
 void OsuGame::hideToolbar() {
     toolbar->hide();
     offset = 0;
+    auto s = CCNode::getContentSize();
     main->runAction(easingsActions::CCEaseOut::create(
-        CCResizeTo::create(0.5,getContentWidth(),getContentHeight()),5
+        CCResizeTo::create(0.5,s.width,s.height),5
     ));
 }
 

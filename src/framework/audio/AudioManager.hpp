@@ -40,6 +40,8 @@ class AudioManager : public cocos2d::CCNode {
 
     void onSongEnd();
 public:
+    FMOD::DSP* getDSP() {return dsp;}
+
     static AudioManager* get();
     bool init();
 

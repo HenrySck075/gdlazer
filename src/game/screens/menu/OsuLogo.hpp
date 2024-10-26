@@ -6,12 +6,13 @@
 #include "../../graphics/containers/beatsync/BeatEvent.hpp"
 */
 #include "../../../framework/graphics/containers/ClickableContainer.hpp"
+#include "../../../framework/audio/AudioManager.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
 class OsuLogo : public ClickableContainer {
 private:
-    //BeatDetector* instance;
+    AudioManager* audio;
     int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  
     void onMouseEnter() override {};

@@ -85,7 +85,7 @@ bool Background::init() {
     );
     setCascadeOpacityEnabled(true);
     setOpacity(255);
-    setColor({0,0,0});
+    setColor({0,0,0,0});
     setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
     addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
         //auto e = static_cast<NodeLayoutUpdate*>(ev);

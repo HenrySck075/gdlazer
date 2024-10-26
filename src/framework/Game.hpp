@@ -45,6 +45,7 @@ protected:
         instance->retain();
         return instance;
     }
+    void g();
 public:
     static Game* get() {
         if (instance == nullptr) return createInstance();
@@ -96,6 +97,8 @@ public:
     void updateTitle();
 
     void update(float dt);
+
+    friend class OverlaysWatcherContainer;
 };
 
 /*

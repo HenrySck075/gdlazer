@@ -19,6 +19,14 @@ bool AudioManager::init() {
     
     sys->createDSPByType(FMOD_DSP_TYPE_FFT, &dsp);
     masterChannel->addDSP(7, dsp);
+    
+    int params;
+    dsp->getNumParameters(&params);
+    for (int i = 0; i<params; i++) {
+        FMOD_DSP_PARAMETER_DESC* j;
+        dsp->getParameterInfo(i, &j);
+        log::debug("Description of parameter {}:\n{}",i, j->description);
+    }
 
     return true;
 }
