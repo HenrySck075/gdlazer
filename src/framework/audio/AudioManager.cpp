@@ -79,9 +79,6 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
         sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
         sys->playSound(sound,nullptr,true,&channel);
         seek(0);
-        seek(0);
-        seek(0);
-        seek(0);
         if (channelNotCreated) {
             channel->setCallback(&fmodSoundCallback);
             channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
@@ -103,6 +100,7 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
             channel->addFadePoint((unsigned long long)pos, 1);
         }
         channel->setPaused(paused);
+        Game::get()->dispatchEvent(new MusicStarted());
     };
     if (sound && fadeTime>0 && !ended) {
         runAction(cocos2d::CCSequence::create(

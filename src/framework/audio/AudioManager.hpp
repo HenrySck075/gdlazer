@@ -9,8 +9,10 @@
 
 namespace {
     extern char const musicEnded[] = "musicEnded";
+    extern char const musicStarted[] = "musicStarted";
 }
 using MusicEnded = NamedNodeEvent<musicEnded>;
+using MusicStarted = NamedNodeEvent<musicStarted>;
 
 /// FMODAudioEngine 2
 ///

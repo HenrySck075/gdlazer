@@ -23,6 +23,9 @@ bool MainMenu::init() {
     buttonSysParallax->addChild(buttonSys);
     this->addChild(buttonSysParallax);
 
+    addListener("musicStarted", [this](NodeEvent*) {
+        bg->switchBackground();
+    });
     return true;
 }
 
