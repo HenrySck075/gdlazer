@@ -18,7 +18,6 @@ class Screen;
 class Game : public CCScene, public EventTarget {
 protected:
     float offset = 0;
-    static Game* instance;
 
     CCArrayExt<Screen*> screenStack;
     CCArrayExt<Screen*> screenPopQueue;
@@ -34,26 +33,16 @@ protected:
 
     /// can be overlay or screen
     Container* current = nullptr;
-
-    static Game* createInstance() {
-        Game* ret = new Game(); 
-        if (ret && ret->init()) { ret->autorelease(); } 
-        else { 
-            do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
-        }; 
-        instance = ret;
-        instance->retain();
-        return instance;
-    }
     void g();
-public:
-    static Game* get() {
-        if (instance == nullptr) return createInstance();
-        return instance;
-    }
 
-    void startMusicSequence();
-    void nextMusic();
+    static Game* createInstance();
+protected:
+    /// set the current instance
+    static void setInstance(Game* instance);
+    /// get the current instance
+    static Game* getInstance();
+public:
+    static Game* get();
 
     void e() {
         auto m = CCDirector::sharedDirector()->getOpenGLView()->getDesignResolutionSize();

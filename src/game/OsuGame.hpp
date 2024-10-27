@@ -39,12 +39,12 @@ private:
         else { 
             do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
         }; 
-        instance = ret;
-        instance->retain();
+        setInstance(ret);
         return instance;
     }
 public:
     static OsuGame* get() {
+        auto instance = typeinfo_cast<OsuGame*>(getInstance());
         if (instance == nullptr) return createInstance();
         return instance;
     }

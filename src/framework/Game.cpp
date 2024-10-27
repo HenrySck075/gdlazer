@@ -48,6 +48,7 @@ public:
 
     void addChild(CCNode* child) override {
         if (m_pChildren && m_pChildren->count()==0) runAction(CCFadeIn::create(0.25));
+        log::debug("[OverlaysWatcherContainer]: what the fuck is it even smoking | {}", child);
         Container::addChild(child);
     }
     void removeChild(CCNode* child) override {
@@ -60,8 +61,30 @@ public:
     }
 };
 
-Game* Game::instance = nullptr;
+static Game* instance = nullptr;
 
+Game* Game::createInstance() 
+{
+    Game* ret = new Game(); 
+    if (ret && ret->init()) { ret->autorelease(); } 
+    else { 
+        do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
+    }; 
+    setInstance(instance);
+    return instance;
+}
+void Game::setInstance(Game* game) {
+    if (instance) instance->release();
+    instance = game;
+    instance->retain();
+};
+Game* Game::getInstance() {
+    return instance;
+}
+Game* Game::get() {
+    if (instance == nullptr) return createInstance();
+    return instance;
+}
 /// TODO: Move overlays opening/closing logic to (Osu)OverlayContainer
 bool Game::init() {
     CCScene::init();
@@ -94,9 +117,6 @@ bool Game::init() {
         newWindowProcSet = true;
     }
 #endif
-    // making m_pChildren non-nullptr
-    overlaysContainer->addChild(CCNode::create());
-    overlaysContainer->removeAllChildren();
     overlaysContainer->setColor({0,0,0,127});
 
     overlaysContainer->setCascadeOpacityEnabled(false);
@@ -160,6 +180,7 @@ void Game::pushOverlay(OverlayContainer* o) {
         o->show();
         return;
     }
+    log::debug("[Game]: actually show overlay");
     overlaysContainer->addChild(o);
     current = overlaysContainer;
 }

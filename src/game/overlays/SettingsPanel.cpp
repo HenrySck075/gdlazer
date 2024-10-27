@@ -9,7 +9,7 @@ const float SettingsPanel::PANEL_WIDTH = 400;
 const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel::PANEL_WIDTH;
 
 bool SettingsPanel::init() {
-    if (!OverlayContainer::init()) return false;
+    if (!OsuOverlayContainer::init()) return false;
     setColor({0,0,0});
     sidebar = SettingsSidebar::create();
     sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);

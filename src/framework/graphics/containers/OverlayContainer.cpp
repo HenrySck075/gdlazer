@@ -17,10 +17,14 @@ bool OverlayContainer::init() {
         if (static_cast<KeypadEvent*>(e)->key == kTypeBackClicked) hide();
     });
     shown.addCallback([this](NodeEvent* e){
-        if (static_cast<ValueChangedEvent<bool>*>(e)->value) {
+        log::debug("[OverlayContainer]: {}", shown.operator bool());
+        if ((bool)shown) {
+            log::debug("[OverlayContainer]: show overlay");
+            if (IsDebuggerPresent()) DebugBreak();
             Game::get()->pushOverlay(this);
         }
         else {
+            log::debug("[OverlayContainer]: hide overlay");
             Game::get()->popOverlay(this);
         }
     });
