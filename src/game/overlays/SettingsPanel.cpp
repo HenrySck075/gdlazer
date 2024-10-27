@@ -20,10 +20,6 @@ bool SettingsPanel::init() {
 void SettingsPanel::onOpen() {
     stopAllActions();
     sidebar->stopAllActions();
-    runAction(CCSequence::createWithTwoActions(
-        CCFadeTo::create(0.2,180),
-        CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH-0.2)
-    ));
     sidebar->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
     ));
@@ -39,10 +35,9 @@ void SettingsPanel::onOpen() {
 void SettingsPanel::onClose() {
     stopAllActions();
     sidebar->stopAllActions();
-    runAction(CCSequence::createWithTwoActions(
-        CCFadeTo::create(0.2,0),
-        CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH-0.2)
-    ));
+    runAction(
+        CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH)
+    );
     sidebar->runAction(easingsActions::CCEaseOut::create(
         CCMoveTo::create(
             SettingsPanel::TRANSITION_LENGTH,

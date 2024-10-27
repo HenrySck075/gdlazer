@@ -12,8 +12,6 @@ protected:
     Container* main;
 public:
     bool init();
-    void onClose() override;
-    void checkActions(float);
 
     void onClick(MouseEvent* e) override {
         auto j = boundingBoxFromContentSize(main);

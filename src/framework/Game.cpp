@@ -32,28 +32,31 @@ public:
 
     bool init() {
         if (!Container::init()) return false;
-        setColor({0,0,0,127});
+        setColor({0,0,0});
         setOpacity(0);
         scheduleUpdate();
         return true;
     }
 
     void update(float dt) override {
+        decltype(overlayPopQueue) popRemoveList;
         for (OverlayContainer* i : overlayPopQueue) {
             if (m_pActionManager->numberOfRunningActionsInTarget(i) == 0) {
                 CCNode::removeChild(i);
+                popRemoveList.push_back(i);
             }
         }
+        for (OverlayContainer* i : popRemoveList) overlayPopQueue.inner()->removeObject(i);
     }
 
     void addChild(CCNode* child) override {
-        if (m_pChildren && m_pChildren->count()==0) runAction(CCFadeIn::create(0.25));
+        if (!m_pChildren || m_pChildren->count()==0) runAction(CCFadeTo::create(0.25,127));
         log::debug("[OverlaysWatcherContainer]: what the fuck is it even smoking | {}", child);
         Container::addChild(child);
     }
     void removeChild(CCNode* child) override {
         if (m_pChildren->count()==1) {
-            runAction(CCFadeOut::create(0.25));
+            runAction(CCFadeTo::create(0.25,0));
             Game::get()->g();
         }
         auto c = static_cast<OverlayContainer*>(child);

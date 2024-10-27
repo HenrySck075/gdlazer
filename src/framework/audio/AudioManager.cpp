@@ -66,7 +66,6 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
 };
 
 void AudioManager::onSongEnd() {
-    paused = true;
     ended = true;
     log::debug("[AudioManager]: song ended, dispatching music ended event");
     Game::get()->dispatchEvent(new MusicEnded());
@@ -76,10 +75,13 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
     unsigned int prevFadePoint = 0;
     auto playNewSound = [this,filePath,fadeTime,&prevFadePoint]{
         if (sound) sound->release();
-        seek(0);
         bool channelNotCreated = !channel;
         sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
         sys->playSound(sound,nullptr,true,&channel);
+        seek(0);
+        seek(0);
+        seek(0);
+        seek(0);
         if (channelNotCreated) {
             channel->setCallback(&fmodSoundCallback);
             channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);

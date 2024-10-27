@@ -31,21 +31,3 @@ bool OverlayContainer::init() {
     return true;
 }
 
-void OverlayContainer::onClose() {
-    if (m_pActionManager->numberOfRunningActionsInTarget(this)!=0) {
-        m_pScheduler->scheduleSelector(
-            schedule_selector(OverlayContainer::checkActions),this,1,false
-        );
-    }
-    else removeFromParent();
-}
-
-void OverlayContainer::checkActions(float) {
-    if (m_pActionManager->numberOfRunningActionsInTarget(this)==0) {
-        removeFromParent();
-        m_pScheduler->unscheduleSelector(
-            schedule_selector(OverlayContainer::checkActions), 
-            this
-        );
-    }
-}

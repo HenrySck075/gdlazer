@@ -27,7 +27,7 @@ struct LevelToolsCustomSong : geode::Modify<LevelToolsCustomSong, LevelTools> {
     }
     static gd::string getAudioFileName(int trackID) {
         switch (trackID) {
-            case -7: return "triangles.mp3"_spr;
+            case -7: return "triangle.mp3"_spr;
             case -8: return "StereoMadness.mp3";
             default: return LevelTools::getAudioFileName(trackID);
         }
@@ -104,16 +104,13 @@ bool OsuGame::init() {
             levelDownloadCount.push_back(level->m_downloads);
         }
     }
-    addListener(MusicEnded::eventname, [this](NodeEvent*){
-        nextMusic();
-    });
 
     return true;
 }
 void OsuGame::startMusicSequence() {
     playlistIndex = -1;
     nextMusic();
-    addListener(MusicEnded::eventname, std::bind(&OsuGame::nextMusic,this));
+    addListener("musicEnded", std::bind(&OsuGame::nextMusic,this));
 };
 // currently only supports sequenced, shuffle soon idk
 void OsuGame::nextMusic() {

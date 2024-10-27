@@ -45,12 +45,12 @@ public:
     static AudioManager* get();
     bool init();
 
-    void set(gd::string filePath, float fadeTime = 0.25);
+    void set(gd::string filePath, float fadeTime);
     void play() {
         paused = false;
         channel->setPaused(false);
     };
-    void playFromLevel(GJGameLevel* level, float fadeTime = 0.25);
+    void playFromLevel(GJGameLevel* level, float fadeTime);
     void stop() {
         paused = true;
         channel->setPaused(true);
