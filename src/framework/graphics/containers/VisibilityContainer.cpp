@@ -2,20 +2,20 @@
 
 
 bool VisibilityContainer::init() {
-    if (!Container::init()) return false;
-    shown.addCallback([this](NodeEvent* e) {
-        if (static_cast<ValueChangedEvent<bool>*>(e)->value) onOpen();
-        else onClose(); 
-    });
-    return true;
+  if (!Container::init()) return false;
+  shown.addCallback([this](NodeEvent* e) {
+    if (static_cast<ValueChangedEvent<bool>*>(e)->value) onOpen();
+    else onClose(); 
+  });
+  return true;
 }
 
 void VisibilityContainer::show() {
-    shown = true;
+  shown = true;
 };
 void VisibilityContainer::hide() {
-    shown = false;
+  shown = false;
 };
 void VisibilityContainer::toggleVisibility() {
-    shown = !(bool)shown;
+  shown = !(bool)shown;
 };

@@ -26,17 +26,17 @@ CCRect flipRect(CCRect rect);
 #endif
 
 #define create_class(classname, initfunc, ...) \
-    classname* ret = new classname();          \
-    if (ret && ret->initfunc(__VA_ARGS__)) {   \
-      ret->autorelease();                      \
-    } else {                                   \
-      CC_SAFE_RELEASE_NULL(ret);               \
-    };                                         \
-    return ret
+  classname* ret = new classname();      \
+  if (ret && ret->initfunc(__VA_ARGS__)) {   \
+    ret->autorelease();            \
+  } else {                   \
+    CC_SAFE_RELEASE_NULL(ret);         \
+  };                     \
+  return ret
 
 #define default_create(classname) \
-  static noinline classname* create() {    \
-    create_class(classname, init);\
+  static noinline classname* create() {  \
+  create_class(classname, init);\
   }
 
 #define degreeToRadius(deg) deg/360*M_PI
@@ -59,10 +59,10 @@ template<class ParentType = CCNode>
 ParentType* getParentOfType(CCNode* node){
   CCNode* parent = node->getParent();
   while (parent!=nullptr) {
-    if (didImplements<ParentType>(parent)) {
-      return static_cast<ParentType*>(parent);
-    };
-    parent = parent->getParent();
+  if (didImplements<ParentType>(parent)) {
+    return static_cast<ParentType*>(parent);
+  };
+  parent = parent->getParent();
   }
   return nullptr;
 }

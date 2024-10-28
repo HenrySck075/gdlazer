@@ -9,13 +9,13 @@
 // @note Cascade opacity has been disabled
 class OverlayContainer : public VisibilityContainer {
 protected:
-    Container* main;
+  Container* main;
 public:
-    bool init();
+  bool init();
 
-    void onClick(MouseEvent* e) override {
-        auto j = boundingBoxFromContentSize(main);
-        if (!j.containsPoint(e->position)) onDismiss();
-    }
-    virtual void onDismiss() {hide();}
+  void onClick(MouseEvent* e) override {
+    auto j = boundingBoxFromContentSize(main);
+    if (!j.containsPoint(e->position)) onDismiss();
+  }
+  virtual void onDismiss() {hide();}
 };

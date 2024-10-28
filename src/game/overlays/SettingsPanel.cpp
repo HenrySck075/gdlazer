@@ -9,51 +9,51 @@ const float SettingsPanel::PANEL_WIDTH = 400;
 const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel::PANEL_WIDTH;
 
 bool SettingsPanel::init() {
-    if (!OsuOverlayContainer::init()) return false;
-    setColor({0,0,0});
-    sidebar = SettingsSidebar::create();
-    sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
-    addChild(sidebar);
-    return true;
+  if (!OsuOverlayContainer::init()) return false;
+  setColor({0,0,0});
+  sidebar = SettingsSidebar::create();
+  sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
+  addChild(sidebar);
+  return true;
 }
 
 void SettingsPanel::onOpen() {
-    stopAllActions();
-    sidebar->stopAllActions();
-    sidebar->runAction(easingsActions::CCEaseOut::create(
-        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
-    ));
-    auto s = OsuGame::get()->getChildByIDRecursive("screens");
-    if (s->getActionByTag(7)) s->stopActionByTag(7);
-    s->runAction(easingsActions::CCEaseOut::create(
-        CCMoveTo::create(
-            SettingsPanel::TRANSITION_LENGTH, 
-            {(float)SettingsSidebar::EXPANDED_WIDTH/4,0}
-        ),5
-    ))->setTag(7);
+  stopAllActions();
+  sidebar->stopAllActions();
+  sidebar->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
+  ));
+  auto s = OsuGame::get()->getChildByIDRecursive("screens");
+  if (s->getActionByTag(7)) s->stopActionByTag(7);
+  s->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(
+      SettingsPanel::TRANSITION_LENGTH, 
+      {(float)SettingsSidebar::EXPANDED_WIDTH/4,0}
+    ),5
+  ))->setTag(7);
 }
 void SettingsPanel::onClose() {
-    stopAllActions();
-    sidebar->stopAllActions();
-    runAction(
-        CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH)
-    );
-    sidebar->runAction(easingsActions::CCEaseOut::create(
-        CCMoveTo::create(
-            SettingsPanel::TRANSITION_LENGTH,
-            {-SettingsSidebar::EXPANDED_WIDTH,0}
-        ),5
-    ));
+  stopAllActions();
+  sidebar->stopAllActions();
+  runAction(
+    CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH)
+  );
+  sidebar->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(
+      SettingsPanel::TRANSITION_LENGTH,
+      {-SettingsSidebar::EXPANDED_WIDTH,0}
+    ),5
+  ));
 
-    auto s = OsuGame::get()->getChildByIDRecursive("screens");
-    s->stopActionByTag(7);
-    s->runAction(easingsActions::CCEaseOut::create(
-        CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0}),5
-    ))->setTag(7);
+  auto s = OsuGame::get()->getChildByIDRecursive("screens");
+  s->stopActionByTag(7);
+  s->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0}),5
+  ))->setTag(7);
 }
 // wacky ik
 void SettingsPanel::onDismiss() {
-    // static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->deselect();
+  // static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->deselect();
 }
 
 
@@ -62,7 +62,7 @@ void SettingsPanel::onDismiss() {
  */
 
 void SettingsSections::onSectionSelect(Container* old, Container* new_) {
-    SectionsContainer::onSectionSelect(old, new_);
-    old->setOpacity(200);
-    new_->setOpacity(255);
+  SectionsContainer::onSectionSelect(old, new_);
+  old->setOpacity(200);
+  new_->setOpacity(255);
 };

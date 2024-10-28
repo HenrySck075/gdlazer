@@ -1,9 +1,9 @@
 enum ModType
 {
-    DifficultyReduction,
-    DifficultyIncrease,
-    Conversion,
-    Automation,
-    Fun,
-    System
+  DifficultyReduction,
+  DifficultyIncrease,
+  Conversion,
+  Automation,
+  Fun,
+  System
 };

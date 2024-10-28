@@ -6,19 +6,19 @@ using namespace geode::prelude;
 
 class Triangles : public Container {
 private:
-    ccColor3B m_triangleColor;
+  ccColor3B m_triangleColor;
 
-    bool init(int quantity, ccColor3B color);
+  bool init(int quantity, ccColor3B color);
 
-    // TODO: tweak this because cocos2d space is not based on real window size
-    float triangle_size = 100;
-    float base_velocity = 50;
+  // TODO: tweak this because cocos2d space is not based on real window size
+  float triangle_size = 100;
+  float base_velocity = 50;
 
-    CCSprite* makeTriangle();
-    void spawnTriangle();
-    // mf crashes when the node does not have a parent :laugh:
-    void assignAction(CCNode* node, float startTime);
+  CCSprite* makeTriangle();
+  void spawnTriangle();
+  // mf crashes when the node does not have a parent :laugh:
+  void assignAction(CCNode* node, float startTime);
 public:
-    static Triangles* create(int quantity, ccColor3B baseColor);
+  static Triangles* create(int quantity, ccColor3B baseColor);
 };
 

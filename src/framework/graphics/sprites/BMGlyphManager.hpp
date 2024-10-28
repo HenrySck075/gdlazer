@@ -24,8 +24,8 @@
 BMFont definition
 */
 struct ccBMFontDefExt : public cocos2d::ccBMFontDef {
-    //! The page number this character lives
-    unsigned int page;
+  //! The page number this character lives
+  unsigned int page;
 };
 
 
@@ -36,87 +36,87 @@ struct ccBMFontDefExt : public cocos2d::ccBMFontDef {
 */
 class BMGlyphFontConfig : public cocos2d::CCObject
 {
-    // XXX: Creating a public interface so that the bitmapFontArray[] is accessible
+  // XXX: Creating a public interface so that the bitmapFontArray[] is accessible
 public://@public
-    // BMFont definitions
-    std::map<int, ccBMFontDefExt> m_pFontDefDictionary;
+  // BMFont definitions
+  std::map<int, ccBMFontDefExt> m_pFontDefDictionary;
 
-    //! FNTConfig: Common Height Should be signed (issue #1343)
-    int m_nCommonHeight;
-    //! Padding
-    cocos2d::ccBMFontPadding    m_tPadding;
-    //! atlas name
-    std::map<int, std::string> m_sAtlasNames;
-    //! values for kerning
-    cocos2d::tCCKerningHashElement *m_pKerningDictionary;
-    
-    // Character Set defines the letters that actually exist in the font
-    std::set<unsigned int> *m_pCharacterSet;
+  //! FNTConfig: Common Height Should be signed (issue #1343)
+  int m_nCommonHeight;
+  //! Padding
+  cocos2d::ccBMFontPadding  m_tPadding;
+  //! atlas name
+  std::map<int, std::string> m_sAtlasNames;
+  //! values for kerning
+  cocos2d::tCCKerningHashElement *m_pKerningDictionary;
+  
+  // Character Set defines the letters that actually exist in the font
+  std::set<unsigned int> *m_pCharacterSet;
 public:
-    BMGlyphFontConfig() : m_pFontDefDictionary()
-    , m_nCommonHeight(0)
-    , m_pKerningDictionary(NULL)
-    , m_pCharacterSet(NULL)
+  BMGlyphFontConfig() : m_pFontDefDictionary()
+  , m_nCommonHeight(0)
+  , m_pKerningDictionary(NULL)
+  , m_pCharacterSet(NULL)
+  {
+
+  };
+  /**
+   *  @js NA
+   *  @lua NA
+   */
+  virtual ~BMGlyphFontConfig() {
+    geode::log::debug( "[IconConstructor]: deallocing BMGlyphFontConfig" );
+    this->purgeFontDefDictionary();
+    this->purgeKerningDictionary();
+    m_sAtlasNames.clear();
+    CC_SAFE_DELETE(m_pCharacterSet);
+  };
+  /**
+   *  @js NA
+   *  @lua NA
+   */
+  std::string  description(){
+    return fmt::format(
+      "<BMGlyphFontConfig [BMGlyphManager] | Glphys:{} Kernings:{} | Images = {}>",
+      m_pFontDefDictionary.size(),
+      HASH_COUNT(m_pKerningDictionary),
+      m_sAtlasNames
+    ).c_str();
+  };
+
+  /** allocates a BMGlyphFontConfig with a FNT file */
+  static BMGlyphFontConfig * create(std::string FNTfile) {
+    create_class(BMGlyphFontConfig, initWithFNTfile, FNTfile);
+  };
+
+  /** initializes a BitmapFontConfiguration with a FNT file */
+  bool initWithFNTfile(std::string FNTfile){
+    m_pKerningDictionary = NULL;
+    m_pFontDefDictionary = {};
+    
+    m_pCharacterSet = this->parseConfigFile(FNTfile);
+    
+    if (! m_pCharacterSet)
     {
+      return false;
+    }
 
-    };
-    /**
-     *  @js NA
-     *  @lua NA
-     */
-    virtual ~BMGlyphFontConfig() {
-        geode::log::debug( "[IconConstructor]: deallocing BMGlyphFontConfig" );
-        this->purgeFontDefDictionary();
-        this->purgeKerningDictionary();
-        m_sAtlasNames.clear();
-        CC_SAFE_DELETE(m_pCharacterSet);
-    };
-    /**
-     *  @js NA
-     *  @lua NA
-     */
-    std::string  description(){
-        return fmt::format(
-            "<BMGlyphFontConfig [BMGlyphManager] | Glphys:{} Kernings:{} | Images = {}>",
-            m_pFontDefDictionary.size(),
-            HASH_COUNT(m_pKerningDictionary),
-            m_sAtlasNames
-        ).c_str();
-    };
-
-    /** allocates a BMGlyphFontConfig with a FNT file */
-    static BMGlyphFontConfig * create(std::string FNTfile) {
-        create_class(BMGlyphFontConfig, initWithFNTfile, FNTfile);
-    };
-
-    /** initializes a BitmapFontConfiguration with a FNT file */
-    bool initWithFNTfile(std::string FNTfile){
-        m_pKerningDictionary = NULL;
-        m_pFontDefDictionary = {};
-        
-        m_pCharacterSet = this->parseConfigFile(FNTfile);
-        
-        if (! m_pCharacterSet)
-        {
-            return false;
-        }
-
-        return true;
-    };
-    
-    inline std::map<int, std::string> getAtlasNames(){ return m_sAtlasNames; }
-    //inline void setAtlasName(const char* atlasName) { m_sAtlasName = atlasName; }
-    
-    std::set<unsigned int>* getCharacterSet() const {return m_pCharacterSet;};
+    return true;
+  };
+  
+  inline std::map<int, std::string> getAtlasNames(){ return m_sAtlasNames; }
+  //inline void setAtlasName(const char* atlasName) { m_sAtlasName = atlasName; }
+  
+  std::set<unsigned int>* getCharacterSet() const {return m_pCharacterSet;};
 private:
-    std::set<unsigned int>* parseConfigFile(std::string controlFile);
-    void parseCharacterDefinition(std::string line, ccBMFontDefExt *characterDefinition);
-    void parseInfoArguments(std::string line);
-    void parseCommonArguments(std::string line);
-    void parseImageFileName(std::string line, std::string fntFile);
-    void parseKerningEntry(std::string line);
-    void purgeKerningDictionary();
-    void purgeFontDefDictionary();
+  std::set<unsigned int>* parseConfigFile(std::string controlFile);
+  void parseCharacterDefinition(std::string line, ccBMFontDefExt *characterDefinition);
+  void parseInfoArguments(std::string line);
+  void parseCommonArguments(std::string line);
+  void parseImageFileName(std::string line, std::string fntFile);
+  void parseKerningEntry(std::string line);
+  void purgeKerningDictionary();
+  void purgeFontDefDictionary();
 };
 
 /** @brief BMGlyphManager is a modification of BMGlyphManager that supports multiple pages
@@ -134,54 +134,54 @@ http://www.angelcode.com/products/bmfont/ (Free, Windows only)
 class BMGlyphManager : public cocos2d::CCObject
 {
 public:
-    /**
-     *  @js ctor
-     */
-    BMGlyphManager()
-    : m_pConfiguration(nullptr)
-    , m_tImageOffset(CCPointZero)
-    {
+  /**
+   *  @js ctor
+   */
+  BMGlyphManager()
+  : m_pConfiguration(nullptr)
+  , m_tImageOffset(CCPointZero)
+  {
 
-    };
-    /**
-     *  @js NA
-     *  @lua NA
-     */
-    virtual ~BMGlyphManager() {
-        CC_SAFE_RELEASE(m_pConfiguration);
-    };
-    /** Purges the cached data.
-    Removes from memory the cached configurations and the atlas name dictionary.
-    @since v0.99.3
-    */
-    static void purgeCachedData() {};
+  };
+  /**
+   *  @js NA
+   *  @lua NA
+   */
+  virtual ~BMGlyphManager() {
+    CC_SAFE_RELEASE(m_pConfiguration);
+  };
+  /** Purges the cached data.
+  Removes from memory the cached configurations and the atlas name dictionary.
+  @since v0.99.3
+  */
+  static void purgeCachedData() {};
 
-    static BMGlyphManager* getForFontName(std::string fntFile);
+  static BMGlyphManager* getForFontName(std::string fntFile);
 private:
-    /** creates a bitmap font atlas with an initial string and the FNT file */
-    static BMGlyphManager* create(std::string fntFile, CCPoint imageOffset = {0,0}) {
-        create_class(BMGlyphManager, init, fntFile, imageOffset);
-    };
+  /** creates a bitmap font atlas with an initial string and the FNT file */
+  static BMGlyphManager* create(std::string fntFile, CCPoint imageOffset = {0,0}) {
+    create_class(BMGlyphManager, init, fntFile, imageOffset);
+  };
 
-    /** init a bitmap font atlas with an initial string and the FNT file */
-    bool init(std::string fntFile, CCPoint imageOffset = CCPointZero);
+  /** init a bitmap font atlas with an initial string and the FNT file */
+  bool init(std::string fntFile, CCPoint imageOffset = CCPointZero);
 public:
-    CCResizableSprite* getCharacter(int id);
+  CCResizableSprite* getCharacter(int id);
 
 	BMGlyphFontConfig* getConfiguration() const {return m_pConfiguration;};
-    
-    /// this will saves some iterations :3
-    CCDictionaryExt<int, CCTexture2D*> m_dTextures;
-protected:    
-    // name of fntFile
-    std::string m_sFntFile;
-    
-    BMGlyphFontConfig *m_pConfiguration;
-    
-    // offset of the texture atlas
-    CCPoint    m_tImageOffset;
-    
-    // we can't reuse chars here, since we need to generate a new one every `getCharacter`
+  
+  /// this will saves some iterations :3
+  CCDictionaryExt<int, CCTexture2D*> m_dTextures;
+protected:  
+  // name of fntFile
+  std::string m_sFntFile;
+  
+  BMGlyphFontConfig *m_pConfiguration;
+  
+  // offset of the texture atlas
+  CCPoint  m_tImageOffset;
+  
+  // we can't reuse chars here, since we need to generate a new one every `getCharacter`
 
 
 };

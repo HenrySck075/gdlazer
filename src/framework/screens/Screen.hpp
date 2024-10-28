@@ -7,29 +7,29 @@ class ScreenTransitionEvent;
 
 class ScreenTransitionNotifier : public NodeEvent {
 public:
-    Screen* caller;
-    ScreenTransitionNotifier(std::string name, Screen* c) : NodeEvent("og"+name), caller(c) {}
+  Screen* caller;
+  ScreenTransitionNotifier(std::string name, Screen* c) : NodeEvent("og"+name), caller(c) {}
 };
 
 // idgaf imo
 class Screen : public Container {
 protected:
-    // title
-    std::string m_title = "";
-    
+  // title
+  std::string m_title = "";
+  
 public:
-    std::string title() {return m_title;}
-    void title(std::string newTitle) {m_title = newTitle;}
+  std::string title() {return m_title;}
+  void title(std::string newTitle) {m_title = newTitle;}
 
-    static Screen* create() {
-        create_class(Screen, init);
-    };
-    virtual void backButton() {}
-    bool init() override;
-    virtual void onEntering(ScreenTransitionEvent e) {};
-    virtual void onExiting(ScreenTransitionEvent e) {};
+  static Screen* create() {
+    create_class(Screen, init);
+  };
+  virtual void backButton() {}
+  bool init() override;
+  virtual void onEntering(ScreenTransitionEvent e) {};
+  virtual void onExiting(ScreenTransitionEvent e) {};
 
-    // when?
-    virtual void onSuspending(ScreenTransitionEvent e) {};
-    virtual void onResuming(ScreenTransitionEvent e) {};
+  // when?
+  virtual void onSuspending(ScreenTransitionEvent e) {};
+  virtual void onResuming(ScreenTransitionEvent e) {};
 };

@@ -4,9 +4,9 @@
 
 class SettingsSidebar : public Container {
 public: 
-    static const float CONTRACTED_WIDTH;
-    static const float EXPANDED_WIDTH;
+  static const float CONTRACTED_WIDTH;
+  static const float EXPANDED_WIDTH;
 
-    bool init();
-    default_create(SettingsSidebar);
+  bool init();
+  default_create(SettingsSidebar);
 };

@@ -8,10 +8,10 @@ using namespace geode::prelude;
 
 class BeatmapCarousel : public Container {
 private:
-    DrawableCarouselBeatmap* currentItem = nullptr;
+  DrawableCarouselBeatmap* currentItem = nullptr;
 public:
-    bool init(GJLevelList* list);
-    static BeatmapCarousel* create(GJLevelList* list) {
-        create_class(BeatmapCarousel, init, list);
-    };
+  bool init(GJLevelList* list);
+  static BeatmapCarousel* create(GJLevelList* list) {
+    create_class(BeatmapCarousel, init, list);
+  };
 };

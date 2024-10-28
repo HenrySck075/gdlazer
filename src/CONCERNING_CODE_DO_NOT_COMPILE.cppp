@@ -13,93 +13,93 @@
 
 #ifdef GEODE_IS_ANDROID
 static void* getLibHandle(const char* libName) {
-    static void* handle = dlopen(libName, RTLD_LAZY | RTLD_NOLOAD);
-    return handle;
+  static void* handle = dlopen(libName, RTLD_LAZY | RTLD_NOLOAD);
+  return handle;
 }
 #endif
 
 uintptr_t getBaseOf(const char* libName) {
 #ifdef GEODE_IS_ANDROID
-    static std::uintptr_t basePtr = 0u;
-    if (basePtr == 0u) {
-        auto handle = getLibHandle(libName);
+  static std::uintptr_t basePtr = 0u;
+  if (basePtr == 0u) {
+    auto handle = getLibHandle(libName);
 
-        // JNI_OnLoad is present on all versions of GD
-        auto sym = dlsym(handle, "JNI_OnLoad");
-        assert(sym != nullptr);
+    // JNI_OnLoad is present on all versions of GD
+    auto sym = dlsym(handle, "JNI_OnLoad");
+    assert(sym != nullptr);
 
-        Dl_info p;
-        auto dlAddrRes = dladdr(sym, &p);
-        assert(dlAddrRes != 0);
+    Dl_info p;
+    auto dlAddrRes = dladdr(sym, &p);
+    assert(dlAddrRes != 0);
 
-        basePtr = reinterpret_cast<std::uintptr_t>(p.dli_fbase);
-    }
+    basePtr = reinterpret_cast<std::uintptr_t>(p.dli_fbase);
+  }
 
-    return basePtr;
+  return basePtr;
 #endif
 #ifdef GEODE_IS_WINDOWS 
-    static uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleA(libName));
-    return base;
+  static uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleA(libName));
+  return base;
 #endif
 #ifdef GEODE_IS_MACOS
-    static uintptr_t base = []() {
-            // dyld man page says this is unsafe but idc
-            auto image_count = _dyld_image_count();
+  static uintptr_t base = []() {
+      // dyld man page says this is unsafe but idc
+      auto image_count = _dyld_image_count();
 
-            for (auto i = 0u; i < image_count; i++) {
-                std::string_view image_name = _dyld_get_image_name(i);
-                if (!image_name.ends_with(".dylib")) {
-                    return _dyld_get_image_vmaddr_slide(i) + 0x100000000;
-                }
-            }
+      for (auto i = 0u; i < image_count; i++) {
+        std::string_view image_name = _dyld_get_image_name(i);
+        if (!image_name.ends_with(".dylib")) {
+          return _dyld_get_image_vmaddr_slide(i) + 0x100000000;
+        }
+      }
 
-            // we couldn't find the base, so just assume it's 0
-            // should probably have an error for this, but geode::log isn't available yet
-            return _dyld_get_image_vmaddr_slide(0) + 0x100000000;
-        }();
-        return base;
+      // we couldn't find the base, so just assume it's 0
+      // should probably have an error for this, but geode::log isn't available yet
+      return _dyld_get_image_vmaddr_slide(0) + 0x100000000;
+    }();
+    return base;
 #endif
 };
 
 static std::map<std::string, uintptr_t> addressMap = {
-    {"Android64", 0x0049bf5c}
+  {"Android64", 0x0049bf5c}
 };
 
 geode::Hook* hook;
 
 void ModsLayer_onBack(auto* self, cocos2d::CCObject* o) {
-    if (hook) hook->enable();
-    uintptr_t balls = (getBaseOf("Geode" GEODE_PLATFORM_EXTENSION)+addressMap[GEODE_PLATFORM_NAME]);
-    reinterpret_cast<void(*)(int64_t)>(balls)(self);
-    if (hook) hook->disable();
+  if (hook) hook->enable();
+  uintptr_t balls = (getBaseOf("Geode" GEODE_PLATFORM_EXTENSION)+addressMap[GEODE_PLATFORM_NAME]);
+  reinterpret_cast<void(*)(int64_t)>(balls)(self);
+  if (hook) hook->disable();
 };
 
 void replaceScene(cocos2d::CCDirector* self, cocos2d::CCScene* scene) {
-    self->popScene();
+  self->popScene();
 }
 
 $execute {
-    auto mod = geode::Mod::get();
+  auto mod = geode::Mod::get();
 
-    hook = mod->hook(
-        reinterpret_cast<void*>(
-            geode::addresser::getNonVirtual(&cocos2d::CCDirector::replaceScene)
-        ),
-        &replaceScene,
-        "e",
-        tulip::hook::TulipConvention::Thiscall
-    ).unwrapOr(nullptr);
-    if (hook) {
-        hook->setAutoEnable(false);
-        hook->disable();
-    }
+  hook = mod->hook(
+    reinterpret_cast<void*>(
+      geode::addresser::getNonVirtual(&cocos2d::CCDirector::replaceScene)
+    ),
+    &replaceScene,
+    "e",
+    tulip::hook::TulipConvention::Thiscall
+  ).unwrapOr(nullptr);
+  if (hook) {
+    hook->setAutoEnable(false);
+    hook->disable();
+  }
 
-    mod->hook( 
-        reinterpret_cast<void*>(
-            getBaseOf("Geode" GEODE_PLATFORM_EXTENSION)+addressMap[GEODE_PLATFORM_NAME]
-        ),
-        &ModsLayer_onBack,
-        "ModsLayer::onBack",
-        tulip::hook::TulipConvention::Thiscall
-    );
+  mod->hook( 
+    reinterpret_cast<void*>(
+      getBaseOf("Geode" GEODE_PLATFORM_EXTENSION)+addressMap[GEODE_PLATFORM_NAME]
+    ),
+    &ModsLayer_onBack,
+    "ModsLayer::onBack",
+    tulip::hook::TulipConvention::Thiscall
+  );
 }

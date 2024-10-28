@@ -2,18 +2,18 @@
 #include <type_traits>
 
 float randomFloat() {
-    return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+  return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 bool randomBool() {
-    return randomFloat() >= 0.5;
+  return randomFloat() >= 0.5;
 }
 
 
 // get the original content size since Container overrides it
 CCSize getRealScaledContentSize(CCNode* node) {
-    auto sizeUnscaled = node->CCNode::getContentSize(); 
-    return CCSize{sizeUnscaled.width*node->getScaleX(), sizeUnscaled.height*node->getScaleY()};
+  auto sizeUnscaled = node->CCNode::getContentSize(); 
+  return CCSize{sizeUnscaled.width*node->getScaleX(), sizeUnscaled.height*node->getScaleY()};
 }
 /// <summary>
 /// im suck at naming so uhm read the code
@@ -21,30 +21,30 @@ CCSize getRealScaledContentSize(CCNode* node) {
 /// <param name="node"></param>
 /// <returns>the node's bottom-left position</returns>
 CCPoint getPositionAnchorAware(CCNode* node) {
-    auto pos = node->CCNode::getPosition();
-    auto size = getRealScaledContentSize(node);
-    auto anchor = node->isIgnoreAnchorPointForPosition() ? CCPoint{0,0} : node->getAnchorPoint();
+  auto pos = node->CCNode::getPosition();
+  auto size = getRealScaledContentSize(node);
+  auto anchor = node->isIgnoreAnchorPointForPosition() ? CCPoint{0,0} : node->getAnchorPoint();
 
-    return CCPoint{ pos.x - size.width * anchor.x,pos.y - size.height * anchor.y };
+  return CCPoint{ pos.x - size.width * anchor.x,pos.y - size.height * anchor.y };
 }
 
 CCRect boundingBoxFromContentSize(CCNode* node) {
-    auto size = getRealScaledContentSize(node);
+  auto size = getRealScaledContentSize(node);
 
-    auto pos = getPositionAnchorAware(node);
-    auto parent = node->getParent();
-    while (parent != nullptr) {
-        pos += getPositionAnchorAware(parent);
-        //log::debug("[boundingBoxFromContentSize]:n pos: {} | parent: {}", pos, parent);
-        parent = parent->getParent();
-    }
+  auto pos = getPositionAnchorAware(node);
+  auto parent = node->getParent();
+  while (parent != nullptr) {
+    pos += getPositionAnchorAware(parent);
+    //log::debug("[boundingBoxFromContentSize]:n pos: {} | parent: {}", pos, parent);
+    parent = parent->getParent();
+  }
 
-    return CCRect{ pos.x, pos.y, size.width, size.height };
+  return CCRect{ pos.x, pos.y, size.width, size.height };
 }
 
 CCRect flipRect(CCRect rect) {
-    auto ws = CCDirector::sharedDirector()->getWinSize();
-    return CCRect{ rect.getMinX(),ws.height - rect.getMinY() + rect.size.height,rect.size.width, rect.size.height };
+  auto ws = CCDirector::sharedDirector()->getWinSize();
+  return CCRect{ rect.getMinX(),ws.height - rect.getMinY() + rect.size.height,rect.size.width, rect.size.height };
 }
 
 
@@ -55,8 +55,8 @@ CCRect flipRect(CCRect rect) {
 std::string& trim( std::string& s, char c, bool reverse )
 {
   return reverse
-    ? s.erase( s.find_last_not_of( c ) + 1 )
-    : s.erase( 0, s.find_first_not_of( c ) );
+  ? s.erase( s.find_last_not_of( c ) + 1 )
+  : s.erase( 0, s.find_first_not_of( c ) );
 }
 
 template<typename TargetType, typename ComparingType>
@@ -78,19 +78,19 @@ float uiHeightToGL(float length) {
 #endif
 std::string getNodeName(CCObject* node){
 #ifdef GEODE_IS_WINDOWS
-    return typeid(*node).name() + 6;
+  return typeid(*node).name() + 6;
 #else 
-    {
-        std::string ret;
+  {
+    std::string ret;
 
-        int status = 0;
-        auto demangle = abi::__cxa_demangle(typeid(*node).name(), 0, 0, &status);
-        if (status == 0) {
-            ret = demangle;
-        }
-        free(demangle);
-
-        return ret;
+    int status = 0;
+    auto demangle = abi::__cxa_demangle(typeid(*node).name(), 0, 0, &status);
+    if (status == 0) {
+      ret = demangle;
     }
+    free(demangle);
+
+    return ret;
+  }
 #endif
 }

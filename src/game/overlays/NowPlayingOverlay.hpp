@@ -5,18 +5,18 @@
 
 class NowPlayingOverlay : public OsuOverlayContainer {
 private:
-    const float player_width = 400;
-    const float player_height = 130;
-    const float transition_length = 800;
-    const float progress_height = 10;
-    const float bottom_black_area_height = 55;
-    const float margin = 10;
+  const float player_width = 400;
+  const float player_height = 130;
+  const float transition_length = 800;
+  const float progress_height = 10;
+  const float bottom_black_area_height = 55;
+  const float margin = 10;
 
-    AudioManager* ctrl;
+  AudioManager* ctrl;
 public:
-    bool init();
-    default_create(NowPlayingOverlay);
+  bool init();
+  default_create(NowPlayingOverlay);
 
-    void onOpen() {};
-    void onClose() {};
+  void onOpen() {};
+  void onClose() {};
 };

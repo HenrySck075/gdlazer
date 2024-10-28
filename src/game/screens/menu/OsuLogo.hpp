@@ -12,28 +12,28 @@ using namespace geode::prelude;
 
 class OsuLogo : public ClickableContainer {
 private:
-    AudioManager* audio;
-    int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
+  AudioManager* audio;
+  int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  
-    void onMouseEnter() override {};
-    void onMouseExit() override {};
-    //void onBeat(float delta) override;
-    void onMouseUp(MouseEvent* event) override {};
-    void onMouseDown(MouseEvent* event) override {};
-    void onClick(MouseEvent* e) override {};
-    void update(float delta);
+  void onMouseEnter() override {};
+  void onMouseExit() override {};
+  //void onBeat(float delta) override;
+  void onMouseUp(MouseEvent* event) override {};
+  void onMouseDown(MouseEvent* event) override {};
+  void onClick(MouseEvent* e) override {};
+  void update(float delta);
 
-    static OsuLogo* create() {
-        OsuLogo *ret = new OsuLogo();
-        if (ret && ret->init()) {
-            ret->ClickableContainer::autorelease();
-        } else {
-            if (ret) {
-                delete (ret);
-            }
-        }
-        return ret;
+  static OsuLogo* create() {
+    OsuLogo *ret = new OsuLogo();
+    if (ret && ret->init()) {
+      ret->ClickableContainer::autorelease();
+    } else {
+      if (ret) {
+        delete (ret);
+      }
     }
-    bool init();
+    return ret;
+  }
+  bool init();
 
 };

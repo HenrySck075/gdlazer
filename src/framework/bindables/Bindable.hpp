@@ -2,14 +2,14 @@
 #include "Event.hpp"
 
 namespace {
-    extern char const valueChanged[] = "valueChanged";
+  extern char const valueChanged[] = "valueChanged";
 };
 
 template<typename T>
 class ValueChangedEvent : public NamedNodeEvent<valueChanged> {
 public:
-    const T& value;
-    ValueChangedEvent(const T& val) : NamedNodeEvent(), value(val) {}
+  const T& value;
+  ValueChangedEvent(const T& val) : NamedNodeEvent(), value(val) {}
 };
 
 /// An [EventTarget] holding a value
@@ -18,30 +18,30 @@ public:
 /// TODO: Remove Reactive
 template<typename T>
 class Bindable : public EventTarget {
-    T value;
+  T value;
 public:
-    Bindable(const T& val) : value(val) {
-        log::debug("[Bindable]: hi chat im alive");
-    };
+  Bindable(const T& val) : value(val) {
+    log::debug("[Bindable]: hi chat im alive");
+  };
 
-    // lel
-    T operator->() {return value;}
+  // lel
+  T operator->() {return value;}
 
-    T operator=(T C) {
-        if (C != value) {
-            value = C;
-            dispatchEvent(new ValueChangedEvent(C));
-        }
-        return value;
+  T operator=(T C) {
+    if (C != value) {
+      value = C;
+      dispatchEvent(new ValueChangedEvent(C));
     }
+    return value;
+  }
 
-    operator T() {return value;}
+  operator T() {return value;}
 
-    void addCallback(Callback callback) {
-        addListener(valueChanged, callback);
-    }
+  void addCallback(Callback callback) {
+    addListener(valueChanged, callback);
+  }
 
-    void removeCallback(Callback callback) {
-        removeListener(valueChanged, callback);
-    }
+  void removeCallback(Callback callback) {
+    removeListener(valueChanged, callback);
+  }
 };

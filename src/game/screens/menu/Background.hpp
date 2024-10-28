@@ -11,16 +11,16 @@ using meow = Task<std::string>;
 
 class Background : public Container {
 private:
-    matjson::Array m_backgrounds = {};
-    EventListener<meow> m_backgroundGetListener;
-    EventListener<web::WebTask> m_seasonalBgsListener;
-    std::string roll();
-    CCResizableSprite* m_background;
-    bool m_rescale = false;
+  matjson::Array m_backgrounds = {};
+  EventListener<meow> m_backgroundGetListener;
+  EventListener<web::WebTask> m_seasonalBgsListener;
+  std::string roll();
+  CCResizableSprite* m_background;
+  bool m_rescale = false;
 public:
-    static Background* create() {
-        create_class(Background, init);
-    };
-    bool init();
-    void switchBackground();
+  static Background* create() {
+    create_class(Background, init);
+  };
+  bool init();
+  void switchBackground();
 };

@@ -5,18 +5,18 @@
 using namespace cocos2d;
 
 enum MouseEventType {
-    Enter, Exit, Click, MouseDown, MouseUp, Move, MouseScroll
+  Enter, Exit, Click, MouseDown, MouseUp, Move, MouseScroll
 };
 
 // mouse event 2
 class MouseEvent : public NodeEvent {
 public:
-    CCPoint position = CCPoint(0,0);
-    MouseEventType eventType;
-    // not implemented yet
-    bool leftClick = true;
+  CCPoint position = CCPoint(0,0);
+  MouseEventType eventType;
+  // not implemented yet
+  bool leftClick = true;
 
-    MouseEvent(MouseEventType event, CCPoint pos) : NodeEvent("mouseEvent"), position(pos), eventType(event) {
-        setDispatchingFlow(DispatchingFlow::Down);
-    };
+  MouseEvent(MouseEventType event, CCPoint pos) : NodeEvent("mouseEvent"), position(pos), eventType(event) {
+    setDispatchingFlow(DispatchingFlow::Down);
+  };
 };

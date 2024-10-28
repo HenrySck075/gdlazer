@@ -14,39 +14,39 @@ enum class DispatchingFlow {Up, Down};
 // For use in EventTarget
 class NodeEvent : public CCObject {
 private:
-    bool m_stopPropagate = false;
-    bool m_stopImmediatePropagate = false;
-    bool m_cancelled = false;
-    DispatchingFlow m_dispatchingFlow = DispatchingFlow::Up;
-    EventTarget* m_target = nullptr;
+  bool m_stopPropagate = false;
+  bool m_stopImmediatePropagate = false;
+  bool m_cancelled = false;
+  DispatchingFlow m_dispatchingFlow = DispatchingFlow::Up;
+  EventTarget* m_target = nullptr;
 
 protected:
-    bool m_log = false;
-    std::string m_eventName = "";
+  bool m_log = false;
+  std::string m_eventName = "";
 public:
-    EventTarget* target() {return m_target;};
-    NodeEvent() {
-        throw "kill yourself";
-    }; // i cant delete this
-    NodeEvent(std::string name) : m_eventName(name) {
-        autorelease();
-    };
-    virtual std::string eventName() {return m_eventName;};
-    virtual void eventName(std::string newName) {m_eventName = newName;};
+  EventTarget* target() {return m_target;};
+  NodeEvent() {
+    throw "kill yourself";
+  }; // i cant delete this
+  NodeEvent(std::string name) : m_eventName(name) {
+    autorelease();
+  };
+  virtual std::string eventName() {return m_eventName;};
+  virtual void eventName(std::string newName) {m_eventName = newName;};
 
-    void setDispatchingFlow(DispatchingFlow flow) {m_dispatchingFlow = flow;}
+  void setDispatchingFlow(DispatchingFlow flow) {m_dispatchingFlow = flow;}
 
-    // Stop any further event dispatchs further in the tree
-    void stopPropagation() {m_stopPropagate = true;}
-    // Stop any further event dispatchs further in the tree AND the current child list
-    void stopImmediatePropagation() {m_stopImmediatePropagate = true;}
-    // Cancels the event
-    void preventDefault() {m_cancelled = true;}
+  // Stop any further event dispatchs further in the tree
+  void stopPropagation() {m_stopPropagate = true;}
+  // Stop any further event dispatchs further in the tree AND the current child list
+  void stopImmediatePropagation() {m_stopImmediatePropagate = true;}
+  // Cancels the event
+  void preventDefault() {m_cancelled = true;}
 
-    void logging(bool enable) {m_log = enable;}
+  void logging(bool enable) {m_log = enable;}
 
-    friend class Container;
-    friend class EventTarget;
+  friend class Container;
+  friend class EventTarget;
 };
 
 // wrapper for geode events
@@ -55,17 +55,17 @@ public:
 template<is_event T>
 class GeodeEvent : public NodeEvent {
 private:
-    T m_event;
+  T m_event;
 public:
-    GeodeEvent(std::string name) = delete;
-    GeodeEvent(T event, std::string name) : NodeEvent(name), m_event(event) {}
+  GeodeEvent(std::string name) = delete;
+  GeodeEvent(T event, std::string name) : NodeEvent(name), m_event(event) {}
 };
 
 /// TODO: Use Event typeinfo for event name
 template<char const* name>
 class NamedNodeEvent : public NodeEvent {
 public:
-    NamedNodeEvent() : NodeEvent(name) {}
-    ///! Use this to get the name of the event
-    static constexpr auto eventname = name;
+  NamedNodeEvent() : NodeEvent(name) {}
+  ///! Use this to get the name of the event
+  static constexpr auto eventname = name;
 };

@@ -8,13 +8,13 @@
 
 class SectionsContainer : public ScrollableContainer {
 private:
-    FillFlowContainer* contentsContainer;
+  FillFlowContainer* contentsContainer;
 protected:
-    Reactive<Container*> currentSection;
+  Reactive<Container*> currentSection;
 public:
-    bool init();
-    default_create(SectionsContainer);
+  bool init();
+  default_create(SectionsContainer);
 
-    void addChild(CCNode* node);
-    virtual void onSectionSelect(Container* old, Container* new_);
+  void addChild(CCNode* node);
+  virtual void onSectionSelect(Container* old, Container* new_);
 };

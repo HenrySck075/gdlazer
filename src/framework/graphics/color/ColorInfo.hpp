@@ -9,12 +9,12 @@ struct ColorInfo {
   bool hasSingleColor;
 
   static ColorInfo singleColor(Color4 c) {
-    return {c,c,c,c,true};
+  return {c,c,c,c,true};
   }
   static ColorInfo gradientHorizontal(Color4 c1, Color4 c2) {
-    return {c1,c1,c2,c2,false};
+  return {c1,c1,c2,c2,false};
   }
   static ColorInfo gradientVertical(Color4 c1, Color4 c2) {
-    return {c1,c2,c1,c2,false};
+  return {c1,c2,c1,c2,false};
   }
 };

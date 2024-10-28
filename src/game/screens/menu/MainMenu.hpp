@@ -14,45 +14,45 @@ using namespace geode::prelude;
 using MenuSideFlashes = CCLayer;
 
 class MainMenu final : public Screen {
-    ButtonSystem* buttonSys;
-    Background* bg;
-    ParallaxContainer* buttonSysParallax;
-    CCMoveToModifiable* logoMoveAction;
+  ButtonSystem* buttonSys;
+  Background* bg;
+  ParallaxContainer* buttonSysParallax;
+  CCMoveToModifiable* logoMoveAction;
 public:
-    float FADE_IN_DURATION = 300;
+  float FADE_IN_DURATION = 300;
 
-    float FADE_OUT_DURATION = 400;
+  float FADE_OUT_DURATION = 400;
 
-    bool hideOverlaysOnEnter = false;//buttons == nullptr;// || Buttons.State == ButtonSystemState.Initial;
+  bool hideOverlaysOnEnter = false;//buttons == nullptr;// || Buttons.State == ButtonSystemState.Initial;
 
-    static MainMenu* create();
-    bool init();
+  static MainMenu* create();
+  bool init();
 
-    // open the menu
-    void onLogoClickIdle();
+  // open the menu
+  void onLogoClickIdle();
 private:
-    void debugReturn(CCObject *t);
-    void onExiting(ScreenTransitionEvent e) override {
-        // setVisible(false);
-        if (e.Destination == nullptr) removeFromParent();
-        else {
-            setCascadeOpacityEnabled(true);
-            runAction(CCSequence::createWithTwoActions(
-                CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
-                CCFadeOut::create(1)
-            ));
-            buttonSys->area->hide(
-                buttonSys->area->getCurrent().value(), true, true
-            );
-        }
+  void debugReturn(CCObject *t);
+  void onExiting(ScreenTransitionEvent e) override {
+    // setVisible(false);
+    if (e.Destination == nullptr) removeFromParent();
+    else {
+      setCascadeOpacityEnabled(true);
+      runAction(CCSequence::createWithTwoActions(
+        CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
+        CCFadeOut::create(1)
+      ));
+      buttonSys->area->hide(
+        buttonSys->area->getCurrent().value(), true, true
+      );
     }
-    //BeatDetector* detector;
+  }
+  //BeatDetector* detector;
 
-    CCLayer* songSelect;
+  CCLayer* songSelect;
 
-    MenuSideFlashes sideFlashes;
+  MenuSideFlashes sideFlashes;
 
 protected:
-    int idkTho = 0;
-    //ButtonSystem buttons;
+  int idkTho = 0;
+  //ButtonSystem buttons;
 };

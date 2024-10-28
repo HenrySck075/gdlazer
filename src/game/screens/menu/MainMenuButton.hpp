@@ -15,72 +15,72 @@ using namespace geode::prelude;
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
 class MainMenuButton : public ClickableContainer {
-    Color4 m_color = Color4(0,0,0,0);
-    float const BOUNCE_COMPRESSION = 0.9f;
-    float const HOVER_SCALE = 1.2f;
-    float const BOUNCE_ROTATION = 8;
-    bool m_askForUpdate = false;
+  Color4 m_color = Color4(0,0,0,0);
+  float const BOUNCE_COMPRESSION = 0.9f;
+  float const HOVER_SCALE = 1.2f;
+  float const BOUNCE_ROTATION = 8;
+  bool m_askForUpdate = false;
 
-    CCScale9Sprite* background;
-    CCScale9Sprite* hover;
+  CCScale9Sprite* background;
+  CCScale9Sprite* hover;
 /*
-    public readonly Key[] TriggerKeys;
+  public readonly Key[] TriggerKeys;
 
-    protected override Container<Drawable> Content => content;
-    private readonly Container content;
-    */
+  protected override Container<Drawable> Content => content;
+  private readonly Container content;
+  */
 
-    const char* label;
+  const char* label;
 
-    /// <summary>
-    /// The menu state for which we are visible for (assuming only one).
-    /// </summary>
+  /// <summary>
+  /// The menu state for which we are visible for (assuming only one).
+  /// </summary>
 public:
-    /*
-    ButtonSystemState VisibleState
+  /*
+  ButtonSystemState VisibleState
+  {
+    set
     {
-        set
-        {
-            VisibleStateMin = value;
-            VisibleStateMax = value;
-        }
+      VisibleStateMin = value;
+      VisibleStateMax = value;
     }
-    */
-    /*
-    public new MarginPadding Padding
-    {
-        get => Content.Padding;
-        set => Content.Padding = value;
-    }
-    */
+  }
+  */
+  /*
+  public new MarginPadding Padding
+  {
+    get => Content.Padding;
+    set => Content.Padding = value;
+  }
+  */
    void askForUpdate(bool e) {m_askForUpdate = e;}
 
 protected:
-    CCSize BaseSize = CCSize(0,0);//CCSize(ButtonSystem.BUTTON_WIDTH, ButtonArea.BUTTON_AREA_HEIGHT);
+  CCSize BaseSize = CCSize(0,0);//CCSize(ButtonSystem.BUTTON_WIDTH, ButtonArea.BUTTON_AREA_HEIGHT);
 
 
 private:
-    void onMouseEnter() override;
-    void onMouseExit() override;
-    void onMouseDown(MouseEvent* event) override;
-    void onMouseUp(MouseEvent* event) override;
-    void onClick(MouseEvent* e) override;
+  void onMouseEnter() override;
+  void onMouseExit() override;
+  void onMouseDown(MouseEvent* event) override;
+  void onMouseUp(MouseEvent* event) override;
+  void onClick(MouseEvent* e) override;
 
-    CCSize initialSize = CCSize(0,0);//baseSize + content->getContentSize();
+  CCSize initialSize = CCSize(0,0);//baseSize + content->getContentSize();
 
-    const char* sampleHover = "button-hover.wav"_spr;
-    // list of key that causes the click event
-    std::vector<enumKeyCodes> activationKeys = {};
+  const char* sampleHover = "button-hover.wav"_spr;
+  // list of key that causes the click event
+  std::vector<enumKeyCodes> activationKeys = {};
 
 public:
-    static MainMenuButton* create(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
-        create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
-    };
-    bool init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
-    void setContentSize(const CCSize& s) override;
-    void setOpacity(GLubyte opacity) override {
-        GLubyte old = hover->getOpacity();
-        Container::setOpacity(opacity);
-        hover->setOpacity(old);
-    }
+  static MainMenuButton* create(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
+    create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
+  };
+  bool init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
+  void setContentSize(const CCSize& s) override;
+  void setOpacity(GLubyte opacity) override {
+    GLubyte old = hover->getOpacity();
+    Container::setOpacity(opacity);
+    hover->setOpacity(old);
+  }
 };

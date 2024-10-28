@@ -16,68 +16,68 @@ class Screen;
 // funny
 class OsuGame : public Game {
 private:
-    float offset = 0;
-    static OsuGame* instance;
+  float offset = 0;
+  static OsuGame* instance;
 
-    Toolbar* toolbar;
+  Toolbar* toolbar;
 
-    float bgVol = 1;
-    float sfxVol = 1;
-    float volMult = 1;
-    bool volMultChange = false;
+  float bgVol = 1;
+  float sfxVol = 1;
+  float volMult = 1;
+  bool volMultChange = false;
   
-    /// preloaded overlays
-    CCDictionaryExt<std::string, OverlayContainer*> overlays;
+  /// preloaded overlays
+  CCDictionaryExt<std::string, OverlayContainer*> overlays;
 
-    /// list of level songs to play
-    CCArrayExt<GJGameLevel*> mainPlaylist;
-    int playlistIndex = 0;
+  /// list of level songs to play
+  CCArrayExt<GJGameLevel*> mainPlaylist;
+  int playlistIndex = 0;
 
-    static OsuGame* createInstance() {
-        OsuGame* ret = new OsuGame(); 
-        if (ret && ret->init()) { ret->autorelease(); } 
-        else { 
-            do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
-        }; 
-        setInstance(ret);
-        return instance;
-    }
+  static OsuGame* createInstance() {
+    OsuGame* ret = new OsuGame(); 
+    if (ret && ret->init()) { ret->autorelease(); } 
+    else { 
+      do { if (ret) { (ret)->release(); (ret) = 0; } } while (0); 
+    }; 
+    setInstance(ret);
+    return instance;
+  }
 public:
-    static OsuGame* get() {
-        auto instance = typeinfo_cast<OsuGame*>(getInstance());
-        if (instance == nullptr) return createInstance();
-        return instance;
-    }
+  static OsuGame* get() {
+    auto instance = typeinfo_cast<OsuGame*>(getInstance());
+    if (instance == nullptr) return createInstance();
+    return instance;
+  }
 
-    void startMusicSequence();
-    void nextMusic();
+  void startMusicSequence();
+  void nextMusic();
 
-    bool init();
+  bool init();
 
-    void showToolbar();
-    void hideToolbar();
+  void showToolbar();
+  void hideToolbar();
 
-    void showSettings();
-    void hideSettings();
+  void showSettings();
+  void hideSettings();
   
-    void onLoseFocus();
-    void onFocus();
+  void onLoseFocus();
+  void onFocus();
 
-    void checkForQueue();
+  void checkForQueue();
 
-    // on android, this does nothing
-    void updateTitle();
+  // on android, this does nothing
+  void updateTitle();
 
 };
 
 /*
 $execute {
-    new EventListener<AttributeSetFilter>(
-        +[](AttributeSetEvent* event) {
-            auto osuGame = OsuGame::sharedScene();
-            osuGame->
-        },
-        AttributeSetFilter()
-    );
+  new EventListener<AttributeSetFilter>(
+    +[](AttributeSetEvent* event) {
+      auto osuGame = OsuGame::sharedScene();
+      osuGame->
+    },
+    AttributeSetFilter()
+  );
 }
 */

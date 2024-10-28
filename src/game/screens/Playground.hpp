@@ -8,6 +8,6 @@
 
 class Playground final : public Screen {
 public:
-    bool init();
-    default_create(Playground);
+  bool init();
+  default_create(Playground);
 };
