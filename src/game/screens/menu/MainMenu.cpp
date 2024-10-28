@@ -1,6 +1,7 @@
 #include "MainMenu.hpp"
 #include "OsuLogo.hpp"
 #include "ButtonConstants.hpp"
+#include "../../graphics/ui/OsuText.hpp"
 
 static CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
 
@@ -23,8 +24,40 @@ bool MainMenu::init() {
   buttonSysParallax->addChild(buttonSys);
   this->addChild(buttonSysParallax);
 
-  addListener("musicStarted", [this](NodeEvent*) {
+  joe = CCLayerRGBA::create();
+  joe->setAnchorPoint({1,1});
+  joe->ignoreAnchorPointForPosition(false);
+
+  auto songTitle = OsuText("",FontType::Regular,18,kCCTextAlignmentRight);
+  joe->addChild(songTitle);
+  auto songArtist = OsuText("",FontType::Regular,16,kCCTextAlignmentRight);
+  joe->addChild(songArtist);
+  this->addChild(joe);
+  this->setLayout(
+    ColumnLayout::create()
+  );
+  this->updateLayout();
+  
+  addListener("nodeLayoutUpdate", [this](NodeEvent* ){
+    joe->setPosition(CCNode::getContentSize()-CCSize{5,5});
+  });
+
+  addListener("musicStarted", [this,songTitle,songArtist](NodeEvent*) {
     bg->switchBackground();
+    auto a = AudioManager::get();
+    songTitle->setString(a->getSongName().c_str());
+    songArtist->setString(a->getSongAuthor().c_str());
+
+    CCArray* actions = CCArray::create(
+      CCFadeIn::create(0.25),
+      CCDelayTime::create(5),
+      CCFadeOut::create(0.75),
+      nullptr
+    );
+    if (getActionManager()->numberOfRunningActionsInTarget(actions)!=0) {
+      actions->insertObject(CCFadeOut::create(0.25),0);
+    }
+    joe->runAction(CCSequence::create(actions));
   });
   return true;
 }

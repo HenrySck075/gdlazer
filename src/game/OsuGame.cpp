@@ -10,6 +10,7 @@
 #include <Geode/binding/GJGameLevel.hpp>
 
 #include <Geode/modify/LevelTools.hpp>
+#include <random>
 struct LevelToolsCustomSong : geode::Modify<LevelToolsCustomSong, LevelTools> {
   static gd::string getAudioTitle(int trackID) {
     switch (trackID) {
@@ -86,6 +87,8 @@ bool OsuGame::init() {
   CCDictElement* e;
   CCDICT_FOREACH(onlineLevels, e) {
     auto level = static_cast<GJGameLevel*>(e->getObject());
+    log::info("[OsuGame]: {} | {} | {}", e->getStrKey(), level->m_levelName, level->m_songIDs);
+    /*
     decltype(addedSong)::iterator pos = std::find(addedSong.begin(),addedSong.end(),level->m_audioTrack);
     if (pos!=addedSong.end()) {
       // replace if the stored level download count is lower than the current one
@@ -99,11 +102,17 @@ bool OsuGame::init() {
       }
     }
     else {
+    */
       mainPlaylist.push_back(level);
-      addedSong.push_back(level->m_audioTrack);
+      if (level->m_songIDs.empty()) {
+        addedSong.push_back(level->m_audioTrack);
+      } else {
+        
+      }
       levelDownloadCount.push_back(level->m_downloads);
-    }
+    //}
   }
+  log::info("[OsuGame]:\n{}",mainPlaylist.inner());
 
   return true;
 }

@@ -18,6 +18,8 @@ class MainMenu final : public Screen {
   Background* bg;
   ParallaxContainer* buttonSysParallax;
   CCMoveToModifiable* logoMoveAction;
+
+  CCLayer* joe;
 public:
   float FADE_IN_DURATION = 300;
 

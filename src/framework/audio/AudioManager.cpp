@@ -2,6 +2,7 @@
 #include <Geode/cocos/actions/CCActionManager.h>
 #include "../../helpers/CustomActions.hpp"
 #include "../Game.hpp"
+#include <random>
 
 static AudioManager* instance;
 AudioManager* AudioManager::get() {
@@ -32,20 +33,62 @@ bool AudioManager::init() {
 }
 void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
   currentLevel = level;
-  log::debug("[AudioManager]: {}", tools->getAudioFileName(level->m_audioTrack).c_str());
+  int track = 1;
+  if (!level->m_songIDs.empty()) {
+    std::string s = level->m_songIDs;
+    std::vector<std::string> songIDs;
+    std::string delim = ",";
+    size_t pos = 0;
+    std::string token;
+    while ((pos = s.find(delim)) != std::string::npos) {
+      token = s.substr(0, pos);
+      songIDs.push_back(token);
+      s.erase(0, pos + delim.length());
+    }
+    songIDs.push_back(s);
 
+    std::vector<std::string> out;
+    std::sample(
+      songIDs.begin(),
+      songIDs.end(),
+      std::back_inserter(out),
+      1,
+      std::mt19937{std::random_device{}()}
+    );
+    
+    track = std::stoi(out[0]);
+  } else {
+    if (level->m_isUploaded) track = level->m_songID;
+    else track = level->m_audioTrack;
+  }
+
+  auto customSongInfo = MusicDownloadManager::sharedState()->getSongInfoObject(track);
   songName = currentLevel
-    ? tools->getAudioTitle(currentLevel->m_audioTrack)
+    ? (
+      // TODO: more checks
+      customSongInfo == nullptr
+      ? tools->getAudioTitle(track) 
+      : customSongInfo->m_songName
+    )
     : "The Most Mysterious Song On The Internet";
   songAuthor = currentLevel
-    ? tools->nameForArtist(tools->artistForAudio(currentLevel->m_audioTrack))
+    ? (
+      customSongInfo == nullptr
+      ? tools->nameForArtist(tools->artistForAudio(track))
+      : customSongInfo->m_artistName
+    )
     : "Unknown";
   levelName = currentLevel?currentLevel->m_levelName:"";
   levelAuthor = currentLevel?currentLevel->m_creatorName:"";
 
+  log::debug(
+    "Playing \"{}\" by {} (id: {}), used in \"{}\" by {}", 
+    songName, songAuthor, track, levelName, levelAuthor
+  );
+
   set(
     CCFileUtils::sharedFileUtils()->fullPathForFilename(
-      tools->getAudioFileName(level->m_audioTrack).c_str(),false
+      level->getAudioFileName().c_str(),false
     ),
     fadeTime
   );
@@ -75,14 +118,13 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
   unsigned int prevFadePoint = 0;
   auto playNewSound = [this,filePath,fadeTime,&prevFadePoint]{
     if (sound) sound->release();
-    bool channelNotCreated = !channel;
+    channel->setChannelGroup(nullptr);
+    channel->stop();
     sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
     sys->playSound(sound,nullptr,true,&channel);
     seek(0);
-    if (channelNotCreated) {
-      channel->setCallback(&fmodSoundCallback);
-      channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
-    }
+    channel->setCallback(&fmodSoundCallback);
+    channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
     ended = false;
     if (fadeTime>0) {
       // fading
