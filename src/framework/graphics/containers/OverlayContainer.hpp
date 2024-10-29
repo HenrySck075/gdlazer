@@ -1,10 +1,6 @@
 #pragma once
 
 #include "VisibilityContainer.hpp"
-#include "../../input/events/KeyEvent.hpp"
-#include "Geode/cocos/cocoa/CCObject.h"
-#include "Geode/cocos/keypad_dispatcher/CCKeypadDispatcher.h"
-
 // yeah thats it
 // @note Cascade opacity has been disabled
 class OverlayContainer : public VisibilityContainer {
@@ -19,3 +15,21 @@ public:
   }
   virtual void onDismiss() {hide();}
 };
+
+class OverlayEvent : public NodeEvent {
+public:
+  enum class Type {
+    Popout,
+    Popin
+  };
+private:
+  OverlayContainer* overlay;
+  OverlayEvent::Type eventType;
+public:
+  OverlayEvent(OverlayContainer* o, Type type) : overlay(o), eventType(type) {}
+
+  OverlayContainer* getOverlay() {return overlay;}
+  Type getEventType() {return eventType;}
+};
+
+

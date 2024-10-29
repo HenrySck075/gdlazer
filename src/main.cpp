@@ -411,9 +411,11 @@ class $modify(the,CCTouchDispatcher) {
 
 class keypaddelegat : public CCKeypadDelegate, public CCObject {
   void keyBackClicked() override {
+    log::debug("[main.cpp]: back");
     OsuGame::get()->dispatchEvent(new KeypadEvent(ccKeypadMSGType::kTypeBackClicked));
   }
   void keyMenuClicked() override {
+    log::debug("[main.cpp]: home");
     OsuGame::get()->dispatchEvent(new KeypadEvent(ccKeypadMSGType::kTypeMenuClicked));
   }
 };
@@ -431,7 +433,7 @@ $execute {
     }
     auto j = new keypaddelegat();
     j->autorelease();
-    CCDirector::get()->getKeypadDispatcher()->forceAddDelegate(j);
+    CCDirector::get()->getKeypadDispatcher()->addDelegate(j);
 
     // preload large glyphs (fontawesome)
     // BMGlyphManager::getForFontName("FontAwesome-Brands.fnt"_spr);

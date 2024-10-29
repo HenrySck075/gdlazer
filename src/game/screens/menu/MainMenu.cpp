@@ -38,6 +38,7 @@ bool MainMenu::init() {
   );
   joe->setContentSize({300,120});
   joe->updateLayout();
+  joe->setCascadeOpacityEnabled(true);
   
   addListener("nodeLayoutUpdate", [this](NodeEvent* ){
     joe->setPosition(CCNode::getContentSize()-CCSize{5,5});

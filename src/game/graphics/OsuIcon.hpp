@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../framework/graphics/sprites/IconConstructor.hpp"
+#include "../../framework/graphics/sprites/IconConstructor.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 

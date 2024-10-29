@@ -37,7 +37,7 @@ public:
   void setTextureRect(CCRect const& rect) {
     m_sprite->setTextureRect(rect);
     baseSize = rect.size;
-    if (getContentSize()==CCSize{0,0}) CCNode::setContentSize(baseSize);
+    if (getContentSize().equals({0,0})) CCNode::setContentSize(baseSize);
     refreshScaling();
   }
 

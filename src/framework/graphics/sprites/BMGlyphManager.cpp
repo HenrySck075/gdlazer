@@ -84,7 +84,7 @@ std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(std::string controlFi
 
   if (!contents)
   {
-    CCLOG("cocos2d: Error parsing FNTfile %s", controlFile);
+    //CCLOG("cocos2d: Error parsing FNTfile %s", controlFile);
     return nullptr;
   }
 
@@ -277,7 +277,7 @@ bool BMGlyphManager::init(std::string fntFile, CCPoint imageOffset) {
     BMGlyphFontConfig *newConf = FNTConfigLoadFile2(fntFile);
     if (!newConf)
     {
-      CCLOG("cocos2d: WARNING. CCLabelBMFont: Impossible to create font. Please check file: '%s'", fntFile);
+      log::debug("[BMGlyphManager]: Cannot create font '{}'", fntFile);
       release();
       return false;
     }

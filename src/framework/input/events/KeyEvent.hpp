@@ -27,7 +27,7 @@ public:
 class KeypadEvent final : public NodeEvent {
 public:
   ccKeypadMSGType key;
-  KeypadEvent(ccKeypadMSGType k) : NodeEvent("keyadEvent"), key(k) {
+  KeypadEvent(ccKeypadMSGType k) : NodeEvent("keypadEvent"), key(k) {
     setDispatchingFlow(DispatchingFlow::Down);
   };
 };

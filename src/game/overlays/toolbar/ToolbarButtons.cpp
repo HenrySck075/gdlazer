@@ -1,19 +1,37 @@
 #include "ToolbarButtons.hpp"
 #include "../../OsuGame.hpp"
 #include "Geode/cocos/cocoa/CCObject.h"
-
+#include "../../../framework/input/events/KeyEvent.hpp"
 /**
  * ToolbarSettingsButton
  */
 
 void ToolbarSettingsButton::select() {
-  ToolbarToggleButton::select();
   OsuGame::get()->showSettings();
 }
 
 void ToolbarSettingsButton::deselect() {
-  ToolbarToggleButton::deselect();
   OsuGame::get()->hideSettings();
+}
+
+bool ToolbarSettingsButton::init() {
+  setID("settings");
+  addListener("keyboardEvent", [this](NodeEvent *ev) {
+    auto e = static_cast<KeyboardEvent *>(ev);
+    if (e->key.ctrl && e->key.key == enumKeyCodes::KEY_O)
+      select();
+  });
+  addListener("overlayEvent", [this](NodeEvent* e){
+    auto ev = static_cast<OverlayEvent*>(e);
+    if (getNodeName(ev->getOverlay()) == "SettingsPanel") {
+      if (ev->getEventType() == OverlayEvent::Type::Popin) {
+        ToolbarToggleButton::select();
+      } else {
+        ToolbarToggleButton::deselect();
+      }
+    }
+  });
+  return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the");
 }
 
 

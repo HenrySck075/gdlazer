@@ -19,10 +19,13 @@ CCRect boundingBoxFromContentSize(CCNode* node);
 // this mf uses ypos the other way
 CCRect flipRect(CCRect rect);
 
+#define breakpoint()
+
 #ifdef __GNUC__
   #define noinline __attribute__((noinline))
 #else 
   #define noinline __declspec(noinline) 
+  #define breakpoint() if (IsDebuggerPresent()) DebugBreak()
 #endif
 
 #define create_class(classname, initfunc, ...) \
