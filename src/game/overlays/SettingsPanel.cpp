@@ -2,6 +2,7 @@
 #include "../OsuGame.hpp"
 #include "../overlays/toolbar/ToolbarToggleButton.hpp"
 #include <henrysck075.easings/include/easings.hpp>
+#include "OverlayColorProvider.hpp"
 
 const float SettingsPanel::sidebar_width = SettingsSidebar::EXPANDED_WIDTH;
 const float SettingsPanel::TRANSITION_LENGTH = 0.6;
@@ -11,9 +12,22 @@ const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel:
 bool SettingsPanel::init() {
   if (!OsuOverlayContainer::init()) return false;
   setColor({0,0,0});
+
   sidebar = SettingsSidebar::create();
   sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
-  addChild(sidebar);
+  main->addChild(sidebar);
+
+  mainPanel = Container::create();
+  mainPanel->setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
+  mainPanel->setContentSizeWithUnit({PANEL_WIDTH,100},Unit::UIKit,Unit::Percent);
+  mainPanel->setPositionWithUnit({-PANEL_WIDTH,0},Unit::UIKit,Unit::OpenGL);
+  mainPanel->setOpacity(255);
+  main->addChild(mainPanel);
+
+  main->setContentSizeWithUnit({WIDTH,100},Unit::UIKit,Unit::Percent);
+  main->setAnchor(Anchor::Left);
+  main->setAnchorPoint({0,0.5});
+
   return true;
 }
 
@@ -22,6 +36,9 @@ void SettingsPanel::onOpen() {
   sidebar->stopAllActions();
   sidebar->runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
+  ));
+  mainPanel->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{SettingsSidebar::EXPANDED_WIDTH,0}),5
   ));
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   if (s->getActionByTag(7)) s->stopActionByTag(7);
@@ -44,6 +61,9 @@ void SettingsPanel::onClose() {
       {-SettingsSidebar::EXPANDED_WIDTH,0}
     ),5
   ));
+  mainPanel->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{-PANEL_WIDTH,0}),5
+  ));
 
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   s->stopActionByTag(7);
@@ -51,11 +71,6 @@ void SettingsPanel::onClose() {
     CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0}),5
   ))->setTag(7);
 }
-// wacky ik
-void SettingsPanel::onDismiss() {
-  // static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->deselect();
-}
-
 
 /**
  * SettingsSections

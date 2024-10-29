@@ -80,15 +80,15 @@ bool WaveContainer::customSetup(CCNode* pBody) {
   this->wave3 = createWave(w,k, angle3, provider->Dark4());
   this->wave4 = createWave(w,k, angle4, provider->Dark3());
 
-  this->addChild(wave1);
-  this->addChild(wave2);
-  this->addChild(wave3);
-  this->addChild(wave4);
+  addChild(wave1);
+  addChild(wave2);
+  addChild(wave3);
+  addChild(wave4);
 
   this->body = pBody; // mb
   body->setAnchorPoint({0.5,1});
   body->setPosition({s.width/2, 0});
-  this->addChild(body);
+  addChild(body);
   body->setContentSize(k);
 
   return true;

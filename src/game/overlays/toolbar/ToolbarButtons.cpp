@@ -23,12 +23,11 @@ bool ToolbarSettingsButton::init() {
   });
   addListener("overlayEvent", [this](NodeEvent* e){
     auto ev = static_cast<OverlayEvent*>(e);
-    if (getNodeName(ev->getOverlay()) == "SettingsPanel") {
-      if (ev->getEventType() == OverlayEvent::Type::Popin) {
-        ToolbarToggleButton::select();
-      } else {
-        ToolbarToggleButton::deselect();
-      }
+    // todo: reliable way to determine if its SettingsPanel
+    if (ev->getEventType() == OverlayEvent::Type::Popin) {
+      ToolbarToggleButton::select();
+    } else {
+      ToolbarToggleButton::deselect();
     }
   });
   return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the");

@@ -65,7 +65,7 @@ bool OsuGame::init() {
   });
 
   toolbar = Toolbar::create();
-  this->addChild(toolbar);
+  addChild(toolbar);
 
   addListener("mouseEvent", [this](NodeEvent* e){
     toolbar->dispatchEvent(e);
@@ -178,25 +178,3 @@ void OsuGame::checkForQueue() {
   };
 }
 
-#ifndef GEODE_IS_ANDROID
-#include <Geode/modify/AppDelegate.hpp>
-class $modify(AppDelegate) {
-  void applicationWillBecomeActive() {
-    AppDelegate::applicationWillBecomeActive();
-    OsuGame::get()->onFocus();
-  }
-  void applicationWillResignActive() {
-    AppDelegate::applicationWillResignActive();
-    OsuGame::get()->onLoseFocus();
-  }
-  void trySaveGame(bool p0) {
-    log::info("[hook: AppDelegate]: shutdown app");
-    OsuGame::get()->release();
-    do {
-      GameManager::sharedState()->m_menuLayer->release();
-    // lel
-    } while (GameManager::sharedState()->m_menuLayer && GameManager::sharedState()->m_menuLayer->retainCount()>0);
-    AppDelegate::trySaveGame(p0);
-  }
-};
-#endif

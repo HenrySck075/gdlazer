@@ -63,8 +63,8 @@ bool IntroTriangles::init() {
   trianglesNode->setPosition(d / 2);
   trianglesNode->setAnchorPoint(CCPoint{ 0.5,0.5 });
   trianglesNode->ignoreAnchorPointForPosition(false);
-  this->addChild(label);
-  this->addChild(trianglesNode);
+  addChild(label);
+  addChild(trianglesNode);
 
   
   auto e = FMODAudioEngine::sharedEngine();
@@ -194,7 +194,7 @@ void IntroTriangles::rulesets_1_func() {
   a->setTag(9);
   this->runAction(a);
 
-  this->addChild(n);
+  addChild(n);
 }
 void IntroTriangles::rulesets_1_change_gap(float gap) {
   auto n = this->getChildByID("iconsets");

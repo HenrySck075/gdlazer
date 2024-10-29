@@ -9,7 +9,7 @@ bool OverlayContainer::init() {
   main = Container::create();
   main->setContentSize({0,0});
   main->setAnchorPoint({0.5,0.5});
-  main->setPositionWithUnit({50,50},Unit::Percent,Unit::Percent);
+  main->setAnchor(Anchor::Center);
   addChild(main);
   setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
   setCascadeOpacityEnabled(false);
@@ -23,7 +23,6 @@ bool OverlayContainer::init() {
     auto g = Game::get();
     if ((bool)shown) {
       log::debug("[OverlayContainer]: show overlay");
-      breakpoint();
       g->pushOverlay(this);
       g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popin));
     }

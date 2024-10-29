@@ -32,7 +32,7 @@ bool OsuLogo::init() {
     this->ClickableContainer::setContentSize(logoSprite->getContentSize());
     logoSprite->setPosition(logoSprite->getContentSize() / 2);
     logoSprite->setScale(0.6);
-    this->addChild(logoSprite);
+    addChild(logoSprite);
   }
   audio = AudioManager::get();
 

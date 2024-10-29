@@ -25,9 +25,10 @@ protected:
   std::string m_eventName = "";
 public:
   EventTarget* target() {return m_target;};
+  /// please dont
   NodeEvent() {
-    throw "kill yourself";
-  }; // i cant delete this
+    throw std::runtime_error("Event must have a name (cant make this deleted or intellisense will scream at me)");
+  }; 
   NodeEvent(std::string name) : m_eventName(name) {
     autorelease();
   };

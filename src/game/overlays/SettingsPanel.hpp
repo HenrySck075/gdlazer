@@ -8,6 +8,7 @@
 class SettingsPanel : public OsuOverlayContainer {
 protected:
   SettingsSidebar* sidebar;
+  Container* mainPanel;
 public:
   const float CONTENT_MARGINS = 20;
 
@@ -33,7 +34,6 @@ public:
   virtual CCArrayExt<Container*> createSections() {return CCArray::create();};
   void onOpen() override;
   void onClose() override;
-  void onDismiss() override;
 };
 
 // SectionsContainer with the fade stuff idk

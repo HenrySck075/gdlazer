@@ -41,7 +41,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   CCPoint an = {-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
   area = ButtonArea::create(an);
   area->setID("buttonarea");
-  this->addChild(area);
+  addChild(area);
 
   // because cocos2d-x does not allows a node to be in multiple parent (everyone knows that)
   #define backBtnCreate MainMenuButton::create( \
@@ -275,7 +275,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   //this->setPositionX(0);
   //auto me = CCMenu::createWithItem(logo);
   //me->setPosition({0,0});
-  this->addChild(logo);
+  addChild(logo);
   setAnchorPoint({0.5,0.5});
 
   return true;

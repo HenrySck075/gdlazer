@@ -17,28 +17,33 @@ bool MainMenu::init() {
   auto bgParal = ParallaxContainer::create();
   bg = Background::create();
   bgParal->addChild(bg);
-  this->addChild(bgParal);
+  addChild(bgParal);
   
   buttonSysParallax = ParallaxContainer::create(0.01f);
   buttonSys = ButtonSystem::create(logo);
   buttonSysParallax->addChild(buttonSys);
-  this->addChild(buttonSysParallax);
+  addChild(buttonSysParallax);
 
   joe = CCLayerRGBA::create();
   joe->setAnchorPoint({1,1});
   joe->ignoreAnchorPointForPosition(false);
 
-  auto songTitle = OsuText("",FontType::Regular,16,kCCTextAlignmentRight);
+  auto songTitle = OsuText("",FontType::Regular,14,kCCTextAlignmentRight);
   joe->addChild(songTitle);
   auto songArtist = OsuText("",FontType::Regular,12,kCCTextAlignmentRight);
   joe->addChild(songArtist);
-  joe->addChild(joe);
+  
   joe->setLayout(
     ColumnLayout::create()
+    ->setAxisReverse(true)
+    ->setCrossAxisLineAlignment(AxisAlignment::End)
+    ->setAxisAlignment(AxisAlignment::End)
+    ->setGap(0)
   );
-  joe->setContentSize({300,120});
-  joe->updateLayout();
+  joe->setContentSize({300,40});
   joe->setCascadeOpacityEnabled(true);
+  joe->setOpacity(0);
+  addChild(joe);
   
   addListener("nodeLayoutUpdate", [this](NodeEvent* ){
     joe->setPosition(CCNode::getContentSize()-CCSize{5,5});
@@ -50,8 +55,9 @@ bool MainMenu::init() {
     songTitle->setString(a->getSongName().c_str());
     songArtist->setString(a->getSongAuthor().c_str());
 
+    joe->updateLayout();
     CCArray* actions = CCArray::create(
-      CCFadeIn::create(0.25),
+      CCFadeIn::create(0.5),
       CCDelayTime::create(5),
       CCFadeOut::create(0.75),
       nullptr

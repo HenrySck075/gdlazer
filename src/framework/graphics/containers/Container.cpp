@@ -312,7 +312,6 @@ bool Container::init() {
   updateSizeUnitLabel();
   updatePositionUnitLabel();
   //setUserObject("geode.devtools/useRealAttributes", CCBool::create(true));
-  setCascadeOpacityEnabled(true);
   return true;
 }
 
@@ -360,6 +359,11 @@ bool Container::dispatchToChildInList(NodeEvent* event, CCArray* children) {
   
   while (rev_iter_start != rev_iter_end) {
     auto node = *rev_iter_start++;
+  
+    if (node == this) {
+      log::warn("[Container]: Stack overflow prevented: {} contains itself.", this);
+      continue;
+    }
     if (auto target = typeinfo_cast<EventTarget*>(node)) {
       if (!target->dispatchEvent(event)) return false;
     } else {
@@ -531,7 +535,7 @@ bool ContainerNodeWrapper::init(CCNode* node)  {
   m_node = node;
   Container::init();
   //log::debug("[ContainerNodeWrapper]: {}", node);
-  this->addChild(m_node);
+  addChild(m_node);
   setContentSize(node->getContentSize());
   setPosition(node->getPosition());
   setAnchorPoint(node->getAnchorPoint());

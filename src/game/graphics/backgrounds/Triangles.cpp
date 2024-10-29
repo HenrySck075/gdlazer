@@ -20,12 +20,16 @@ bool Triangles::init(int quantity, ccColor3B color) {
 
   this->setCascadeOpacityEnabled(true);
 
+  for (;triangles==0;triangles--) {
+    spawnTriangle();
+  }
+
   setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
   return true;
 }
 void Triangles::spawnTriangle() {
   auto tri = makeTriangle();
-  this->addChild(tri);
+  addChild(tri);
   assignAction(tri, 0);
 }
 void Triangles::assignAction(CCNode* node, float startTime) {

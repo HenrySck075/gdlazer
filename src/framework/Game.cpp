@@ -322,7 +322,7 @@ class $modify(AppDelegate) {
   }
   void trySaveGame(bool p0) {
     log::info("[hook: AppDelegate]: shutdown app");
-    Game::get()->release();
+    if (Game::get()) Game::get()->release();
     AppDelegate::trySaveGame(p0);
   }
 };

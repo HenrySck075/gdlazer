@@ -54,9 +54,9 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 #undef gradientSetup
   gradLeft->setScaleX(-1);
 
-  if (d!=nullptr) this->addChild(d);
-  //this->addChild(clipNode);
-  this->addChild(j);
+  if (d!=nullptr) addChild(d);
+  //addChild(clipNode);
+  addChild(j);
   
   ClickableContainer::init(clickSfx, clickCb);
   addListener("nodeLayoutUpdate", [this](NodeEvent* e){

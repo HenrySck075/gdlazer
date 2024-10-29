@@ -45,9 +45,9 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   bgSetup(hover, "hover", ccc3(255,255,255));
   this->setCascadeOpacityEnabled(true);
   setColor(Color4{255,255,255,0});
-  this->addChild(background);
-  this->addChild(hover);
-  this->addChild(the);
+  addChild(background);
+  addChild(hover);
+  addChild(the);
   hover->setOpacity(0);
   hover->setOpacity(0);
   hover->setOpacity(0);
