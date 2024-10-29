@@ -2,19 +2,11 @@
 
 #include "ToolbarButton.hpp"
 #include "ToolbarToggleButton.hpp"
-#include "../../../framework/input/events/KeyEvent.hpp"
 #include "../NowPlayingOverlay.hpp"
 
 class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
-  bool init() {
-    setID("settings");
-    addListener("keyboardEvent",[this](NodeEvent* ev){
-      auto e = static_cast<KeyboardEvent*>(ev);
-      if (e->key.ctrl && e->key.key == enumKeyCodes::KEY_O) select();
-    });
-    return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the");
-  }
+  bool init();
   default_create(ToolbarSettingsButton);
   void select() override;
   void deselect() override;

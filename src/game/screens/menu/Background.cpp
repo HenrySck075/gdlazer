@@ -10,6 +10,7 @@ bool Background::init() {
     bool willSwitch = (m_background != nullptr);
     CCResizableSprite* oldBg = m_background;
     m_background = CCResizableSprite::create();
+    m_backgroundName = *e->getValue();
     addChild(m_background);
     if (auto img = e->getValue()) {
       if (willSwitch) m_background->setOpacity(0);
@@ -129,7 +130,7 @@ std::string Background::roll() {
     );
     std::string bg = out[0].as_string();
     if (!m_background) return bg;
-    if (bg != m_background->getSprite()->displayFrame()->getFrameName()) {
+    if (bg != m_backgroundName) {
       return bg;
     }
   }

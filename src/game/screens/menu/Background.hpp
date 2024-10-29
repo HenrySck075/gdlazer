@@ -16,6 +16,7 @@ private:
   EventListener<web::WebTask> m_seasonalBgsListener;
   std::string roll();
   CCResizableSprite* m_background;
+  gd::string m_backgroundName;
   bool m_rescale = false;
 public:
   static Background* create() {

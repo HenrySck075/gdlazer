@@ -33,10 +33,12 @@ bool MainMenu::init() {
   auto songArtist = OsuText("",FontType::Regular,16,kCCTextAlignmentRight);
   joe->addChild(songArtist);
   this->addChild(joe);
-  this->setLayout(
+  joe->setLayout(
     ColumnLayout::create()
   );
-  this->updateLayout();
+  joe->setContentSize({300,120});
+  joe->updateLayout();
+  joe->setCascadeOpacityEnabled(true);
   
   addListener("nodeLayoutUpdate", [this](NodeEvent* ){
     joe->setPosition(CCNode::getContentSize()-CCSize{5,5});

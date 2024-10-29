@@ -4,7 +4,7 @@
 
 bool Screen::init() {
   if (!Container::init()) return false;
-  setContentSizeWithUnit(CCSize(100, 100), Unit::Percent, Unit::Percent);
+  setContentSizeWithUnit({100, 100}, Unit::Percent, Unit::Percent);
   addListener("keypadEvent", [this](NodeEvent* e){
     if (static_cast<KeypadEvent*>(e)->key == cocos2d::kTypeBackClicked) {
       backButton();

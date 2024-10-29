@@ -6,6 +6,7 @@
 #include <henrysck075.easings/include/easings.hpp>
 
 #include "../framework/graphics/containers/OverlayContainer.hpp"
+#include "../framework/input/events/KeyEvent.hpp"
 
 #include <Geode/binding/GJGameLevel.hpp>
 
@@ -66,7 +67,10 @@ bool OsuGame::init() {
   toolbar = Toolbar::create();
   this->addChild(toolbar);
 
-  addListener("mouseEvent", [this](NodeEvent* e){toolbar->dispatchEvent(e);});
+  addListener("mouseEvent", [this](NodeEvent* e){
+    toolbar->dispatchEvent(e);
+  });
+  //GameManager::get()->m_menuLayer->onMoreGames(nullptr);
 
   // preload overlays
   overlays["settings"] = SettingsPanel::create();
@@ -145,11 +149,10 @@ void OsuGame::hideToolbar() {
 }
 
 void OsuGame::showSettings() {
-  pushOverlay(overlays["settings"]);
+  overlays["settings"]->show();
 }
 void OsuGame::hideSettings() {
-  // i hope so
-  popOverlay(overlays["settings"]);
+  overlays["settings"]->hide();
 }
 
 void OsuGame::onLoseFocus() {

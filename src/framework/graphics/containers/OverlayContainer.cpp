@@ -1,5 +1,8 @@
 #include "OverlayContainer.hpp"
 #include "../../Game.hpp"
+#include "../../../utils.hpp"
+#include "../../input/events/KeyEvent.hpp"
+#include "Geode/cocos/keypad_dispatcher/CCKeypadDispatcher.h"
 
 bool OverlayContainer::init() {
   if (!VisibilityContainer::init()) return false;
@@ -14,18 +17,20 @@ bool OverlayContainer::init() {
     if (static_cast<KeyboardEvent*>(e)->key.key == KEY_Escape) hide();
   });
   addListener("keypadEvent", [this](NodeEvent* e){
-    if (static_cast<KeypadEvent*>(e)->key == kTypeBackClicked) hide();
+    if (static_cast<KeypadEvent*>(e)->key == ccKeypadMSGType::kTypeBackClicked) hide();
   });
   shown.addCallback([this](NodeEvent* e){
-    log::debug("[OverlayContainer]: {}", shown.operator bool());
+    auto g = Game::get();
     if ((bool)shown) {
       log::debug("[OverlayContainer]: show overlay");
-      if (IsDebuggerPresent()) DebugBreak();
-      Game::get()->pushOverlay(this);
+      breakpoint();
+      g->pushOverlay(this);
+      g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popin));
     }
     else {
       log::debug("[OverlayContainer]: hide overlay");
-      Game::get()->popOverlay(this);
+      g->popOverlay(this);
+      g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popout));
     }
   });
   return true;

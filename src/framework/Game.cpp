@@ -180,7 +180,7 @@ Screen* Game::replaceScreen(Screen* s) {
   return s;
 }
 void Game::pushOverlay(OverlayContainer* o) {
-  // call show if the overlay isn't open
+  // call show if the overlay is still not open
   if (!o->isOpen()) {
     o->show();
     return;
@@ -189,10 +189,15 @@ void Game::pushOverlay(OverlayContainer* o) {
   overlaysContainer->addChild(o);
   current = overlaysContainer;
 }
-OverlayContainer* Game::popOverlay(OverlayContainer* overlay) {
-  overlaysContainer->removeChild(overlay);
+OverlayContainer* Game::popOverlay(OverlayContainer* o) {
+  // call hide if the overlay is still open
+  if (o->isOpen()) {
+    o->hide();
+    return o;
+  }
+  overlaysContainer->removeChild(o);
 
-  return overlay;
+  return o;
 }
 
 Screen* Game::popManyScreens(int amount, bool popOverlays) {
