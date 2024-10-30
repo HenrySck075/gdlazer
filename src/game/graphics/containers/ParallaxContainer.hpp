@@ -18,7 +18,7 @@ private:
   CCPoint baseLocation = CCPoint(0,0);
 public:
   static ParallaxContainer* create(float parallaxAmount = 0.02f, bool scale = true) {
-    create_class(ParallaxContainer, init, parallaxAmount, scale);
+    $create_class(ParallaxContainer, init, parallaxAmount, scale);
   }
   bool init(float parallaxAmount, bool scale);
   void updateParallax(const CCPoint& cursorPos);

@@ -22,6 +22,7 @@ bool ToolbarSettingsButton::init() {
       select();
   });
   addListener("overlayEvent", [this](NodeEvent* e){
+    log::debug("[ToolbarSettingsButton]: e");
     auto ev = static_cast<OverlayEvent*>(e);
     // todo: reliable way to determine if its SettingsPanel
     if (ev->getEventType() == OverlayEvent::Type::Popin) {

@@ -26,7 +26,10 @@ private:
   OverlayContainer* overlay;
   OverlayEvent::Type eventType;
 public:
-  OverlayEvent(OverlayContainer* o, Type type) : NodeEvent("overlayEvent"), overlay(o), eventType(type) {}
+  OverlayEvent(OverlayContainer* o, Type type) 
+  : NodeEvent("overlayEvent"), overlay(o), eventType(type) {
+    m_log = true;
+  }
 
   OverlayContainer* getOverlay() {return overlay;}
   Type getEventType() {return eventType;}

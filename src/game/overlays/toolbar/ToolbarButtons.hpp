@@ -7,7 +7,7 @@
 class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
   bool init();
-  default_create(ToolbarSettingsButton);
+  $default_create(ToolbarSettingsButton);
   void select() override;
   void deselect() override;
 };
@@ -15,7 +15,7 @@ public:
 class ToolbarHomeButton : public ToolbarButton {
 public:
   static ToolbarHomeButton* create() {
-    create_class(ToolbarHomeButton, init);
+    $create_class(ToolbarHomeButton, init);
   }
   bool init() {
     setID("home");
@@ -30,7 +30,7 @@ class ToolbarGeodeButton : public ToolbarButton {
   SEL_MenuHandler ModsLayer_onBack_original;
   CCLayer* m_modsLayer;
 public:
-  default_create(ToolbarGeodeButton);
+  $default_create(ToolbarGeodeButton);
   bool init() { 
     return ToolbarButton::init(
       OsuIcon::Gear,
@@ -44,7 +44,7 @@ public:
 
 class ToolbarModDisableButton : public ToolbarButton {
 public:
-  default_create(ToolbarModDisableButton);
+  $default_create(ToolbarModDisableButton);
   bool init() { 
     // for why im not hooking/patching ModsLayer to override its onBack to pop the scene,
     // idk
@@ -65,7 +65,7 @@ public:
 class ToolbarMusicButton : public ToolbarToggleButton {
   NowPlayingOverlay* o;
 public:
-  default_create(ToolbarMusicButton);
+  $default_create(ToolbarMusicButton);
   bool init() {
     setID("music");
     o = NowPlayingOverlay::create();

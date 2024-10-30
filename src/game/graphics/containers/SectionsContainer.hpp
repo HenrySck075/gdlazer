@@ -13,7 +13,7 @@ protected:
   Reactive<Container*> currentSection;
 public:
   bool init();
-  default_create(SectionsContainer);
+  $default_create(SectionsContainer);
 
   void addChild(CCNode* node);
   virtual void onSectionSelect(Container* old, Container* new_);

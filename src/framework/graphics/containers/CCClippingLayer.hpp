@@ -21,7 +21,7 @@ public:
     return true;
   }
   ~CCClippingLayer() {
-    m_pStencil->release();
+    if (m_pStencil) m_pStencil->release();
   }
   //static CCClippingLayer* create(float radius) {}
 };

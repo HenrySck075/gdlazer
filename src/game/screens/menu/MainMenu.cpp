@@ -6,7 +6,7 @@
 static CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
 
 MainMenu* MainMenu::create() {
-  create_class(MainMenu, init);
+  $create_class(MainMenu, init);
 }
 
 bool MainMenu::init() {

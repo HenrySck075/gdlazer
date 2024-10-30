@@ -268,7 +268,7 @@ private:
 
 public:
   static BeatUpdater* create() {
-  create_class(BeatUpdater, init);
+  $create_class(BeatUpdater, init);
   };
   bool init() {
   instance = BeatDetector::Instance();

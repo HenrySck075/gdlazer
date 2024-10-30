@@ -74,7 +74,7 @@ private:
 
 public:
   static MainMenuButton* create(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
-    create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
+    $create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
   };
   bool init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
   void setContentSize(const CCSize& s) override;

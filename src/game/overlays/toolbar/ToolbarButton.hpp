@@ -40,6 +40,6 @@ public:
    * @param sub scribe
    */
   static ToolbarButton* create(IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start) {
-    create_class(ToolbarButton, init, icon, text, sub, align);
+    $create_class(ToolbarButton, init, icon, text, sub, align);
   }
 };

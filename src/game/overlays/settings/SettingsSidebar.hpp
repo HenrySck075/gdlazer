@@ -8,5 +8,5 @@ public:
   static const float EXPANDED_WIDTH;
 
   bool init();
-  default_create(SettingsSidebar);
+  $default_create(SettingsSidebar);
 };

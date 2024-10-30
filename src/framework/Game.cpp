@@ -28,10 +28,11 @@ class OverlaysWatcherContainer : public Container {
   CCArrayExt<OverlayContainer*> overlayPopQueue;
   CCArrayExt<OverlayContainer*> overlayStack;
 public:
-  default_create(OverlaysWatcherContainer);
+  $default_create(OverlaysWatcherContainer);
 
   bool init() {
     if (!Container::init()) return false;
+    m_ignoreLogging = true;
     setColor({0,0,0});
     setOpacity(0);
     scheduleUpdate();

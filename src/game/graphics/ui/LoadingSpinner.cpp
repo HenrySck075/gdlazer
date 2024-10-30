@@ -32,7 +32,7 @@ bool LoadingSpinner::init(bool boxedP, bool invert) {
 }   
 
 LoadingSpinner* LoadingSpinner::create(bool boxed, bool invert) {
-  create_class(LoadingSpinner, init, boxed, invert);
+  $create_class(LoadingSpinner, init, boxed, invert);
 }
 
 void LoadingSpinner::onOpen() {

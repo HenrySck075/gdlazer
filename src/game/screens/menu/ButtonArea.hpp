@@ -24,7 +24,7 @@ private:
   int curZOrder = 0;
 public:
   static ButtonArea* create(const CCPoint& anchorPos) {
-    create_class(ButtonArea, init, anchorPos);
+    $create_class(ButtonArea, init, anchorPos);
   }
   bool init(const CCPoint& anchorPos);
 

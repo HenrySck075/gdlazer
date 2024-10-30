@@ -19,7 +19,7 @@ CCLabelTTF* OsuText(const char* text, FontType fontType = FontType::Regular, flo
 class OsuText : public CCLabelBMFont {
 public:
   static OsuText* create(const char* text, FontType fontType) {
-    create_class(OsuText, initWithString, text, m[fontType]);
+    $create_class(OsuText, initWithString, text, m[fontType]);
   };
 };
 */

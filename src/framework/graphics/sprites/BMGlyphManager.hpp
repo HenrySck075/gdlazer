@@ -86,7 +86,7 @@ public:
 
   /** allocates a BMGlyphFontConfig with a FNT file */
   static BMGlyphFontConfig * create(std::string FNTfile) {
-    create_class(BMGlyphFontConfig, initWithFNTfile, FNTfile);
+    $create_class(BMGlyphFontConfig, initWithFNTfile, FNTfile);
   };
 
   /** initializes a BitmapFontConfiguration with a FNT file */
@@ -160,7 +160,7 @@ public:
 private:
   /** creates a bitmap font atlas with an initial string and the FNT file */
   static BMGlyphManager* create(std::string fntFile, CCPoint imageOffset = {0,0}) {
-    create_class(BMGlyphManager, init, fntFile, imageOffset);
+    $create_class(BMGlyphManager, init, fntFile, imageOffset);
   };
 
   /** init a bitmap font atlas with an initial string and the FNT file */

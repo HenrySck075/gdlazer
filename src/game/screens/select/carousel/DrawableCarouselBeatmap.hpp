@@ -26,7 +26,7 @@ public:
   float const HEIGHT = h; // does not include padding
 
   static DrawableCarouselBeatmap* create(GJGameLevel* level) {
-    create_class(DrawableCarouselBeatmap, init, level);
+    $create_class(DrawableCarouselBeatmap, init, level);
   };
   bool init(GJGameLevel* level);
 

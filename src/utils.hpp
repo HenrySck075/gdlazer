@@ -28,7 +28,7 @@ CCRect flipRect(CCRect rect);
   #define breakpoint() if (IsDebuggerPresent()) DebugBreak()
 #endif
 
-#define create_class(classname, initfunc, ...) \
+#define $create_class(classname, initfunc, ...) \
   classname* ret = new classname();      \
   if (ret && ret->initfunc(__VA_ARGS__)) {   \
     ret->autorelease();            \
@@ -37,9 +37,9 @@ CCRect flipRect(CCRect rect);
   };                     \
   return ret
 
-#define default_create(classname) \
+#define $default_create(classname) \
   static noinline classname* create() {  \
-  create_class(classname, init);\
+  $create_class(classname, init);\
   }
 
 #define degreeToRadius(deg) deg/360*M_PI

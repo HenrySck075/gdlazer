@@ -28,7 +28,7 @@ public:
   void setOsuLogo(OsuLogo* logo); 
 
   static ButtonSystem* create(OsuLogo* logo) {
-    create_class(ButtonSystem, init, logo);
+    $create_class(ButtonSystem, init, logo);
   }
   bool init(OsuLogo* logo);
 

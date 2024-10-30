@@ -22,7 +22,7 @@ public:
   void title(std::string newTitle) {m_title = newTitle;}
 
   static Screen* create() {
-    create_class(Screen, init);
+    $create_class(Screen, init);
   };
   virtual void backButton() {}
   bool init() override;

@@ -316,13 +316,13 @@ bool Container::init() {
 }
 
 Container* Container::create() {
-  create_class(Container, init);
+  $create_class(Container, init);
 }
 
 bool Container::dispatchEvent(NodeEvent* event) {
   event->retain();
+  if (event->m_log && !m_ignoreLogging) log::debug("[{} | EventTarget]: Dispatching {}", getNodeName(this), event->m_eventName);
   auto ret = EventTarget::dispatchEvent(event);
-  if (event->m_log) log::debug("[{} | EventTarget]: Dispatching {} (target: {})", getNodeName(this), event->m_eventName, getNodeName(static_cast<Container*>(event->target())));
   /*
   colorBg->setColor(ccc3(255,171,15));
   colorBg->setOpacity(150);

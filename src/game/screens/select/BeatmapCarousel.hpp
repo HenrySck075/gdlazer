@@ -12,6 +12,6 @@ private:
 public:
   bool init(GJLevelList* list);
   static BeatmapCarousel* create(GJLevelList* list) {
-    create_class(BeatmapCarousel, init, list);
+    $create_class(BeatmapCarousel, init, list);
   };
 };

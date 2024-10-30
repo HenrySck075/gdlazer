@@ -10,7 +10,7 @@
 class SongSelect : public Screen {
 public:
   static SongSelect* create() {
-    create_class(SongSelect,init);
+    $create_class(SongSelect,init);
   }
   bool init();
 };

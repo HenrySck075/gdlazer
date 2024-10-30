@@ -77,7 +77,7 @@ public:
   bool init(float rad);
   void setContentSize(const CCSize &size) override;
   static balls* create(float rad = 0) {
-    create_class(balls, init, rad);
+    $create_class(balls, init, rad);
   }
   void setRadius(float rad);
   float getRadius();
@@ -164,11 +164,14 @@ protected:
 
   //bool tryDispatch(Callback cb, NodeEvent* event) override;
 
-  // Dispatch event to children in the given list
-  // 
-  // Useful when you want to dispatch event to childrens from other nodes
+  /// Dispatch event to children in the given list
+  /// 
+  /// Useful when you want to dispatch event to childrens from other nodes
   bool dispatchToChildInList(NodeEvent* event, CCArray* children);
 
+  /// made specifically for OverlaysWatcherContainer 
+  /// because apparently it does not have an rtti data?
+  bool m_ignoreLogging = false;
 public:
   void setRadius(float radius) {
     m_roundedBorderStencil->setRadius(radius);

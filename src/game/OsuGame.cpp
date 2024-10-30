@@ -155,6 +155,22 @@ void OsuGame::hideSettings() {
   overlays["settings"]->hide();
 }
 
+bool OsuGame::dispatchEvent(NodeEvent* event) {
+  if (event->target() != nullptr) return false;
+  if (!this->isRunning()) return true;
+  EventTarget::dispatchEvent(event);
+  updateDispatchFlow(event, DispatchingFlow::Down);
+  toolbar->dispatchEvent(event);
+
+  if (event->eventName() != "nodeLayoutUpdate") { 
+    if (current != nullptr) {
+      current->dispatchEvent(event);
+    }
+  } else {
+    main->setContentSize({getContentWidth(),getContentHeight()-offset});
+  }
+}
+
 void OsuGame::onLoseFocus() {
   auto engine = FMODAudioEngine::sharedEngine();
   bgVol = engine->getBackgroundMusicVolume();

@@ -20,7 +20,7 @@ private:
   bool m_rescale = false;
 public:
   static Background* create() {
-    create_class(Background, init);
+    $create_class(Background, init);
   };
   bool init();
   void switchBackground();

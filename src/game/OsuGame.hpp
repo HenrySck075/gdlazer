@@ -59,7 +59,9 @@ public:
 
   void showSettings();
   void hideSettings();
-  
+
+  bool dispatchEvent(NodeEvent* event) override;
+
   void onLoseFocus();
   void onFocus();
 

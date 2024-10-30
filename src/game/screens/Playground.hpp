@@ -9,5 +9,5 @@
 class Playground final : public Screen {
 public:
   bool init();
-  default_create(Playground);
+  $default_create(Playground);
 };

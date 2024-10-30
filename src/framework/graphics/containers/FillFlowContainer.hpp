@@ -16,7 +16,7 @@ class FillFlowLayout : public ContainerLayout {
 public:
   bool init() {return true;}
   static FillFlowLayout* create() {
-    create_class(FillFlowLayout, init);
+    $create_class(FillFlowLayout, init);
   }
   CCSize getSizeHint(CCNode* on) const override {return on->getContentSize();}
   void apply(CCNode* on);
@@ -29,7 +29,7 @@ private:
   void updateChildPosition();
 public:
   static FillFlowContainer* create(FillDirection dir) {
-    create_class(FillFlowContainer, init, dir);
+    $create_class(FillFlowContainer, init, dir);
   }
   void addChild(CCNode* node);
   void setFillDirection(FillDirection dir);

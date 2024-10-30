@@ -56,6 +56,6 @@ public:
   void moveToPos(CCPoint const& pos, bool animate = true);
 
   static ScrollableContainer* create(Container* body) {
-    create_class(ScrollableContainer, init, body);
+    $create_class(ScrollableContainer, init, body);
   }
 };

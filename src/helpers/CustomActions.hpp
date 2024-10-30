@@ -144,7 +144,7 @@ public:
     return true;
   };
   static CCMoveFromTo* create(float duration, const CCPoint& startPos, const CCPoint& endPos) {
-    create_class(CCMoveFromTo, initWithDuration, duration, startPos, endPos);
+    $create_class(CCMoveFromTo, initWithDuration, duration, startPos, endPos);
   }
   void update(float t) {
     if (m_pTarget) {
@@ -161,7 +161,7 @@ public:
 class CCMoveToModifiable : public CCMoveTo {
 public:
   static CCMoveToModifiable* create(float duration, CCPoint const& position) {
-    create_class(CCMoveToModifiable, initWithDuration, duration, position);
+    $create_class(CCMoveToModifiable, initWithDuration, duration, position);
   }
   void startWithTarget(CCNode* pTarget) {
     m_startPosition = pTarget->getPosition();
@@ -189,7 +189,7 @@ public:
     return true;
   }
   static CCRepeatUntil* create(CCAction* action, decltype(m_predicate) predicate) {
-    create_class(CCRepeatUntil, initWithPredicate, action, predicate);
+    $create_class(CCRepeatUntil, initWithPredicate, action, predicate);
   }
   void step(float dt) {
     m_pAction->step(dt);
@@ -221,7 +221,7 @@ public:
     return true;
   }
   static CCWaitUntil* create(CCAction* action) {
-    create_class(CCWaitUntil, initWithAction, action);
+    $create_class(CCWaitUntil, initWithAction, action);
   }
   bool isDone() override {
     return m_pInner->isDone();

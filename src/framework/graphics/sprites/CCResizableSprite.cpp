@@ -2,15 +2,15 @@
 #include "../../../utils.hpp"
 
 CCResizableSprite* CCResizableSprite::create() {
-  create_class(CCResizableSprite, init);
+  $create_class(CCResizableSprite, init);
 }
 
 CCResizableSprite* CCResizableSprite::createWithSpriteFrameName(const char *pszSpriteFrameName)
 {
-  create_class(CCResizableSprite, initWithSpriteFrameName, pszSpriteFrameName);
+  $create_class(CCResizableSprite, initWithSpriteFrameName, pszSpriteFrameName);
 }
 CCResizableSprite* CCResizableSprite::createWithTexture(CCTexture2D* texture) {
-  create_class(CCResizableSprite, initWithTexture, texture);
+  $create_class(CCResizableSprite, initWithTexture, texture);
 };
 
 bool CCResizableSprite::init() {

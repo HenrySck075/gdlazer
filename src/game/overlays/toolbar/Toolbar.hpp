@@ -17,7 +17,7 @@ private:
 public:
   
   static Toolbar* create() {
-    create_class(Toolbar, init);
+    $create_class(Toolbar, init);
   }
   bool init() override;
 
@@ -32,6 +32,7 @@ public:
 
   /// Genuinely speaking, it would be better to handle inputs in the visible boundary
   /// (like excluding the padding portion), and it will solve the problem.
+  
   void show();
   void hide();
 

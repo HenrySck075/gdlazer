@@ -75,7 +75,7 @@ public:
     // same assert but on a different class to distinguish this with GridContainer
     // (incase someone uses gridlayout for non-containers)
     assert(("[GridLayout]: Dimensions list must have at least 1 dimension. (which i did but you just passed in an empty vector)", columnDimensions.size() == 0 || rowDimensions.size() == 0));
-    create_class(GridLayout, init, columnDimensions, rowDimensions);
+    $create_class(GridLayout, init, columnDimensions, rowDimensions);
   }
   void apply(CCNode* on) override;
   CCSize getSizeHint(CCNode* on) const override {return on->CCNode::getContentSize();};
@@ -87,7 +87,7 @@ public:
   bool init(std::vector<Dimension> columnDimensions, std::vector<Dimension> rowDimensions);
   static GridContainer* create(std::vector<Dimension> columnDimensions = {Dimension()}, std::vector<Dimension> rowDimensions = {Dimension()}) {
     assert(("[GridContainer]: Dimensions list must have at least 1 dimension. (which i did but you just passed in an empty vector)", columnDimensions.size() == 0 || rowDimensions.size() == 0));
-    create_class(GridContainer,init,columnDimensions,rowDimensions);
+    $create_class(GridContainer,init,columnDimensions,rowDimensions);
   }
   void updateLayout() {
     CCLayer::updateLayout();

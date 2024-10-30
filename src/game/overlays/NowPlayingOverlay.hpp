@@ -15,7 +15,7 @@ private:
   AudioManager* ctrl;
 public:
   bool init();
-  default_create(NowPlayingOverlay);
+  $default_create(NowPlayingOverlay);
 
   void onOpen() {};
   void onClose() {};

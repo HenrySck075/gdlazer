@@ -36,10 +36,10 @@ public:
     });
   }
   static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
-    create_class(PopupDialog, init, title, content, buttons);
+    $create_class(PopupDialog, init, title, content, buttons);
   }
   static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, ButtonCallback confirmCallback) {
-    create_class(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
+    $create_class(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
   }
   void keyBackClicked() override;
   void onDismiss() override {}

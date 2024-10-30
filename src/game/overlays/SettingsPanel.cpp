@@ -13,9 +13,6 @@ bool SettingsPanel::init() {
   if (!OsuOverlayContainer::init()) return false;
   setColor({0,0,0});
 
-  sidebar = SettingsSidebar::create();
-  sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
-  main->addChild(sidebar);
 
   mainPanel = Container::create();
   mainPanel->setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
@@ -23,6 +20,10 @@ bool SettingsPanel::init() {
   mainPanel->setPositionWithUnit({-PANEL_WIDTH,0},Unit::UIKit,Unit::OpenGL);
   mainPanel->setOpacity(255);
   main->addChild(mainPanel);
+  
+  sidebar = SettingsSidebar::create();
+  sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
+  main->addChild(sidebar);
 
   main->setContentSizeWithUnit({WIDTH,100},Unit::UIKit,Unit::Percent);
   main->setAnchor(Anchor::Left);
