@@ -48,6 +48,7 @@ public:
 
   friend class Container;
   friend class EventTarget;
+  friend class OsuGame;
 };
 
 // wrapper for geode events

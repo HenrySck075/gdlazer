@@ -25,7 +25,7 @@ bool ToolbarSettingsButton::init() {
     log::debug("[ToolbarSettingsButton]: e");
     auto ev = static_cast<OverlayEvent*>(e);
     // todo: reliable way to determine if its SettingsPanel
-    if (ev->getEventType() == OverlayEvent::Type::Popin) {
+    if (ev->getEventType() == OverlayEvent::Type::Popin && ev->getOverlay()->getName() == "SettingsPanel") {
       ToolbarToggleButton::select();
     } else {
       ToolbarToggleButton::deselect();

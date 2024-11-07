@@ -129,6 +129,9 @@ public:
   void setHoverEnabled(bool state);
   bool getHoverEnabled();
 
+  bool isMouseEntered() {return m_entered;}
+  bool isMouseHolding() {return m_holding;}
+
 private:
   NodeEvent* queuedLayoutUpdate = nullptr;
 
@@ -143,6 +146,7 @@ private:
   inline CCSize const& contentSizeWithPadding(CCSize const& size, Vector4 padding);
 
 protected:
+  std::string name = "";
   CCSize minimumSize = CCSize(0,0);
   CCSize maximumSize = CCSize(0,0);
 
@@ -173,6 +177,7 @@ protected:
   /// because apparently it does not have an rtti data?
   bool m_ignoreLogging = false;
 public:
+  std::string getName() {return name;}
   void setRadius(float radius) {
     m_roundedBorderStencil->setRadius(radius);
   }

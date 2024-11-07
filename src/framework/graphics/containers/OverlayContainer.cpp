@@ -35,3 +35,10 @@ bool OverlayContainer::init() {
   return true;
 }
 
+
+void OverlayContainer::onClick(MouseEvent* e) {
+  #if 0
+  auto j = boundingBoxFromContentSize(main);
+  if (!j.containsPoint(e->position)) onDismiss();
+  #endif
+}

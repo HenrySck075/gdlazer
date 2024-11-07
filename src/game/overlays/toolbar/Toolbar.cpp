@@ -66,6 +66,14 @@ bool Toolbar::init() {
     );
   });
 
+  addListener("mouseEvent", [this](NodeEvent* e){
+    if (
+      // the one that sends as click is a different event
+      static_cast<MouseEvent*>(e)->eventType == MouseEventType::MouseDown &&
+      this->isMouseEntered()
+    ) e->preventDefault();
+  });
+
   return true;
 }
 

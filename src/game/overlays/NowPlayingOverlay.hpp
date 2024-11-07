@@ -17,6 +17,6 @@ public:
   bool init();
   $default_create(NowPlayingOverlay);
 
-  void onOpen() {};
-  void onClose() {};
+  void onOpen() override;
+  void onClose() override;
 };

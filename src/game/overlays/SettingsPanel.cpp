@@ -12,7 +12,7 @@ const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel:
 bool SettingsPanel::init() {
   if (!OsuOverlayContainer::init()) return false;
   setColor({0,0,0});
-
+  name = "SettingsPanel";
 
   mainPanel = Container::create();
   mainPanel->setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());

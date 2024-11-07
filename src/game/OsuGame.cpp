@@ -66,10 +66,6 @@ bool OsuGame::init() {
 
   toolbar = Toolbar::create();
   addChild(toolbar);
-
-  addListener("mouseEvent", [this](NodeEvent* e){
-    toolbar->dispatchEvent(e);
-  });
   //GameManager::get()->m_menuLayer->onMoreGames(nullptr);
 
   // preload overlays
@@ -161,6 +157,8 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
   EventTarget::dispatchEvent(event);
   updateDispatchFlow(event, DispatchingFlow::Down);
   toolbar->dispatchEvent(event);
+
+  if (event->m_cancelled) return false;
 
   if (event->eventName() != "nodeLayoutUpdate") { 
     if (current != nullptr) {

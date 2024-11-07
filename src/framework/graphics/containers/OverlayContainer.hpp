@@ -9,10 +9,7 @@ protected:
 public:
   bool init();
 
-  void onClick(MouseEvent* e) override {
-    auto j = boundingBoxFromContentSize(main);
-    if (!j.containsPoint(e->position)) onDismiss();
-  }
+  void onClick(MouseEvent* e) override;
   virtual void onDismiss() {hide();}
 };
 
@@ -28,7 +25,6 @@ private:
 public:
   OverlayEvent(OverlayContainer* o, Type type) 
   : NodeEvent("overlayEvent"), overlay(o), eventType(type) {
-    m_log = true;
   }
 
   OverlayContainer* getOverlay() {return overlay;}

@@ -65,7 +65,6 @@ void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
   auto customSongInfo = MusicDownloadManager::sharedState()->getSongInfoObject(track);
   songName = currentLevel
     ? (
-      // TODO: more checks
       customSongInfo == nullptr
       ? tools->getAudioTitle(track) 
       : customSongInfo->m_songName
