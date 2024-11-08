@@ -19,7 +19,7 @@ bool AudioManager::init() {
   tools = new LevelTools();
   
   sys->createDSPByType(FMOD_DSP_TYPE_FFT, &dsp);
-  masterChannel->addDSP(7, dsp);
+  masterChannel->addDSP(2, dsp);
   
   int params;
   dsp->getNumParameters(&params);

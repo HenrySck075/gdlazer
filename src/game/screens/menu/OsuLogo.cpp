@@ -42,9 +42,10 @@ bool OsuLogo::init() {
 }
 void OsuLogo::update(float delta) {
   CCNode::update(delta);
-  float dominantVol;
+  float dominantVol = 0;
   // currently always return 0
-  audio->getDSP()->getParameterFloat(3, &dominantVol,nullptr,0);
+  audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
+  log::debug("[OsuLogo]: {}", dominantVol);
   setScale(0.9+(dominantVol/2));
   /*
   auto spectrum = instance->getCurrentSpectrum();
