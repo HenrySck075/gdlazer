@@ -13,6 +13,7 @@ using namespace geode::prelude;
 class OsuLogo : public ClickableContainer {
 private:
   AudioManager* audio;
+  CCSprite* logoSprite;
   int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  
   void onMouseEnter() override {};

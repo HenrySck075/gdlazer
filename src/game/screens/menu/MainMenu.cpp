@@ -32,6 +32,8 @@ bool MainMenu::init() {
   joe->addChild(songTitle);
   auto songArtist = OsuText("",FontType::Regular,12,kCCTextAlignmentRight);
   joe->addChild(songArtist);
+  auto levelInfo = OsuText("",FontType::Regular,12,kCCTextAlignmentRight);
+  joe->addChild(levelInfo);
   
   joe->setLayout(
     ColumnLayout::create()
@@ -49,11 +51,12 @@ bool MainMenu::init() {
     joe->setPosition(CCNode::getContentSize()-CCSize{5,5});
   });
 
-  addListener("musicStarted", [this,songTitle,songArtist](NodeEvent*) {
+  addListener("musicStarted", [this,songTitle,songArtist,levelInfo](NodeEvent*) {
     bg->switchBackground();
     auto a = AudioManager::get();
     songTitle->setString(a->getSongName().c_str());
     songArtist->setString(a->getSongAuthor().c_str());
+    levelInfo->setString(fmt::format("{} - {}", a->getLevelName(), a->getLevelAuthor()).c_str());
 
     joe->updateLayout();
     CCArray* actions = CCArray::create(

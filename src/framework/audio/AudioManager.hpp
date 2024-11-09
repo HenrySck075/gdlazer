@@ -69,6 +69,12 @@ public:
     sound->getLength(&ret, FMOD_TIMEUNIT_MS);
     return ret/1000;
   }
+  float getElapsed() {
+    if (!sound) return 0;
+    unsigned int ret;
+    channel->getPosition(&ret, FMOD_TIMEUNIT_MS);
+    return ret/1000.f;
+  }
   void seek(float position) {
     if (channel) channel->setPosition((unsigned int)(position*1000), FMOD_TIMEUNIT_MS);
   }

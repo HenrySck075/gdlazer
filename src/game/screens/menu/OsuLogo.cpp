@@ -1,5 +1,6 @@
 #include "OsuLogo.hpp"
 #include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
+#include "../../../framework/utils/Interpolation.hpp"
 #include <cmath>
 #include <numeric>
 
@@ -24,14 +25,14 @@ bool OsuLogo::init() {
     return ListenerResult::Propagate;
   });
   */
-  auto logoSprite = CCSprite::createWithSpriteFrameName("logo.png"_spr);
+  logoSprite = CCSprite::createWithSpriteFrameName("logo.png"_spr);
   this->setAnchorPoint({0.5, 0.5});
 
   if (logoSprite != nullptr) {
     logoSprite->setID("m");
     this->ClickableContainer::setContentSize(logoSprite->getContentSize());
     logoSprite->setPosition(logoSprite->getContentSize() / 2);
-    logoSprite->setScale(0.6);
+    logoSprite->setScale(0.8);
     addChild(logoSprite);
   }
   audio = AudioManager::get();
@@ -43,10 +44,11 @@ bool OsuLogo::init() {
 void OsuLogo::update(float delta) {
   CCNode::update(delta);
   float dominantVol = 0;
-  // currently always return 0
+  float window = 2048;
   audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
-  log::debug("[OsuLogo]: {}", dominantVol);
-  setScale(0.9+(dominantVol/2));
+  audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_WINDOWSIZE, &window,nullptr,0);
+  // this will go wrong
+  logoSprite->setScale(Interpolation::Damp(logoSprite->getScaleX(),1.f-std::max(0.f,dominantVol/window-0.4f)*0.04f,0.9,audio->getElapsed()));
   /*
   auto spectrum = instance->getCurrentSpectrum();
   auto ss = instance->getSampleSize();
