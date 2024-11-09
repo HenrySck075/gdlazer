@@ -113,16 +113,16 @@ std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(std::string controlFi
       // XXX: info parsing is incomplete
       // Not needed for the Hiero editors, but needed for the AngelCode editor
       //      [self parseInfoArguments:line];
-      this->parseInfoArguments(line);
+      parseInfoArguments(line);
     }
     // Check to see if the start of the line is something we are interested in
     else if(line.substr(0,strlen("common lineHeight")) == "common lineHeight")
     {
-      this->parseCommonArguments(line);
+      parseCommonArguments(line);
     }
     else if(line.substr(0,strlen("page id")) == "page id")
     {
-      this->parseImageFileName(line, controlFile);
+      parseImageFileName(line, controlFile);
     }
     else if(line.substr(0,strlen("chars c")) == "chars c")
     {
@@ -132,7 +132,7 @@ std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(std::string controlFi
     {
       // Parse the current line and create a new CharDef
       ccBMFontDefExt fontDef;
-      this->parseCharacterDefinition(line, &fontDef);
+      parseCharacterDefinition(line, &fontDef);
 
       m_pFontDefDictionary[fontDef.charID] = fontDef;
       
@@ -140,11 +140,11 @@ std::set<unsigned int>* BMGlyphFontConfig::parseConfigFile(std::string controlFi
     }
 //    else if(line.substr(0,strlen("kernings count")) == "kernings count")
 //    {
-//      this->parseKerningCapacity(line);
+//      parseKerningCapacity(line);
 //    }
     else if(line.substr(0,strlen("kerning first")) == "kerning first")
     {
-      this->parseKerningEntry(line);
+      parseKerningEntry(line);
     }
   }
   

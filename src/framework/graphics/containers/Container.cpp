@@ -136,22 +136,22 @@ void Container::initHandler() {
     auto event = static_cast<MouseEvent*>(e);
     auto type = event->eventType;
     //if (type == MouseEventType::Move) event->logging(true);
-    if (!(this->m_hoverEnabled && isRunning())) return;
+    if (!(m_hoverEnabled && isRunning())) return;
     switch (type) {
       case MouseEventType::Move:
-        this->onMouseMove(event);
+        onMouseMove(event);
         break;
       case MouseEventType::Enter:
         m_entered = true;
-        this->onMouseEnter();
+        onMouseEnter();
         break;
       case MouseEventType::Exit:
         m_entered = false;
-        this->onMouseExit();
+        onMouseExit();
         break;
       case MouseEventType::MouseUp:
         if (m_holding) {
-          this->onMouseUp(event);
+          onMouseUp(event);
           if (dragEnabled() && currentDragEvent) {
             onDragEnd(currentDragEvent);
             currentDragEvent->release();
@@ -162,18 +162,18 @@ void Container::initHandler() {
         break;
       case MouseEventType::MouseDown:
         if (m_entered) {
-          this->onMouseDown(event);
+          onMouseDown(event);
           mouseDownPos = event->position;
           m_holding = true;
         }
         break;
       case MouseEventType::MouseScroll:
         if (m_entered) {
-          this->onMouseScroll(event);
+          onMouseScroll(event);
         }
         return;
       case MouseEventType::Click:
-        this->onClick(event);
+        onClick(event);
         event->preventDefault();
     }
     int type2 = (int)type;

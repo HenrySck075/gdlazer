@@ -10,14 +10,14 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   m_color = color;
   ClickableContainer::init(sampleClick, clickAct);
   ClickableContainer::setContentSize(m);
-  //this->addListener(reactive_listener(updateReactive));
+  //addListener(reactive_listener(updateReactive));
 
   std::transform(text.begin(), text.end(), text.begin(), [](char in) -> char {
     if (in <= 'Z' && in >= 'A')
       return in - ('Z' - 'z');
     return in;
   });
-  this->activationKeys = activa;
+  activationKeys = activa;
   auto the = CCLayerRGBA::create();
   the->setCascadeOpacityEnabled(true);
   the->setID("ui");
@@ -43,7 +43,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
 
   bgSetup(background, "background", color);
   bgSetup(hover, "hover", ccc3(255,255,255));
-  this->setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
   setColor(Color4{255,255,255,0});
   addChild(background);
   addChild(hover);
@@ -54,7 +54,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   hover->setOpacity(0);
   hover->setOpacity(0);
   
-  this->setAnchorPoint({0.5,0.5});
+  setAnchorPoint({0.5,0.5});
   setHoverEnabled(false);
   setClickEnabled(false);
 
@@ -82,37 +82,37 @@ void MainMenuButton::setContentSize(const CCSize& size) {
     hover->setContentSize(s);
     hover->setPosition(s/2);
   }
-  if (auto ui = this->getChildByID("ui")) ui->setPosition(s/2);
+  if (auto ui = getChildByID("ui")) ui->setPosition(s/2);
   if (m_askForUpdate) m_pParent->updateLayout();
 }
 
 void MainMenuButton::onMouseEnter() {
-  this->runAction(CCEaseElasticOut::create(
+  runAction(CCEaseElasticOut::create(
     CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT)
   ));
   FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav"_spr);
 }
 void MainMenuButton::onMouseExit() {
-  this->runAction(CCEaseElasticOut::create(
+  runAction(CCEaseElasticOut::create(
     CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
   ));
 }
 void MainMenuButton::onMouseDown(MouseEvent* event) {
-  auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
+  auto n = static_cast<CCScale9Sprite*>(getChildByID("hover"));
   n->runAction(easingsActions::CCEaseOut::create(
     CCFadeTo::create(1,255*0.1),5
   ));
 }
 void MainMenuButton::onMouseUp(MouseEvent* event) {
-  //if (!static_cast<CCBool*>(this->getUserObject("clicking"_spr))) return;
-  auto n = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
+  //if (!static_cast<CCBool*>(getUserObject("clicking"_spr))) return;
+  auto n = static_cast<CCScale9Sprite*>(getChildByID("hover"));
   n->runAction(easingsActions::CCEaseOut::create(
     CCFadeTo::create(1,0),5
   ));
 }
 void MainMenuButton::onClick(MouseEvent* event) {
   ClickableContainer::onClick(event);
-  auto node = static_cast<CCScale9Sprite*>(this->getChildByID("hover"));
+  auto node = static_cast<CCScale9Sprite*>(getChildByID("hover"));
   node->stopAllActions();
   node->setOpacity(255*0.9);
   node->runAction(CCEaseExponentialOut::create(

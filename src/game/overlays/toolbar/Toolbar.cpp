@@ -70,7 +70,7 @@ bool Toolbar::init() {
     if (
       // the one that sends as click is a different event
       static_cast<MouseEvent*>(e)->eventType == MouseEventType::MouseDown &&
-      this->isMouseEntered()
+      isMouseEntered()
     ) e->preventDefault();
   });
 

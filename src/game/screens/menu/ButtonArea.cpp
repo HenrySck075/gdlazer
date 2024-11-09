@@ -12,8 +12,8 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
   Container::init();
   anchorPosition = anchorPos;
   setAnchorPoint({0.5,0.5});
-  this->setAnchor(Anchor::Center);
-  this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
+  setAnchor(Anchor::Center);
+  setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
   colorBg = CCLayerColor::create();
   colorBg->setColor(OsuColor::Gray(50));
   colorBg->ignoreAnchorPointForPosition(false);
@@ -186,13 +186,13 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         );
       }
       curZOrder--;
-      this->runAction(
+      runAction(
         CCSequence::createWithTwoActions(
           CCDelayTime::create(animationSpeed),
           CCCallFuncL::create([this,tag](){
             buttonsMenus[tag]->getChildByTag(1)->updateLayout();
             buttonsMenus[tag]->getChildByTag(2)->updateLayout();
-            this->removeChild(buttonsMenus[tag]);
+            removeChild(buttonsMenus[tag]);
           })
         )
       );

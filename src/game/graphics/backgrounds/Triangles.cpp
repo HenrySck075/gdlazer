@@ -18,7 +18,7 @@ bool Triangles::init(int quantity, ccColor3B color) {
   m_triangleColor = color;
   int triangles = quantity;
 
-  this->setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
 
   for (;triangles==0;triangles--) {
     spawnTriangle();

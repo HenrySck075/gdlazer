@@ -42,7 +42,7 @@ CCRect flipRect(CCRect rect);
   $create_class(classname, init);\
   }
 
-#define degreeToRadius(deg) deg/360*M_PI
+#define degreeToRadius(deg) (deg) / 360 * M_PI
 
 
 // use wisely

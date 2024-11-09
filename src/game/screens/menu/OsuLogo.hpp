@@ -36,5 +36,15 @@ public:
     return ret;
   }
   bool init();
+  friend class LogoVisualization;
+};
 
+class GEODE_HIDDEN LogoVisualization : public Container {
+  CCDrawNode* drawNode;
+  static const float bars_per_visualizer;
+  float bars[200] = {0.f};
+public:
+  $default_create(LogoVisualization);
+  void update(float delta);
+  bool init();
 };

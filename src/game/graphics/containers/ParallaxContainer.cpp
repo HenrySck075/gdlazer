@@ -11,14 +11,14 @@ public:
 
 bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   Container::init();
-  this->m_parallaxAmount = parallaxAmount;
-  this->parallax = Mod::get()->getSettingValue<bool>("parallax");
-  this->director = CCDirector::sharedDirector();
-  this->setAnchorPoint({0.5, 0.5});
-  //this->setPosition(director->getWinSize() / 2);
-  this->setAnchor(Anchor::Center);
-  this->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
-  if (scale) this->setScale(1 + abs(parallaxAmount));
+  m_parallaxAmount = parallaxAmount;
+  parallax = Mod::get()->getSettingValue<bool>("parallax");
+  director = CCDirector::sharedDirector();
+  setAnchorPoint({0.5, 0.5});
+  //setPosition(director->getWinSize() / 2);
+  setAnchor(Anchor::Center);
+  setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
+  if (scale) setScale(1 + abs(parallaxAmount));
   addListener("parallaxStateUpdate", [this](NodeEvent* e){
     parallax = static_cast<ParallaxStateUpdated*>(e)->enabled;
     if (!parallax) runAction(CCEaseSineOut::create(CCMoveTo::create(0.2, director->getWinSize()/2)));
@@ -31,7 +31,7 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   // this is added later so it will be called after the layout update function finishes
   //addListener("nodeLayoutUpdate", [](NodeEvent* e){e->stopPropagation();});
   /*
-  m_listener = this->template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
+  m_listener = template addEventListener<MouseFilter>([this](MouseType type, CCPoint location) {
     // iykyk
     return false;
   }, false);
@@ -47,7 +47,7 @@ void ParallaxContainer::updateParallax(const CCPoint& cursorPos) {
   auto ws = director->getWinSize()/2;
   auto dist = (cursorPos - ws) * m_parallaxAmount;
   dist.y = -dist.y;
-  this->setPosition(dist);
+  setPosition(dist);
 }
 
 $execute{

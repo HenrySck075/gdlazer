@@ -25,7 +25,7 @@ private:
 protected:
   void onClick(MouseEvent* e) override {
     Container::onClick(e);
-    FMODAudioEngine::sharedEngine()->playEffect(this->clickSfx);
+    FMODAudioEngine::sharedEngine()->playEffect(clickSfx);
     
     if (clickCallback) clickCallback(this);
   };

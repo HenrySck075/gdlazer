@@ -32,15 +32,15 @@ bool IntroTriangles::init() {
 #define delayCallFunc(delay, func) CCDelayTime::create(delay), CCCallFunc::create(this, callfunc_selector(func))
   auto seq = CCSequence::create(
     // welcome to osu! (Stage 1)
-    delayCallFunc(this->text_1, IntroTriangles::text_1_func),
-    delayCallFunc(this->text_2 - this->text_1, IntroTriangles::text_2_func),
-    delayCallFunc(this->text_3 - this->text_2, IntroTriangles::text_3_func),
-    delayCallFunc(this->text_4 - this->text_3, IntroTriangles::text_4_func),
+    delayCallFunc(text_1, IntroTriangles::text_1_func),
+    delayCallFunc(text_2 - text_1, IntroTriangles::text_2_func),
+    delayCallFunc(text_3 - text_2, IntroTriangles::text_3_func),
+    delayCallFunc(text_4 - text_3, IntroTriangles::text_4_func),
 
     // text glitch triangles
-    CCDelayTime::create(this->text_glitch - this->text_4),
+    CCDelayTime::create(text_glitch - text_4),
     CCRepeat::create(
-      delayRepeat(this->time_between_triangles, CCCallFunc::create(this, callfunc_selector(IntroTriangles::renderTriangles))),
+      delayRepeat(time_between_triangles, CCCallFunc::create(this, callfunc_selector(IntroTriangles::renderTriangles))),
       17
     ),
 
@@ -48,12 +48,12 @@ bool IntroTriangles::init() {
     // TODO: OpenGL wackery (?) to use the 
     // current iconset
     CCCallFunc::create(this, callfunc_selector(IntroTriangles::rulesets_1_func)),
-    delayCallFunc(this->rulesets_2 - this->rulesets_1, IntroTriangles::rulesets_2_func),
-    delayCallFunc(this->rulesets_3 - this->rulesets_2, IntroTriangles::rulesets_3_func),
+    delayCallFunc(rulesets_2 - rulesets_1, IntroTriangles::rulesets_2_func),
+    delayCallFunc(rulesets_3 - rulesets_2, IntroTriangles::rulesets_3_func),
 
     // osu! logo (Stage 3)
-    delayCallFunc(this->logo_1 - this->rulesets_3, IntroTriangles::logo_1_func),
-    delayCallFunc(this->logo_scale_duration, IntroTriangles::logo_scale),
+    delayCallFunc(logo_1 - rulesets_3, IntroTriangles::logo_1_func),
+    delayCallFunc(logo_scale_duration, IntroTriangles::logo_scale),
     nullptr
   );
    
@@ -74,7 +74,7 @@ bool IntroTriangles::init() {
   
   // e->playMusic("triangles.mp3"_spr,false,0.f,7);
   OsuGame::get()->startMusicSequence();
-  this->runAction(seq);
+  runAction(seq);
 
   return true;
 }
@@ -92,24 +92,24 @@ IntroTriangles* IntroTriangles::create() {
 }
 
 void IntroTriangles::text_1_func() {
-  static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("wel");
+  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("wel");
 }
 void IntroTriangles::text_2_func() {
-  static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("welcome");
+  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("welcome");
 }
 void IntroTriangles::text_3_func() {
-  static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("welcome to");
+  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("welcome to");
 }
 void IntroTriangles::text_4_func() {
-  static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"))->setString("welcome to osu!");
+  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
   auto a = CCCallFuncP::create(0,13,5,this, callfuncp_selector(IntroTriangles::text_4_set_spacing));
   a->setTag(7);
-  this->runAction(a);
+  runAction(a);
 #endif
 }
 void IntroTriangles::text_4_set_spacing(float spacing) {
-  auto welcomeTextNode = static_cast<CCLabelTTF*>(this->getChildByID("welcomeText"));
+  auto welcomeTextNode = static_cast<CCLabelTTF*>(getChildByID("welcomeText"));
   CCObject* obj;
   int c = 0;
   CCARRAY_FOREACH(welcomeTextNode->getChildren(), obj) {
@@ -121,7 +121,7 @@ void IntroTriangles::text_4_set_spacing(float spacing) {
 }
 
 void IntroTriangles::renderTriangles() {
-  auto node = static_cast<CCLayer*>(this->getChildByID("textGlitchNode"));
+  auto node = static_cast<CCLayer*>(getChildByID("textGlitchNode"));
 
   int triangleCount = (int)(randomFloat()*3)+1; // m
   auto nodeSize = node->getContentSize();
@@ -153,16 +153,16 @@ void IntroTriangles::renderTriangles() {
 
 void IntroTriangles::rulesets_1_func() {
   // cancel every ongoing actions related to stage 1
-  this->stopActionByTag(7);
+  stopActionByTag(7);
 
-  auto tgn = this->getChildByID("textGlitchNode");
+  auto tgn = getChildByID("textGlitchNode");
   auto m = tgn->getChildren();
   auto l = tgn->getChildrenCount();
   for (int i = 0; i < l; i++) {
     static_cast<CCNode*>(m->objectAtIndex(i))->stopAllActions();
   }
-  this->removeAllChildren();
-  //static_cast<CCNode*>(this->getChildByID("welcomeText"))->setVisible(false);
+  removeAllChildren();
+  //static_cast<CCNode*>(getChildByID("welcomeText"))->setVisible(false);
 
   auto n = CCLayer::create();
   n->setID("iconsets");
@@ -190,33 +190,33 @@ void IntroTriangles::rulesets_1_func() {
   addIcon("swing.png"_spr);
   addIcon("jetpack.png"_spr);
   n->updateLayout();
-  auto a = CCCallFuncP::create(50, 30, this->rulesets_2 - this->rulesets_1 + 0.3, this, callfuncp_selector(IntroTriangles::rulesets_1_change_gap));
+  auto a = CCCallFuncP::create(50, 30, rulesets_2 - rulesets_1 + 0.3, this, callfuncp_selector(IntroTriangles::rulesets_1_change_gap));
   a->setTag(9);
-  this->runAction(a);
+  runAction(a);
 
   addChild(n);
 }
 void IntroTriangles::rulesets_1_change_gap(float gap) {
-  auto n = this->getChildByID("iconsets");
+  auto n = getChildByID("iconsets");
   static_cast<RowLayout*>(n->getLayout())->setGap(gap);
   n->updateLayout();
 }
 void IntroTriangles::rulesets_2_func() {
-  auto n = this->getChildByID("iconsets");
-  this->stopActionByTag(9);
+  auto n = getChildByID("iconsets");
+  stopActionByTag(9);
   static_cast<RowLayout*>(n->getLayout())->setGap(15);
   n->setScale(1.1);
   n->updateLayout();
 }
 void IntroTriangles::rulesets_3_func() {
-  auto n = this->getChildByID("iconsets");
+  auto n = getChildByID("iconsets");
   static_cast<RowLayout*>(n->getLayout())->setGap(5);
   n->setScale(1.6);
   n->updateLayout();
 }
 
 void IntroTriangles::logo_1_func() {
-  this->getChildByID("iconsets")->removeFromParent();
+  getChildByID("iconsets")->removeFromParent();
 }
 /// @warning Not really logo_scale
 void IntroTriangles::logo_scale() {

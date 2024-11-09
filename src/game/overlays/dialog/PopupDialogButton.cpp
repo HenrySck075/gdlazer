@@ -19,7 +19,7 @@ PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color,
 
 bool PopupDialogButton::init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
   m_color = color;
-  this->setZOrder(3);
+  setZOrder(3);
 
   auto d = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
   if (d!=nullptr) {
@@ -61,8 +61,8 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
   ClickableContainer::init(clickSfx, clickCb);
   addListener("nodeLayoutUpdate", [this](NodeEvent* e){
     auto size = getContentSize();
-    this->getChildByID("dialogbutton-label")->setPosition(size/2);
-    auto d = this->getChildByID("dialogbutton-background");
+    getChildByID("dialogbutton-label")->setPosition(size/2);
+    auto d = getChildByID("dialogbutton-background");
     if (d!=nullptr) {
       d->setContentWidth(size.width * 0.8);
       d->setPosition(size / 2);
@@ -70,17 +70,17 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
     float gradWidth = size.width * 0.125f;
     
-    auto gradLeft = static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"));
+    auto gradLeft = static_cast<CCLayerGradient*>(getChildByID("gradientLeft"));
     gradLeft->setContentWidth(gradWidth);
-    auto gradRight = static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"));
+    auto gradRight = static_cast<CCLayerGradient*>(getChildByID("gradientRight"));
     gradRight->setContentWidth(gradWidth);
     gradRight->setPosition({size.width-gradWidth, 0.f});
   });
 
-  this->setContentSizeWithUnit(CCSize{ 100,height },Unit::Percent,Unit::UIKit);
-  this->setAnchorPoint(CCPoint{ 0.5,0.5 });
+  setContentSizeWithUnit(CCSize{ 100,height },Unit::Percent,Unit::UIKit);
+  setAnchorPoint(CCPoint{ 0.5,0.5 });
 
-  this->setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
 
   setSizeConstraints({-1,height}, {-1,height});
 
@@ -90,13 +90,13 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
 
 void PopupDialogButton::setOpacity(GLubyte opacity) {
   CCLayerRGBA::setOpacity(opacity); 
-  static_cast<CCLayerGradient*>(this->getChildByID("gradientLeft"))->setOpacity(opacity);
-  static_cast<CCLayerGradient*>(this->getChildByID("gradientRight"))->setOpacity(opacity);
+  static_cast<CCLayerGradient*>(getChildByID("gradientLeft"))->setOpacity(opacity);
+  static_cast<CCLayerGradient*>(getChildByID("gradientRight"))->setOpacity(opacity);
 }
 
 /*
 void PopupDialogButton::setContentWidth(float width) {
-  this->setContentSize(CCSize{width,this->getContentHeight()});
+  setContentSize(CCSize{width,getContentHeight()});
 }
 */
 // no
@@ -107,7 +107,7 @@ void PopupDialogButton::setContentHeight(float height) {
 void PopupDialogButton::onMouseEnter() {
   if (!getHoverEnabled()) return;
   FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
-  this->getChildByID("dialogbutton-background")->runAction(
+  getChildByID("dialogbutton-background")->runAction(
     easingsActions::CCEaseOut::create(
       CCResizeTo::create(
         0.1f,
@@ -118,13 +118,13 @@ void PopupDialogButton::onMouseEnter() {
     )
   );
   #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
-  this->getChildByID("gradientLeft")->runAction(gradAct);
-  this->getChildByID("gradientRight")->runAction(gradAct);
+  getChildByID("gradientLeft")->runAction(gradAct);
+  getChildByID("gradientRight")->runAction(gradAct);
   #undef gradAct
 }
 void PopupDialogButton::onMouseExit() {
   if (!getHoverEnabled()) return;
-  this->getChildByID("dialogbutton-background")->runAction(
+  getChildByID("dialogbutton-background")->runAction(
     easingsActions::CCEaseOut::create(
       CCResizeTo::create(
         0.1f, 
@@ -135,12 +135,12 @@ void PopupDialogButton::onMouseExit() {
     )
   );
   #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
-  this->getChildByID("gradientLeft")->runAction(gradAct);
-  this->getChildByID("gradientRight")->runAction(gradAct);
+  getChildByID("gradientLeft")->runAction(gradAct);
+  getChildByID("gradientRight")->runAction(gradAct);
   #undef gradAct
 }
 void PopupDialogButton::onMouseDown(MouseEvent* event) {
-  this->getChildByID("dialogbutton-background")->runAction(
+  getChildByID("dialogbutton-background")->runAction(
     easingsActions::CCEaseOut::create(
       CCResizeTo::create(
         click_duration*4, 
@@ -152,7 +152,7 @@ void PopupDialogButton::onMouseDown(MouseEvent* event) {
   );
 }
 void PopupDialogButton::onMouseUp(MouseEvent* event) {
-  this->getChildByID("dialogbutton-background")->runAction(
+  getChildByID("dialogbutton-background")->runAction(
     CCEaseIn::create(
       CCResizeTo::create(
         click_duration, 

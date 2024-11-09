@@ -3,15 +3,15 @@
 
 bool ClickableContainer::init(std::string clickSfx, ButtonCallback clickCb) {
   if (!ClickableContainer::init(clickSfx)) return false;
-  this->clickCallback = clickCb;
+  clickCallback = clickCb;
   return true;
 }
 bool ClickableContainer::init(std::string clickSfx) {
   if (!Container::init()) return false;
   this->clickSfx = clickSfx;
 
-  this->setZOrder(3);
-  //this->setCascadeOpacityEnabled(true);
+  setZOrder(3);
+  //setCascadeOpacityEnabled(true);
   
   //CCNodeHover::init();
   return true;

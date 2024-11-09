@@ -72,20 +72,20 @@ bool WaveContainer::customSetup(CCNode* pBody) {
   auto s = CCDirector::sharedDirector()->getWinSize();
   auto k = CCSize{s.width*0.8f, s.height};
   touchBoundary = CCRect((s.width-k.width)/2,0,k.width,k.height);
-  this->setContentSize(s);
+  setContentSize(s);
   auto w = s.width/2;
 
-  this->wave1 = createWave(w,k, angle1, provider->Light4());
-  this->wave2 = createWave(w,k, angle2, provider->Light3());
-  this->wave3 = createWave(w,k, angle3, provider->Dark4());
-  this->wave4 = createWave(w,k, angle4, provider->Dark3());
+  wave1 = createWave(w,k, angle1, provider->Light4());
+  wave2 = createWave(w,k, angle2, provider->Light3());
+  wave3 = createWave(w,k, angle3, provider->Dark4());
+  wave4 = createWave(w,k, angle4, provider->Dark3());
 
   addChild(wave1);
   addChild(wave2);
   addChild(wave3);
   addChild(wave4);
 
-  this->body = pBody; // mb
+  body = pBody; // mb
   body->setAnchorPoint({0.5,1});
   body->setPosition({s.width/2, 0});
   addChild(body);
@@ -97,10 +97,10 @@ bool WaveContainer::customSetup(CCNode* pBody) {
 
 void WaveContainer::onOpen() {
   hiding = false;
-  auto opacity = this->getOpacity();
-  this->setOpacity(0);
+  auto opacity = getOpacity();
+  setOpacity(0);
   CCDirector::sharedDirector()->getRunningScene()->addChild(this);
-  auto h = this->getContentHeight();
+  auto h = getContentHeight();
   
 #define j(id, dist) \
   pos##id = wave##id->getPositionY(); \
@@ -110,7 +110,7 @@ void WaveContainer::onOpen() {
   j(3,390.f);
   j(4,220.f);
   body->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(body->getPositionX(),h))));
-  this->runAction(CCFadeTo::create(0.1f, opacity));
+  runAction(CCFadeTo::create(0.1f, opacity));
 
   FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
 #undef j
@@ -119,7 +119,7 @@ void WaveContainer::onOpen() {
 void WaveContainer::onClose() {
   // nuh uh
   if (hiding) return;
-  this->stopAllActions();
+  stopAllActions();
 
 #define j(id) wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(wave##id->getPositionX(),pos##id))))
   j(1);
@@ -127,13 +127,13 @@ void WaveContainer::onClose() {
   j(3);
   j(4);
   body->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(body->getPositionX(),0))));
-  this->runAction(CCSequence::create( 
+  runAction(CCSequence::create( 
       CCFadeTo::create(0.1f,0),
       CCDelayTime::create(disappearDuration-0.1f),
       CCRemoveSelf::create(),
       nullptr
   ));
-  this->registerWithTouchDispatcher();
+  registerWithTouchDispatcher();
 
   FMODAudioEngine::sharedEngine()->playEffect("overlay-big-pop-out.wav"_spr);
   hiding = true;

@@ -66,8 +66,8 @@ public:
    */
   virtual ~BMGlyphFontConfig() {
     geode::log::debug( "[IconConstructor]: deallocing BMGlyphFontConfig" );
-    this->purgeFontDefDictionary();
-    this->purgeKerningDictionary();
+    purgeFontDefDictionary();
+    purgeKerningDictionary();
     m_sAtlasNames.clear();
     CC_SAFE_DELETE(m_pCharacterSet);
   };
@@ -94,7 +94,7 @@ public:
     m_pKerningDictionary = NULL;
     m_pFontDefDictionary = {};
     
-    m_pCharacterSet = this->parseConfigFile(FNTfile);
+    m_pCharacterSet = parseConfigFile(FNTfile);
     
     if (! m_pCharacterSet)
     {

@@ -45,17 +45,17 @@ class $modify(nPauseLayer,PauseLayer) {
 
   /*
   CCObject* obj;
-  CCARRAY_FOREACH(this->getChildren(), obj) {
+  CCARRAY_FOREACH(getChildren(), obj) {
     auto n = static_cast<CCNode*>(obj);
     //int oldOpacity = n->getOpacity();
     n->setVisible(false);
     //n->runAction(CCFadeTo::create(0.2, oldOpacity));
   }
   */
-    int opacity = this->getOpacity();
-    this->setOpacity(0);
-    this->runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.05), CCCallFunc::create(this, callfunc_selector(nPauseLayer::scheduleBGM))));
-    this->runAction(CCFadeTo::create(0.25,opacity));
+    int opacity = getOpacity();
+    setOpacity(0);
+    runAction(CCSequence::createWithTwoActions(CCDelayTime::create(0.05), CCCallFunc::create(this, callfunc_selector(nPauseLayer::scheduleBGM))));
+    runAction(CCFadeTo::create(0.25,opacity));
   }
 };
 
@@ -77,10 +77,10 @@ class $modify(Camila, LoadingLayer) {
   bool init(bool idk) {
     if (!LoadingLayer::init(idk)) return false;
     CCLog("meow");
-    this->setAnchorPoint({0,2});
-    this->ignoreAnchorPointForPosition(false);
+    setAnchorPoint({0,2});
+    ignoreAnchorPointForPosition(false);
     
-    this->schedule(schedule_selector(Camila::updateSmallTextLabel));
+    schedule(schedule_selector(Camila::updateSmallTextLabel));
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
     m_fields->m_smallLabel = OsuText("",FontType::Regular, 14, CCTextAlignment::kCCTextAlignmentRight);
@@ -206,7 +206,7 @@ struct MyMenuLayer : geode::Modify<MyMenuLayer, MenuLayer> {
       menu_selector(MyMenuLayer::onMyButton2)
     );
 
-    auto menu = this->getChildByID("bottom-menu");
+    auto menu = getChildByID("bottom-menu");
     menu->addChild(introButton);
     menu->addChild(dialogButton);
 
@@ -272,7 +272,7 @@ public:
   };
   bool init() {
   instance = BeatDetector::Instance();
-  this->runAction(CCRepeatForever::create(CCSequence::createWithTwoActions(
+  runAction(CCRepeatForever::create(CCSequence::createWithTwoActions(
     CCDelayTime::create(0.1),
     CCCallFunc::create(this, callfunc_selector(BeatUpdater::m)))
   ));

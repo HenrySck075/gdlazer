@@ -267,7 +267,7 @@ void Game::checkForQueue() {
 
 bool Game::dispatchEvent(NodeEvent* event) {
   if (event->target() != nullptr) return false;
-  if (!this->isRunning()) return true;
+  if (!isRunning()) return true;
   EventTarget::dispatchEvent(event);
   updateDispatchFlow(event, DispatchingFlow::Down);
 

@@ -13,12 +13,12 @@ class SongSelect;
 void ButtonSystem::setOsuLogo(OsuLogo* logo) {
     this->logo = logo;
     /*
-    if (this->logo != nullptr)
+    if (logo != nullptr)
     {
       this->logo.Action = onOsuLogo;
 
       // osuLogo.SizeForFlow relies on loading to be complete.
-      buttonArea.Flow.Position = ccp(WEDGE_WIDTH * 2 - (BUTTON_WIDTH + this->logo.SizeForFlow / 4), 0);
+      buttonArea.Flow.Position = ccp(WEDGE_WIDTH * 2 - (BUTTON_WIDTH + logo.SizeForFlow / 4), 0);
 
       updateLogoState();
     }
@@ -34,8 +34,8 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
 bool ButtonSystem::init(OsuLogo* logo) {
   Container::init();
   setOsuLogo(logo);
-  this->m_menuLayerPtr = GameManager::sharedState()->m_menuLayer;
-  this->m_creatorLayerPtr = CreatorLayer::create();
+  m_menuLayerPtr = GameManager::sharedState()->m_menuLayer;
+  m_creatorLayerPtr = CreatorLayer::create();
 
   //float w = CCDirector::sharedDirector()->getWinSize().width;
   CCPoint an = {-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
@@ -62,7 +62,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-default-select.wav"_spr, 
       OsuIcon::ModRelax, 
       Color4(102, 68, 204, 255),
-      [this](CCNode*j){this->m_creatorLayerPtr->onDailyLevel(this);},
+      [this](CCNode*j){m_creatorLayerPtr->onDailyLevel(this);},
       {enumKeyCodes::KEY_D}
     ),
     MainMenuButton::create(
@@ -70,7 +70,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-default-select.wav"_spr, 
       OsuIcon::ModSuddenDeath,
       Color4(94, 63, 186, 255), 
-      [this](CCNode*j){this->m_creatorLayerPtr->onWeeklyLevel(this);},
+      [this](CCNode*j){m_creatorLayerPtr->onWeeklyLevel(this);},
       {enumKeyCodes::KEY_W}
     )
   ), "challenges");
@@ -82,7 +82,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       OsuIcon::Player, 
       Color4(102, 68, 204, 255),
       [this](CCNode*j){
-        //this->m_menuLayerPtr->onPlay(this->m_menuLayerPtr);
+        //m_menuLayerPtr->onPlay(m_menuLayerPtr);
         if (Mod::get()->getSettingValue<bool>("devmode")) {
           OsuGame::get()->pushScreen(SongSelect::create())->setZOrder(-7);
         } else {
@@ -96,7 +96,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-default-select.wav"_spr, 
       OsuIcon::Online, 
       Color4(94, 63, 186, 255), 
-      [this](CCNode*j){this->m_creatorLayerPtr->onSavedLevels(this);},
+      [this](CCNode*j){m_creatorLayerPtr->onSavedLevels(this);},
       {enumKeyCodes::KEY_P}
     )
   ),"play_local");
@@ -163,7 +163,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-default-select.wav"_spr, 
       OsuIcon::Collections, 
       Color4(220, 160, 0, 255), 
-      [this](CCNode*j){this->m_creatorLayerPtr->onMyLevels(this);},
+      [this](CCNode*j){m_creatorLayerPtr->onMyLevels(this);},
       {enumKeyCodes::KEY_S}
     )
   ), "edit");
@@ -258,8 +258,8 @@ bool ButtonSystem::init(OsuLogo* logo) {
 
   area->show("toplevel");
   
-  this->setAnchor(Anchor::Center);
-  this->setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
+  setAnchor(Anchor::Center);
+  setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
   logo->setZOrder(1);
   logo->setPosition({an.x,0});
   logo->setScale(0.4);
@@ -272,7 +272,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       )->click();
   });
   
-  //this->setPositionX(0);
+  //setPositionX(0);
   //auto me = CCMenu::createWithItem(logo);
   //me->setPosition({0,0});
   addChild(logo);

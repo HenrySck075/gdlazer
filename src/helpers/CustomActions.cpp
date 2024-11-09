@@ -20,7 +20,7 @@ bool CCCallFuncP::initWithACatgirl(float from, float to, float duration, CCObjec
 
 void CCCallFuncP::update(float time) {
   // percentage distance * current time percentage + percent start value
-  this->execute((m_to-m_from)*(m_reversed?1-(time/m_fDuration):time/m_fDuration)+m_from);
+  execute((m_to-m_from)*(m_reversed?1-(time/m_fDuration):time/m_fDuration)+m_from);
 }
 
 void CCCallFuncP::execute(float percentage) {
@@ -57,9 +57,9 @@ CCActionSkip* CCActionSkip::create(float startTime, CCActionInterval* action) {
 }
 
 bool CCActionSkip::initWithACatgirl(CCActionInterval* action, float startTime) {
-  if (this->initWithAction(action) && this->initWithDuration(action->getDuration() - startTime)) {
+  if (initWithAction(action) && initWithDuration(action->getDuration() - startTime)) {
     m_fInnerDuration = action->getDuration();
-    this->m_fStartTime = startTime / action->getDuration();
+    m_fStartTime = startTime / action->getDuration();
     action->retain();
     return true;
   }

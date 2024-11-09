@@ -125,8 +125,8 @@ void PopupDialog::onOpen() {
 void PopupDialog::onClose() {
   if (hiding) return;
   hiding = true;
-  //this->setKeypadEnabled(false);
-  //this->setTouchEnabled(false);
+  //setKeypadEnabled(false);
+  //setTouchEnabled(false);
   for (auto* btn : CCArrayExt<PopupDialogButton*>(main->getChildByID("buttonLayer")->getChildren())) {
     btn->setHoverEnabled(false);
     btn->setClickEnabled(false);
@@ -140,12 +140,12 @@ void PopupDialog::onClose() {
   auto en = FMODAudioEngine::sharedEngine();
   en->playEffect("dialog-pop-out.wav"_spr);
   en->setBackgroundMusicVolume(volume);
-  this->runAction(CCSequence::createWithTwoActions(
+  runAction(CCSequence::createWithTwoActions(
     CCDelayTime::create(0.5), 
     CCRemoveSelf::create()
   ));
 }
 
 void PopupDialog::keyBackClicked() {
-  this->hide();
+  hide();
 }
