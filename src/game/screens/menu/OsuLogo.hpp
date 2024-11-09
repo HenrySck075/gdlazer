@@ -22,7 +22,7 @@ public:
   void onMouseUp(MouseEvent* event) override {};
   void onMouseDown(MouseEvent* event) override {};
   void onClick(MouseEvent* e) override {};
-  void update(float delta);
+  void update(float delta) override;
 
   static OsuLogo* create() {
     OsuLogo *ret = new OsuLogo();
@@ -41,10 +41,9 @@ public:
 
 class GEODE_HIDDEN LogoVisualization : public Container {
   CCDrawNode* drawNode;
-  static const float bars_per_visualizer;
   float bars[200] = {0.f};
 public:
   $default_create(LogoVisualization);
-  void update(float delta);
+  void update(float delta) override;
   bool init();
 };

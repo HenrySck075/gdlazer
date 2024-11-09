@@ -5,7 +5,7 @@
 bool NowPlayingOverlay::init() {
   if (!OsuOverlayContainer::init()) return false;
   main->setAnchor(Anchor::TopRight);
-  main->setAnchorPoint({0.5,0.5});
+  main->setAnchorPoint({1,1});
   main->setPadding({3});
   main->setRadius(5);
   main->setContentSizeWithUnit({player_width,player_height}, Unit::UIKit, Unit::UIKit);

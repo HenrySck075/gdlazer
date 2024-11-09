@@ -20,11 +20,11 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
   // i still have naming skill issues
   CCPoint last = {0,0};
   if (rotateLeft) {
-    last = right.rotateByAngle(left, degreeToRadius(angle));
+    last = right.rotateByAngle(left, kmDegreesToRadians(angle));
     float remainingDistRatio = last.x/right.x;
     last = CCPoint{right.x,last.y*remainingDistRatio};
   } else {
-    last = left.rotateByAngle(right, -degreeToRadius(angle));
+    last = left.rotateByAngle(right, -kmDegreesToRadians(angle));
     float remainingDistRatio = last.x/right.x;
     last = CCPoint{left.x,last.y};
   }

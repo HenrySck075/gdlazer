@@ -64,53 +64,59 @@ void OsuLogo::onBeat(float delta) {
 */
 
 /// If 0.0024f feels to small then multiply it
-const float LogoVisualization::bars_per_visualizer = 200;
-static const float decay_per_millisecond = 0.0024f;
+static const float bars_per_visualizer = 200;
+static const float decay_per_millisecond = 0.0024f*10;
 static const float time_between_updates = 50.f;
 /// @brief amount of time passed
 static float t = 0;
 static int offset = 0;
 static const int step = 5;
-static float bar_length = 600;
+float bar_length = 40;
 bool LogoVisualization::init() {
   if (!Container::init()) return false;
-  bar_length = processUnit(600, Unit::UIKit, false);
+  //bar_length = processUnit(600, Unit::UIKit, true);
+  drawNode = CCDrawNode::create();
+  addListener("nodeLayoutUpdate",[this](NodeEvent* e){
+    drawNode->setContentSize(CCNode::getContentSize());
+    drawNode->setPosition(CCNode::getContentSize()/2);
+  });
+  drawNode->setAnchorPoint({0.5,0.5});
   setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
+  addChild(drawNode);
   scheduleUpdate();
   return true;
 }
 void LogoVisualization::update(float delta) {
   CCNode::update(delta);
   t+=delta;
-  if (t<time_between_updates) return;
-  float dominantVol = 0;
-  float* spectrum;
-  float window = 2048;
   auto logo = static_cast<OsuLogo*>(m_pParent);
-  logo->audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
-  logo->audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_SPECTRUMDATA, spectrum,nullptr,0);
-  logo->audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_WINDOWSIZE, &window,nullptr,0);
-  float dominantRatio = dominantVol/window;
-  std::vector<int> v(spectrum, spectrum + sizeof spectrum / sizeof spectrum[0]);
-  log::debug("{}",v);
   drawNode->setScale(logo->logoSprite->getScale());
-
+  if (t<time_between_updates/1000) return;
+  float dominantVol = 0;
+  int window = 2048;
+  float* spectrum;
+  logo->audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
+  logo->audio->getDSP()->getParameterInt(FMOD_DSP_FFT_WINDOWSIZE, &window,nullptr,0);
+  float dominantRatio = dominantVol/window;
   drawNode->clear();
 
   std::vector<CCPoint> lines;
   lines.reserve(bars_per_visualizer*2);
+  int s = (int)(step);
   for (int i = 0; i < bars_per_visualizer; i++) {
-    float rot = degreeToRadius(i / bars_per_visualizer * 360);
+    float rot = kmDegreesToRadians((i / bars_per_visualizer) * 360) * 2;
     auto center = CCNode::getContentSize()/2;
     CCPoint start{center.width,CCNode::getContentSize().height};
-    if (i % (int)step == 0) {
+    if ((i-offset) % s == 0) {
       bars[i] = bar_length*dominantRatio;
     } else {
-      bars[i] -= decay_per_millisecond*t;
+      bars[i] = 0;
     }
     lines.push_back(ccpRotateByAngle(start,center,rot));
     lines.push_back(ccpRotateByAngle(start+CCPoint{0,bars[i]},center,rot));
   }
-  drawNode->drawLines(lines.data(),bars_per_visualizer,20,{255,255,255,255*0.2});
+  drawNode->drawLines(lines.data(),bars_per_visualizer,2,{0.8f,0.8f,0.8f,0.2f});
   t = 0;
+  offset++;
+  if (offset%s == 0) offset=0;
 }
