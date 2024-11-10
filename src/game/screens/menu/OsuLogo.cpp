@@ -115,7 +115,7 @@ void LogoVisualization::update(float delta) {
     lines.push_back(ccpRotateByAngle(start,center,rot));
     lines.push_back(ccpRotateByAngle(start+CCPoint{0,bars[i]},center,rot));
   }
-  drawNode->drawLines(lines.data(),bars_per_visualizer,2,{0.8f,0.8f,0.8f,0.2f});
+  drawNode->drawLines(lines.data(),bars_per_visualizer*2,2,{0.8f,0.8f,0.8f,0.2f});
   t = 0;
   offset++;
   if (offset%s == 0) offset=0;
