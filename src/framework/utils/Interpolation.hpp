@@ -1,4 +1,5 @@
 #include <Geode/cocos/include/cocos2d.h>
+#include <fmt/format.h>
 using namespace cocos2d;
 
 class Interpolation {

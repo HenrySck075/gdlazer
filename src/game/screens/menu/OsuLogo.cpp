@@ -102,9 +102,9 @@ void LogoVisualization::update(float delta) {
 
   std::vector<CCPoint> lines;
   lines.reserve(bars_per_visualizer*2);
-  int s = (int)(step);
+  int s = bars_per_visualizer/(int)(step);
   for (int i = 0; i < bars_per_visualizer; i++) {
-    float rot = kmDegreesToRadians((i / bars_per_visualizer) * 360) * 2;
+    float rot = kmDegreesToRadians((i / bars_per_visualizer) * 360);
     auto center = CCNode::getContentSize()/2;
     CCPoint start{center.width,CCNode::getContentSize().height};
     if ((i-offset) % s == 0) {
