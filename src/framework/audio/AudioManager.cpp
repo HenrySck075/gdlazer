@@ -23,6 +23,10 @@ bool AudioManager::init() {
 
   return true;
 }
+
+/** TODO: Some tracks plays "Stereo Madness" but it actually uses a custom song
+ (it doesnt play stereo madness)
+*/
 void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
   currentLevel = level;
   int track = 1;

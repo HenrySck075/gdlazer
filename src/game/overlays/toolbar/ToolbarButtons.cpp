@@ -21,17 +21,7 @@ bool ToolbarSettingsButton::init() {
     if (e->key.ctrl && e->key.key == enumKeyCodes::KEY_O)
       select();
   });
-  addListener("overlayEvent", [this](NodeEvent* e){
-    log::debug("[ToolbarSettingsButton]: e");
-    auto ev = static_cast<OverlayEvent*>(e);
-    // todo: reliable way to determine if its SettingsPanel
-    if (ev->getEventType() == OverlayEvent::Type::Popin && ev->getOverlay()->getName() == "SettingsPanel") {
-      ToolbarToggleButton::select();
-    } else {
-      ToolbarToggleButton::deselect();
-    }
-  });
-  return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the");
+  return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the", AxisAlignment::Start, "SettingsPanel");
 }
 
 

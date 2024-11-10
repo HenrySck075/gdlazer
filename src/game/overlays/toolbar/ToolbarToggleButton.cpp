@@ -1,8 +1,16 @@
 #include "ToolbarToggleButton.hpp"
 #include "../../graphics/OsuColor.hpp"
 
-bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::string sub, AxisAlignment align) {
+bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::string sub, AxisAlignment align, std::string overlayName) {
   ToolbarButton::init(icon, text, sub, align);
+  addListener("overlayEvent", [this](NodeEvent* e){
+    auto ev = static_cast<OverlayEvent*>(e);
+    if (ev->getEventType() == OverlayEvent::Type::Popin && ev->getOverlay()->getName() == overlayName) {
+      ToolbarToggleButton::select();
+    } else {
+      ToolbarToggleButton::deselect();
+    }
+  });
   toggleBg = Container::create();
   toggleBg->setColor(OsuColor::Carmine.opacity(180));
   toggleBg->setContentSizeWithUnit(CCSize(100,100), Unit::Percent, Unit::Percent);

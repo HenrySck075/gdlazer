@@ -74,7 +74,8 @@ public:
       OsuIcon::Music, 
       "now playing", 
       "manage the currently playing track (F6)", 
-      AxisAlignment::End
+      AxisAlignment::End,
+      "NowPlayingOverlay"
     );
   }
   void select() override;

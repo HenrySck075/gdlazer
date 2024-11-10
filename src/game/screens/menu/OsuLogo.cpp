@@ -65,7 +65,7 @@ void OsuLogo::onBeat(float delta) {
 
 /// If 0.0024f feels to small then multiply it
 static const float bars_per_visualizer = 200;
-static const float decay_per_millisecond = 0.0024f*10;
+static const float decay_per_millisecond = 0.0024f;
 static const float time_between_updates = 50.f;
 /// @brief amount of time passed
 static float t = 0;
@@ -94,28 +94,36 @@ void LogoVisualization::update(float delta) {
   if (t<time_between_updates/1000) return;
   float dominantVol = 0;
   int window = 2048;
-  float* spectrum;
+  //FMOD_DSP_PARAMETER_FFT* spectrum;
   logo->audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
+  // idk
+  // https://qa.fmod.com/t/how-to-get-spectrum-data-including-amplitudes-with-fmod-dsp-parameter-fft/12183/2
+  //logo->audio->getDSP()->getParameterData(FMOD_DSP_FFT_SPECTRUMDATA, (void**)spectrum,0,nullptr,0);
   logo->audio->getDSP()->getParameterInt(FMOD_DSP_FFT_WINDOWSIZE, &window,nullptr,0);
+  // idk if its right (i doubt it is)
+  //float dominantVol = (spectrum->spectrum[0][(int)dominant]+spectrum->spectrum[1][(int)dominant])/2;
   float dominantRatio = dominantVol/window;
   drawNode->clear();
 
-  std::vector<CCPoint> lines;
-  lines.reserve(bars_per_visualizer*2);
   int s = bars_per_visualizer/(int)(step);
   for (int i = 0; i < bars_per_visualizer; i++) {
     float rot = kmDegreesToRadians((i / bars_per_visualizer) * 360);
     auto center = CCNode::getContentSize()/2;
-    CCPoint start{center.width,CCNode::getContentSize().height};
+    CCPoint start{center.width,CCNode::getContentSize().height-5};
     if ((i-offset) % s == 0) {
       bars[i] = bar_length*dominantRatio;
     } else {
-      bars[i] = 0;
+      if (bars[i] != 0) {
+        bars[i] -= (decay_per_millisecond/(time_between_updates/1000))*50;
+        if (bars[i] < 0) bars[i] = 0;
+      }
     }
-    lines.push_back(ccpRotateByAngle(start,center,rot));
-    lines.push_back(ccpRotateByAngle(start+CCPoint{0,bars[i]},center,rot));
+    drawNode->drawSegment(
+      ccpRotateByAngle(start,center,rot),
+      ccpRotateByAngle(start+CCPoint{0,bars[i]},center,rot),
+      2,{0.8f,0.8f,0.8f,0.2f}
+    );
   }
-  drawNode->drawLines(lines.data(),bars_per_visualizer*2,2,{0.8f,0.8f,0.8f,0.2f});
   t = 0;
   offset++;
   if (offset%s == 0) offset=0;

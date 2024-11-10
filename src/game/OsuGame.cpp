@@ -87,7 +87,6 @@ bool OsuGame::init() {
   CCDictElement* e;
   CCDICT_FOREACH(onlineLevels, e) {
     auto level = static_cast<GJGameLevel*>(e->getObject());
-    log::info("[OsuGame]: {} | {} | {}", e->getStrKey(), level->m_levelName, level->m_songIDs);
     /*
     decltype(addedSong)::iterator pos = std::find(addedSong.begin(),addedSong.end(),level->m_audioTrack);
     if (pos!=addedSong.end()) {
@@ -112,7 +111,6 @@ bool OsuGame::init() {
       levelDownloadCount.push_back(level->m_downloads);
     //}
   }
-  log::info("[OsuGame]:\n{}",mainPlaylist.inner());
 
   return true;
 }
