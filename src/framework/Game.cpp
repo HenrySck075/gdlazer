@@ -25,8 +25,8 @@ using ReturnFromOverlay = NamedNodeEvent<returnEventsToScreen>;
 
 /// we assume shit in here
 class OverlaysWatcherContainer : public Container {
-  CCArrayExt<OverlayContainer*> overlayPopQueue;
-  CCArrayExt<OverlayContainer*> overlayStack;
+  CCArrayExt<OverlayContainer*> m_overlayPopQueue;
+  CCArrayExt<OverlayContainer*> m_overlayStack;
 public:
   $default_create(OverlaysWatcherContainer);
 
@@ -40,19 +40,30 @@ public:
   }
 
   void update(float dt) override {
-    decltype(overlayPopQueue) popRemoveList;
-    for (OverlayContainer* i : overlayPopQueue) {
+    decltype(m_overlayPopQueue) popRemoveList;
+    for (OverlayContainer* i : m_overlayPopQueue) {
       if (m_pActionManager->numberOfRunningActionsInTarget(i) == 0) {
         CCNode::removeChild(i);
         popRemoveList.push_back(i);
       }
     }
-    for (OverlayContainer* i : popRemoveList) overlayPopQueue.inner()->removeObject(i);
+    for (OverlayContainer* i : popRemoveList) m_overlayPopQueue.inner()->removeObject(i);
   }
 
   void addChild(CCNode* child) override {
-    if (!m_pChildren || m_pChildren->count()==0) runAction(CCFadeTo::create(0.25,127));
-    Container::addChild(child);
+    // do fade anim if any:
+    // - children array is null
+    // - children count is 0
+    // - pop queue count is the same as children count (which means it's popping all of them)
+    if (!m_pChildren || m_pChildren->count()==0 || m_overlayPopQueue.size() == m_pChildren->count()) 
+      runAction(CCFadeTo::create(0.25,127));
+    auto i = std::find(m_overlayPopQueue.begin(), m_overlayPopQueue.end(), child);
+    if (i!=m_overlayPopQueue.end()) {
+      m_overlayPopQueue.inner()->removeObjectAtIndex(std::distance(m_overlayPopQueue.begin(), i));
+    } else {
+      // just to not add the same child twice
+      Container::addChild(child);
+    }
   }
   void removeChild(CCNode* child) override {
     if (child == nullptr) return;
@@ -62,7 +73,7 @@ public:
       Game::get()->g();
     }
     auto c = static_cast<OverlayContainer*>(child);
-    if (m_pActionManager->numberOfRunningActionsInTarget(c) != 0) overlayPopQueue.push_back(c);
+    if (m_pActionManager->numberOfRunningActionsInTarget(c) != 0) m_overlayPopQueue.push_back(c);
     else Container::removeChild(child);
   }
 };

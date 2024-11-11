@@ -148,7 +148,12 @@ void OsuGame::showSettings() {
 void OsuGame::hideSettings() {
   overlays["settings"]->hide();
 }
-
+static std::array<std::string, 4> uiRelatedEvents = {
+  "nodeLayoutUpdate",
+  "mouseEvent",
+  "keyboardEvent",
+  "keypadEvent"
+};
 bool OsuGame::dispatchEvent(NodeEvent* event) {
   if (event->target() != nullptr) return false;
   if (!isRunning()) return true;
@@ -158,12 +163,16 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
 
   if (event->m_cancelled) return false;
 
-  if (event->eventName() != "nodeLayoutUpdate") { 
-    if (current != nullptr) {
+  // direct ui-related events to the current screen
+  if (std::find(uiRelatedEvents.begin(), uiRelatedEvents.end(), event->eventName()) != uiRelatedEvents.end()) { 
+    if (current != nullptr && event->eventName() != "nodeLayoutUpdate") {
       current->dispatchEvent(event);
+    } else {
+      main->setContentSize({getContentWidth(),getContentHeight()-offset});
     }
+  // for everything else
   } else {
-    main->setContentSize({getContentWidth(),getContentHeight()-offset});
+    main->dispatchEvent(event);
   }
 }
 

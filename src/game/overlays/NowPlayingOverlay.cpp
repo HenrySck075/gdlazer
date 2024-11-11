@@ -12,6 +12,7 @@ bool NowPlayingOverlay::init() {
   main->setScale(0.9);
   main->setColor(OsuColor::YellowDarker);
   main->setOpacity(0);
+  name = "NowPlayingOverlay";
   return true;
 }
 void NowPlayingOverlay::onOpen() {
