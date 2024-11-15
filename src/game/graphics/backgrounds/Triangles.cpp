@@ -14,9 +14,10 @@ Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
 }
 
 bool Triangles::init(int quantity, ccColor3B color) {
-  Container::init();
+  if (!Container::init()) return false;
   m_triangleColor = color;
   int triangles = quantity;
+  setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
 
   setCascadeOpacityEnabled(true);
 
@@ -24,13 +25,13 @@ bool Triangles::init(int quantity, ccColor3B color) {
     spawnTriangle();
   }
 
-  setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
   return true;
 }
 void Triangles::spawnTriangle() {
   auto tri = makeTriangle();
   addChild(tri);
   assignAction(tri, 0);
+  log::debug("[Triangles]: ");
 }
 void Triangles::assignAction(CCNode* node, float startTime) {
   auto space = CCNode::getContentSize();

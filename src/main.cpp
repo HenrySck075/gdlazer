@@ -123,6 +123,7 @@ class $modify(Camila, LoadingLayer) {
       if (j) o->pushScreen(j);
       // this will probably leak but if not then m_menuLayer will be nullptr
       GameManager::sharedState()->m_menuLayer->retain();
+
     });
     #else
     runAction(
