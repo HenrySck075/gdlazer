@@ -139,8 +139,6 @@ bool Game::init() {
   overlaysContainer->setCascadeOpacityEnabled(false);
   screensContainer->setCascadeOpacityEnabled(false);
 
-  // j
-  scheduleUpdate();
 
   return true;
 }

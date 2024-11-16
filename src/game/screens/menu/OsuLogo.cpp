@@ -83,7 +83,6 @@ bool LogoVisualization::init() {
   drawNode->setAnchorPoint({0.5,0.5});
   setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
   addChild(drawNode);
-  scheduleUpdate();
   return true;
 }
 void LogoVisualization::update(float delta) {

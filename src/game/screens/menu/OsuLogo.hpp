@@ -14,7 +14,7 @@ class OsuLogo : public ClickableContainer {
 private:
   AudioManager* audio;
   CCSprite* logoSprite;
-  int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
+  //int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public:  
   void onMouseEnter() override {};
   void onMouseExit() override {};
@@ -22,6 +22,10 @@ public:
   void onMouseUp(MouseEvent* event) override {};
   void onMouseDown(MouseEvent* event) override {};
   void onClick(MouseEvent* e) override {};
+  void onEnter() override {
+    CCNode::onEnter();
+    scheduleUpdate();
+  }
   void update(float delta) override;
 
   static OsuLogo* create() {

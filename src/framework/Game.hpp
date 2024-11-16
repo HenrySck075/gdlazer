@@ -43,6 +43,11 @@ protected:
   static Game* getInstance();
 public:
   static Game* get();
+  
+  void onEnter() override {
+    CCNode::onEnter();
+    scheduleUpdate();
+  }
 
   void e() {
     auto m = CCDirector::sharedDirector()->getOpenGLView()->getDesignResolutionSize();
