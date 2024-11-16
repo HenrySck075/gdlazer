@@ -393,8 +393,11 @@ class $modify(the,CCTouchDispatcher) {
       e.unwrap()->setAutoEnable(false);
     }
   }
-  void broadcastPos(MouseEventType type, CCPoint pos) {
-    OsuGame::get()->dispatchEvent(new MouseEvent(type,pos));
+  void broadcastPos(MouseEventType type, CCSet* t) {
+    if (t) {
+      CCTouch* touch = (CCTouch*)(*t->begin());
+      OsuGame::get()->dispatchEvent(new MouseEvent(type,touch->getLocation()));
+    }
   };
   void touches(CCSet * t, CCEvent * e, unsigned int idx) {
     CCTouchDispatcher::touches(t, e, idx);
@@ -402,10 +405,10 @@ class $modify(the,CCTouchDispatcher) {
     switch(idx) {
       case CCTOUCHBEGAN: type = MouseEventType::MouseDown; break;
       case CCTOUCHMOVED: type = MouseEventType::Move; break;
-      case CCTOUCHENDED: 
+      case CCTOUCHENDED: type = MouseEventType::MouseUp; break;
       case CCTOUCHCANCELLED: type = MouseEventType::MouseUp; break;
     }
-    the::broadcastPos(type,static_cast<CCTouch*>(*t->begin())->getLocation());
+    the::broadcastPos(type,t);
   }
 };
 #endif 

@@ -155,7 +155,7 @@ static std::array<std::string, 4> uiRelatedEvents = {
   "keypadEvent"
 };
 bool OsuGame::dispatchEvent(NodeEvent* event) {
-  if (event->target() != nullptr) return false;
+  if (event->target() == nullptr) return false;
   if (!isRunning()) return true;
   EventTarget::dispatchEvent(event);
   updateDispatchFlow(event, DispatchingFlow::Down);
@@ -164,15 +164,22 @@ bool OsuGame::dispatchEvent(NodeEvent* event) {
   if (event->m_cancelled) return false;
 
   // direct ui-related events to the current screen
-  if (std::find(uiRelatedEvents.begin(), uiRelatedEvents.end(), event->eventName()) != uiRelatedEvents.end()) { 
+  auto en = event->eventName();
+  if (
+    en == "nodeLayoutUpdate" ||
+    en == "mouseEvent" ||
+    en == "keyboardEvent" ||
+    en == "keypadEvent"
+  ){ 
     if (current != nullptr && event->eventName() != "nodeLayoutUpdate") {
-      current->dispatchEvent(event);
+      return current->dispatchEvent(event);
     } else {
       main->setContentSize({getContentWidth(),getContentHeight()-offset});
+      return true;
     }
   // for everything else
   } else {
-    main->dispatchEvent(event);
+    return main->dispatchEvent(event);
   }
 }
 

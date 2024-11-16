@@ -25,6 +25,9 @@ CCRect flipRect(CCRect rect);
   #define noinline __attribute__((noinline))
 #else 
   #define noinline __declspec(noinline) 
+#endif
+
+#ifdef GEODE_IS_WINDOWS
   #define breakpoint() if (IsDebuggerPresent()) DebugBreak()
 #endif
 

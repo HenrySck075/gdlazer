@@ -30,6 +30,25 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
     }
     */
   }
+bool tempForceReplace2 = false;
+#include <Geode/modify/CCDirector.hpp>
+struct area51 : Modify<area51, CCDirector>{
+  bool replaceScene(CCScene* scene) {
+    if (tempForceReplace2 && !dynamic_cast<CCTransitionScene*>(getRunningScene())) {
+      tempForceReplace2 = false;
+      return CCDirector::replaceScene(CCTransitionFade::create(0.5,OsuGame::get()));
+    }
+    else return CCDirector::replaceScene(scene);
+  }
+};
+
+#include <Geode/modify/LevelSelectLayer.hpp>
+class $modify(LevelSelectLayer) {
+  void onBack(CCObject* s) {
+    tempForceReplace2 = true;
+    LevelSelectLayer::onBack(s);
+  }
+};
 
 bool ButtonSystem::init(OsuLogo* logo) {
   Container::init();

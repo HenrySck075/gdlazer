@@ -56,9 +56,6 @@ struct hook51 : Modify<hook51, CCDirector>{
     else return CCDirector::replaceScene(scene);
   }
 };
-void ToolbarGeodeButton::ModsLayer_onBack(CCObject *) {
-  (m_modsLayer->*ModsLayer_onBack_original)(nullptr);
-};
 void ToolbarGeodeButton::onClick(MouseEvent *e) {
   ToolbarButton::onClick(e);
   static_cast<CCMenuItemSpriteExtra *>(
