@@ -47,16 +47,17 @@ void ToolbarMusicButton::deselect() {
 bool tempForceReplace = false;
 #include <Geode/modify/CCDirector.hpp>
 struct hook51 : Modify<hook51, CCDirector>{
-  void replaceScene(CCScene* scene) {
-    if (tempForceReplace) replaceScene(OsuGame::get());
-    else replaceScene(scene);
+  bool replaceScene(CCScene* scene) {
+    log::debug("geegjgofwejgviewjgvoiewnvfew");
+    if (tempForceReplace && !dynamic_cast<CCTransitionScene*>(getRunningScene())) {
+      tempForceReplace = false;
+      return CCDirector::replaceScene(CCTransitionFade::create(0.5,OsuGame::get()));
+    }
+    else return CCDirector::replaceScene(scene);
   }
 };
 void ToolbarGeodeButton::ModsLayer_onBack(CCObject *) {
-  log::debug("geegjgofwejgviewjgvoiewnvfew");
-  tempForceReplace = true;
   (m_modsLayer->*ModsLayer_onBack_original)(nullptr);
-  tempForceReplace = false;
 };
 void ToolbarGeodeButton::onClick(MouseEvent *e) {
   ToolbarButton::onClick(e);
@@ -65,6 +66,6 @@ void ToolbarGeodeButton::onClick(MouseEvent *e) {
       "geode.loader/geode-button"
     )
   )->activate();
-
+  tempForceReplace = true;
 }
 

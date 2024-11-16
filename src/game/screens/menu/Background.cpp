@@ -104,6 +104,12 @@ bool Background::init() {
   }, "<Background:BGImageGet>")
   );
   setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
   setOpacity(255);
   setColor({0,0,0,0});
   setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);

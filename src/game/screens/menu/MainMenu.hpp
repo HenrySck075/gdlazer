@@ -39,8 +39,9 @@ private:
     if (e.Destination == nullptr) removeFromParent();
     else {
       setCascadeOpacityEnabled(true);
+      bg->runAction(CCFadeOut::create(2));
       runAction(CCSequence::createWithTwoActions(
-        CCWaitUntil::create(bg->runAction(CCFadeOut::create(2))),
+        CCDelayTime::create(2),
         CCFadeOut::create(1)
       ));
       buttonSys->area->hide(

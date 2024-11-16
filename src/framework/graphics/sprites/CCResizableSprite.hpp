@@ -41,6 +41,11 @@ public:
     refreshScaling();
   }
 
+  void setOpacity(GLubyte opacity) override {
+    m_sprite->setOpacity(opacity);
+    CCNodeRGBA::setOpacity(opacity);
+  }
+
   CCSprite* getSprite(){return m_sprite;}
   void setSprite(CCSprite* spr){m_sprite = spr;}
 };

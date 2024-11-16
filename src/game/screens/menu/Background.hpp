@@ -24,4 +24,10 @@ public:
   };
   bool init();
   void switchBackground();
+  
+  void setOpacity(GLubyte opacity) override {
+    if (m_background) m_background->setOpacity(opacity);
+    CCLayerRGBA::setOpacity(opacity);
+  }
+
 };

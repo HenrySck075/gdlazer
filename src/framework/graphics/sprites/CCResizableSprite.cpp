@@ -37,9 +37,10 @@ bool CCResizableSprite::initWithSpriteFrameName(const char* pszSpriteFrameName) 
 
 bool CCResizableSprite::finishInit() {
   addChild(m_sprite);
-  setCascadeOpacityEnabled(true);
+  //setCascadeOpacityEnabled(true);
   setCascadeColorEnabled(true);
   setAnchorPoint({0.5,0.5});
+  //setOpacity()
   return true;
 }
 

@@ -30,6 +30,7 @@ bool AudioManager::init() {
 void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
   currentLevel = level;
   int track = 1;
+  SongInfoObject* customSongInfo = nullptr;
   if (!level->m_songIDs.empty()) {
     std::string s = level->m_songIDs;
     std::vector<std::string> songIDs;
@@ -53,12 +54,12 @@ void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
     );
     
     track = std::stoi(out[0]);
+    customSongInfo = MusicDownloadManager::sharedState()->getSongInfoObject(track);
   } else {
     if (level->m_isUploaded) track = level->m_songID;
     else track = level->m_audioTrack;
   }
 
-  auto customSongInfo = MusicDownloadManager::sharedState()->getSongInfoObject(track);
   songName = currentLevel
     ? (
       customSongInfo == nullptr
