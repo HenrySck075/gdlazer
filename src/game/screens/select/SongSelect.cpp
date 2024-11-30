@@ -27,6 +27,7 @@ bool SongSelect::init() {
   grid->insertAfter(carousel, details);
   grid->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
   addChild(grid);
+  setZOrder(777);
 
   return true;
 }

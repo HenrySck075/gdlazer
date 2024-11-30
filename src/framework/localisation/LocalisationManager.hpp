@@ -10,7 +10,7 @@ class LanguageUpdate : public Event {
 class LocalisationManager {
 private:
   static LocalisationManager* _instance;
-  matjson::Object langdict;
+  matjson::Value langdict;
   std::string language = "en";
 public:
   static LocalisationManager* instance() {
@@ -20,18 +20,20 @@ public:
     ""_spr;    
     return _instance;
   }
-  void loadLocalisationStrings(matjson::Object& strings) {
+  void loadLocalisationStrings(matjson::Value& strings) {
     langdict = strings;
   }
   void setLanguage(std::string lang) {language = lang;}
   std::string getKey(std::string key, std::string fallback = "") {
-    auto ret = fallback;
-    auto t = langdict[key];
-    if (!t.is_null()) {
-      auto t2 = t.as_object()[language];
-      if (!t2.is_null()) ret = t2.as_string();
-      else log::warn("[LocalisationManager]: Language {} for key {} isn't specified.", language,key);
-    } else log::warn("[LocalisationManager]: Key {} doesn't exist.", key);
+    auto& ret = fallback;
+    auto& t = langdict[key];
+    if (!t.isNull()) {
+      auto& t2 = t[language];
+      auto r = t2.asString();
+      ret = r.unwrapOr(fallback);
+      if (r.isErr()) log::warn("[LocalisationManager]: Language {} for key {} isn't specified.", language,key);
+    } 
+    else log::warn("[LocalisationManager]: Key {} doesn't exist.", key);
     return ret;
   }
 };

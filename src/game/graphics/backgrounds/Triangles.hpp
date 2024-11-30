@@ -7,6 +7,8 @@ using namespace geode::prelude;
 class Triangles : public Container {
 private:
   ccColor3B m_triangleColor;
+  int triangles = 0;
+  bool j = false;
 
   bool init(int quantity, ccColor3B color);
 
@@ -19,6 +21,7 @@ private:
   // mf crashes when the node does not have a parent :laugh:
   void assignAction(CCNode* node, float startTime);
 public:
+  void onEnter() override;
   static Triangles* create(int quantity, ccColor3B baseColor);
 };
 

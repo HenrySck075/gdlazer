@@ -72,10 +72,10 @@ bool Background::init() {
       auto r = web::WebRequest();
       m_seasonalBgsListener.bind([this,finish](web::WebTask::Event* e){
         if (auto v = e->getValue()) {
-          auto data = v->json()->as_object();
+            auto data = v->json().unwrap();
           // TODO: check back when the current seasonal background ends to see which payload is gonna be when theres none
           std::tm t = {};
-          std::stringstream ss(data["ends_at"].as_string());
+          std::stringstream ss(data["ends_at"].asString().unwrap());
           ss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%S");
           Mod::get()->setSavedValue(
             "seasonal-end",
@@ -83,9 +83,9 @@ bool Background::init() {
               std::chrono::system_clock::from_time_t(std::mktime(&t)).time_since_epoch()
             ).count()
           );
-          matjson::Array sbg;
-          for (auto i : data["backgrounds"].as_array()) {
-            sbg.push_back(i["url"].as_string());
+          matjson::Value sbg = matjson::Value::array();
+          for (auto& i : data["backgrounds"]) {
+            sbg.push(i["url"].asString().unwrap());
           }
 
           Mod::get()->setSavedValue("seasonal-backgrounds",sbg);
@@ -97,7 +97,7 @@ bool Background::init() {
       m_seasonalBgsListener.setFilter(r.get("https://osu.ppy.sh/api/v2/seasonal-backgrounds"));
     } else {
       log::info("[Background]: Seasonal backgrounds URLs cached. Skipping fetch");
-      auto sbg = Mod::get()->getSavedValue<matjson::Array>("seasonal-backgrounds");
+      auto sbg = Mod::get()->getSavedValue<matjson::Value>("seasonal-backgrounds");
       m_backgrounds = sbg;
       finish(roll());
     }
@@ -134,7 +134,7 @@ std::string Background::roll() {
       1,
       std::mt19937{std::random_device{}()}
     );
-    std::string bg = out[0].as_string();
+    std::string bg = out[0].asString().unwrap();
     if (!m_background) return bg;
     if (bg != m_backgroundName) {
       return bg;

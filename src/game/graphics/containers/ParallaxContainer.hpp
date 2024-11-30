@@ -14,7 +14,7 @@ private:
   CCDirector* director;
   EventListenerProtocol* m_listener;
   float m_parallaxAmount;
-  bool parallax = true;
+  bool m_parallax = true;
   CCPoint baseLocation = CCPoint(0,0);
 public:
   static ParallaxContainer* create(float parallaxAmount = 0.02f, bool scale = true) {

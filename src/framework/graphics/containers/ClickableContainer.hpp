@@ -3,7 +3,7 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
-#include "Geode/utils/MiniFunction.hpp"
+
 #include "../../input/events/MouseEvent.hpp"
 #include "Container.hpp"
 

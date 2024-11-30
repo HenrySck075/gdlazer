@@ -11,7 +11,7 @@ using meow = Task<std::string>;
 
 class Background : public Container {
 private:
-  matjson::Array m_backgrounds = {};
+  matjson::Value m_backgrounds = { std::vector<matjson::Value>{} };
   EventListener<meow> m_backgroundGetListener;
   EventListener<web::WebTask> m_seasonalBgsListener;
   std::string roll();
@@ -25,9 +25,4 @@ public:
   bool init();
   void switchBackground();
   
-  void setOpacity(GLubyte opacity) override {
-    if (m_background) m_background->setOpacity(opacity);
-    CCLayerRGBA::setOpacity(opacity);
-  }
-
 };

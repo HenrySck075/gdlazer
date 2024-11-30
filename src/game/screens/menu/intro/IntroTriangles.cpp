@@ -68,7 +68,7 @@ bool IntroTriangles::init() {
 
   
   auto e = FMODAudioEngine::sharedEngine();
-  e->stopAllMusic();
+  e->stopAllMusic(true);
   // channel 0 got interrupted by menu loop when pushing a screen that does not even play that for some reason
   // me in the future here: dont create a new MenuLayer thanks
   

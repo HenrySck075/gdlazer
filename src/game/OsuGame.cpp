@@ -155,7 +155,7 @@ static std::array<std::string, 4> uiRelatedEvents = {
   "keypadEvent"
 };
 bool OsuGame::dispatchEvent(NodeEvent* event) {
-  if (event->target() == nullptr) return false;
+  if (event->target() != nullptr) return false;
   if (!isRunning()) return true;
   EventTarget::dispatchEvent(event);
   updateDispatchFlow(event, DispatchingFlow::Down);

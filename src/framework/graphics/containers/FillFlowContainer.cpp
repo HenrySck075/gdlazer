@@ -9,6 +9,7 @@ void FillFlowLayout::apply(CCNode* on) {
 
   auto constraint = node->getSizeConstraints().second;
   CCSize size = {0,0};
+  breakpoint();
   for (auto c : nodes) {
     //log::debug("[FillFlowLayout]: {}",size.height);
     if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
@@ -23,9 +24,10 @@ void FillFlowLayout::apply(CCNode* on) {
     c->setPosition({0,0});
     c->setAnchorPoint({0,1});
     auto cs = c->CCNode::getContentSize();
-    c->setPositionWithUnit({0,size.height}, Unit::OpenGL, Unit::OpenGL);
     auto ns = size.height+cs.height;
     size.height = constraint.height!=0?std::min(constraint.height, ns):ns;
+    size.width = std::max(size.width, cs.width);
+    c->setPositionWithUnit({0,size.height}, Unit::OpenGL, Unit::OpenGL);
   }
   size.width = node->CCNode::getContentSize().width;
   node->CCNode::setContentSize(size);
@@ -39,12 +41,13 @@ bool FillFlowContainer::init(FillDirection dir) {
 }
 void FillFlowContainer::setFillDirection(FillDirection dir) {
   direction = dir;
-  /*
+  #if 0
   AxisLayout* layout = AxisLayout::create(direction == FillDirection::Horizontal || direction == FillDirection::Full ? Axis::Row : Axis::Column);
   if (direction == FillDirection::Vertical) layout->setAxisReverse(true);
   if (direction == FillDirection::Full) layout->setGrowCrossAxis(true);
-  */
+  #else
   auto layout = FillFlowLayout::create();
+  #endif
   setLayout(layout);
   //CCLayer::updateLayout();
 };
@@ -56,6 +59,7 @@ void FillFlowContainer::addChild(CCNode* node) {
     con==nullptr
   ));
   CCNode::addChild(node);
+  if (!isRunning()) return;
   auto cs = con->getSizeConstraints();
   // change the constraints
   // we will need a constraint with:

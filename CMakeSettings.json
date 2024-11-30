@@ -1,46 +1,45 @@
 ﻿{
-  "configurations": [
-    {
-      "name": "x64-Release",
-      "generator": "Ninja",
-      "configurationType": "RelWithDebInfo",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "variables": [
+    "configurations": [
         {
-          "name": "GEODE_CLI",
-          "value": "C:/Users/email/geode/geode.exe",
-          "type": "FILEPATH"
+            "name": "x64-Release",
+            "generator": "Ninja",
+            "configurationType": "RelWithDebInfo",
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "inheritEnvironments": [ "msvc_x64_x64" ],
+            "variables": [
+                {
+                    "name": "GEODE_CLI",
+                    "value": "D:\\geode\\geode.exe",
+                    "type": "FILEPATH"
+                },
+                {
+                    "name": "GEODE_USE_BREAKPAD",
+                    "value": "true",
+                    "type": "BOOL"
+                }
+            ]
         },
         {
-          "name": "GEODE_USE_BREAKPAD",
-          "value": "true",
-          "type": "BOOL"
+            "name": "x64-Clang-Release",
+            "generator": "Ninja",
+            "configurationType": "RelWithDebInfo",
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "inheritEnvironments": [ "clang_cl_x64_x64" ],
+            "variables": [
+                {
+                    "name": "GEODE_CLI",
+                    "value": "C:/Users/email/geode/geode.exe",
+                    "type": "FILEPATH"
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": "x64-Clang-Release",
-      "generator": "Ninja",
-      "configurationType": "RelWithDebInfo",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [ "clang_cl_x64_x64" ],
-      "variables": [
-        {
-          "name": "GEODE_CLI",
-          "value": "C:/Users/email/geode/geode.exe",
-          "type": "FILEPATH"
-        }
-      ]
-    }
-  ]
+    ]
 }

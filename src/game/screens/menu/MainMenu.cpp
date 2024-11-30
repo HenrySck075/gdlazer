@@ -74,7 +74,7 @@ bool MainMenu::init() {
 }
 
 void MainMenu::onLogoClickIdle() {
-  auto logo = getChildOfType<OsuLogo>(this, 0);
+  auto logo = this->getChildByType<OsuLogo>(0);
   logoMoveAction = CCMoveToModifiable::create(0.5, pos);
   logo->runAction(logoMoveAction);
 }

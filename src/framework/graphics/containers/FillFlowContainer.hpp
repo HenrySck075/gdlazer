@@ -45,6 +45,9 @@ public:
 
   void setContentSize(CCSize const& size) override {
   }
+  void updateLayout(bool googoo = false) {
+    CCLayer::updateLayout(googoo);
+  };
 
   bool dispatchEvent(NodeEvent* event) override {
     bool ret = Container::dispatchEvent(event);
@@ -52,7 +55,7 @@ public:
       if (event->eventName() == "nodeLayoutUpdate") {
         auto e = static_cast<NodeLayoutUpdate*>(event);
         if (e->type==NodeLayoutUpdateType::Size || e->type==NodeLayoutUpdateType::All) {
-          CCLayer::updateLayout();
+          updateLayout();
         }
       };
     }

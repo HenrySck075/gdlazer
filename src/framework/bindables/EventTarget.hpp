@@ -1,14 +1,8 @@
 #pragma once
 #include "Event.hpp"
-#include "Geode/utils/MiniFunction.hpp"
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
-
-class ISupportsChildrenGet {
-public:
-  virtual CCArray* getChildren() = 0;
-};
 
 
 // The base implementation for a class (preferably in a node tree) that receives events

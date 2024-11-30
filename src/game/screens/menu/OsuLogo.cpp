@@ -85,6 +85,7 @@ bool LogoVisualization::init() {
   addChild(drawNode);
   return true;
 }
+/*
 void drawSegment2(CCDrawNode* drawNode, const CCPoint& startPoint, const CCPoint& endPoint, float radius, const ccColor4F& color) // taken from the depths of google
 {
     CCPoint direction = ccpNormalize(ccpSub(endPoint, startPoint));
@@ -98,6 +99,7 @@ void drawSegment2(CCDrawNode* drawNode, const CCPoint& startPoint, const CCPoint
 
     drawNode->drawPolygon(vertices, 4, color, 0, {0,0,0,0});
 }
+*/
 void LogoVisualization::update(float delta) {
   CCNode::update(delta);
   t+=delta;
@@ -130,8 +132,7 @@ void LogoVisualization::update(float delta) {
         if (bars[i] < 0) bars[i] = 0;
       }
     }
-    drawSegment2(
-      drawNode,
+    drawNode->drawSegment(
       ccpRotateByAngle(start,center,rot),
       ccpRotateByAngle(start+CCPoint{0,bars[i]},center,rot),
       8,{1.f,1.f,1.f,1.f}

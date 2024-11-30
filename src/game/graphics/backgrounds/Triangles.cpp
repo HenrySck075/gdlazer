@@ -16,14 +16,10 @@ Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
 bool Triangles::init(int quantity, ccColor3B color) {
   if (!Container::init()) return false;
   m_triangleColor = color;
-  int triangles = quantity;
+  triangles = quantity;
   setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
 
   setCascadeOpacityEnabled(true);
-
-  for (;triangles==0;triangles--) {
-    spawnTriangle();
-  }
 
   return true;
 }
@@ -77,4 +73,17 @@ CCSprite* Triangles::makeTriangle() {
   s->setAnchorPoint({ 0.5, 1 });
   
   return s;
+}
+
+
+void Triangles::onEnter() {
+  CCNode::onEnter();
+  queueInMainThread([this]{
+    if (!j) {
+      for (;triangles!=0;triangles--) {
+        spawnTriangle();
+      }
+    }
+    j = true;
+  });
 }
