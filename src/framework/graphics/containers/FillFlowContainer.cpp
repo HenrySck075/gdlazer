@@ -1,37 +1,70 @@
 #include "FillFlowContainer.hpp"
 
-
-void FillFlowLayout::apply(CCNode* on) {
-  CCArrayExt<Container*> nodes = getNodesToPosition(on);
-
-  auto node = dynamic_cast<Container*>(on);
-  assert(("l bozo", node==nullptr));
-
-  auto constraint = node->getSizeConstraints().second;
-  CCSize size = {0,0};
-  breakpoint();
-  for (auto c : nodes) {
-    //log::debug("[FillFlowLayout]: {}",size.height);
-    if (c->getSizeUnit().second == Unit::Percent && constraint.height == 0) {
-      throw std::invalid_argument(fmt::format(
-        "[FillFlowContainer/Layout]: Child {} has the size dependent "
-        "on the parent, but the parent does not have a maximum size constraint. "
-        "Please set the maximum constraint to non-zero.", 
-        geode::format_as(c)
-      ));
-    }
-    c->setAnchor(Anchor::TopLeft);
-    c->setPosition({0,0});
-    c->setAnchorPoint({0,1});
-    auto cs = c->CCNode::getContentSize();
-    auto ns = size.height+cs.height;
-    size.height = constraint.height!=0?std::min(constraint.height, ns):ns;
-    size.width = std::max(size.width, cs.width);
-    c->setPositionWithUnit({0,size.height}, Unit::OpenGL, Unit::OpenGL);
+// axislayout rewrite
+//
+// dang
+class FillFlowLayout : public ContainerLayout {
+public:
+  bool init() {return true;}
+  static FillFlowLayout* create() {
+    $create_class(FillFlowLayout, init);
   }
-  size.width = node->CCNode::getContentSize().width;
-  node->CCNode::setContentSize(size);
-}
+  CCSize getSizeHint(CCNode* on) const override {return on->getContentSize();}
+  void apply(CCNode* on) {
+    CCArrayExt<Container*> nodes = getNodesToPosition(on);
+
+    auto node = dynamic_cast<FillFlowContainer*>(on);
+    // set node size to max constraint size
+    auto constraint = node->getSizeConstraints().second;
+    auto cwidthOpengl = node->Container::processUnit(constraint.width, Unit::UIKit, true);
+    auto cheightOpengl = node->Container::processUnit(constraint.height, Unit::UIKit, false);
+    if (constraint.width>0)
+      node->CCNode::setContentSize({
+        cwidthOpengl, node->CCNode::getContentSize().height
+      });
+    if (constraint.height>0)
+      node->CCNode::setContentSize({
+        node->CCNode::getContentSize().width, cheightOpengl
+      });
+    assert(("l bozo", node==nullptr));
+
+    CCSize size = {0,0};
+    breakpoint();
+    bool isVertical = node->getFillDirection() == FillDirection::Vertical;
+    bool isHorizontal = node->getFillDirection() == FillDirection::Horizontal;
+    for (auto c : nodes) {
+      //log::debug("[FillFlowLayout]: {}",size.height);
+      if (
+        // vertical
+        (isVertical && c->getSizeUnit().second == Unit::Percent && constraint.height == 0) ||
+        // horizontal
+        (isHorizontal && c->getSizeUnit().first == Unit::Percent && constraint.width == 0)
+      ) {
+        throw std::invalid_argument(fmt::format(
+          "[FillFlowContainer/Layout]: Child {} has the size dependent "
+          "on the parent, but the parent does not have a maximum size constraint. "
+          "Please set the maximum constraint to non-zero.", 
+          geode::format_as(c)
+        ));
+      }
+      c->setAnchor(Anchor::TopLeft);
+      c->setPosition({0,0});
+      c->setAnchorPoint({0,1});
+      auto cs = c->CCNode::getContentSize();
+      auto ns = size.height+cs.height;
+      c->setPositionWithUnit({0,size.height}, Unit::OpenGL, Unit::OpenGL);
+      if (isVertical) {
+        size.height = constraint.height!=0?std::min(cheightOpengl, ns):ns;
+        size.width = std::max(size.width, cs.width);
+      }
+      if (isHorizontal) {
+        size.width = constraint.width!=0?std::min(cwidthOpengl, ns):ns;
+        size.height = std::max(size.height, cs.height);
+      }
+    }
+    node->CCNode::setContentSize(size);
+  }
+};
 
 bool FillFlowContainer::init(FillDirection dir) {
   Container::init();
@@ -40,7 +73,7 @@ bool FillFlowContainer::init(FillDirection dir) {
   return true;
 }
 void FillFlowContainer::setFillDirection(FillDirection dir) {
-  direction = dir;
+  m_direction = dir;
   #if 0
   AxisLayout* layout = AxisLayout::create(direction == FillDirection::Horizontal || direction == FillDirection::Full ? Axis::Row : Axis::Column);
   if (direction == FillDirection::Vertical) layout->setAxisReverse(true);

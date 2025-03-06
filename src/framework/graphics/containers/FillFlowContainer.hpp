@@ -4,28 +4,15 @@
 #include "ContainerLayout.hpp"
 
 enum class FillDirection {
-  Full,
   Vertical,
   Horizontal
 };
 
-// axislayout rewrite
-//
-// dang
-class FillFlowLayout : public ContainerLayout {
-public:
-  bool init() {return true;}
-  static FillFlowLayout* create() {
-    $create_class(FillFlowLayout, init);
-  }
-  CCSize getSizeHint(CCNode* on) const override {return on->getContentSize();}
-  void apply(CCNode* on);
-};
 
 // wrapper container around geode's layout system
 class FillFlowContainer : public Container {
 private:
-  FillDirection direction;
+  FillDirection m_direction;
   void updateChildPosition();
 public:
   static FillFlowContainer* create(FillDirection dir) {
@@ -33,6 +20,7 @@ public:
   }
   void addChild(CCNode* node);
   void setFillDirection(FillDirection dir);
+  FillDirection getFillDirection() {return m_direction;}
   bool init(FillDirection dir);
   /*
   void addChild(CCNode* child) {
