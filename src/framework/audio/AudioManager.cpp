@@ -28,6 +28,7 @@ bool AudioManager::init() {
  (it doesnt play stereo madness)
 */
 void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
+  if (level == nullptr) return;
   currentLevel = level;
   int track = 1;
   SongInfoObject* customSongInfo = nullptr;

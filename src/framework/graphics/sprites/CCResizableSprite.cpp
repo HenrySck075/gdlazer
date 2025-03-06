@@ -79,8 +79,8 @@ void CCResizableSprite::refreshScaling() {
       break;
   }
   
-  m_sprite->setScaleX(wRatio);
-  m_sprite->setScaleY(hRatio);
+  m_sprite->setScaleX(wRatio*m_wsscale);
+  m_sprite->setScaleY(hRatio*m_wsscale);
   m_sprite->setPosition(size/2);
 
 }

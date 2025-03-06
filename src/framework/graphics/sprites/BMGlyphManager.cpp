@@ -313,6 +313,12 @@ CCResizableSprite* BMGlyphManager::getCharacter(int id) {
     texture = m_dTextures[charDef.page];
     spr = CCResizableSprite::createWithTexture(texture);
     spr->setTextureRect(CC_RECT_PIXELS_TO_POINTS(charDef.rect));
+    auto quality = CCDirector::get()->getLoadedTextureQuality();
+    spr->setWrappedSpriteScale(
+      quality == kTextureQualityHigh
+      ? 1 : quality == kTextureQualityMedium 
+      ? 0.5 : 0.25
+    );
   } else {
   }
   return spr;

@@ -1,5 +1,5 @@
 #include "OsuText.hpp"
-#ifdef GEODE_IS_WINDOWS
+#ifdef amongus
   #define torusRegular "Torus Pro Regular"
   #define torusBold "Torus Pro Bold"
   #define torusItalic "Torus Pro Italic"

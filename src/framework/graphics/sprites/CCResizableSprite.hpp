@@ -15,6 +15,7 @@ enum class BoxFit {
 class CCResizableSprite : public CCNodeRGBA {
 private:
   CCSize baseSize = CCSize(0,0);
+  float m_wsscale = 1;
   CCSprite* m_sprite;
   BoxFit m_boxFit = BoxFit::Fill;
   bool finishInit();
@@ -26,6 +27,9 @@ public:
   bool initWithTexture(CCTexture2D* texture);
   bool init();
   void setContentSize(CCSize const& size) override;
+  void setWrappedSpriteScale(float scale) {
+    m_wsscale = scale;
+  }
 
   void refreshScaling(); 
 
