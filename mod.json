@@ -69,27 +69,23 @@
       "resources/torus/*.ttf"
     ]
   },
-  "dependencies": [
-    {
-      "id": "henrysck075.imagecache",
+  "dependencies": {
+    "henrysck075.imagecache": {
       "importance": "required",
       "version": "v1.0.0"
     },
-    {
-      "id": "henrysck075.easings",
+    "henrysck075.easings": {
       "importance": "required",
       "version": "v1.0.0"
     },
-    {
-      "id": "mat.max-window",
+    "mat.max-window": {
       "importance": "recommended",
       "version": ">=v1.0.4"
     },
-    {
-      "id": "alphalaneous.happy_textures",
+    "alphalaneous.happy_textures": {
       "importance": "recommended",
       "version": ">=v1.6.1"
     }
-  ],
+  },
   "tags": ["enhancement","interface","cheats"]
 }
