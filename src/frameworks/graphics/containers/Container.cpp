@@ -29,59 +29,68 @@ float Container::processUnit(float value, Unit unit, bool isWidth) {
     return value;
   }
 }
+
 bool Container::init() {
-  if (!CCLayer::init())
-    return false;
+    if (!CCClippingNode::init())
+        return false;
 
-  m_borderNode = cocos2d::CCDrawNode::create();
-  this->addChild(m_borderNode, -999);
+    m_borderNode = cocos2d::CCDrawNode::create();
+    this->addChild(m_borderNode, -999);
 
-  this->addListener("MouseEvent", [this](Event *event) {
-    auto mouseEvent = static_cast<MouseEvent *>(event);
-    auto currentPos = mouseEvent->m_position;
+    m_backgroundNode = cocos2d::CCDrawNode::create();
+    this->addChild(m_backgroundNode, -998);
 
-    switch (mouseEvent->m_eventType) {
-    case MouseEventType::MouseUp:
-      if (m_isDragging) {
-        m_isDragging = false;
-        onMouseDragStop(new MouseDragEvent("dragStop", m_dragStartPos, currentPos, 
-            ccpSub(currentPos, m_lastMousePos)));
-      }
-      onMouseUp(mouseEvent);
-      break;
-    case MouseEventType::MouseDown:
-      m_lastMousePos = currentPos;
-      m_dragStartPos = currentPos;  // Store initial position for drag
-      onMouseDown(mouseEvent);
-      break;
-    case MouseEventType::Move:
-      if (m_isDragging) {
-        onMouseDragMove(new MouseDragEvent("dragMove", m_dragStartPos, currentPos, 
-            ccpSub(currentPos, m_lastMousePos)));
-      } else if (mouseEvent->m_clicked) {
-        m_isDragging = true;
-        onMouseDragStart(new MouseDragEvent("dragStart", currentPos, currentPos, CCPointZero));
-      }
-      m_lastMousePos = currentPos;
-      onMouseMove(mouseEvent);
-      break;
-    case MouseEventType::Click:
-      onMouseClick(mouseEvent);
-      break;
-    case MouseEventType::Exit:
-      if (m_isDragging) {
-        m_isDragging = false;
-        onMouseDragStop(new MouseDragEvent("dragMove", m_dragStartPos, currentPos, CCPointZero));
-      }
-      onMouseExit(mouseEvent);
-      break;
-    case MouseEventType::Enter:
-      onMouseEnter(mouseEvent);
-      break;
-    }
-  });
-  return true;
+    // Create stencil for clipping
+    auto stencil = cocos2d::CCDrawNode::create();
+    this->setStencil(stencil);
+
+    this->addListener("MouseEvent", [this](Event *event) {
+        auto mouseEvent = static_cast<MouseEvent *>(event);
+        auto currentPos = mouseEvent->m_position;
+
+        switch (mouseEvent->m_eventType) {
+        case MouseEventType::MouseUp:
+            if (m_isDragging) {
+                m_isDragging = false;
+                onMouseDragStop(new MouseDragEvent("dragStop", m_dragStartPos, currentPos, 
+                    ccpSub(currentPos, m_lastMousePos)));
+            }
+            onMouseUp(mouseEvent);
+            break;
+        case MouseEventType::MouseDown:
+            m_lastMousePos = currentPos;
+            m_dragStartPos = currentPos;  // Store initial position for drag
+            onMouseDown(mouseEvent);
+            break;
+        case MouseEventType::Move:
+            if (m_isDragging) {
+                onMouseDragMove(new MouseDragEvent("dragMove", m_dragStartPos, currentPos, 
+                    ccpSub(currentPos, m_lastMousePos)));
+            } else if (mouseEvent->m_clicked) {
+                m_isDragging = true;
+                onMouseDragStart(new MouseDragEvent("dragStart", currentPos, currentPos, CCPointZero));
+            }
+            m_lastMousePos = currentPos;
+            onMouseMove(mouseEvent);
+            break;
+        case MouseEventType::Click:
+            onMouseClick(mouseEvent);
+            break;
+        case MouseEventType::Exit:
+            if (m_isDragging) {
+                m_isDragging = false;
+                onMouseDragStop(new MouseDragEvent("dragMove", m_dragStartPos, currentPos, CCPointZero));
+            }
+            onMouseExit(mouseEvent);
+            break;
+        case MouseEventType::Enter:
+            onMouseEnter(mouseEvent);
+            break;
+        }
+    });
+    return true;
 }
+
 bool Container::dispatchEvent(Event *event) {
   // Handle the event
   if (!EventTarget::dispatchEvent(event)) {
@@ -103,47 +112,11 @@ bool Container::dispatchEvent(Event *event) {
   return true;
 }
 
-void Container::updateClipping() {
-    if (m_clipChildren) {
-        if (!m_clipNode) {
-            m_clipNode = cocos2d::CCClippingNode::create();
-            m_clipStencil = cocos2d::CCDrawNode::create();
-            m_clipNode->setStencil(m_clipStencil);
-            
-            // Move all children to clip node
-            auto children = CCLayer::getChildren();
-            if (children) {
-                CCObject* child;
-                CCARRAY_FOREACH(children, child) {
-                    if (child != m_borderNode && child != m_clipNode) {
-                        m_clipNode->addChild(static_cast<CCNode*>(child));
-                    }
-                }
-            }
-            
-            CCLayer::addChild(m_clipNode);
-        }
-    } else if (m_clipNode) {
-        // Move all children back to main container
-        auto children = m_clipNode->getChildren();
-        if (children) {
-            CCObject* child;
-            CCARRAY_FOREACH(children, child) {
-                CCLayer::addChild(static_cast<CCNode*>(child));
-            }
-        }
-        
-        m_clipNode->removeFromParent();
-        m_clipNode = nullptr;
-        m_clipStencil = nullptr;
-    }
-    
-    drawBorder();
-}
-
 void Container::drawBorder() {
     m_borderNode->clear();
-    if (m_clipStencil) m_clipStencil->clear();
+    m_backgroundNode->clear();
+    auto stencil = static_cast<CCDrawNode*>(getStencil());
+    stencil->clear();
     
     auto size = getContentSize();
     auto radius = m_borderRadius;
@@ -158,35 +131,44 @@ void Container::drawBorder() {
             float x = radius * cosf(i * angle);
             float y = radius * sinf(i * angle);
             
-            if (i <= segments/4) { // Top-right
+            if (i <= segments/4) {
                 vertices[i] = ccp(size.width - radius + x, size.height - radius + y);
-            } else if (i <= segments/2) { // Top-left
+            } else if (i <= segments/2) {
                 vertices[i] = ccp(radius + x, size.height - radius + y);
-            } else if (i <= 3*segments/4) { // Bottom-left
+            } else if (i <= 3*segments/4) {
                 vertices[i] = ccp(radius + x, radius + y);
-            } else { // Bottom-right
+            } else {
                 vertices[i] = ccp(size.width - radius + x, radius + y);
             }
         }
         
         m_borderNode->drawPolygon(vertices, segments + 1, ccc4f(0,0,0,0), 1, ccc4f(1,1,1,1));
-        if (m_clipStencil) {
-            m_clipStencil->drawPolygon(vertices, segments + 1, ccc4f(1,1,1,1), 0, ccc4f(0,0,0,0));
-        }
+        stencil->drawPolygon(vertices, segments + 1, ccc4f(1,1,1,1), 0, ccc4f(0,0,0,0));
+        
+        // Draw background
+        ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
+        m_backgroundNode->drawPolygon(vertices, segments + 1, bgColor, 0, ccc4f(0,0,0,0));
         
         delete[] vertices;
+    } else {
+        // Draw rectangle background for no radius
+        ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
+        m_backgroundNode->drawRect(CCPointZero, ccp(size.width, size.height), bgColor, 0.f, bgColor);
+        stencil->drawRect(CCPointZero, ccp(size.width, size.height), ccc4f(1,1,1,1), 2.f, ccc4f(1,1,1,1));
     }
 }
 
 void Container::draw() {
-    CCLayer::draw();
+    CCNode::draw();
     drawBorder();
 }
-void Container::setClipChildren(bool clip) {
-  m_clipChildren = clip;
-  updateClipping();
-}
+
 void Container::setBorderRadius(float radius) {
   m_borderRadius = radius;
-  updateClipping();
+  drawBorder();
+}
+
+void Container::setBackgroundColor(const ccColor4B& color) {
+    m_backgroundColor = color;
+    drawBorder();
 }

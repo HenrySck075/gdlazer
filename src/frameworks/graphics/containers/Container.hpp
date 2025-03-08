@@ -21,7 +21,7 @@ private:
 };
 
 
-class Container : public cocos2d::CCLayer, public EventTarget {
+class Container : public cocos2d::CCClippingNode, public EventTarget {
 public:
     enum class Unit {
         Percent,
@@ -76,7 +76,7 @@ public:
 
     // Position setters with units
     void setPosition(float x, float y, Unit unit = Unit::OpenGL) {
-        CCLayer::setPosition(
+        CCNode::setPosition(
             processUnit(x, unit, true),
             processUnit(y, unit, false)
         );
@@ -86,6 +86,9 @@ public:
 
     void setClipChildren(bool clip);
     void setBorderRadius(float radius);
+
+    void setBackgroundColor(const ccColor4B& color);
+    const ccColor4B& getBackgroundColor() const { return m_backgroundColor; }
 
   protected:
     void updateClipping();
@@ -98,10 +101,9 @@ private:
     cocos2d::CCSize maxSize;
     bool m_isDragging = false;
     cocos2d::CCPoint m_lastMousePos;
-    cocos2d::CCPoint m_dragStartPos;  // Add this field to track drag start position
-    bool m_clipChildren = false;
+    cocos2d::CCPoint m_dragStartPos;
     float m_borderRadius = 0.0f;
-    cocos2d::CCClippingNode* m_clipNode = nullptr;
     cocos2d::CCDrawNode* m_borderNode = nullptr;
-    cocos2d::CCDrawNode* m_clipStencil = nullptr;
+    cocos2d::CCDrawNode* m_backgroundNode = nullptr;
+    ccColor4B m_backgroundColor = {0, 0, 0, 0};
 };

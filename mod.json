@@ -74,10 +74,6 @@
       "importance": "required",
       "version": "v1.0.0"
     },
-    "henrysck075.easings": {
-      "importance": "required",
-      "version": "v1.0.0"
-    },
     "mat.max-window": {
       "importance": "recommended",
       "version": ">=v1.0.4"
