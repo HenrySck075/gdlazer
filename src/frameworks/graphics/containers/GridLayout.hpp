@@ -15,10 +15,6 @@ struct Dimension {
     Mode mode;
     float size;
 
-    static Dimension Fixed(float size) { return {Mode::Fixed, size}; }
-    static Dimension Relative(float size) { return {Mode::Relative, size}; }
-    static Dimension Auto() { return {Mode::Auto, 0.0f}; }
-
     float resolve(float containerSize, float contentSize) const {
         switch (mode) {
             case Mode::Fixed: return size;
