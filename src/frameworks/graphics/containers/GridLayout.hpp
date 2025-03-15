@@ -1,8 +1,10 @@
 #pragma once
 #include <Geode/ui/Layout.hpp>
+#include "../../macro.h"
 
 #include <vector>
 
+GDL_NS_START
 struct Dimension {
     enum class Mode {
         Fixed,      // Absolute size in pixels
@@ -53,3 +55,4 @@ private:
                                     float containerSize,
                                     const std::vector<float>& contentSizes) const;
 };
+GDL_NS_END

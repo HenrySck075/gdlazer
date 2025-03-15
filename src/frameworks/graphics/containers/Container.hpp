@@ -6,6 +6,10 @@
 #include "../../bindables/Event.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
 
+#include "../../macro.h"
+
+GDL_NS_START
+
 class Container;
 
 class NodeLayoutUpdated : public Event {
@@ -66,21 +70,12 @@ public:
     const std::string& getName() const { return name; }
 
     // Size setters with units
-    void setSize(const cocos2d::CCSize& size, Unit unit = Unit::OpenGL) {
-        setContentSize(cocos2d::CCSize(
-            processUnit(size.width, unit, true),
-            processUnit(size.height, unit, false)
-        ));
-        dispatchEvent(new NodeLayoutUpdated(this));
-    }
+    void setSize(const cocos2d::CCSize &size, Unit unit = Unit::OpenGL);
 
     // Position setters with units
-    void setPosition(float x, float y, Unit unit = Unit::OpenGL) {
-        CCNode::setPosition(
-            processUnit(x, unit, true),
-            processUnit(y, unit, false)
-        );
-    }
+    void setPosition(cocos2d::CCPoint position, Unit unit = Unit::OpenGL);
+
+    void setParent(cocos2d::CCNode *parent) override;
 
     bool dispatchEvent(Event *event) override;
 
@@ -94,6 +89,8 @@ public:
     void updateClipping();
     void drawBorder();
     void draw() override;
+    void updateSizeWithUnit();
+    void updatePositionWithUnit();
 
 private:
     std::string name;
@@ -106,4 +103,10 @@ private:
     cocos2d::CCDrawNode* m_borderNode = nullptr;
     cocos2d::CCDrawNode* m_backgroundNode = nullptr;
     ccColor4B m_backgroundColor = {0, 0, 0, 0};
+    cocos2d::CCSize m_size;
+    Unit m_lastSizeUnit = Unit::OpenGL;
+    cocos2d::CCPoint m_positionA;
+    Unit m_lastPositionUnit = Unit::OpenGL;
 };
+
+GDL_NS_END

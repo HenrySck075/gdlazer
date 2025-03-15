@@ -2,6 +2,7 @@
 #include "../../bindables/Event.hpp"
 #include <Geode/cocos/include/cocos2d.h>
 
+GDL_NS_START
 class MouseDragEvent : public Event {
 public:
     MouseDragEvent(const std::string& type, const cocos2d::CCPoint& startPos, 
@@ -20,3 +21,4 @@ private:
     cocos2d::CCPoint m_currentPosition;
     cocos2d::CCPoint m_delta;
 };
+GDL_NS_END

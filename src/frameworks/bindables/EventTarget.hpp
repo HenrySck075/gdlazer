@@ -4,6 +4,7 @@
 #include <functional>
 #include <unordered_map>
 
+GDL_NS_START
 class EventTarget {
 public:
     using EventListener = std::function<void(Event*)>;
@@ -18,3 +19,4 @@ public:
   private:
     std::unordered_map<std::string, std::list<EventListener>> m_listeners;
 };
+GDL_NS_END

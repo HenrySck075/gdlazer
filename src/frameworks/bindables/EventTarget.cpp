@@ -1,5 +1,6 @@
 #include "EventTarget.hpp"
 
+GDL_NS_START
 void EventTarget::addListener(const std::string &type,
                                    EventListener listener) {
   m_listeners[type].push_back(std::move(listener));
@@ -29,3 +30,4 @@ bool EventTarget::dispatchEvent(Event* event) {
   event->release();
   return !event->defaultPrevented();
 }
+GDL_NS_END

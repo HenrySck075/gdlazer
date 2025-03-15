@@ -1,7 +1,8 @@
 #pragma once
 #include <Geode/cocos/cocoa/CCObject.h>
 #include <string>
-
+#include "../macro.h"
+GDL_NS_START
 class Event : public cocos2d::CCObject {
 public:
     explicit Event(const std::string& type, bool canPropagate = true) 
@@ -18,3 +19,4 @@ private:
     bool m_defaultPrevented = false;
     bool m_canPropagate;
 };
+GDL_NS_END

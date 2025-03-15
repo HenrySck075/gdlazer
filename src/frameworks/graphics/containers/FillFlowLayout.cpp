@@ -1,6 +1,7 @@
 #include "FillFlowLayout.hpp"
 #include "Container.hpp"
 
+GDL_NS_START
 FillFlowLayout* FillFlowLayout::create(FillDirection direction) {
     auto ret = new FillFlowLayout(direction);
     ret->autorelease();
@@ -28,3 +29,4 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
         }
     }
 }
+GDL_NS_END

@@ -1,7 +1,11 @@
 #include "Container.hpp"
+
+GDL_NS_START
+
 float Container::processUnit(float value, Unit unit, bool isWidth) {
   switch (unit) {
   case Unit::Percent:
+    if (getParent() == nullptr) return value;
     return value / 100.0f *
            (isWidth ? getParent()->getContentSize().width
                     : getParent()->getContentSize().height);
@@ -88,6 +92,15 @@ bool Container::init() {
             break;
         }
     });
+
+    this->addListener("nodeLayoutUpdated", [this](Event* event) {
+        auto layoutEvent = static_cast<NodeLayoutUpdated*>(event);
+        if (layoutEvent->getContainer() == getParent()) {
+            updateSizeWithUnit();
+            updatePositionWithUnit();
+        }
+    });
+
     return true;
 }
 
@@ -172,3 +185,36 @@ void Container::setBackgroundColor(const ccColor4B& color) {
     m_backgroundColor = color;
     drawBorder();
 }
+void gdlazer::Container::setSize(const cocos2d::CCSize &size,
+    Unit unit) {
+    m_size = size;
+    m_lastSizeUnit = unit;
+    updateSizeWithUnit();
+}
+void gdlazer::Container::setPosition(cocos2d::CCPoint position, Unit unit) {
+    m_positionA = position;
+    m_lastPositionUnit = unit;
+    updatePositionWithUnit();
+}
+void gdlazer::Container::setParent(cocos2d::CCNode *parent) {
+    cocos2d::CCNode::setParent(parent);
+    updateSizeWithUnit();
+    updatePositionWithUnit();
+}
+
+void Container::updateSizeWithUnit() {
+    setContentSize(cocos2d::CCSize(
+        processUnit(m_size.width, m_lastSizeUnit, true),
+        processUnit(m_size.height, m_lastSizeUnit, false)
+    ));
+    dispatchEvent(new NodeLayoutUpdated(this));
+}
+
+void Container::updatePositionWithUnit() {
+    CCNode::setPosition(
+        processUnit(m_positionA.x, m_lastPositionUnit, true),
+        processUnit(m_positionA.y, m_lastPositionUnit, false)
+    );
+}
+
+GDL_NS_END

@@ -1,6 +1,7 @@
 #include "GridLayout.hpp"
 #include "../containers/Container.hpp"
 
+GDL_NS_START
 GridLayout* GridLayout::create(const DimensionVector& columns, 
                              const DimensionVector& rows) {
     auto ret = new GridLayout(columns, rows);
@@ -126,3 +127,4 @@ GridLayout *GridLayout::setGap(float gap) {
   return this;
 }
 float GridLayout::getGap() const { return m_spacing; }
+GDL_NS_END

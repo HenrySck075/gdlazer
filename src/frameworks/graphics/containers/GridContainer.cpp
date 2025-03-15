@@ -1,5 +1,6 @@
 #include "GridContainer.hpp"
 
+GDL_NS_START
 GridContainer* GridContainer::create(const DimensionVector& columns,
                                   const DimensionVector& rows,
                                   float spacing) {
@@ -22,3 +23,4 @@ bool GridContainer::init(const DimensionVector& columns,
     
     return true;
 }
+GDL_NS_END
