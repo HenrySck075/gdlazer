@@ -35,14 +35,17 @@ public:
     };
 
     static Container* create() {
-        Container* ret = new Container();
-        if (ret && ret->init()) {
-            ret->autorelease();
-            return ret;
-        } else {
-            delete ret;
-            return nullptr;
-        }
+      Container* ret = new Container();
+      if (ret && ret->init()) {
+        ret->autorelease();
+        return ret;
+      } else {
+        delete ret;
+        return nullptr;
+      }
+    }
+    ~Container() {
+      if (auto stencil = getStencil()) stencil->release();
     }
 
     bool init() override;
@@ -81,17 +84,19 @@ public:
 
     bool dispatchEvent(Event *event) override;
 
-    void setClipChildren(bool clip);
     void setBorderRadius(float radius);
 
     void setBackgroundColor(const ccColor4B& color);
     const ccColor4B& getBackgroundColor() const { return m_backgroundColor; }
 
+    bool getClippingEnabled() const { return m_clippingEnabled; }
+    void setClippingEnabled(bool enabled);
+
   protected:
     void updateClipping();
     void drawBorder();
     void draw() override;
-    void updateSizeWithUnit();
+    virtual void updateSizeWithUnit();
     void updatePositionWithUnit();
 
 private:
@@ -110,6 +115,7 @@ private:
     Unit m_lastSizeUnit = Unit::OpenGL;
     cocos2d::CCPoint m_positionA;
     Unit m_lastPositionUnit = Unit::OpenGL;
+    bool m_clippingEnabled = true;
 };
 
 GDL_NS_END

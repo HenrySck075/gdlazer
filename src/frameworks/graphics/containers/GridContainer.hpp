@@ -5,7 +5,7 @@
 GDL_NS_START
 class GridContainer : public Container {
 public:
-    static GridContainer* create(const DimensionVector& columns = {Dimension::Auto()},
+    static GridContainer* create(const DimensionVector& columns = {Dimension{.mode = Dimension::Mode::Auto}},
                                const DimensionVector& rows = {},
                                float spacing = 5.0f);
     bool init(const DimensionVector& columns,

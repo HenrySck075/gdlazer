@@ -1,6 +1,7 @@
 #include "EventTarget.hpp"
 
 GDL_NS_START
+
 void EventTarget::addListener(const std::string &type,
                                    EventListener listener) {
   m_listeners[type].push_back(std::move(listener));

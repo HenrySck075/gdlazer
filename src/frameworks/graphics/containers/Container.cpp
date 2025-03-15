@@ -14,35 +14,6 @@ void Container::setMaxSize(const cocos2d::CCSize &size) {
   m_maxSize = size;
 }
 
-void Container::setSize(const cocos2d::CCSize &size, Unit unit) {
-  float width = size.width,
-        height = size.height;
-#define $applyConstraint(edge) \
-  if (m_minSize.edge > 0) { \
-    edge = std::max(edge, m_minSize.edge); \
-  } \
-  if (m_maxSize.edge > 0) { \
-    edge = std::min(edge, m_maxSize.edge); \
-  }
-
-  $applyConstraint(width);
-  $applyConstraint(height);
-#undef $applyConstraint
-
-  setContentSize({
-    processUnit(
-      width, 
-      unit, true
-    ),
-    processUnit(
-      height, 
-      unit, false
-    )
-  });
-
-  dispatchEvent(new NodeLayoutUpdated(this));
-}
-
 float Container::processUnit(float value, Unit unit, bool isWidth) {
   switch (unit) {
   case Unit::Percent:
@@ -88,8 +59,9 @@ bool Container::init() {
     // Create stencil for clipping
     auto stencil = cocos2d::CCDrawNode::create();
     this->setStencil(stencil);
+    updateClipping();
 
-    this->addListener("MouseEvent", [this](Event *event) {
+    this->addListener("mouseEvent", [this](Event *event) {
         auto mouseEvent = static_cast<MouseEvent *>(event);
         auto currentPos = mouseEvent->m_position;
 
@@ -97,7 +69,7 @@ bool Container::init() {
         case MouseEventType::MouseUp:
             if (m_isDragging) {
                 m_isDragging = false;
-                onMouseDragStop(new MouseDragEvent("dragStop", m_dragStartPos, currentPos, 
+                onMouseDragStop(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, 
                     ccpSub(currentPos, m_lastMousePos)));
             }
             onMouseUp(mouseEvent);
@@ -109,11 +81,11 @@ bool Container::init() {
             break;
         case MouseEventType::Move:
             if (m_isDragging) {
-                onMouseDragMove(new MouseDragEvent("dragMove", m_dragStartPos, currentPos, 
+                onMouseDragMove(new MouseDragEvent(MouseDragEventType::Move, m_dragStartPos, currentPos, 
                     ccpSub(currentPos, m_lastMousePos)));
             } else if (mouseEvent->m_clicked) {
                 m_isDragging = true;
-                onMouseDragStart(new MouseDragEvent("dragStart", currentPos, currentPos, CCPointZero));
+                onMouseDragStart(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
             }
             m_lastMousePos = currentPos;
             onMouseMove(mouseEvent);
@@ -124,7 +96,7 @@ bool Container::init() {
         case MouseEventType::Exit:
             if (m_isDragging) {
                 m_isDragging = false;
-                onMouseDragStop(new MouseDragEvent("dragMove", m_dragStartPos, currentPos, CCPointZero));
+                onMouseDragStop(new MouseDragEvent(MouseDragEventType::Move, m_dragStartPos, currentPos, CCPointZero));
             }
             onMouseExit(mouseEvent);
             break;
@@ -155,8 +127,7 @@ bool Container::dispatchEvent(Event *event) {
   if (!event->canPropagate()) return true;
   auto children = getChildren();
   if (children) {
-    CCObject *child;
-    CCARRAY_FOREACH(children, child) {
+    for (auto child : geode::cocos::CCArrayExt<CCNode*>(children)) {
       auto eventTarget = dynamic_cast<EventTarget *>(child);
       if (eventTarget && !eventTarget->dispatchEvent(event)) {
         return false;
@@ -226,8 +197,7 @@ void Container::setBackgroundColor(const ccColor4B& color) {
     m_backgroundColor = color;
     drawBorder();
 }
-void gdlazer::Container::setSize(const cocos2d::CCSize &size,
-    Unit unit) {
+void gdlazer::Container::setSize(const cocos2d::CCSize &size, Unit unit) {
     m_size = size;
     m_lastSizeUnit = unit;
     updateSizeWithUnit();
@@ -244,9 +214,23 @@ void gdlazer::Container::setParent(cocos2d::CCNode *parent) {
 }
 
 void Container::updateSizeWithUnit() {
+    float width = m_size.width,
+    height = m_size.height;
+    #define $applyConstraint(edge) \
+    if (m_minSize.edge > 0) { \
+    edge = std::max(edge, m_minSize.edge); \
+    } \
+    if (m_maxSize.edge > 0) { \
+    edge = std::min(edge, m_maxSize.edge); \
+    }
+
+    $applyConstraint(width);
+    $applyConstraint(height);
+    #undef $applyConstraint
+
     setContentSize(cocos2d::CCSize(
-        processUnit(m_size.width, m_lastSizeUnit, true),
-        processUnit(m_size.height, m_lastSizeUnit, false)
+        processUnit(width, m_lastSizeUnit, true),
+        processUnit(height, m_lastSizeUnit, false)
     ));
     dispatchEvent(new NodeLayoutUpdated(this));
 }
@@ -258,4 +242,25 @@ void Container::updatePositionWithUnit() {
     );
 }
 
-GDL_NS_END
+void Container::setClippingEnabled(bool enabled) {
+    if (m_clippingEnabled == enabled) return;
+    m_clippingEnabled = enabled;
+    updateClipping();
+}
+
+void Container::updateClipping() {
+    if (m_clippingEnabled) {
+        // Create stencil if needed
+        if (!getStencil()) {
+            auto stencil = cocos2d::CCDrawNode::create();
+            this->setStencil(stencil);
+        }
+        drawBorder();
+    } else {
+        // Remove stencil to disable clipping
+        if (auto stencil = getStencil()) {
+            stencil->release();
+            setStencil(nullptr);
+        }
+    }
+}

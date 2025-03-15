@@ -5,21 +5,27 @@
 using namespace cocos2d;
 
 GDL_NS_START
-enum MouseEventType {
-  Enter, Exit, Click, MouseDown, MouseUp, Move, MouseScroll
+enum class MouseEventType {
+    MouseUp,
+    MouseDown,
+    Move,
+    Click,
+    Exit, 
+    Enter,
+    Scroll  // Add scroll type
 };
 
 // mouse event 2
 class MouseEvent : public Event {
 public:
-  CCPoint m_position = CCPoint(0,0);
-  MouseEventType m_eventType;
-  // not implemented yet
-  bool m_clicked;
+    CCPoint m_position = CCPoint(0,0);
+    MouseEventType m_eventType;
+    bool m_clicked;
+    float m_scrollDelta = 0.0f;  // Add scroll delta
 
-  MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
-   : Event("mouseEvent"), m_position(pos), m_eventType(event), m_clicked(clicked) {
-    //setDispatchingFlow(DispatchingFlow::Down);
-  };
+    MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
+     : Event("mouseEvent"), m_position(pos), m_eventType(event), m_clicked(clicked) {
+        //setDispatchingFlow(DispatchingFlow::Down);
+    };
 };
 GDL_NS_END

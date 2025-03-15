@@ -1,13 +1,17 @@
 #pragma once
-#include "../../bindables/Event.hpp"
 #include <Geode/cocos/include/cocos2d.h>
+#include "../../macro.h"
 
 GDL_NS_START
-class MouseDragEvent : public Event {
+enum class MouseDragEventType {
+    Start, Move, Stop
+};
+// This DOES NOT inherit from Event
+class MouseDragEvent {
 public:
-    MouseDragEvent(const std::string& type, const cocos2d::CCPoint& startPos, 
+    MouseDragEvent(MouseDragEventType type, const cocos2d::CCPoint& startPos, 
                   const cocos2d::CCPoint& currentPos, const cocos2d::CCPoint& delta)
-        : Event(type)
+        : m_type(type)
         , m_startPosition(startPos)
         , m_currentPosition(currentPos)
         , m_delta(delta) {}
@@ -17,6 +21,7 @@ public:
     const cocos2d::CCPoint& getDelta() const { return m_delta; }
 
 private:
+    MouseDragEventType m_type;
     cocos2d::CCPoint m_startPosition;
     cocos2d::CCPoint m_currentPosition;
     cocos2d::CCPoint m_delta;
