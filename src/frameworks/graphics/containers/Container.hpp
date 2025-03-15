@@ -43,7 +43,9 @@ public:
 
     bool init() override;
 
-    // Mouse event virtual functions
+    // Mouse events
+    inline bool getTouchEnabled() {return m_touchEnabled;};
+    inline void setTouchEnabled(bool e) {m_touchEnabled = e;};
     virtual void onMouseUp(MouseEvent* event) {}
     virtual void onMouseDown(MouseEvent* event) {}
     virtual void onMouseMove(MouseEvent* event) {}
@@ -54,25 +56,19 @@ public:
     virtual void onMouseDragMove(MouseDragEvent* event) {}
     virtual void onMouseDragStop(MouseDragEvent* event) {}
 
-    // Process unit function
+    // General-use unit conversion function
     float processUnit(float value, Unit unit, bool isWidth);
 
-    // Setters for size constraints
-    void setMinSize(const cocos2d::CCSize& size) { minSize = size; }
-    void setMaxSize(const cocos2d::CCSize& size) { maxSize = size; }
+    // Constraints
+    void setMinSize(const cocos2d::CCSize &size);
+    void setMaxSize(const cocos2d::CCSize &size);
 
     // Setters and getters for name
-    void setName(const std::string& containerName) { name = containerName; }
-    const std::string& getName() const { return name; }
+    void setName(const std::string& containerName) { m_name = containerName; }
+    const std::string& getName() const { return m_name; }
 
     // Size setters with units
-    void setSize(const cocos2d::CCSize& size, Unit unit = Unit::OpenGL) {
-        setContentSize(cocos2d::CCSize(
-            processUnit(size.width, unit, true),
-            processUnit(size.height, unit, false)
-        ));
-        dispatchEvent(new NodeLayoutUpdated(this));
-    }
+    void setSize(const cocos2d::CCSize &size, Unit unit = Unit::OpenGL);
 
     // Position setters with units
     void setPosition(float x, float y, Unit unit = Unit::OpenGL) {
@@ -96,9 +92,10 @@ public:
     void draw() override;
 
 private:
-    std::string name;
-    cocos2d::CCSize minSize;
-    cocos2d::CCSize maxSize;
+    bool m_touchEnabled = false;
+    std::string m_name;
+    cocos2d::CCSize m_minSize;
+    cocos2d::CCSize m_maxSize;
     bool m_isDragging = false;
     cocos2d::CCPoint m_lastMousePos;
     cocos2d::CCPoint m_dragStartPos;

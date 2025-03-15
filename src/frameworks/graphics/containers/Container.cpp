@@ -1,4 +1,45 @@
 #include "Container.hpp"
+void Container::setMinSize(const cocos2d::CCSize &size) {
+  assert(m_maxSize.width > 0 || size.width >= m_maxSize.width);
+  assert(m_maxSize.height > 0 || size.height >= m_maxSize.height);
+  m_minSize = size;
+}
+
+void Container::setMaxSize(const cocos2d::CCSize &size) {
+  assert(m_minSize.width > 0 || size.width >= m_minSize.width);
+  assert(m_minSize.height > 0 || size.height >= m_minSize.height);
+  m_maxSize = size;
+}
+
+void Container::setSize(const cocos2d::CCSize &size, Unit unit) {
+  float width = size.width,
+        height = size.height;
+#define $applyConstraint(edge) \
+  if (m_minSize.edge > 0) { \
+    edge = std::max(edge, m_minSize.edge); \
+  } \
+  if (m_maxSize.edge > 0) { \
+    edge = std::min(edge, m_maxSize.edge); \
+  }
+
+  $applyConstraint(width);
+  $applyConstraint(height);
+#undef $applyConstraint
+
+  setContentSize({
+    processUnit(
+      width, 
+      unit, true
+    ),
+    processUnit(
+      height, 
+      unit, false
+    )
+  });
+
+  dispatchEvent(new NodeLayoutUpdated(this));
+}
+
 float Container::processUnit(float value, Unit unit, bool isWidth) {
   switch (unit) {
   case Unit::Percent:
@@ -172,3 +213,4 @@ void Container::setBackgroundColor(const ccColor4B& color) {
     m_backgroundColor = color;
     drawBorder();
 }
+
