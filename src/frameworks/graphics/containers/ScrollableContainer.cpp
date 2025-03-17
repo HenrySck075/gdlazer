@@ -5,7 +5,8 @@ GDL_NS_START
 bool ScrollableContainer::init() {
     if (!Container::init()) return false;
     
-    scheduleUpdate();
+    //setClippingEnabled(false);
+    setTouchEnabled(true);
     return true;
 }
 
@@ -25,6 +26,12 @@ void ScrollableContainer::addChild(CCNode* child, int zOrder, int tag) {
     Container::addChild(child, zOrder, tag);
     updateChildPosition();
 }
+
+void ScrollableContainer::resizeToChildSize() {
+    if (m_content) {
+        setContentSize(m_content->getContentSize());
+    }
+};
 
 void ScrollableContainer::updateSizeWithUnit() {
     Container::updateSizeWithUnit();

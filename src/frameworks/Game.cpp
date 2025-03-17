@@ -1,8 +1,9 @@
 #include "Game.hpp"
 #include "graphics/containers/FillFlowContainer.hpp"
+#include "graphics/containers/ScrollableContainer.hpp"
 
 GDL_NS_START
-static geode::Ref<Game> s_instance;
+static Game* s_instance;
 
 bool Game::dispatchEvent(Event *event) {
   // Handle the event
@@ -26,6 +27,8 @@ bool Game::dispatchEvent(Event *event) {
 }
 bool Game::init() {
     if (!CCScene::init()) return false;
+
+    /*TEST CODE ~ Remove after finished*/
     auto flowContainer = FillFlowContainer::create(FillDirection::Horizontal);
     for (int i = 0; i < 5; i++) {
         auto us = Container::create();
@@ -34,9 +37,13 @@ bool Game::init() {
         us->setBackgroundColor({255,255,255,255});
         flowContainer->addChild(us);
     }
-    this->addChild(flowContainer);
+    
+    auto scroll = ScrollableContainer::create();
+    scroll->addChild(flowContainer);
+    this->addChild(scroll);
     flowContainer->updateLayout();
-
+    scroll->resizeToChildSize();
+    
     auto myButton = CCMenuItemSpriteExtra::create(
 			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
 			this,
@@ -51,10 +58,11 @@ bool Game::init() {
 
     return true;
 };
-geode::Ref<Game> Game::get() {
+Game* Game::get() {
   if (!s_instance) {
-      s_instance = new Game();
-      s_instance->init();
+    s_instance = new Game();
+    s_instance->autorelease();
+    s_instance->init();
   }
   return s_instance;
 };

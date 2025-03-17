@@ -44,8 +44,25 @@ public:
         return nullptr;
       }
     }
-    ~Container() {
-      if (auto stencil = getStencil()) stencil->release();
+    // no nullptr check smh my head
+    void onEnter() override {
+        CCNode::onEnter();
+        if (auto stencil = getStencil()) stencil->onEnter();
+    }
+
+    void onEnterTransitionDidFinish() override {
+        CCNode::onEnterTransitionDidFinish();
+        if (auto stencil = getStencil()) stencil->onEnterTransitionDidFinish();
+    }
+
+    void onExitTransitionDidStart() override {
+        if (auto stencil = getStencil()) stencil->onExitTransitionDidStart();
+        CCNode::onExitTransitionDidStart();
+    }
+
+    void onExit() override {
+        if (auto stencil = getStencil()) stencil->onExit();
+        CCNode::onExit();
     }
 
     bool init() override;

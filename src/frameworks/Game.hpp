@@ -12,7 +12,7 @@ public:
   void yeah(cocos2d::CCObject*) {
     cocos2d::CCDirector::get()->popScene();
   }
-  static geode::Ref<Game> get();
+  static Game* get();
 };
 
 GDL_NS_END

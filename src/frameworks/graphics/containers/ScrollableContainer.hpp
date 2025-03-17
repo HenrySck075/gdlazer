@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Container.hpp"
+#include "Geode/cocos/base_nodes/CCNode.h"
 #include <Geode/Geode.hpp>
 
 GDL_NS_START
@@ -21,6 +22,8 @@ public:
     void addChild(CCNode* child) override;
     void addChild(CCNode* child, int zOrder) override;
     void addChild(CCNode* child, int zOrder, int tag) override;
+
+    void resizeToChildSize();
     
     void onMouseDragMove(MouseDragEvent* event) override;
     void onMouseDragStop(MouseDragEvent* event) override;
