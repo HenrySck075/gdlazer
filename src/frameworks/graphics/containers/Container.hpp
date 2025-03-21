@@ -15,7 +15,7 @@ class Container;
 class NodeLayoutUpdated : public Event {
 public:
     explicit NodeLayoutUpdated(Container* container) 
-        : Event("nodeLayoutUpdated", false), // false to prevent propagation
+        : Event("nodeLayoutUpdated"), // false to prevent propagation
           m_container(container) {}
 
     Container* getContainer() const { return m_container; }
@@ -44,27 +44,11 @@ public:
         return nullptr;
       }
     }
-    // no nullptr check smh my head
-    void onEnter() override {
-        CCNode::onEnter();
-        if (auto stencil = getStencil()) stencil->onEnter();
+    void visit() override {
+      if (!m_clippingEnabled) CCNode::visit();
+      else CCClippingNode::visit();
     }
-
-    void onEnterTransitionDidFinish() override {
-        CCNode::onEnterTransitionDidFinish();
-        if (auto stencil = getStencil()) stencil->onEnterTransitionDidFinish();
-    }
-
-    void onExitTransitionDidStart() override {
-        if (auto stencil = getStencil()) stencil->onExitTransitionDidStart();
-        CCNode::onExitTransitionDidStart();
-    }
-
-    void onExit() override {
-        if (auto stencil = getStencil()) stencil->onExit();
-        CCNode::onExit();
-    }
-
+    
     bool init() override;
 
     // Mouse events

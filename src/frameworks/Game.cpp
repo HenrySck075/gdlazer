@@ -3,7 +3,7 @@
 #include "graphics/containers/ScrollableContainer.hpp"
 
 GDL_NS_START
-static Game* s_instance;
+static geode::Ref<Game> s_instance;
 
 bool Game::dispatchEvent(Event *event) {
   // Handle the event
@@ -42,7 +42,7 @@ bool Game::init() {
     scroll->addChild(flowContainer);
     this->addChild(scroll);
     flowContainer->updateLayout();
-    scroll->resizeToChildSize();
+    scroll->setSize({300, flowContainer->getContentSize().height});
     
     auto myButton = CCMenuItemSpriteExtra::create(
 			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),

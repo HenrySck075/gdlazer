@@ -6,7 +6,7 @@ GDL_NS_START
 
 class EventTarget {
 public:
-    using EventListener = std::function<void(Event*)>;
+    using EventListener = std::function<bool(Event*)>;
     void addListener(const std::string &type, EventListener listener);
 
     void removeListener(const std::string &type,

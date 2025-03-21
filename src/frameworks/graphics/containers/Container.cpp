@@ -59,56 +59,63 @@ bool Container::init() {
     this->setStencil(cocos2d::CCDrawNode::create());
 
     this->addListener("mouseEvent", [this](Event *event) {
-        auto mouseEvent = static_cast<MouseEvent *>(event);
-        auto currentPos = mouseEvent->m_position;
+      auto mouseEvent = static_cast<MouseEvent *>(event);
+      auto currentPos = mouseEvent->m_position;
+      if (!boundingBox().containsPoint(currentPos)) {
+        event->stopPropagation();
+        return false;
+      }
 
-        switch (mouseEvent->m_eventType) {
+      switch (mouseEvent->m_eventType) {
         case MouseEventType::MouseUp:
-            if (m_isDragging) {
-                m_isDragging = false;
-                onMouseDragStop(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, 
-                    ccpSub(currentPos, m_lastMousePos)));
-            }
-            onMouseUp(mouseEvent);
-            break;
+          if (m_isDragging) {
+              m_isDragging = false;
+              onMouseDragStop(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, 
+                  ccpSub(currentPos, m_lastMousePos)));
+          }
+          onMouseUp(mouseEvent);
+          break;
         case MouseEventType::MouseDown:
-            m_lastMousePos = currentPos;
-            m_dragStartPos = currentPos;  // Store initial position for drag
-            onMouseDown(mouseEvent);
-            break;
+          m_lastMousePos = currentPos;
+          m_dragStartPos = currentPos;  // Store initial position for drag
+          onMouseDown(mouseEvent);
+          break;
         case MouseEventType::Move:
-            if (m_isDragging) {
-                onMouseDragMove(new MouseDragEvent(MouseDragEventType::Move, m_dragStartPos, currentPos, 
-                    ccpSub(currentPos, m_lastMousePos)));
-            } else if (mouseEvent->m_clicked) {
-                m_isDragging = true;
-                onMouseDragStart(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
-            }
-            m_lastMousePos = currentPos;
-            onMouseMove(mouseEvent);
-            break;
+          
+          if (m_isDragging) {
+              onMouseDragMove(new MouseDragEvent(MouseDragEventType::Move, m_dragStartPos, currentPos, 
+                  ccpSub(currentPos, m_lastMousePos)));
+          } else if (mouseEvent->m_clicked) {
+              m_isDragging = true;
+              onMouseDragStart(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
+          }
+          m_lastMousePos = currentPos;
+          onMouseMove(mouseEvent);
+          break;
         case MouseEventType::Click:
-            onMouseClick(mouseEvent);
-            break;
+          onMouseClick(mouseEvent);
+          break;
         case MouseEventType::Exit:
-            if (m_isDragging) {
-                m_isDragging = false;
-                onMouseDragStop(new MouseDragEvent(MouseDragEventType::Move, m_dragStartPos, currentPos, CCPointZero));
-            }
-            onMouseExit(mouseEvent);
-            break;
+          if (m_isDragging) {
+              m_isDragging = false;
+              onMouseDragStop(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, CCPointZero));
+          }
+          onMouseExit(mouseEvent);
+          break;
         case MouseEventType::Enter:
-            onMouseEnter(mouseEvent);
-            break;
-        }
+          onMouseEnter(mouseEvent);
+          break;
+      }
+      return true;
     });
 
     this->addListener("nodeLayoutUpdated", [this](Event* event) {
-        auto layoutEvent = static_cast<NodeLayoutUpdated*>(event);
-        if (layoutEvent->getContainer() == getParent()) {
-            updateSizeWithUnit();
-            updatePositionWithUnit();
-        }
+      auto layoutEvent = static_cast<NodeLayoutUpdated*>(event);
+      if (layoutEvent->getContainer() == getParent()) {
+        updateSizeWithUnit();
+        updatePositionWithUnit();
+      }
+      return true;
     });
 
     return true;
@@ -121,7 +128,7 @@ bool Container::dispatchEvent(Event *event) {
   }
 
   // Propagate to children
-  if (!event->canPropagate()) return true;
+  if (!event->m_propagateStopped) return true;
   auto children = getChildren();
   if (children) {
     for (auto child : geode::cocos::CCArrayExt<CCNode*>(children)) {
@@ -138,7 +145,7 @@ void Container::drawBorder() {
   m_borderNode->clear();
   m_backgroundNode->clear();
   auto stencil = geode::cast::typeinfo_cast<CCDrawNode*>(getStencil());
-  if (stencil) stencil->clear();
+  stencil->clear();
   
   auto size = getContentSize();
   auto radius = m_borderRadius;
@@ -170,7 +177,7 @@ void Container::drawBorder() {
     }
     
     //m_borderNode->drawPolygon(vertices, segments + 1, {0,0,0,0}, 1, {1,1,1,1});
-    if (stencil) stencil->drawPolygon(vertices, segments + 1, {1,1,1,1}, 0, {0,0,0,0});
+    stencil->drawPolygon(vertices, segments + 1, {1,1,1,1}, 0, {0,0,0,0});
     
     // Draw background
     ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
@@ -187,7 +194,7 @@ void Container::drawBorder() {
     // Draw rectangle background for no radius
     ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
     m_backgroundNode->drawPolygon(amougis, 4, bgColor, 0.f, bgColor);
-    setStencil(nullptr);
+    stencil->drawPolygon(amougis, 4, bgColor, 0.f, bgColor);
   }
 }
 
@@ -257,9 +264,6 @@ void Container::setClippingEnabled(bool enabled) {
 }
 
 void Container::updateClipping() {
-  auto stencil = getStencil();
-  if (stencil == nullptr && m_clippingEnabled) stencil = cocos2d::CCDrawNode::create();
-  setStencil(m_clippingEnabled ? stencil : nullptr);
-  drawBorder();
+  if (m_clippingEnabled) drawBorder();
 }
 GDL_NS_END

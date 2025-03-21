@@ -25,10 +25,10 @@ bool EventTarget::dispatchEvent(Event* event) {
   auto it = m_listeners.find(event->type());
   if (it != m_listeners.end()) {
     for (const auto &listener : it->second) {
-      listener(event);
+      if (!listener(event) || event->m_immediatePropagateStopped) break;
     }
   }
   event->release();
-  return !event->defaultPrevented();
+  return !event->defaultPrevented() && !event->m_immediatePropagateStopped;
 }
 GDL_NS_END

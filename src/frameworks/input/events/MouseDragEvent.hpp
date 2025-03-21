@@ -7,14 +7,17 @@ enum class MouseDragEventType {
     Start, Move, Stop
 };
 // This DOES NOT inherit from Event
-class MouseDragEvent {
+class MouseDragEvent : public cocos2d::CCObject {
 public:
     MouseDragEvent(MouseDragEventType type, const cocos2d::CCPoint& startPos, 
                   const cocos2d::CCPoint& currentPos, const cocos2d::CCPoint& delta)
         : m_type(type)
         , m_startPosition(startPos)
         , m_currentPosition(currentPos)
-        , m_delta(delta) {}
+        , m_delta(delta) {
+            // throw it into the pool
+            autorelease();
+        }
 
     const cocos2d::CCPoint& getStartPosition() const { return m_startPosition; }
     const cocos2d::CCPoint& getCurrentPosition() const { return m_currentPosition; }

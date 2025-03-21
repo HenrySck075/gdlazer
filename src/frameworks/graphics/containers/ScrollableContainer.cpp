@@ -5,7 +5,8 @@ GDL_NS_START
 bool ScrollableContainer::init() {
     if (!Container::init()) return false;
     
-    //setClippingEnabled(false);
+    // TODO: rectangle clip doesnt work
+    setClippingEnabled(false);
     setTouchEnabled(true);
     return true;
 }
