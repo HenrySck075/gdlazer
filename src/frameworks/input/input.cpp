@@ -28,7 +28,7 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 		));
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
   };
-	void onGLFWMouseCallBack(GLFWwindow*, int button, int action, int mods) {
+	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 		auto g = gdlazer::Game::get(false);
     if (g || cocos2d::CCScene::get() == g) g->dispatchEvent(new gdlazer::MouseEvent(
 			action == GLFW_PRESS ? gdlazer::MouseEventType::MouseDown : gdlazer::MouseEventType::MouseUp,
