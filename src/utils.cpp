@@ -76,7 +76,7 @@ float uiHeightToGL(float length) {
 #ifndef GEODE_IS_WINDOWS
 #include <cxxabi.h>
 #endif
-std::string getNodeName(CCObject* node){
+std::string getObjectName(CCObject* node){
 #ifdef GEODE_IS_WINDOWS
   return typeid(*node).name() + 6;
 #else 

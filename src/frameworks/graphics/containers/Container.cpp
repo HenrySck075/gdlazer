@@ -58,11 +58,10 @@ bool Container::init() {
 
     this->setStencil(cocos2d::CCDrawNode::create());
 
-    this->addListener("mouseEvent", [this](Event *event) {
-      auto mouseEvent = static_cast<MouseEvent *>(event);
+    this->addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
       auto currentPos = mouseEvent->m_position;
       if (!boundingBox().containsPoint(currentPos)) {
-        event->stopPropagation();
+        mouseEvent->stopPropagation();
         return false;
       }
 
@@ -109,9 +108,8 @@ bool Container::init() {
       return true;
     });
 
-    this->addListener("nodeLayoutUpdated", [this](Event* event) {
-      auto layoutEvent = static_cast<NodeLayoutUpdated*>(event);
-      if (layoutEvent->getContainer() == getParent()) {
+    this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
+      if (event->getContainer() == getParent()) {
         updateSizeWithUnit();
         updatePositionWithUnit();
       }
@@ -119,26 +117,6 @@ bool Container::init() {
     });
 
     return true;
-}
-
-bool Container::dispatchEvent(Event *event) {
-  // Handle the event
-  if (!EventTarget::dispatchEvent(event)) {
-    return false;
-  }
-
-  // Propagate to children
-  if (!event->m_propagateStopped) return true;
-  auto children = getChildren();
-  if (children) {
-    for (auto child : geode::cocos::CCArrayExt<CCNode*>(children)) {
-      auto eventTarget = dynamic_cast<EventTarget *>(child);
-      if (eventTarget && !eventTarget->dispatchEvent(event)) {
-        return false;
-      }
-    }
-  }
-  return true;
 }
 
 void Container::drawBorder() {
@@ -150,12 +128,12 @@ void Container::drawBorder() {
   auto size = getContentSize();
   auto radius = m_borderRadius;
   
+  if (m_clippingEnabled && stencil == nullptr) {
+    /// this is wacky but like i have no idea why it crashes
+    stencil = cocos2d::CCDrawNode::create();
+    setStencil(stencil);
+  }
   if (radius > 0) {
-    if (m_clippingEnabled && stencil == nullptr) {
-      /// this is wacky but like i have no idea why it crashes
-      stencil = cocos2d::CCDrawNode::create();
-      setStencil(stencil);
-    }
     const int segments = 20;
     cocos2d::CCPoint* vertices = new cocos2d::CCPoint[segments + 2];
     const float angle = 2.0f * M_PI / segments;
@@ -176,7 +154,7 @@ void Container::drawBorder() {
         }
     }
     
-    //m_borderNode->drawPolygon(vertices, segments + 1, {0,0,0,0}, 1, {1,1,1,1});
+    m_borderNode->drawPolygon(vertices, segments + 1, {0,0,0,0}, 1, {1,1,1,1});
     stencil->drawPolygon(vertices, segments + 1, {1,1,1,1}, 0, {0,0,0,0});
     
     // Draw background
@@ -199,30 +177,28 @@ void Container::drawBorder() {
 }
 
 void Container::draw() {
-  //drawBorder();
+  drawBorder();
   CCClippingNode::draw();
 }
 
 void Container::setBorderRadius(float radius) {
   m_borderRadius = radius;
-  drawBorder();
 }
 
 void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundColor = color;
-  drawBorder();
 }
-void gdlazer::Container::setSize(const cocos2d::CCSize &size, Unit unit) {
+void Container::setSize(const cocos2d::CCSize &size, Unit unit) {
   m_size = size;
   m_lastSizeUnit = unit;
   updateSizeWithUnit();
 }
-void gdlazer::Container::setPosition(cocos2d::CCPoint position, Unit unit) {
+void Container::setPosition(cocos2d::CCPoint position, Unit unit) {
   m_positionA = position;
   m_lastPositionUnit = unit;
   updatePositionWithUnit();
 }
-void gdlazer::Container::setParent(cocos2d::CCNode *parent) {
+void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
   updateSizeWithUnit();
   updatePositionWithUnit();
@@ -266,4 +242,38 @@ void Container::setClippingEnabled(bool enabled) {
 void Container::updateClipping() {
   if (m_clippingEnabled) drawBorder();
 }
+bool Container::doDispatchEvent(Event *event, std::type_index type) {
+  geode::Ref<Event> eventRefHolder(event);
+  // crashes somewhere after printing this
+  geode::log::debug("Dispatching {} to {}'s handlers", getObjectName(event),
+                    getObjectName(this));
+  // Handle the event
+  if (!EventTarget::doDispatchEvent(event, type)) {
+    return false;
+  }
+
+  // Propagate to children
+  if (event->m_propagateStopped) {
+    return true;
+  }
+  geode::log::pushNest(geode::Mod::get());
+  auto children = getChildren();
+  if (children) {
+    for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
+      // casting directly to Container makes it use this overridden
+      // dispatchEvent function
+      auto childContainer = geode::cast::typeinfo_cast<EventTarget*>(child);
+      if (childContainer != nullptr)
+        continue;
+      if (!childContainer->dispatchEvent(event)) {
+        geode::log::popNest(geode::Mod::get());
+        return false;
+      }
+    }
+  }
+  geode::log::popNest(geode::Mod::get());
+  // idk i think this would keep the object around
+  auto idk = eventRefHolder.data();
+  return true;
+};
 GDL_NS_END

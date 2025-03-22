@@ -24,7 +24,7 @@ public:
     float m_scrollDelta = 0.0f;  // Add scroll delta
 
     MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
-     : Event("mouseEvent"), m_position(pos), m_eventType(event), m_clicked(clicked) {
+     : m_position(pos), m_eventType(event), m_clicked(clicked) {
         //setDispatchingFlow(DispatchingFlow::Down);
     };
 };

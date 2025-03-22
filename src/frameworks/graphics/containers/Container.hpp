@@ -1,12 +1,14 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
+#include <typeindex>
 #include "../../bindables/EventTarget.hpp"
 #include "../../input/events/MouseEvent.hpp"
 #include "../../bindables/Event.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
 
 #include "../../macro.h"
+#include "../../../utils.hpp"
 
 GDL_NS_START
 
@@ -14,9 +16,8 @@ class Container;
 
 class NodeLayoutUpdated : public Event {
 public:
-    explicit NodeLayoutUpdated(Container* container) 
-        : Event("nodeLayoutUpdated"), // false to prevent propagation
-          m_container(container) {}
+    NodeLayoutUpdated(Container* container) 
+        : m_container(container) {}
 
     Container* getContainer() const { return m_container; }
 
@@ -43,10 +44,6 @@ public:
         delete ret;
         return nullptr;
       }
-    }
-    void visit() override {
-      if (!m_clippingEnabled) CCNode::visit();
-      else CCClippingNode::visit();
     }
     
     bool init() override;
@@ -83,7 +80,7 @@ public:
 
     void setParent(cocos2d::CCNode *parent) override;
 
-    bool dispatchEvent(Event *event) override;
+    bool doDispatchEvent(Event *event, std::type_index type) override;
 
     void setBorderRadius(float radius);
 

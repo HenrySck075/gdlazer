@@ -83,4 +83,4 @@ T* postconfig(T* node, std::function<void(T*)> func) {
   return node;
 }
 
-std::string getNodeName(CCObject* node);
+std::string getObjectName(CCObject* node);
