@@ -34,7 +34,7 @@ endif()
 # include("${CMAKE_CURRENT_SOURCE_DIR}/src/devtools/CMakeLists.txt")
 # setupCustomDevtools()
 # Set up dependencies, resources, and link Geode.
-setup_geode_mod(${PROJECT_NAME})
+setup_geode_mod(${PROJECT_NAME} EXTERNALS henrysck075.imagecache:1.0.0)
 
 #execute_process(COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/src/game/check_commit.py)
 if (0 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copy_to_framework.py") 
