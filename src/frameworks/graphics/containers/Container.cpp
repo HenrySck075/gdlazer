@@ -2,7 +2,6 @@
 
 #include "../../input/events/MouseEvent.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
-#include "../../../utils.hpp"
 #include "../../utils/h2dContainer.hpp"
 
 GDF_NS_START
@@ -66,12 +65,13 @@ bool Container::init() {
     // main handler that processes MouseDown & MouseUp event to others when applicable
     this->addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
       auto currentPos = mouseEvent->m_position;
+      bool isInBounds = m_containerBox->isSomethingInside(h2d::Point2dF{
+        currentPos.x, currentPos.y
+      });
       if (m_containerBox) {
-        if (!m_containerBox->isSomethingInside(h2d::Point2dF{
-          currentPos.x, currentPos.y
-        })) {
+        if (!isInBounds) {
           mouseEvent->stopPropagation();
-          return;
+          if (mouseEvent->m_eventType!=MouseEventType::Move) goto fish;
         }
       } else {
         return;
@@ -100,8 +100,12 @@ bool Container::init() {
               m_lastDragOffset
             ));
           } else if (mouseEvent->m_clicked) {
-              m_isDragging = true;
-              dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
+            m_isDragging = true;
+            dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
+          } else {
+            if (m_lastInBounds != isInBounds) {
+              dispatchEvent(new MouseEvent(isInBounds ? MouseEventType::Enter : MouseEventType::Exit, currentPos, mouseEvent->m_clicked));
+            }
           }
           m_lastMousePos = currentPos;
           break;
@@ -118,6 +122,8 @@ bool Container::init() {
         case MouseEventType::Enter:
           break;
       }
+fish:
+      m_lastInBounds = isInBounds;
       return;
     });
 

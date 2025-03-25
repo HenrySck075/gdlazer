@@ -107,6 +107,8 @@ private:
   cocos2d::CCPoint m_positionA;
   Unit m_lastPositionUnit = Unit::OpenGL;
   bool m_clippingEnabled = true;
+  /// whether or not the mouse was in bounds prior to the current mouse event
+  bool m_lastInBounds = false;
   /// used to determine if we're going to accept the input
   /// h2dShapeContainer not included to prevent including the entirely of homog2d
   h2dShapeContainer<float>* m_containerBox = nullptr;

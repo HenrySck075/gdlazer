@@ -6,6 +6,7 @@
 #include "../Game.hpp"
 
 using namespace gdlazer::framework;
+using namespace geode;
 
 // ============ Mouse input ============
 
