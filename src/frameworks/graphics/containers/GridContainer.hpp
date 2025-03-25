@@ -2,7 +2,7 @@
 #include "Container.hpp"
 #include "GridLayout.hpp"
 
-GDL_NS_START
+GDF_NS_START
 class GridContainer : public Container {
 public:
     static GridContainer* create(const DimensionVector& columns = {Dimension{.mode = Dimension::Mode::Auto}},
@@ -12,4 +12,4 @@ public:
              const DimensionVector& rows,
              float spacing);
 };
-GDL_NS_END
+GDF_NS_END

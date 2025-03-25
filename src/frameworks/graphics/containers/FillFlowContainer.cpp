@@ -1,7 +1,7 @@
 #include "FillFlowContainer.hpp"
 #include "FillFlowLayout.hpp"
 
-GDL_NS_START
+GDF_NS_START
 
 FillFlowContainer* FillFlowContainer::create(FillDirection direction) {
     auto ret = new FillFlowContainer();
@@ -22,4 +22,4 @@ bool FillFlowContainer::init(FillDirection direction) {
     
     return true;
 }
-GDL_NS_END
+GDF_NS_END

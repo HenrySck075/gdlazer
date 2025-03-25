@@ -1,9 +1,12 @@
 #include "Game.hpp"
+#include "Geode/loader/Loader.hpp"
 #include "graphics/containers/FillFlowContainer.hpp"
 #include "graphics/containers/ScrollableContainer.hpp"
+#include "graphics/animations/ContainerAnimations.hpp"
+#include "input/events/MouseEvent.hpp"
 #include <mutex>
 
-GDL_NS_START
+GDF_NS_START
 static geode::Ref<Game> s_instance;
 
 bool Game::init() {
@@ -18,30 +21,35 @@ bool Game::init() {
       us->setBackgroundColor({255,255,255,255});
       flowContainer->addChild(us);
       us->addListener<MouseEvent>([us](MouseEvent* e){
+        if (e->m_eventType != MouseEventType::MouseUp) return true;
+        geode::log::debug("hi");
         us->runAction(cocos2d::CCSequence::createWithTwoActions(
-          cocos2d::CCTintTo::create(0, 255, 0, 0),
-          cocos2d::CCTintTo::create(0.5, 255, 255, 255)
+          animations::TintTo::create(0, {255, 0, 0, 255}),
+          animations::TintTo::create(0.5, {255, 255, 255, 255})
         ));
         return true;
       });
     }
     
-    //auto scroll = ScrollableContainer::create();
-    this->addChild(flowContainer);
-    //this->addChild(scroll);
-    flowContainer->updateLayout();
-    //scroll->setSize({300, flowContainer->getContentSize().height});
+    auto scroll = ScrollableContainer::create();
+    scroll->addChild(flowContainer);
+    scroll->setScrollDirection(ScrollableContainer::ScrollDirection::Horizontal);
+    this->addChild(scroll);
+    geode::queueInMainThread([flowContainer, scroll]{
+      flowContainer->updateLayout();
+      scroll->setContentSize({1920, flowContainer->getContentHeight()});
+    });
     
 		auto menu = cocos2d::CCMenu::create();
     auto returnButton = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+			cocos2d::CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
 			this,
 			menu_selector(Game::yeah)
 		);
 		menu->addChild(returnButton);
 
     auto devtoolsButton = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+			cocos2d::CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
 			this,
 			menu_selector(Game::weh)
 		);
@@ -64,10 +72,8 @@ Game* Game::get(bool create) {
   }
   return s_instance;
 };
-GDL_NS_END bool gdlazer::Game::doDispatchEvent(Event *event,
-                                               std::type_index type) {
-  geode::log::debug("Dispatching {} to {}'s handlers", getObjectName(event),
-                    getObjectName(this));
+bool Game::doDispatchEvent(Event *event,
+                           std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
@@ -81,12 +87,10 @@ GDL_NS_END bool gdlazer::Game::doDispatchEvent(Event *event,
   auto children = getChildren();
   if (children) {
     for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
-      geode::log::debug("1");
       auto eventTarget = geode::cast::typeinfo_cast<Container *>(child);
-      geode::log::debug("2");
-      if (eventTarget != nullptr)
+      if (eventTarget == nullptr)
         continue;
-      if (!eventTarget->dispatchEvent(event)) {
+      if (!eventTarget->doDispatchEvent(event, type)) {
         return false;
       }
     }
@@ -95,3 +99,4 @@ GDL_NS_END bool gdlazer::Game::doDispatchEvent(Event *event,
   auto idk = eventRefHolder.data();
   return true;
 };
+GDF_NS_END 

@@ -5,7 +5,7 @@
 #include "graphics/containers/Container.hpp"
 
 
-GDL_NS_START
+GDF_NS_START
 
 class Game : public cocos2d::CCScene, public EventTarget {
 protected:
@@ -22,4 +22,4 @@ public:
   static Game* get(bool createIfNotExist = true);
 };
 
-GDL_NS_END
+GDF_NS_END

@@ -1,7 +1,7 @@
 #pragma once
 #include <Geode/cocos/cocoa/CCObject.h>
-#include "../macro.h"
-GDL_NS_START
+#include "../../macro.h"
+GDF_NS_START
 class Event : public cocos2d::CCObject {
     friend class EventTarget;
     friend class Container;
@@ -11,6 +11,8 @@ public:
         autorelease();
     }
     bool defaultPrevented() const { return m_defaultPrevented; }
+    // currently an alias to stopImmediatePropagation
+    // but could be used to block cocos2d from processing the input in the future
     void preventDefault() { m_defaultPrevented = true; }
     void stopPropagation() {m_propagateStopped = true;};
     void stopImmediatePropagation() {
@@ -23,4 +25,4 @@ private:
     bool m_propagateStopped = false;
     bool m_immediatePropagateStopped = false;
 };
-GDL_NS_END
+GDF_NS_END

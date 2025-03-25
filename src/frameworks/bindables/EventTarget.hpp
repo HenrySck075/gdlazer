@@ -1,21 +1,32 @@
 #pragma once
 #include "Event.hpp"
 #include <functional>
+#include <list>
+#include <memory>
 #include <type_traits>
 #include <typeindex>
 
 #define typeindex(type) std::type_index(typeid(type))
 
-GDL_NS_START
+template<>
+class fmt::formatter<std::type_index> {
+public:
+  constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+  template <typename Context>
+  constexpr auto format(std::type_index const& type, Context& ctx) const {
+    return fmt::format_to(ctx.out(), "<type {}>", type.name());
+  }
+};
+
+GDF_NS_START
 
 template<typename T>
 concept EventType = std::is_base_of_v<Event, T>;
 
 // just to mask away the templated type
-struct EventListenerFunc {
-  virtual bool operator()(Event* event) const {
-    return true;
-  };
+class EventListenerFunc {
+public:
+  virtual void call(Event* event) = 0;
   virtual bool operator==(const EventListenerFunc&) const {
     return false;
   };
@@ -26,31 +37,36 @@ struct EventListenerFunc {
 
 namespace impl {
   template<EventType T>
-  struct EventListenerFuncTemplated : public EventListenerFunc{
-    std::function<bool(T*)> func;
-    EventListenerFuncTemplated(std::function<bool(T*)> f)
-      : func(f) {}
-    bool operator()(Event* event) const override {
-      return func(static_cast<T*>(event));
+  class EventListenerFuncTemplated : public EventListenerFunc {
+    std::function<void(T*)> func;
+  public:
+    EventListenerFuncTemplated(std::function<void(T*)> f)
+    : func(f) {
     }
-    bool operator==(const EventListenerFunc& otter) const override {
+    // im still wondering why wont this work
+    virtual void call(Event* event) override {
+      func(static_cast<T*>(event));
+    }
+    virtual bool operator==(const EventListenerFunc& otter) const override {
       return get() == otter.get();
     }
-    void* get() const override {
-      return (void*)(func.template target<bool(T*)>());
+    virtual void* get() const override {
+      return (void*)(func.template target<void(T*)>());
     }
   };
 };
 
 class EventTarget {
+  friend class Game;
+  bool m_dispatching = false;
 public:
     template<EventType T>
-    using EventListener = std::function<bool(T*)>;
+    using EventListener = std::function<void(T*)>;
 
     template<EventType T>
     void addListener(const EventListener<T>& listener) {
       m_listeners[typeindex(T)].push_back(
-        impl::EventListenerFuncTemplated<T>{listener}
+        std::make_shared<impl::EventListenerFuncTemplated<T>>(listener)
       );
     };
 
@@ -69,24 +85,13 @@ public:
     };
 
     template<EventType T>
-    bool dispatchEvent(T* event) {
+    inline bool dispatchEvent(T* event) {
       return doDispatchEvent(event, typeindex(T));
     }
   protected:
-    virtual bool doDispatchEvent(Event* event, std::type_index type) {
-      auto listeners = m_listeners.find(type);
-      if (listeners != m_listeners.end()) {
-        event->retain();
-        for (const auto &listener : listeners->second) {
-          if (!listener(event) || event->m_immediatePropagateStopped) 
-            break;
-        }
-        event->release();
-        return !event->defaultPrevented() && !event->m_immediatePropagateStopped;
-      }
-      return true;
-    };
+    virtual bool doDispatchEvent(Event *event, std::type_index type);
+
   private:
-    std::unordered_map<std::type_index, std::list<EventListenerFunc>> m_listeners;
+    std::unordered_map<std::type_index, std::list<std::shared_ptr<EventListenerFunc>>> m_listeners;
 };
-GDL_NS_END
+GDF_NS_END

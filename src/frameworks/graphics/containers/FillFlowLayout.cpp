@@ -1,7 +1,7 @@
 #include "FillFlowLayout.hpp"
 #include "Container.hpp"
 
-GDL_NS_START
+GDF_NS_START
 FillFlowLayout* FillFlowLayout::create(FillDirection direction) {
   auto ret = new FillFlowLayout(direction);
   ret->autorelease();
@@ -18,20 +18,24 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
   
   if (m_direction == FillDirection::Horizontal) {
     for (auto child : children) {
-      if (!child) continue;
-      child->setPositionX(currentPos);
+      Container* e = geode::cast::typeinfo_cast<Container*>(child);
+      if (!e) continue;
+      e->setPosition({currentPos, child->getPositionY()});
       currentPos += child->getContentSize().width;
       maxCrossAxisSize = std::max(child->getContentSize().height, maxCrossAxisSize);
     }
     on->cocos2d::CCNode::setContentSize({currentPos, maxCrossAxisSize});
   } else {
     for (auto child : children) {
-      if (!child) continue;
-      child->setPositionY(currentPos);
+      Container* e = geode::cast::typeinfo_cast<Container*>(child);
+      if (!e) continue;
+      e->setPosition({child->getPositionX(),currentPos});
       currentPos += child->getContentSize().height;
       maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
     }
     on->cocos2d::CCNode::setContentSize({maxCrossAxisSize, currentPos});
   }
+  // to call updateContainerBox
+  container->setBorderRadius(container->getBorderRadius());
 }
-GDL_NS_END
+GDF_NS_END

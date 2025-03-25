@@ -4,7 +4,7 @@
 #include "../../bindables/Event.hpp"
 using namespace cocos2d;
 
-GDL_NS_START
+GDF_NS_START
 enum class MouseEventType {
     MouseUp,
     MouseDown,
@@ -28,4 +28,4 @@ public:
         //setDispatchingFlow(DispatchingFlow::Down);
     };
 };
-GDL_NS_END
+GDF_NS_END

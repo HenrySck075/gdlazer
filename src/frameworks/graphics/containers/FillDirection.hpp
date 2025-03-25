@@ -1,9 +1,9 @@
 #pragma once
-#include "../../macro.h"
-GDL_NS_START
+#include "../../../macro.h"
+GDF_NS_START
 enum class FillDirection {
     Horizontal,
     Vertical
 };
-GDL_NS_END
+GDF_NS_END
 
