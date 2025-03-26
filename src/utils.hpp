@@ -14,6 +14,7 @@ bool randomBool();
 /// <param name="node">| the node to get</param>
 /// <returns>the node's bounding box in the top most parent in the node's parent tree</returns>
 CCRect boundingBoxFromContentSize(CCNode* node);
+CCPoint convertToNodeSpaceA(CCNode* node, CCPoint point);
 // this mf uses ypos the other way
 CCRect flipRect(CCRect rect);
 

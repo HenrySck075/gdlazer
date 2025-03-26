@@ -25,7 +25,6 @@ public:
 
     MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
      : m_position(pos), m_eventType(event), m_clicked(clicked) {
-        //setDispatchingFlow(DispatchingFlow::Down);
     };
 };
 GDF_NS_END

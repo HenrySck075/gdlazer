@@ -62,8 +62,11 @@ public:
   void setName(const std::string& containerName) { m_name = containerName; }
   const std::string& getName() const { return m_name; }
 
-  // Size setters with units
   void setSize(const cocos2d::CCSize &size, Unit unit = Unit::OpenGL);
+  void setContentSize(const cocos2d::CCSize &size) override {
+    CCNode::setContentSize(size);
+    updateContainerBox();
+  };
 
   // Position setters with units
   void setPosition(cocos2d::CCPoint position, Unit unit = Unit::OpenGL);
@@ -80,6 +83,7 @@ public:
 
   bool getClippingEnabled() const { return m_clippingEnabled; }
   void setClippingEnabled(bool enabled);
+  void updateContainerBox();
 
 protected:
   void updateClipping();
@@ -87,7 +91,6 @@ protected:
   void visit() override;
   virtual void updateSizeWithUnit();
   void updatePositionWithUnit();
-  void updateContainerBox();
 
 private:
   bool m_touchEnabled = false;

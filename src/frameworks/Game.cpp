@@ -21,13 +21,18 @@ bool Game::init() {
       us->setBackgroundColor({255,255,255,255});
       flowContainer->addChild(us);
       us->addListener<MouseEvent>([us](MouseEvent* e){
-        if (e->m_eventType != MouseEventType::MouseUp) return true;
-        geode::log::debug("hi");
-        us->runAction(cocos2d::CCSequence::createWithTwoActions(
-          animations::TintTo::create(0, {255, 0, 0, 255}),
-          animations::TintTo::create(0.5, {255, 255, 255, 255})
-        ));
-        return true;
+        if (e->m_eventType == MouseEventType::MouseUp)
+          us->runAction(cocos2d::CCSequence::createWithTwoActions(
+            animations::TintTo::create(0, {255, 0, 0, 255}),
+            animations::TintTo::create(0.5, {255, 255, 255, 255})
+          ));
+        else if (e->m_eventType == MouseEventType::Enter) {
+          us->runAction(cocos2d::CCSequence::createWithTwoActions(
+            animations::TintTo::create(0, {0, 255, 0, 255}),
+            animations::TintTo::create(0.5, {255, 255, 255, 255})
+          ));
+        }
+        
       });
     }
     

@@ -1,8 +1,7 @@
 #include "DefaultEasingFunc.hpp"
 
 using namespace gdlazer::framework;
-using namespace gdlazer::framework::graphics;
-double transforms::DefaultEasingFunction::applyEasing(double time) {
+double DefaultEasingFunction::applyEasing(double time) {
   switch (m_easing) {
   case Easing::In: [[fallthrough]];
   case Easing::InQuad:

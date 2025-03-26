@@ -3,6 +3,7 @@
 #include "../../input/events/MouseEvent.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
 #include "../../utils/h2dContainer.hpp"
+#include "../../../utils.hpp"
 
 GDF_NS_START
 
@@ -64,27 +65,24 @@ bool Container::init() {
 
     // main handler that processes MouseDown & MouseUp event to others when applicable
     this->addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
-      auto currentPos = mouseEvent->m_position;
-      bool isInBounds = m_containerBox->isSomethingInside(h2d::Point2dF{
+      auto currentPos = convertToNodeSpaceA(this, mouseEvent->m_position);
+      bool isInBounds = m_containerBox!=nullptr && m_containerBox->isSomethingInside(h2d::Point2dF{
         currentPos.x, currentPos.y
       });
-      if (m_containerBox) {
-        if (!isInBounds) {
-          mouseEvent->stopPropagation();
-          if (mouseEvent->m_eventType!=MouseEventType::Move) goto fish;
-        }
-      } else {
-        return;
+      //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
+      if (!isInBounds) {
+        mouseEvent->stopPropagation();
+        if (mouseEvent->m_eventType!=MouseEventType::Move) goto fish;
       }
       switch (mouseEvent->m_eventType) {
         case MouseEventType::MouseUp:
           if (m_isDragging) {
-              m_isDragging = false;
-              dispatchEvent(new MouseDragEvent(
-                MouseDragEventType::Stop, 
-                m_dragStartPos, currentPos, 
-                m_lastDragOffset
-              ));
+            m_isDragging = false;
+            dispatchEvent(new MouseDragEvent(
+              MouseDragEventType::Stop, 
+              m_dragStartPos, currentPos, 
+              m_lastDragOffset
+            ));
           }
           break;
         case MouseEventType::MouseDown:
@@ -118,8 +116,10 @@ bool Container::init() {
               // should we actually do this?
               dispatchEvent(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, m_lastDragOffset));
           }
+          mouseEvent->stopPropagation();
           break;
         case MouseEventType::Enter:
+          mouseEvent->stopPropagation();
           break;
       }
 fish:
@@ -319,25 +319,7 @@ h2d::Point2d_<T> operator+(h2d::Point2d_<T> lhs, h2d::Point2d_<T> rhs) {
   };
 }
 GDF_NS_END
-
-template<typename T>
-struct fmt::formatter<h2d::Point2d_<T>> {
-  constexpr auto parse (format_parse_context& ctx) { return ctx.begin(); }
-  template <typename Context>
-  constexpr auto format (h2d::Point2d_<T> const& point, Context& ctx) const {
-      return format_to(ctx.out(), "({}, {})", point.getX(), point.getY());
-  }
-};
-
-template<typename T>
-struct fmt::formatter<h2d::FRect_<T>> {
-  constexpr auto parse (format_parse_context& ctx) { return ctx.begin(); }
-  template <typename Context>
-  constexpr auto format (h2d::FRect_<T> const& rect, Context& ctx) const {
-      return format_to(ctx.out(), "[{}, {}]", rect.getPts().first, rect.getPts().second);
-  }
-};
-
+#include "../../utils/h2dFormatter.hpp"
 GDF_NS_START
 void Container::updateContainerBox() {
   if (m_containerBox) delete m_containerBox;
@@ -347,21 +329,21 @@ void Container::updateContainerBox() {
     // doubt it is this
     getContentWidth() < m_borderRadius || getContentHeight() < m_borderRadius
   ) {
+    //geode::log::warn("Homographies crash check failed for {}, no container box is created.", this);
     return;
   }
   auto cs2 = getContentSize() - (cocos2d::CCPoint{m_borderRadius, m_borderRadius}*2);
   auto bl = h2d::Point2dF{m_borderRadius, m_borderRadius},
        tr = h2d::Point2dF{cs2.width, cs2.height};
   if (h2d::detail::shareCommonCoord(bl, tr)) {
-    geode::log::debug("{}, {} | {}", bl, tr, getContentSize());
+    //geode::log::warn("Common coordinate check failed: {}, {} | {}", bl, tr, getContentSize());
     return;
   }
-  h2d::Point2dF nodePos{getPosition().x, getPosition().y};
   h2d::FRectF innerRect {
-    bl + nodePos, tr + nodePos
+    bl, tr
   };
 
-  geode::log::debug("inner rect: {}", innerRect);
+  //geode::log::debug("inner rect of {}: {}", this, innerRect);
 
   m_containerBox = new h2dShapeContainer<float>{{
     innerRect

@@ -1,6 +1,5 @@
 #include "ScrollableContainer.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
-#include "../../../utils.hpp"
 GDF_NS_START
 
 bool ScrollableContainer::init() {
@@ -11,7 +10,6 @@ bool ScrollableContainer::init() {
   setTouchEnabled(true);
 
   this->addListener<MouseDragEvent>([this](MouseDragEvent* event){
-    geode::log::debug("{}, {}", event->getDelta(), (int)event->m_type);
     switch (event->m_type) {
     case MouseDragEventType::Start: {
       m_scrollVelocityVec = cocos2d::CCPoint{0,0};

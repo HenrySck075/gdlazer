@@ -42,6 +42,11 @@ CCRect boundingBoxFromContentSize(CCNode* node) {
   return CCRect{ pos.x, pos.y, size.width, size.height };
 }
 
+CCPoint convertToNodeSpaceA(CCNode* node, CCPoint point) {
+  auto box = boundingBoxFromContentSize(node);
+  return point - box.origin;
+};
+
 CCRect flipRect(CCRect rect) {
   auto ws = CCDirector::sharedDirector()->getWinSize();
   return CCRect{ rect.getMinX(),ws.height - rect.getMinY() + rect.size.height,rect.size.width, rect.size.height };

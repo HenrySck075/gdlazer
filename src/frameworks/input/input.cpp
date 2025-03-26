@@ -1,6 +1,6 @@
 #include <Geode/Geode.hpp>
-#include <cmath>
 
+#include "Geode/cocos/robtop/glfw/glfw3.h"
 #include "events/KeyEvent.hpp"
 #include "events/MouseEvent.hpp"
 #include "../Game.hpp"
@@ -29,18 +29,18 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 		auto p = CCPoint(x / w * st.width, ((h-y) / h * st.height));
 		g_mousePos = p;
 		auto g = Game::get(false);
-    if (g || cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
+    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
 			MouseEventType::Move, p, mouseClicked
 		));
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
   };
 	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 		auto g = Game::get(false);
-    if (g || cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
+    mouseClicked = action == GLFW_PRESS;
+    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
 			action == GLFW_PRESS ? MouseEventType::MouseDown : MouseEventType::MouseUp,
-			g_mousePos, true
+			g_mousePos, mouseClicked
 		));
-		mouseClicked = action == GLFW_PRESS;
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
 };
