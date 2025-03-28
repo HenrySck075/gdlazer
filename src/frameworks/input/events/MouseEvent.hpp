@@ -25,6 +25,7 @@ public:
 
     MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
      : m_position(pos), m_eventType(event), m_clicked(clicked) {
+       geode::log::debug("[MosueEvent]: dispatching mouse id {}", (int)m_eventType);
     };
 };
 GDF_NS_END

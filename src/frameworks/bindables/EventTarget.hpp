@@ -5,6 +5,7 @@
 #include <memory>
 #include <type_traits>
 #include <typeindex>
+#include <variant>
 
 #define typeindex(type) std::type_index(typeid(type))
 
@@ -26,7 +27,7 @@ concept EventType = std::is_base_of_v<Event, T>;
 // just to mask away the templated type
 class EventListenerFunc {
 public:
-  virtual void call(Event* event) = 0;
+  virtual bool call(Event* event) = 0;
   virtual bool operator==(const EventListenerFunc&) const {
     return false;
   };
@@ -38,20 +39,35 @@ public:
 namespace impl {
   template<EventType T>
   class EventListenerFuncTemplated : public EventListenerFunc {
-    std::function<void(T*)> func;
   public:
+    using VoidCallback = std::function<void(T*)>;
+    using BoolCallback = std::function<bool(T*)>;
+    using Callback = std::variant<
+      VoidCallback, BoolCallback
+    >;
+  private:
+    Callback func;
+  public:
+    
     EventListenerFuncTemplated(std::function<void(T*)> f)
-    : func(f) {
-    }
-    // im still wondering why wont this work
-    virtual void call(Event* event) override {
-      func(static_cast<T*>(event));
+    : func(f) {}
+    EventListenerFuncTemplated(std::function<bool(T*)> f)
+    : func(f) {}
+    virtual bool call(Event* event) override {
+      auto seven = static_cast<T*>(event);
+      if (std::holds_alternative<VoidCallback>(func)) {
+        std::get<VoidCallback>(func)(seven);
+        return true;
+      } else {
+        return std::get<BoolCallback>(func)(seven);
+      }
     }
     virtual bool operator==(const EventListenerFunc& otter) const override {
       return get() == otter.get();
     }
     virtual void* get() const override {
-      return (void*)(func.template target<void(T*)>());
+      if (auto voidfunc = std::get_if<VoidCallback>(&func)) return (void*)(voidfunc->template target<void(T*)>());
+      if (auto boolfunc = std::get_if<BoolCallback>(&func)) return (void*)(boolfunc->template target<bool(T*)>());
     }
   };
 };
@@ -61,15 +77,33 @@ class EventTarget {
   bool m_dispatching = false;
 public:
     template<EventType T>
-    using EventListener = std::function<void(T*)>;
+    using VoidEventListener = impl::EventListenerFuncTemplated<T>::VoidCallback;
+    template<EventType T>
+    using BoolEventListener = impl::EventListenerFuncTemplated<T>::BoolCallback;
 
     template<EventType T>
-    void addListener(const EventListener<T>& listener) {
+    /// Adds a listener for an event.
+    ///
+    /// The function can also optionally returns a bool indicating whether or not the handler should continue processing event, without affecting the propagation state of the event itself.
+    /// Otherwise, it is the same as returning true.
+    void addListener(const VoidEventListener<T>& listener) {
+      m_listeners[typeindex(T)].push_back(
+        std::make_shared<impl::EventListenerFuncTemplated<T>>(listener)
+      );
+    };
+    template<EventType T>
+    /// Adds a listener for an event.
+    ///
+    /// The function can also optionally returns a bool indicating whether or not the handler should continue processing event, without affecting the propagation state of the event itself.
+    /// Otherwise, it is the same as returning true.
+    void addListener(const BoolEventListener<T>& listener) {
       m_listeners[typeindex(T)].push_back(
         std::make_shared<impl::EventListenerFuncTemplated<T>>(listener)
       );
     };
 
+
+      /*
     template<EventType T>
     void removeListener(const EventListener<T>& listener) {
       auto it = m_listeners.find(typeindex(T));
@@ -83,6 +117,7 @@ public:
         listeners.end());
       }
     };
+      */
 
     template<EventType T>
     inline bool dispatchEvent(T* event) {

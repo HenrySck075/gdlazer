@@ -19,7 +19,7 @@ struct h2dShapeContainer {
 	bool isSomethingInside(const h2d::Point2d_<T>& something) const
 	{
     // TODO: this always return false because it's using the fallback method from Common
-    geode::log::debug("Checking for point {} ({} shapes)", something, shapes.size());
+    //geode::log::debug("Checking for point {} ({} shapes)", something, shapes.size());
 #define shapeTypeOf(type) std::holds_alternative<type>(shape) ? something.isInside(std::get<type>(shape))
     for (h2d::CommonType_<FPT> shape : shapes) {
       if (
@@ -28,10 +28,10 @@ struct h2dShapeContainer {
         shapeTypeOf(h2d::Circle_<FPT>) :
         false
       ) {
-        geode::log::debug("Test passed for {}.", shape);
+        //geode::log::debug("Test passed for {}.", shape);
         return true;
       }
-      geode::log::debug("Test failed for {}.", shape);
+      //geode::log::debug("Test failed for {}.", shape);
     }
     return false;
 	}

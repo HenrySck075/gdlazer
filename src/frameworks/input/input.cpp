@@ -1,6 +1,5 @@
 #include <Geode/Geode.hpp>
 
-#include "Geode/cocos/robtop/glfw/glfw3.h"
 #include "events/KeyEvent.hpp"
 #include "events/MouseEvent.hpp"
 #include "../Game.hpp"
