@@ -23,6 +23,15 @@ struct fmt::formatter<h2d::FRect_<T>> {
 };
 
 template<typename T>
+struct fmt::formatter<h2d::Circle_<T>> {
+  constexpr auto parse (format_parse_context& ctx) { return ctx.begin(); }
+  template <typename Context>
+  constexpr auto format (h2d::Circle_<T> const& circ, Context& ctx) const {
+      return format_to(ctx.out(), "( {}, R={} )", circ.getCenter(), circ.radius());
+  }
+};
+
+template<typename T>
 struct fmt::formatter<h2d::CommonType_<T>> {
   constexpr auto parse (format_parse_context& ctx) { return ctx.begin(); }
   template <typename Context>
