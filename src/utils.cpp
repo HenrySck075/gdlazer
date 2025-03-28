@@ -44,6 +44,7 @@ CCRect boundingBoxFromContentSize(CCNode* node) {
 
 CCPoint convertToNodeSpaceA(CCNode* node, CCPoint point) {
   auto box = boundingBoxFromContentSize(node);
+  geode::log::debug("[ctnsa]: {} | {}", box.origin, point);
   return point - box.origin;
 };
 

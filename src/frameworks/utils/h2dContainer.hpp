@@ -31,7 +31,7 @@ struct h2dShapeContainer {
         geode::log::debug("Test passed for {}.", shape);
         return true;
       }
-      //geode::log::debug("Test failed.");
+      geode::log::debug("Test failed for {}.", shape);
     }
     return false;
 	}

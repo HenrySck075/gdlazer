@@ -332,7 +332,7 @@ void Container::updateContainerBox() {
     //geode::log::warn("Homographies crash check failed for {}, no container box is created.", this);
     return;
   }
-  auto cs2 = getContentSize() - (cocos2d::CCPoint{m_borderRadius, m_borderRadius}*2);
+  auto cs2 = getContentSize() - (cocos2d::CCPoint{m_borderRadius, m_borderRadius});
   auto bl = h2d::Point2dF{m_borderRadius, m_borderRadius},
        tr = h2d::Point2dF{cs2.width, cs2.height};
   if (h2d::detail::shareCommonCoord(bl, tr)) {

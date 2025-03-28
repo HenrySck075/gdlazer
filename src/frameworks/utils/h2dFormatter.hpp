@@ -40,6 +40,7 @@ struct fmt::formatter<h2d::CommonType_<T>> {
 
     shadyCode(h2d::FRect_);
     shadyCode(h2d::Point2d_);
+    shadyCode(h2d::Circle_);
     return format_to(ctx.out(), "(unsupported h2d type)");
   }
 };
