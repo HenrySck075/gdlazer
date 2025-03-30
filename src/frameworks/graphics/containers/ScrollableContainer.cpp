@@ -56,6 +56,7 @@ bool ScrollableContainer::init() {
       break;
     }
     };
+    return true;
   });
   return true;
 }

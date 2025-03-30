@@ -71,7 +71,7 @@ bool Container::init() {
       });
       //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
       if (!isInBounds) {
-        mouseEvent->stopPropagation();
+        //mouseEvent->stopPropagation();
         //if (mouseEvent->m_eventType!=MouseEventType::Move) goto fish;
       }
       switch (mouseEvent->m_eventType) {
@@ -111,20 +111,26 @@ bool Container::init() {
         case MouseEventType::Click:
           break;
         case MouseEventType::Exit:
+          //log::debug("exit | {}", isInBounds);
           if (m_isDragging) {
               m_isDragging = false;
               // should we actually do this?
               dispatchEvent(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, m_lastDragOffset));
           }
           mouseEvent->stopPropagation();
+          m_lastInBounds = isInBounds;
+          return true;
           break;
         case MouseEventType::Enter:
+          //log::debug("enter | {}", isInBounds);
           mouseEvent->stopPropagation();
+          m_lastInBounds = isInBounds;
+          return true;
           break;
       }
 fish:
       m_lastInBounds = isInBounds;
-      return mouseEvent->m_eventType != MouseEventType::MouseUp || mouseEvent->m_eventType != MouseEventType::MouseDown;
+      return isInBounds;
     });
 
     this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
@@ -132,6 +138,7 @@ fish:
         updateSizeWithUnit();
         updatePositionWithUnit();
       }
+      return true;
     });
 
     return true;

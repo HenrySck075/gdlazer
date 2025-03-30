@@ -1,8 +1,10 @@
 #include "Game.hpp"
+#include "Geode/cocos/robtop/keyboard_dispatcher/CCKeyboardDelegate.h"
 #include "Geode/loader/Loader.hpp"
 #include "graphics/containers/FillFlowContainer.hpp"
 #include "graphics/containers/ScrollableContainer.hpp"
 #include "graphics/animations/ContainerAnimations.hpp"
+#include "input/events/KeyEvent.hpp"
 #include "input/events/MouseEvent.hpp"
 #include <mutex>
 
@@ -13,6 +15,13 @@ bool Game::init() {
     if (!CCScene::init()) return false;
 
     /*TEST CODE ~ Remove after finished*/
+    addListener<KeyEvent>([](KeyEvent* e){
+      if (e->m_key == cocos2d::KEY_Escape && e->m_pressed) {
+        cocos2d::CCDirector::get()->popScene();
+      }
+      return true;
+    });
+
     auto flowContainer = FillFlowContainer::create(FillDirection::Horizontal);
     for (int i = 0; i < 5; i++) {
       auto us = Container::create();
@@ -32,7 +41,7 @@ bool Game::init() {
             animations::TintTo::create(0.5, {255, 255, 255, 255})
           ));
         }
-        
+        return true;
       });
     }
     

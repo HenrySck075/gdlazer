@@ -6,12 +6,11 @@ bool EventTarget::doDispatchEvent(Event *event, std::type_index type) {
   if (listeners != m_listeners.end()) {
     event->retain();
     for (auto &listener : listeners->second) {
-      listener->call(event);
-      if (event->m_immediatePropagateStopped)
+      if (!listener->call(event) || event->m_immediatePropagateStopped)
         break;
     }
     event->release();
-    return !event->defaultPrevented() && !event->m_immediatePropagateStopped;
+    return !event->defaultPrevented() || !event->m_immediatePropagateStopped;
   }
   return true;
 };
