@@ -4,6 +4,7 @@
 #include "../../input/events/MouseDragEvent.hpp"
 #include "../../utils/h2dContainer.hpp"
 #include "../../../utils.hpp"
+#include <list>
 
 GDF_NS_START
 
@@ -355,25 +356,70 @@ void Container::updateContainerBox() {
   m_containerBox = new h2dShapeContainer<float>{{
     innerRect
   }};
+  h2d::CPolylineF p(innerRect);
   if (m_borderRadius > 0) {
+    p.clear();
+    float rotationStep = 360.f/(20*4);
     auto ir4pt = innerRect.get4Pts();
-    m_containerBox->shapes.insert(m_containerBox->shapes.end(), {
-      // left, right
-      h2d::FRectF {
-        h2d::Point2dF{0, m_borderRadius},
-        ir4pt[2]+h2d::Point2dF{m_borderRadius,0}
-      },
-      // top, bottom
-      h2d::FRectF {
-        h2d::Point2dF{m_borderRadius, 0},
-        ir4pt[2]+h2d::Point2dF{0,m_borderRadius}
-      },
-      // circle corners
-      h2d::CircleF{ir4pt[0], m_borderRadius},
-      h2d::CircleF{ir4pt[1], m_borderRadius},
-      h2d::CircleF{ir4pt[2], m_borderRadius},
-      h2d::CircleF{ir4pt[3], m_borderRadius}
-    }); 
+    std::list<h2d::Point2dF> pts;
+    h2d::HomogrF fish;
+    h2d::HomogrF fish2;
+    h2d::HomogrF rot;
+
+    // dry gone wrong
+#define $repositionToPoint(index) \
+    fish.setTranslation(-ir4pt[index].getX(), -ir4pt[index].getY()); \
+    fish2.setTranslation(ir4pt[index].getX(), ir4pt[index].getY());
+
+#define $finishDishes fish.init(); fish2.init()
+#define $pushCorners(index, stepOffsetMult) \
+{ \
+      $repositionToPoint(1);\
+      h2d::Point2dF p = pts.back(); \
+      for (int i = 1*(20*stepOffsetMult); i <= 20*(20*stepOffsetMult); i++) {\
+        rot.setRotation(rotationStep*i);\
+        pts.push_back(fish2 * (rot * (fish * p)));\
+        rot.init();\
+      }\
+      $finishDishes;\
+    }
+    // Left side
+    pts.push_back({0, m_borderRadius});
+    pts.push_back({0, ir4pt[1].getY()});
+  
+    // TL corner 
+    $pushCorners(1, 0);
+    pts.pop_back();
+
+    // Top side
+    pts.push_back({m_borderRadius, ir4pt[1].getY()+m_borderRadius});
+    pts.push_back({ir4pt[2].getX(), ir4pt[1].getY()+m_borderRadius});
+
+    // TR corner
+    $pushCorners(2, 1);
+    pts.pop_back();
+
+    // Right side
+    pts.push_back({ir4pt[2].getX()+m_borderRadius, ir4pt[2].getY()});
+    pts.push_back({ir4pt[2].getX()+m_borderRadius, m_borderRadius});
+
+    // BR corner
+    $pushCorners(3, 2);
+    pts.pop_back();
+
+    // Bottom side
+    pts.push_back({ir4pt[3].getX(), 0});
+    pts.push_back({m_borderRadius, 0});
+
+    // BL corner
+    $pushCorners(0, 3);
+    pts.pop_back();
+
+    p.set(pts);
+
+    #undef $repositionToPoint
+    #undef $finishDishes
   }
+
 };
 GDF_NS_END
