@@ -11,21 +11,31 @@ enum class MouseEventType {
     Move,
     Click,
     Exit, 
-    Enter,
-    Scroll  // Add scroll type
+    Enter
 };
 
 // mouse event 2
 class MouseEvent : public Event {
 public:
-    CCPoint m_position = CCPoint(0,0);
-    MouseEventType m_eventType;
-    bool m_clicked;
-    float m_scrollDelta = 0.0f;  // Add scroll delta
+  CCPoint m_position {0,0};
+  MouseEventType m_eventType;
+  bool m_clicked;
 
-    MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
-     : m_position(pos), m_eventType(event), m_clicked(clicked) {
-       //geode::log::debug("[MouseEvent]: dispatching mouse id {}", (int)m_eventType);
-    };
+  MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
+    : m_position(pos), m_eventType(event), m_clicked(clicked) {
+      //geode::log::debug("[MouseEvent]: dispatching mouse id {}", (int)m_eventType);
+  };
+};
+class MouseScrollEvent : public Event {
+public:
+  CCPoint m_scrollDelta {0,0};
+  /// just in case
+  CCPoint m_position {0,0};
+  bool m_clicked;
+
+  MouseScrollEvent(CCPoint delta, CCPoint pos, bool clicked)
+    : m_position(pos), m_scrollDelta(delta), m_clicked(clicked) {
+      //geode::log::debug("[MouseEvent]: dispatching mouse id {}", (int)m_eventType);
+  };
 };
 GDF_NS_END

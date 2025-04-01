@@ -9,7 +9,7 @@ using namespace geode;
 
 // ============ Mouse input ============
 
-bool mouseClicked = false;
+bool g_mouseClicked = false;
 #ifdef GEODE_IS_WINDOWS
 cocos2d::CCPoint g_mousePos;
 #include <Geode/modify/CCEGLView.hpp>
@@ -29,16 +29,16 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 		g_mousePos = p;
 		auto g = Game::get(false);
     if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
-			MouseEventType::Move, p, mouseClicked
+			MouseEventType::Move, p, g_mouseClicked
 		));
 		CCEGLView::onGLFWMouseMoveCallBack(window, x, y);
   };
 	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 		auto g = Game::get(false);
-    mouseClicked = action == GLFW_PRESS;
+    g_mouseClicked = action == GLFW_PRESS;
     if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
 			action == GLFW_PRESS ? MouseEventType::MouseDown : MouseEventType::MouseUp,
-			g_mousePos, mouseClicked
+			g_mousePos, g_mouseClicked
 		));
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
@@ -91,5 +91,14 @@ struct kd : public geode::Modify<kd, CCKeyboardDispatcher> {
     auto g = Game::get(false);
     if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new KeyEvent(key, down));
     return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeat);
+  }
+};
+
+#include <Geode/modify/CCMouseDispatcher.hpp>
+struct md : public geode::Modify<md, CCMouseDispatcher> {
+  bool dispatchScrollMSG(float x, float y) {
+    auto g = Game::get(false);
+    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseScrollEvent({x,y}, g_mousePos, g_mouseClicked));
+    return CCMouseDispatcher::dispatchScrollMSG(x, y);
   }
 };

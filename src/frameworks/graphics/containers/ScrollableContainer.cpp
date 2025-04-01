@@ -1,5 +1,6 @@
 #include "ScrollableContainer.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
+#include "../../input/events/MouseEvent.hpp"
 GDF_NS_START
 
 bool ScrollableContainer::init() {
@@ -9,6 +10,17 @@ bool ScrollableContainer::init() {
   setClippingEnabled(false);
   setTouchEnabled(true);
 
+  this->addListener<MouseScrollEvent>([this](MouseScrollEvent* event){
+    if ((m_scrollDirection == ScrollDirection::Vertical || 
+         m_scrollDirection == ScrollDirection::Both)
+    ) {
+      m_scrollVelocityVec.y = event->m_scrollDelta.y;
+    } else {
+      // quite controversal impl but idk
+      m_scrollVelocityVec.x = event->m_scrollDelta.y;
+    }
+    return true;
+  });
   this->addListener<MouseDragEvent>([this](MouseDragEvent* event){
     switch (event->m_type) {
     case MouseDragEventType::Start: {
