@@ -32,6 +32,15 @@ struct fmt::formatter<h2d::Circle_<T>> {
 };
 
 template<typename T>
+struct fmt::formatter<h2d::CPolyline_<T>> {
+  constexpr auto parse (format_parse_context& ctx) { return ctx.begin(); }
+  template <typename Context>
+  constexpr auto format (h2d::CPolyline_<T> const& poly, Context& ctx) const {
+      return format_to(ctx.out(), "/(closed)Polyline: {}\\", poly.getPts());
+  }
+};
+
+template<typename T>
 struct fmt::formatter<h2d::CommonType_<T>> {
   constexpr auto parse (format_parse_context& ctx) { return ctx.begin(); }
   template <typename Context>

@@ -26,6 +26,7 @@ struct h2dShapeContainer {
         shapeTypeOf(h2d::Line2d_<FPT>) :
         shapeTypeOf(h2d::FRect_<FPT>) :
         shapeTypeOf(h2d::Circle_<FPT>) :
+        shapeTypeOf(h2d::CPolyline_<FPT>) :
         false
       ) {
         //geode::log::debug("Test passed for {}.", shape);

@@ -43,6 +43,15 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
 };
+
+#include <Geode/modify/CCMouseDispatcher.hpp>
+struct md : public geode::Modify<md, CCMouseDispatcher> {
+  bool dispatchScrollMSG(float x, float y) {
+    auto g = Game::get(false);
+    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseScrollEvent({x,y}, g_mousePos, g_mouseClicked));
+    return CCMouseDispatcher::dispatchScrollMSG(x, y);
+  }
+};
 #else
 #include <Geode/modify/CCTouchDispatcher.hpp>
 float g_moveThreshold = 0.5;
@@ -69,13 +78,13 @@ struct m : public geode::Modify<m, cocos2d::CCTouchDispatcher> {
         .getDistance(pos)
       )>= g_moveThreshold
     ) */{
-      if (index == CCTOUCHBEGAN) mouseClicked = true;
-      if (index == CCTOUCHENDED) mouseClicked = false;
+      if (index == CCTOUCHBEGAN) g_mouseClicked = true;
+      if (index == CCTOUCHENDED) g_mouseClicked = false;
       auto g = Game::get(false);
       if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
         index == CCTOUCHBEGAN ? MouseEventType::MouseDown : 
         index == CCTOUCHMOVED ? MouseEventType::Move : MouseEventType::MouseUp,
-        pos, mouseClicked
+        pos, g_mouseClicked
       ));
     }
 
@@ -91,14 +100,5 @@ struct kd : public geode::Modify<kd, CCKeyboardDispatcher> {
     auto g = Game::get(false);
     if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new KeyEvent(key, down));
     return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeat);
-  }
-};
-
-#include <Geode/modify/CCMouseDispatcher.hpp>
-struct md : public geode::Modify<md, CCMouseDispatcher> {
-  bool dispatchScrollMSG(float x, float y) {
-    auto g = Game::get(false);
-    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseScrollEvent({x,y}, g_mousePos, g_mouseClicked));
-    return CCMouseDispatcher::dispatchScrollMSG(x, y);
   }
 };

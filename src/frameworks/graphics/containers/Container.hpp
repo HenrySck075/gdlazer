@@ -115,6 +115,7 @@ private:
   /// used to determine if we're going to accept the input
   /// h2dShapeContainer not included to prevent including the entirely of homog2d
   h2dShapeContainer<float>* m_containerBox = nullptr;
+  bool m_containerBoxDesynced = true;
 };
 
 GDF_NS_END
