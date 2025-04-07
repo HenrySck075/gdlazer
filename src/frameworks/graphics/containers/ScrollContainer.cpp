@@ -1,9 +1,9 @@
-#include "ScrollableContainer.hpp"
+#include "ScrollContainer.hpp"
 #include "../../input/events/MouseDragEvent.hpp"
 #include "../../input/events/MouseEvent.hpp"
 GDF_NS_START
 
-bool ScrollableContainer::init() {
+bool ScrollContainer::init() {
   if (!Container::init()) return false;
   
   // TODO: rectangle clip doesnt work
@@ -64,7 +64,7 @@ bool ScrollableContainer::init() {
           m_scrollDirection == ScrollDirection::None) {
         m_scrollVelocityVec.y = 0;
       }
-      schedule(schedule_selector(ScrollableContainer::applyInertia));
+      schedule(schedule_selector(ScrollContainer::applyInertia));
       break;
     }
     };
@@ -73,37 +73,48 @@ bool ScrollableContainer::init() {
   return true;
 }
 
-void ScrollableContainer::addChild(CCNode* child) {
+void ScrollContainer::addChild(cocos2d::CCNode* child) {
   addChild(child, 0);
 }
 
-void ScrollableContainer::addChild(CCNode* child, int zOrder) {
+void ScrollContainer::addChild(cocos2d::CCNode* child, int zOrder) {
   addChild(child, zOrder, 0);
 }
 
-void ScrollableContainer::addChild(CCNode* child, int zOrder, int tag) {
+void ScrollContainer::addChild(cocos2d::CCNode* child, int zOrder, int tag) {
+  geode::log::warn(
+    "[ScrollContainer]: "
+    "As I only support 1 child in my entire lifetime (excluding the background and scrollbar), "
+    "please use `ScrollContainer::setScrollChild` to not make confusions for anyone reading the code."
+  );
+  setScrollChild(child);
+}
+
+void ScrollContainer::setScrollChild(cocos2d::CCNode* child) {
+  m_vfuncCallLoopBlock = true;
   if (m_content != nullptr) {
     removeChild(m_content);
   }
   m_content = child;
-  Container::addChild(child, zOrder, tag);
+  cocos2d::CCNode::addChild(child); // still calls the override but to make it less confusing
   updateChildPosition();
+  m_vfuncCallLoopBlock = false;
 }
 
-void ScrollableContainer::resizeToChildSize() {
+void ScrollContainer::resizeToChildSize() {
   if (m_content) {
     setContentSize(m_content->getContentSize());
   }
 };
 
-void ScrollableContainer::updateSizeWithUnit() {
+void ScrollContainer::updateSizeWithUnit() {
   Container::updateSizeWithUnit();
   if (m_content) {
     updateChildPosition();
   }
 }
 
-void ScrollableContainer::updateChildPosition() {
+void ScrollContainer::updateChildPosition() {
   if (!m_content) return;
   
   auto containerSize = getContentSize();
@@ -121,7 +132,7 @@ void ScrollableContainer::updateChildPosition() {
   m_content->setPosition(m_scrollPosition);
 }
 
-void ScrollableContainer::applyInertia(float dt) {
+void ScrollContainer::applyInertia(float dt) {
   if (m_scrollVelocityVec.x != 0 || m_scrollVelocityVec.y != 0) {
     m_scrollPosition = ccpAdd(m_scrollPosition, m_scrollVelocityVec);
     m_scrollVelocityVec = ccpMult(m_scrollVelocityVec, m_velocityFriction);
@@ -166,7 +177,7 @@ void ScrollableContainer::applyInertia(float dt) {
         m_returningInBounds = true;
       }
       else {
-        unschedule(schedule_selector(ScrollableContainer::applyInertia));
+        unschedule(schedule_selector(ScrollContainer::applyInertia));
       }
     }
     
@@ -174,4 +185,13 @@ void ScrollableContainer::applyInertia(float dt) {
   }
 }
 
+//////////////////////////////////////////////////
+/// ScrollbarContainer
+//////////////////////////////////////////////////
+
+bool ScrollbarContainer::init(ScrollContainer* scrollContainer) {
+  setContentSize(scrollContainer->getContentSize());
+  setPosition(scrollContainer->getPosition());
+  scrollContainer->setPosition({0,0});
+};
 GDF_NS_END

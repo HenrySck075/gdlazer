@@ -1,14 +1,18 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
+#include "CCClippingNodeRGBA.hpp"
 #include <typeindex>
 #include "../../bindables/EventTarget.hpp"
 #include "../../bindables/Event.hpp"
-
+#include <generator> // effectively locks the mod to c++23
 #include "../../../macro.h"
 
-template<typename T>
-struct h2dShapeContainer;
+/// Included for free
+#include "../../input/events/MouseEvent.hpp"
+#include "../../input/events/MouseDragEvent.hpp"
+#include "../../input/events/KeyEvent.hpp"
+
 
 GDF_NS_START
 
@@ -26,14 +30,14 @@ private:
 };
 
 
-class Container : public cocos2d::CCClippingNode, public EventTarget {
+enum class Unit {
+  Percent,
+  Viewport,
+  OpenGL,
+  UIKit
+};
+class Container : public CCClippingNodeRGBA, public EventTarget {
 public:
-  enum class Unit {
-    Percent,
-    Viewport,
-    OpenGL,
-    UIKit
-  };
 
   static Container* create() {
     Container* ret = new Container();
@@ -44,6 +48,11 @@ public:
       delete ret;
       return nullptr;
     }
+  }
+
+  ~Container() {
+    delete m_containerBox;
+    delete m_containerBoxO;
   }
   
   bool init() override;
@@ -62,14 +71,22 @@ public:
   void setName(const std::string& containerName) { m_name = containerName; }
   const std::string& getName() const { return m_name; }
 
-  void setSize(const cocos2d::CCSize &size, Unit unit = Unit::OpenGL);
-  void setContentSize(const cocos2d::CCSize &size) override {
-    CCNode::setContentSize(size);
-    updateContainerBox();
-  };
+  void setContentSize(const cocos2d::CCSize &size, Unit unit);
+  void setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit);
+  void setContentSize(const cocos2d::CCSize &size) override;
 
   // Position setters with units
-  void setPosition(cocos2d::CCPoint position, Unit unit = Unit::OpenGL);
+  void setPosition(cocos2d::CCPoint const& position) override;
+  void setPosition(cocos2d::CCPoint const& position, Unit unit);
+  void setPosition(cocos2d::CCPoint const& position, Unit hUnit, Unit vUnit);
+
+  // function overrides to mark m_containerBoxDesynced to true
+  void setScale(float scale) override;
+  void setScaleX(float scaleX) override;
+  void setScaleY(float scaleY) override;
+  void setSkewX(float skewX) override;
+  void setSkewY(float skewY) override;
+  void setRotation(float rotation) override;
 
   void setParent(cocos2d::CCNode *parent) override;
 
@@ -84,6 +101,7 @@ public:
   bool getClippingEnabled() const { return m_clippingEnabled; }
   void setClippingEnabled(bool enabled);
   void updateContainerBox();
+  void transformContainerBox();
 
 protected:
   void updateClipping();
@@ -91,8 +109,17 @@ protected:
   void visit() override;
   virtual void updateSizeWithUnit();
   void updatePositionWithUnit();
+  void calculatePolygonVertPoints();
 
 private:
+  /// new naming: t_ for temp (debugging) variables
+  //int t_fc = 0;
+  //int t_vc = 3;
+  bool m_vfuncCallLoopBlock = false;
+
+  static const int c_segments = 20;
+  static const int c_verticesPointsSize = c_segments * 4 + 4;
+  std::array<std::array<float,2>, c_verticesPointsSize> m_verticesPoints;
   bool m_touchEnabled = false;
   std::string m_name;
   cocos2d::CCSize m_minSize;
@@ -102,20 +129,26 @@ private:
   cocos2d::CCPoint m_lastDragOffset;
   cocos2d::CCPoint m_dragStartPos;
   float m_borderRadius = 0.0f;
-  cocos2d::CCDrawNode* m_borderNode = nullptr;
   cocos2d::CCDrawNode* m_backgroundNode = nullptr;
   cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
   cocos2d::CCSize m_size;
-  Unit m_lastSizeUnit = Unit::OpenGL;
-  cocos2d::CCPoint m_positionA;
-  Unit m_lastPositionUnit = Unit::OpenGL;
+  Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
+  cocos2d::CCPoint m_position;
+  Unit m_positionUnit[2] {Unit::OpenGL, Unit::OpenGL};
   bool m_clippingEnabled = true;
   /// whether or not the mouse was in bounds prior to the current mouse event
   bool m_lastInBounds = false;
+
+  /// the untransformed box to later apply the transformation
+  void* m_containerBoxO = nullptr;
   /// used to determine if we're going to accept the input
-  /// h2dShapeContainer not included to prevent including the entirely of homog2d
-  h2dShapeContainer<float>* m_containerBox = nullptr;
+  /// type is h2d::CPolylineF but its not included to prevent including the entirely of homog2d
+  void* m_containerBox = nullptr;
+
+  /// this one causes a container box retransform (everything else)
   bool m_containerBoxDesynced = true;
+  /// this one causes a container box rebuild (true on borderRadius and size change)
+  bool m_containerBoxShapeDesynced = true;
 };
 
 GDF_NS_END

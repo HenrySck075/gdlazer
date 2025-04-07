@@ -3,6 +3,7 @@
 #include <Geode/Geode.hpp>
 #include <cmath>
 #include <cstddef>
+#include "macro.h"
 using namespace geode::prelude;
 #undef interface // whoever does this should till yhemselves
 float randomFloat();
@@ -18,33 +19,7 @@ CCPoint convertToNodeSpaceA(CCNode* node, CCPoint point);
 // this mf uses ypos the other way
 CCRect flipRect(CCRect rect);
 
-#define breakpoint()
-
-#ifdef __GNUC__
-  #define noinline __attribute__((noinline))
-#else 
-  #define noinline __declspec(noinline) 
-#endif
-
-#ifdef GEODE_IS_WINDOWS
-  #define breakpoint() if (IsDebuggerPresent()) DebugBreak()
-#endif
-
-#define $create_class(classname, initfunc, ...) \
-  classname* ret = new classname();      \
-  if (ret && ret->initfunc(__VA_ARGS__)) {   \
-    ret->autorelease();            \
-  } else {                   \
-    CC_SAFE_RELEASE_NULL(ret);         \
-  };                     \
-  return ret
-
-#define $default_create(classname) \
-  static noinline classname* create() {  \
-  $create_class(classname, init);\
-  }
-
-#define degreeToRadius(deg) (deg) / 360 * M_PI
+#define degreeToRadius(deg) (deg) / 180 * M_PI
 
 
 // use wisely

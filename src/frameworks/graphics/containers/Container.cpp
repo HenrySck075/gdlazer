@@ -1,13 +1,12 @@
 #include "Container.hpp"
 
-#include "../../input/events/MouseEvent.hpp"
-#include "../../input/events/MouseDragEvent.hpp"
-#include "../../utils/h2dContainer.hpp"
 #include "../../../utils.hpp"
-#include <list>
+#undef rad1
+#undef min
+#undef max
+#include "../../utils/h2dFormatter.hpp"
 
 GDF_NS_START
-
 void Container::setMinSize(const cocos2d::CCSize &size) {
   assert(m_maxSize.width > 0 || size.width >= m_maxSize.width);
   assert(m_maxSize.height > 0 || size.height >= m_maxSize.height);
@@ -56,9 +55,6 @@ bool Container::init() {
   if (!CCClippingNode::init())
     return false;
 
-  m_borderNode = cocos2d::CCDrawNode::create();
-  this->addChild(m_borderNode, -999);
-
   m_backgroundNode = cocos2d::CCDrawNode::create();
   this->addChild(m_backgroundNode, -998);
   
@@ -67,10 +63,12 @@ bool Container::init() {
   // main handler that processes MouseDown & MouseUp event to others when applicable
   this->addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
     auto currentPos = convertToNodeSpaceA(this, mouseEvent->m_position);
-    updateContainerBox();
-    bool isInBounds = m_containerBox!=nullptr && m_containerBox->isSomethingInside(h2d::Point2dF{
+    // request a box update (if needed)
+    if (m_containerBoxDesynced) updateContainerBox();
+    else if (m_containerBoxShapeDesynced) transformContainerBox();
+    bool isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
       currentPos.x, currentPos.y
-    });
+    ).isInside(*((h2d::CPolylineF*)m_containerBox));
     //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
     if (!isInBounds) {
       //mouseEvent->stopPropagation();
@@ -102,7 +100,7 @@ bool Container::init() {
             m_lastDragOffset
           ));
           mouseEvent->stopPropagation();
-        } else if (mouseEvent->m_clicked) {
+        } else if (mouseEvent->m_clicked && isInBounds) {
           m_isDragging = true;
           dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
           mouseEvent->stopPropagation();
@@ -150,7 +148,6 @@ fish:
 }
 
 void Container::drawBorder() {
-  m_borderNode->clear();
   m_backgroundNode->clear();
   auto stencil = geode::cast::typeinfo_cast<CCDrawNode*>(getStencil());
   stencil->clear();
@@ -163,35 +160,29 @@ void Container::drawBorder() {
     stencil = cocos2d::CCDrawNode::create();
     setStencil(stencil);
   }
-  if (radius > 0) {
-    const int segments = 20;
-    cocos2d::CCPoint* vertices = new cocos2d::CCPoint[segments + 2];
-    const float angle = 2.0f * M_PI / segments;
-    
+  if (radius > 0 && size != CCSizeZero) {
+    /*
+    if (t_vc >= c_verticesPointsSize) {
+      t_vc = 3;
+      t_fc = 0;
+    }
+    cocos2d::CCPoint* vertices = new cocos2d::CCPoint[t_vc];
+    */
+    cocos2d::CCPoint vertices[c_verticesPointsSize];
+    if (m_containerBoxShapeDesynced || m_containerBoxDesynced) calculatePolygonVertPoints();
     // Draw corners
-    for (int i = 0; i <= segments; i++) {
-      float x = radius * cosf(i * angle);
-      float y = radius * sinf(i * angle);
-      
-      if (i <= segments/4) {
-        vertices[i] = ccp(size.width - radius + x, size.height - radius + y);
-      } else if (i <= segments/2) {
-        vertices[i] = ccp(radius + x, size.height - radius + y);
-      } else if (i <= 3*segments/4) {
-        vertices[i] = ccp(radius + x, radius + y);
-      } else {
-        vertices[i] = ccp(size.width - radius + x, radius + y);
-      }
+    for (int i = 0; i < /*t_vc*/c_verticesPointsSize; i++) {            
+      vertices[i] = cocos2d::CCPoint{m_verticesPoints[i][0], m_verticesPoints[i][1]};
     }
     
-    m_borderNode->drawPolygon(vertices, segments + 1, {0,0,0,0}, 1, {1,1,1,1});
-    if (stencil) stencil->drawPolygon(vertices, segments + 1, {1,1,1,1}, 0, {0,0,0,0});
+    if (stencil) stencil->drawPolygon(vertices, c_verticesPointsSize, {1,1,1,1}, 0, {0,0,0,0});
     
     // Draw background
     ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
-    m_backgroundNode->drawPolygon(vertices, segments + 1, bgColor, 0, {0,0,0,0});
-    
-    delete[] vertices;
+    //m_backgroundNode->drawPolygon(vertices, c_verticesPointsSize, bgColor, 0, {0,0,0,0});
+    m_backgroundNode->drawRect({0,0}, size, bgColor, 0, bgColor);
+
+    //delete[] vertices;
   } else {
     cocos2d::CCPoint amougis[4] {
       {0,0},
@@ -207,6 +198,8 @@ void Container::drawBorder() {
 }
 
 void Container::visit() {
+  //t_vc++;
+  //if (t_vc%24 == 0) t_fc++;
   if (m_clippingEnabled) {
     cocos2d::CCClippingNode::visit();
     drawBorder();
@@ -217,21 +210,43 @@ void Container::visit() {
 
 void Container::setBorderRadius(float radius) {
   m_borderRadius = radius;
-  m_containerBoxDesynced = true;
+  m_containerBoxShapeDesynced = true;
 }
 
 void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundColor = color;
 }
-void Container::setSize(const cocos2d::CCSize &size, Unit unit) {
+void Container::setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit) {
   m_size = size;
-  m_lastSizeUnit = unit;
+  m_sizeUnit[0] = hUnit;
+  m_sizeUnit[1] = vUnit;
   updateSizeWithUnit();
 }
-void Container::setPosition(cocos2d::CCPoint position, Unit unit) {
-  m_positionA = position;
-  m_lastPositionUnit = unit;
+void Container::setContentSize(const cocos2d::CCSize &size, Unit unit) {
+  setContentSize(size, unit, unit);
+}
+void Container::setContentSize(const cocos2d::CCSize &size) {
+  /// technically this wont happen but idk why tf it did on ScrollContainer
+  if (m_vfuncCallLoopBlock) {
+    cocos2d::CCNode::setContentSize(size);
+    m_containerBoxShapeDesynced = true;
+    return;
+  }
+  m_vfuncCallLoopBlock = true;
+  setContentSize(size, Unit::OpenGL, Unit::OpenGL);
+  m_vfuncCallLoopBlock = false;
+};
+void Container::setPosition(cocos2d::CCPoint const& position, Unit hUnit, Unit vUnit) {
+  m_position = position;
+  m_positionUnit[0] = hUnit;
+  m_positionUnit[1] = vUnit;
   updatePositionWithUnit();
+}
+void Container::setPosition(cocos2d::CCPoint const& position, Unit unit) {
+  setPosition(position, unit, unit);
+}
+void Container::setPosition(cocos2d::CCPoint const& position) {
+  setPosition(position, Unit::OpenGL, Unit::OpenGL);
 }
 void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
@@ -254,18 +269,18 @@ void Container::updateSizeWithUnit() {
   $applyConstraint(height);
   #undef $applyConstraint
 
-  setContentSize(cocos2d::CCSize(
-    processUnit(width, m_lastSizeUnit, true),
-    processUnit(height, m_lastSizeUnit, false)
+  cocos2d::CCNode::setContentSize(cocos2d::CCSize(
+    processUnit(width, m_sizeUnit[0], true),
+    processUnit(height, m_sizeUnit[1], false)
   ));
   dispatchEvent(new NodeLayoutUpdated(this));
   m_containerBoxDesynced = true;
 }
 
 void Container::updatePositionWithUnit() {
-  CCNode::setPosition(
-    processUnit(m_positionA.x, m_lastPositionUnit, true),
-    processUnit(m_positionA.y, m_lastPositionUnit, false)
+  cocos2d::CCNode::setPosition(
+    processUnit(m_position.x, m_positionUnit[0], true),
+    processUnit(m_position.y, m_positionUnit[1], false)
   );
 }
 
@@ -327,14 +342,81 @@ h2d::Point2d_<T> operator+(h2d::Point2d_<T> lhs, h2d::Point2d_<T> rhs) {
     lhs.getY()+rhs.getY()
   };
 }
-GDF_NS_END
-#include "../../utils/h2dFormatter.hpp"
-GDF_NS_START
-void Container::updateContainerBox() {
+
+void Container::calculatePolygonVertPoints() {
+  const float angleInc = M_PI / (2.0f * c_segments);
+  float width = getContentWidth();
+  float height = getContentHeight();
+  float cornerCenters[4][2] {
+    {m_borderRadius, m_borderRadius},
+    {width - m_borderRadius, m_borderRadius},
+    {width - m_borderRadius, height - m_borderRadius},
+    {m_borderRadius, height - m_borderRadius},
+  };
+  float cornerFourthDivNumber[4] {
+    1,
+    3.f/2,
+    0,
+    1.f/2
+  };
+  for (int cornerId = 0; cornerId < 4; cornerId++) {
+    for (int i = 0; i <= c_segments; i++) {
+      const float curAngle = cornerFourthDivNumber[cornerId]*M_PI + i*angleInc;
+      float x_off = m_borderRadius * cosf(curAngle);
+      float y_off = m_borderRadius * sinf(curAngle);
+
+      m_verticesPoints[i+cornerId*c_segments+cornerId][0] =
+        cornerCenters[cornerId][0] + x_off;
+      m_verticesPoints[i+cornerId*c_segments+cornerId][1] =
+        cornerCenters[cornerId][1] + y_off;
+    }
+  }
+}
+
+/*
+template<typename T>
+/// Skews the polygon inplace.
+/// @param hf horizontal shear factor for each point (how much x changes relative to ydist from origin)
+/// @param vf vertical shear factor for each point (how much y changes relative to xdist from origin)
+void skewPolygon(h2d::CPolyline_<T> polygon, h2d::Point2d_<T> origin, float hf, float vf) {
+  std::vector<h2d::Point2d_<T>> points;
+  std::vector<h2d::Point2d_<T>> originalPoints = polygon.getPts();
+  points.reserve(originalPoints.size());
+
+  for (auto p : originalPoints) {
+    // do the math
+    T tx = p.getX() - origin.getX();
+    T ty = p.getY() - origin.getY();
+
+    T sx = tx + hf*ty;
+    T sy = ty + vf*tx;
+
+    points.emplace_back(sx + origin.getX(), sy + origin.getY());
+  }
+
+  polygon.set(points);
+}
+*/
+void Container::transformContainerBox() {
   if (!m_containerBoxDesynced) return;
   m_containerBoxDesynced = false;
-  if (m_containerBox) delete m_containerBox;
-  m_containerBox = nullptr;
+
+  // homographies transformation
+  h2d::HomogrF h;
+  h.addRotation(getRotation()*M_PI/180)
+  .addScale(getScaleX(), getScaleY());
+  // skewing
+  h.set(0, 1, getSkewX());
+  h.set(1, 0, getSkewY());
+
+  auto& points = (h * *((h2d::CPolylineF*)m_containerBoxO)).getPts();
+  if (!m_containerBox) m_containerBox = new h2d::CPolylineF(points);
+  else ((h2d::CPolylineF*)m_containerBox)->set(points);
+}
+void Container::updateContainerBox() {
+  if (!m_containerBoxShapeDesynced) return;
+  m_containerBoxShapeDesynced = false;
+  m_containerBoxDesynced = true;
   if (
     getContentSize() == cocos2d::CCSize{0,0} ||
     // doubt it is this
@@ -356,40 +438,48 @@ void Container::updateContainerBox() {
 
   //geode::log::debug("inner rect of {}: {}", this, innerRect);
 
-  h2d::CPolylineF p(innerRect);
+  auto p = h2d::CPolylineF(innerRect).getPts();
   if (m_borderRadius > 0) {
-    p.clear();
-{
     auto size = getContentSize();
     auto radius = m_borderRadius;
-    const int segments = 20;
-    std::vector<h2d::Point2dF> vertices;
-    vertices.reserve(segments);
-    const float angle = 2.0f * M_PI / segments;
-    
-    // Draw corners
-    for (int i = 0; i <= segments; i++) {
-      float x = radius * cosf(i * angle);
-      float y = radius * sinf(i * angle);
-      
-      if (i <= segments/4) {
-        vertices.push_back(h2d::Point2dF(size.width - radius + x, size.height - radius + y));
-      } else if (i <= segments/2) {
-        vertices.push_back(h2d::Point2dF(radius + x, size.height - radius + y));
-      } else if (i <= 3*segments/4) {
-        vertices.push_back(h2d::Point2dF(radius + x, radius + y));
-      } else {
-        vertices.push_back(h2d::Point2dF(size.width - radius + x, radius + y));
-      }
-    }
-    p.set(vertices);
-     
-  }
-  }
+    std::array<h2d::Point2dF, c_verticesPointsSize> vertices;
 
-  m_containerBox = new h2dShapeContainer<float>{{
-    p
-  }};
+    for (int i = 0; i < c_verticesPointsSize; i++) {
+      vertices[i] = {m_verticesPoints[i][0], m_verticesPoints[i][1]};
+    }
+
+    p.clear();
+    p.insert(p.begin(), vertices.begin(), vertices.end());
+  }
+  if (!m_containerBoxO) m_containerBoxO = new h2d::CPolylineF(p);
+  else ((h2d::CPolylineF*)m_containerBoxO)->set(p);
+
+  transformContainerBox();
   //log::debug("{}", p.getPts());
 };
+void Container::setScale(float scale) {
+  CCNode::setScale(scale);
+  m_containerBoxDesynced = true;
+}
+void Container::setScaleX(float scaleX) {
+  CCNode::setScaleX(scaleX);
+  m_containerBoxDesynced = true;
+}
+void Container::setScaleY(float scaleY) {
+  CCNode::setScaleY(scaleY);
+  m_containerBoxDesynced = true;
+}
+void Container::setSkewX(float skewX) {
+  CCNode::setSkewX(skewX);
+  m_containerBoxDesynced = true;
+};
+void Container::setSkewY(float skewY) {
+  CCNode::setSkewY(skewY);
+  m_containerBoxDesynced = true;
+};
+void Container::setRotation(float rotation) {
+  CCNode::setRotation(rotation);
+  m_containerBoxDesynced = true;
+}
+
 GDF_NS_END

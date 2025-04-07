@@ -1,82 +1,86 @@
 #include "Game.hpp"
 #include "Geode/cocos/robtop/keyboard_dispatcher/CCKeyboardDelegate.h"
-#include "Geode/loader/Loader.hpp"
-#include "graphics/containers/FillFlowContainer.hpp"
-#include "graphics/containers/ScrollableContainer.hpp"
-#include "graphics/animations/ContainerAnimations.hpp"
 #include "input/events/KeyEvent.hpp"
-#include "input/events/MouseEvent.hpp"
 #include <mutex>
+#include "graphics/containers/Container.hpp"
 
 GDF_NS_START
+
 static geode::Ref<Game> s_instance;
 
 bool Game::init() {
-    if (!CCScene::init()) return false;
+  if (!CCScene::init()) return false;
 
-    /*TEST CODE ~ Remove after finished*/
-    addListener<KeyEvent>([](KeyEvent* e){
-      if (e->m_key == cocos2d::KEY_Escape && e->m_pressed) {
-        cocos2d::CCDirector::get()->popScene();
-      }
-      return true;
-    });
+  scheduleUpdate();
 
-    auto flowContainer = FillFlowContainer::create(FillDirection::Horizontal);
-    for (int i = 0; i < 5; i++) {
-      auto us = Container::create();
-      us->setSize({120,50});
-      us->setBorderRadius(10);
-      us->setBackgroundColor({255,255,255,255});
-      flowContainer->addChild(us);
-      us->addListener<MouseEvent>([us](MouseEvent* e){
-        if (e->m_eventType == MouseEventType::MouseUp)
-          us->runAction(cocos2d::CCSequence::createWithTwoActions(
-            animations::TintTo::create(0, {255, 0, 0, 255}),
-            animations::TintTo::create(0.5, {255, 255, 255, 255})
-          ));
-        else if (e->m_eventType == MouseEventType::Enter) {
-          us->runAction(cocos2d::CCSequence::createWithTwoActions(
-            animations::TintTo::create(0, {0, 255, 0, 255}),
-            animations::TintTo::create(0.5, {255, 255, 255, 255})
-          ));
-        }
-        return true;
-      });
+  /*TEST CODE ~ Remove after finished*/
+  addListener<KeyEvent>([](KeyEvent* e){
+    if (e->m_key == cocos2d::KEY_Escape && e->m_pressed) {
+      cocos2d::CCDirector::get()->popScene();
     }
-    
-    auto scroll = ScrollableContainer::create();
-    scroll->addChild(flowContainer);
-    scroll->setScrollDirection(ScrollableContainer::ScrollDirection::Horizontal);
-    this->addChild(scroll);
-    geode::queueInMainThread([flowContainer, scroll]{
-      flowContainer->updateLayout();
-      scroll->setContentSize({1920, flowContainer->getContentHeight()});
-    });
-    
-		auto menu = cocos2d::CCMenu::create();
-    auto returnButton = CCMenuItemSpriteExtra::create(
-			cocos2d::CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			menu_selector(Game::yeah)
-		);
-		menu->addChild(returnButton);
-
-    auto devtoolsButton = CCMenuItemSpriteExtra::create(
-			cocos2d::CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			menu_selector(Game::weh)
-		);
-		menu->addChild(devtoolsButton);
-    devtoolsButton->setPosition({200,0});
-
-    this->addChild(menu);
-
     return true;
+  });
+
+  m_screensContainer = Container::create();
+  m_screensContainer->setContentSize({100,100}, Unit::Percent);
+
+  this->addChild(m_screensContainer);
+
+  return true;
 };
 
+void Game::update(float dt) {
+  CCNode::update(dt);
+  for (auto screen : m_invisibleQueue) {
+    if (screen->numberOfRunningActions() == 0) {
+      screen->setVisible(false);
+      m_invisibleQueue.inner()->removeObject(screen);
+    }
+  }
+  for (auto screen : m_removalQueue) {
+    if (screen->numberOfRunningActions() == 0) {
+      screen->removeFromParentAndCleanup(true);
+      m_removalQueue.inner()->removeObject(screen);
+    }
+  }
+}
+
+void Game::pushScreen(Screen* screen) {
+  m_screensContainer->addChild(screen);
+  screen->setContentSize({100,100}, Unit::Percent);
+  ScreenTransitionEvent e{m_currentScreen, screen};
+  screen->onScreenEnter(e);
+  if (m_currentScreen) {
+    m_currentScreen->onScreenExit(e);
+    m_invisibleQueue.push_back(m_currentScreen);
+  }
+  m_screenStack.push_back(screen);
+  m_currentScreen = screen;
+}
+
+Screen* Game::popScreen() {
+  if (m_screenStack.size() == 0) return nullptr;
+  auto screen = m_screenStack.pop_back();
+  ScreenTransitionEvent e{m_currentScreen, screen};
+  if (screen) screen->onScreenEnter(e);
+  if (m_currentScreen) {
+    m_currentScreen->onScreenExit(e);
+    m_removalQueue.push_back(m_currentScreen);
+  }
+  if (m_screenStack.size() > 0) {
+    m_currentScreen = static_cast<Screen*>(m_screenStack.inner()->lastObject());
+  } else {
+    m_currentScreen = nullptr;
+  }
+  return screen;
+}
+
 std::mutex g_fish;
-Game* Game::get(bool create) {
+void setInstance(geode::Ref<Game> instance) {
+  s_instance = instance;
+};
+
+geode::Ref<Game> Game::get(bool create) {
   if (!s_instance && create) {
     g_fish.lock();
     s_instance = new Game();
@@ -86,8 +90,7 @@ Game* Game::get(bool create) {
   }
   return s_instance;
 };
-bool Game::doDispatchEvent(Event *event,
-                           std::type_index type) {
+bool Game::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
@@ -98,19 +101,8 @@ bool Game::doDispatchEvent(Event *event,
   if (event->m_propagateStopped) {
     return true;
   }
-  auto children = getChildren();
-  if (children) {
-    for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
-      auto eventTarget = geode::cast::typeinfo_cast<Container *>(child);
-      if (eventTarget == nullptr)
-        continue;
-      if (!eventTarget->doDispatchEvent(event, type)) {
-        return false;
-      }
-    }
-  }
-  // idk i think this would keep the object around
-  auto idk = eventRefHolder.data();
+  if (m_currentOverlay) m_currentOverlay->doDispatchEvent(event, type);
+  else m_currentScreen->doDispatchEvent(event, type);
   return true;
 };
 GDF_NS_END 

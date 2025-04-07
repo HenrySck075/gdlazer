@@ -6,8 +6,8 @@
     "mac": "2.2074",
     "ios": "2.2074"
   },
-  "id": "ayupyon.osulazer",
-  "name": "gd!lazer (nightly)",
+  "id": "henrysck075.gdlazer",
+  "name": "gd!lazer",
   "version": "v0.0.7",
   "developer": "Ayumu Uehara",
   "description": "jumping is just a *click* away!",
@@ -33,15 +33,15 @@
       "default": true
     },
     "uiscale": {
-      "type": "int",
+      "type": "float",
       "name": "UI Scale",
       "default": 1,
-      "min": 1,
-      "max": 20,
+      "min": 0.1,
+      "max": 2,
       "control": {
         "slider": true
       },
-      "description": "It's gonna be int for the time being because the compiler is ass"
+      "description": "self-explanatory except it doesnt work because its not implemented"
     }
   },
   "resources": {

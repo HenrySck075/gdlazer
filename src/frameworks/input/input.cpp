@@ -1,5 +1,6 @@
 #include <Geode/Geode.hpp>
 
+#include "Geode/cocos/platform/win32/CCEGLView.h"
 #include "events/KeyEvent.hpp"
 #include "events/MouseEvent.hpp"
 #include "../Game.hpp"
@@ -42,6 +43,16 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 		));
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
+
+  // == window size ==
+  void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height) {
+    CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
+    auto g = Game::get(false);
+    if (g!=nullptr && cocos2d::CCScene::get() == g) {
+      g->setContentSize(cocos2d::CCDirector::get()->getWinSize());
+      g->dispatchEvent(new NodeLayoutUpdated(nullptr));
+    }
+  }
 };
 
 #include <Geode/modify/CCMouseDispatcher.hpp>
