@@ -76,6 +76,7 @@ bool Container::init() {
     }
     switch (mouseEvent->m_eventType) {
       case MouseEventType::MouseUp:
+        if (m_touchEnabled) return false;
         if (m_isDragging) {
           m_isDragging = false;
           dispatchEvent(new MouseDragEvent(
@@ -87,6 +88,7 @@ bool Container::init() {
         }
         break;
       case MouseEventType::MouseDown:
+        if (m_touchEnabled) return false;
         m_lastMousePos = currentPos;
         m_dragStartPos = currentPos;  // Store initial position for drag
         if (!isInBounds) goto fish;

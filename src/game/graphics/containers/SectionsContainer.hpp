@@ -1,20 +1,22 @@
 #pragma once
 
 #include "../../../frameworks/graphics/containers/Container.hpp"
-#include "../../../frameworks/graphics/containers/ScrollableContainer.hpp"
+#include "../../../frameworks/graphics/containers/ScrollContainer.hpp"
 #include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../../utils.hpp"
-#include "../../../frameworks/utils/Reactive.hpp"
+#include "../../../frameworks/bindables/Bindable.hpp"
 
-class SectionsContainer : public ScrollableContainer {
+GDF_NS_START
+class SectionsContainer : public ScrollContainer {
 private:
   FillFlowContainer* contentsContainer;
 protected:
-  Reactive<Container*> currentSection;
+  Bindable<Container*> currentSection;
 public:
   bool init();
   $default_create(SectionsContainer);
 
   void addChild(CCNode* node);
-  virtual void onSectionSelect(Container* old, Container* new_);
+  virtual void onSectionSelect(Container* new_);
 };
+GDF_NS_END

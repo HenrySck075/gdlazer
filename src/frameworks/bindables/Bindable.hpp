@@ -14,7 +14,7 @@ concept LegallyBindable =
 template<class FT1, class FT2>
 bool operator==(std::function<FT1> const& oat, std::function<FT2> const& meal) {
   if (oat.target_type() != meal.target_type()) return false;
-  return oat.target<FT1>() == meal.target<FT1>();
+  return oat.template target<FT1>() == meal.template target<FT1>();
 }
 
 template<LegallyBindable T>
@@ -23,6 +23,7 @@ private:
   T m_value;
   std::vector<std::function<void(T)>> m_listeners;
 public:
+  Bindable() : m_value(T()) {}
   Bindable(T value) : m_value(value) {};
 
   operator T () {return m_value;}

@@ -15,9 +15,9 @@ enum class ScrollDirection {
 
 class ScrollContainer : public Container {
 public:
-  static ScrollContainer* create() {
+  static ScrollContainer* create(Container* content) {
     auto ret = new ScrollContainer();
-    if (ret && ret->init()) {
+    if (ret && ret->init(content)) {
       ret->autorelease();
       return ret;
     }
@@ -25,14 +25,20 @@ public:
     return nullptr;
   }
 
-  bool init() override;
-  void setScrollChild(cocos2d::CCNode* child);
+  bool init(Container* content);
+  void setContent(cocos2d::CCNode* child);
   void addChild(cocos2d::CCNode* child) override;
   void addChild(cocos2d::CCNode* child, int zOrder) override;
   void addChild(cocos2d::CCNode* child, int zOrder, int tag) override;
 
   void resizeToChildSize();
 
+  /// Scrolls by a specified distance.
+  ///
+  /// An axis will be ignored if it is locked from scrolling.
+  void scrollBy(cocos2d::CCPoint const& dist, bool animate = false);
+
+  void scrollTo(cocos2d::CCPoint const& position, bool animate = false);
 
   void setScrollVelocity(float velocity) { m_scrollVelocity = velocity; }
   float getScrollVelocity() const { return m_scrollVelocity; }
@@ -54,7 +60,7 @@ public:
     
 protected:
   void updateSizeWithUnit() override;
-  void updateChildPosition();
+  void updatePosition();
   void applyInertia(float dt);
 
 private:

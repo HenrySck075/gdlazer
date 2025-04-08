@@ -3,12 +3,14 @@
 #include "../../input/events/MouseEvent.hpp"
 GDF_NS_START
 
-bool ScrollContainer::init() {
+bool ScrollContainer::init(Container* content) {
   if (!Container::init()) return false;
   
   // TODO: rectangle clip doesnt work
   setClippingEnabled(false);
   setTouchEnabled(true);
+
+  m_content = content;
 
   this->addListener<MouseScrollEvent>([this](MouseScrollEvent* event){
     if ((m_scrollDirection == ScrollDirection::Vertical || 
@@ -35,7 +37,7 @@ bool ScrollContainer::init() {
           m_scrollDirection == ScrollDirection::Both)) {
           m_scrollPosition.x += event->getDelta().x * m_scrollVelocity;
       }
-      updateChildPosition();
+      updatePosition();
       break;
     }
     case MouseDragEventType::Move: {
@@ -50,7 +52,7 @@ bool ScrollContainer::init() {
           m_scrollDirection == ScrollDirection::Both)
           m_scrollPosition.x += delta.x;
           
-      updateChildPosition();
+      updatePosition();
       break;
     }
     case MouseDragEventType::Stop: {
@@ -87,17 +89,17 @@ void ScrollContainer::addChild(cocos2d::CCNode* child, int zOrder, int tag) {
     "As I only support 1 child in my entire lifetime (excluding the background and scrollbar), "
     "please use `ScrollContainer::setScrollChild` to not make confusions for anyone reading the code."
   );
-  setScrollChild(child);
+  setContent(child);
 }
 
-void ScrollContainer::setScrollChild(cocos2d::CCNode* child) {
+void ScrollContainer::setContent(cocos2d::CCNode* child) {
   m_vfuncCallLoopBlock = true;
   if (m_content != nullptr) {
     removeChild(m_content);
   }
   m_content = child;
   cocos2d::CCNode::addChild(child); // still calls the override but to make it less confusing
-  updateChildPosition();
+  updatePosition();
   m_vfuncCallLoopBlock = false;
 }
 
@@ -110,11 +112,11 @@ void ScrollContainer::resizeToChildSize() {
 void ScrollContainer::updateSizeWithUnit() {
   Container::updateSizeWithUnit();
   if (m_content) {
-    updateChildPosition();
+    updatePosition();
   }
 }
 
-void ScrollContainer::updateChildPosition() {
+void ScrollContainer::updatePosition() {
   if (!m_content) return;
   
   auto containerSize = getContentSize();
@@ -169,11 +171,7 @@ void ScrollContainer::applyInertia(float dt) {
           dist.y = -(contentPos.y + contentSize.height - thisContentSize.height);
         }
 
-        m_scrollVelocityVec = cocos2d::CCPoint{
-          guessVelocityFromDistance(dist.x),
-          guessVelocityFromDistance(dist.y)
-        };
-
+        scrollBy(dist, true);
         m_returningInBounds = true;
       }
       else {
@@ -181,10 +179,32 @@ void ScrollContainer::applyInertia(float dt) {
       }
     }
     
-    updateChildPosition();
+    updatePosition();
   }
 }
 
+void ScrollContainer::scrollBy(cocos2d::CCPoint const& dist, bool animate) {
+  if (animate) {
+    m_scrollVelocityVec = cocos2d::CCPoint{
+      guessVelocityFromDistance(dist.x),
+      guessVelocityFromDistance(dist.y)
+    };
+  } else {
+    m_scrollPosition += dist;
+    updatePosition();
+  }
+};
+void ScrollContainer::scrollTo(cocos2d::CCPoint const& pos, bool animate) {
+  if (animate) {
+    m_scrollVelocityVec = cocos2d::CCPoint{
+      guessVelocityFromDistance(pos.x - m_scrollPosition.x),
+      guessVelocityFromDistance(pos.y - m_scrollPosition.y)
+    };
+  } else {
+    m_scrollPosition = pos;
+    updatePosition();
+  }
+};
 //////////////////////////////////////////////////
 /// ScrollbarContainer
 //////////////////////////////////////////////////

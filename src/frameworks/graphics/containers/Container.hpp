@@ -5,7 +5,6 @@
 #include <typeindex>
 #include "../../bindables/EventTarget.hpp"
 #include "../../bindables/Event.hpp"
-#include <generator> // effectively locks the mod to c++23
 #include "../../../macro.h"
 
 /// Included for free
