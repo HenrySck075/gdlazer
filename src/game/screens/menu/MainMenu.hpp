@@ -13,7 +13,8 @@ class OsuGame;
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer;
 
-class MainMenu final : public Screen {
+GDL_NS_START
+class MainMenu final : public frameworks::Screen {
   ButtonSystem* buttonSys;
   Background* bg;
   ParallaxContainer* buttonSysParallax;
@@ -33,22 +34,7 @@ public:
   // open the menu
   void onLogoClickIdle();
 private:
-  void debugReturn(CCObject *t);
-  void onExiting(ScreenTransitionEvent e) override {
-    // setVisible(false);
-    if (e.Destination == nullptr) removeFromParent();
-    else {
-      setCascadeOpacityEnabled(true);
-      bg->runAction(CCFadeOut::create(2));
-      runAction(CCSequence::createWithTwoActions(
-        CCDelayTime::create(2),
-        CCFadeOut::create(1)
-      ));
-      buttonSys->area->hide(
-        buttonSys->area->getCurrent().value(), true, true
-      );
-    }
-  }
+  void onScreenExit(frameworks::ScreenTransitionEvent e) override;
   //BeatDetector* detector;
 
   CCLayer* songSelect;
@@ -59,3 +45,4 @@ protected:
   int idkTho = 0;
   //ButtonSystem buttons;
 };
+GDL_NS_END

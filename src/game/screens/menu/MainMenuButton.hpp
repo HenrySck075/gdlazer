@@ -11,31 +11,15 @@
 
 using namespace geode::prelude;
 
+GDL_NS_START
 /// <summary>
 /// Button designed specifically for the osu!lazer main menu.
 /// </summary>
-class MainMenuButton : public ClickableContainer {
-  Color4 m_color = Color4(0,0,0,0);
-  float const BOUNCE_COMPRESSION = 0.9f;
-  float const HOVER_SCALE = 1.2f;
-  float const BOUNCE_ROTATION = 8;
-  bool m_askForUpdate = false;
-
-  CCScale9Sprite* background;
-  CCScale9Sprite* hover;
-/*
-  public readonly Key[] TriggerKeys;
-
-  protected override Container<Drawable> Content => content;
-  private readonly Container content;
-  */
-
-  const char* label;
-
+class MainMenuButton : public frameworks::ClickableContainer {
+public:
   /// <summary>
   /// The menu state for which we are visible for (assuming only one).
   /// </summary>
-public:
   /*
   ButtonSystemState VisibleState
   {
@@ -55,24 +39,6 @@ public:
   */
    void askForUpdate(bool e) {m_askForUpdate = e;}
 
-protected:
-  CCSize BaseSize = CCSize(0,0);//CCSize(ButtonSystem.BUTTON_WIDTH, ButtonArea.BUTTON_AREA_HEIGHT);
-
-
-private:
-  void onMouseEnter() override;
-  void onMouseExit() override;
-  void onMouseDown(MouseEvent* event) override;
-  void onMouseUp(MouseEvent* event) override;
-  void onClick(MouseEvent* e) override;
-
-  CCSize initialSize = CCSize(0,0);//baseSize + content->getContentSize();
-
-  const char* sampleHover = "button-hover.wav"_spr;
-  // list of key that causes the click event
-  std::vector<enumKeyCodes> activationKeys = {};
-
-public:
   static MainMenuButton* create(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
     $create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
   };
@@ -83,4 +49,31 @@ public:
     Container::setOpacity(opacity);
     hover->setOpacity(old);
   }
+  
+protected:
+  CCSize BaseSize = CCSize(0,0);//CCSize(ButtonSystem.BUTTON_WIDTH, ButtonArea.BUTTON_AREA_HEIGHT);
+
+private:
+  Color4 m_color = Color4(0,0,0,0);
+  float const BOUNCE_COMPRESSION = 0.9f;
+  float const HOVER_SCALE = 1.2f;
+  float const BOUNCE_ROTATION = 8;
+  bool m_askForUpdate = false;
+
+  CCScale9Sprite* background;
+  CCScale9Sprite* hover;
+  /*
+  public readonly Key[] TriggerKeys;
+
+  protected override Container<Drawable> Content => content;
+  private readonly Container content;
+  */
+
+  const char* label;
+  CCSize initialSize = CCSize(0,0);//baseSize + content->getContentSize();
+
+  const char* sampleHover = "button-hover.wav"_spr;
+  // list of key that causes the click event
+  std::vector<enumKeyCodes> activationKeys = {};
 };
+GDL_NS_END

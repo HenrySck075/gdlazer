@@ -1,9 +1,9 @@
 #pragma once
 #include "../../macro.h"
 namespace easings {
-  float sineIn(float x);
-  float sineOut(float x);
-  float sineInOut(float x);
+  float inSine(float x);
+  float outSine(float x);
+  float inOutSine(float x);
 
   float inRate(float x, int rate);
   float outRate(float x, int rate);

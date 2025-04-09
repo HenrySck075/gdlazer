@@ -3,7 +3,7 @@
 #include "../../frameworks/screens/Screen.hpp"
 
 GDL_NS_START
-class PlaygroundScreen : public GDF_NS::Screen {
+class PlaygroundScreen : public frameworks::Screen {
 public:
   static PlaygroundScreen* create() {
     auto ret = new PlaygroundScreen();

@@ -3,15 +3,16 @@
 #include "ButtonConstants.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 
-static CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
+static const CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
 
+GDL_NS_START
 MainMenu* MainMenu::create() {
   $create_class(MainMenu, init);
 }
 
 bool MainMenu::init() {
   Screen::init();
-  m_title = "Welcome to Geometry Dash!";
+  setTitle("Welcome to Geometry Dash!");
   auto logo = OsuLogo::create();
 
   auto bgParal = ParallaxContainer::create();
@@ -78,11 +79,18 @@ void MainMenu::onLogoClickIdle() {
   logoMoveAction = CCMoveToModifiable::create(0.5, pos);
   logo->runAction(logoMoveAction);
 }
-void MainMenu::debugReturn(CCObject *t) { 
-  if (GameManager::sharedState()->m_menuLayer==nullptr) {
-    log::debug("l");
-    return;
-  }
-  OsuGame::get()->addChild(GameManager::sharedState()->m_menuLayer);
-}
 
+void gdlazer::game::MainMenu::onScreenExit(
+    frameworks::ScreenTransitionEvent e) {
+  // setVisible(false);
+  if (e.next == nullptr)
+    removeFromParent();
+  else {
+    setCascadeOpacityEnabled(true);
+    bg->runAction(CCFadeOut::create(2));
+    runAction(CCSequence::createWithTwoActions(CCDelayTime::create(2),
+                                               CCFadeOut::create(1)));
+    buttonSys->area->hide(buttonSys->area->getCurrent().value(), true, true);
+  }
+}
+GDL_NS_END

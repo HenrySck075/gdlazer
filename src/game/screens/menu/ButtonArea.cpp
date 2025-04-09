@@ -8,12 +8,14 @@
 #include "../../graphics/OsuColor.hpp"
 #include <henrysck075.easings/include/easings.hpp>
 
+GDL_NS_START
+using namespace frameworks;
 bool ButtonArea::init(const CCPoint& anchorPos) {
   Container::init();
   anchorPosition = anchorPos;
   setAnchorPoint({0.5,0.5});
   setAnchor(Anchor::Center);
-  setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
+  setContentSize({100,100},Unit::Percent);
   colorBg = CCLayerColor::create();
   colorBg->setColor(OsuColor::Gray(50));
   colorBg->ignoreAnchorPointForPosition(false);
@@ -29,7 +31,22 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
 
   return true;
 }
-
+bool ButtonArea::doDispatchEvent(frameworks::Event *e, std::type_index i) {
+  if (i == std::type_index(typeid(KeyEvent)))
+    return Container::dispatchEvent(e);
+  else {
+    auto cur = getCurrent();
+    if (cur.has_value()) {
+      for (auto *child : geode::cocos::CCArrayExt<CCNode *>(
+      getChildByIDRecursive("buttonarea_" + cur.value()) ->getChildren()
+      )) {
+        if (auto container = dynamic_cast<Container *>(child)) {
+      }
+      };
+    }
+    return true;
+  }
+};
 void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
   auto b = CCLayer::create();
   CCPoint gap = {20,0};
@@ -224,3 +241,4 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
     }
   }
 }
+GDL_NS_END

@@ -4,7 +4,7 @@
 #include "../../OsuGame.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
 
-class ParallaxStateUpdated : public GDF_NS::Event {
+class ParallaxStateUpdated : public frameworks::Event {
 public:
   bool m_enabled;
   ParallaxStateUpdated(bool e) : m_enabled(e) {};

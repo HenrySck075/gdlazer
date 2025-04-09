@@ -6,13 +6,13 @@ using namespace geode::prelude;
 #include <cstdio>
 
 struct Color4 {
-  GLubyte r = 255;
-  GLubyte g = 255;
-  GLubyte b = 255;
-  GLubyte a = 255;
+  float r = 0;
+  float g = 0;
+  float b = 0;
+  float a = 0;
 
   Color4 clamp() {
-#define c(v) std::max(std::min((int)v,255),0)
+#define c(v) std::max(std::min(v,1.f),0.f)
     return {c(r),c(g),c(b),c(a)};
 #undef c
   }
@@ -64,11 +64,14 @@ struct Color4 {
       a=255;
     }
 
-    return {r,g,b,a};
+    return {r/255.f,g/255.f,b/255.f,a/255.f};
   }
 
   Color4 operator+(Color4 c) {
     return Color4(r+c.r,g+c.g,b+c.b,a+c.a).clamp();
+  }
+  Color4 operator-(Color4 c) {
+    return Color4(r-c.r,g-c.g,b-c.b,a-c.a).clamp();
   }
 
   Color4 operator/(Color4 e) {
@@ -88,6 +91,9 @@ struct Color4 {
     };
   }
 
+  bool operator==(Color4 c) {
+    return r==c.r && g==c.g && b==c.b && a==c.a;
+  }
 
   // convert to cocos2d color because we're making this for cocos2d ofc
   operator ccColor3B() const {
@@ -100,7 +106,7 @@ struct Color4 {
     return ccc4f(r/255.f,g/255.f,b/255.f,a/255.f);
   }
 
-  Color4(int red, int green, int blue, int alpha) : r(red), g(green), b(blue), a(alpha) {};
+  Color4(float red, float green, float blue, float alpha) : r(red * 255), g(green * 255), b(blue * 255), a(alpha * 255) {};
   Color4(ccColor3B const& c) : r(c.r), g(c.g), b(c.b), a(255) {};
   Color4(ccColor4B const& c) : r(c.r), g(c.g), b(c.b), a(c.a) {};
 
@@ -114,6 +120,21 @@ struct Color4 {
       a+c.a
     ).clamp();
   }
+
+  // uhh
+  Color4 toLinear() {
+    return {toLinearV(r), toLinearV(g), toLinearV(b), a};
+  };
+
+private:
+  static constexpr float gamma = 2.4;
+  static float toLinearV(float color) {
+    if (color == 1)
+        return 1;
+
+    return color <= 0.04045f ? color / 12.92f : powf((color + 0.055f) / 1.055f, gamma);
+  }
+public:
   
   /// <summary>
   /// Gets the system color with (R, G, B, A) = (255, 255, 255, 0).

@@ -10,18 +10,13 @@
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-class OsuLogo : public ClickableContainer {
+GDL_NS_START
+class OsuLogo : public frameworks::ClickableContainer {
 private:
-  AudioManager* audio;
+  frameworks::AudioManager* audio;
   CCSprite* logoSprite;
   //int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
-public:  
-  void onMouseEnter() override {};
-  void onMouseExit() override {};
-  //void onBeat(float delta) override;
-  void onMouseUp(MouseEvent* event) override {};
-  void onMouseDown(MouseEvent* event) override {};
-  void onClick(MouseEvent* e) override {};
+public: 
   void onEnter() override {
     CCNode::onEnter();
     scheduleUpdate();
@@ -43,7 +38,7 @@ public:
   friend class LogoVisualization;
 };
 
-class GEODE_HIDDEN LogoVisualization : public Container {
+class GEODE_HIDDEN LogoVisualization : public frameworks::Container {
   CCDrawNode* drawNode;
   float bars[200] = {0.f};
 public:
@@ -51,3 +46,4 @@ public:
   void update(float delta) override;
   bool init();
 };
+GDL_NS_END

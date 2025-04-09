@@ -102,6 +102,18 @@ public:
   void updateContainerBox();
   void transformContainerBox();
 
+  // Anchor point
+  void setAnchor(geode::Anchor anchor) {
+    m_anchor = anchor;
+    updatePositionWithUnit();
+  }
+
+  cocos2d::CCPoint calculateAnchoredPosition(const cocos2d::CCPoint &position);
+  geode::Anchor getAnchor() const { return m_anchor; }
+
+  private:
+  geode::Anchor m_anchor = geode::Anchor::BottomLeft;
+
 protected:
   void updateClipping();
   void drawBorder();

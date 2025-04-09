@@ -6,10 +6,8 @@
 #include "ButtonArea.hpp"
 using namespace geode::prelude;
 
-class OsuGame;
-#include "../../OsuGame.hpp"
-
-class ButtonSystem final : public Container
+GDL_NS_START
+class ButtonSystem final : public frameworks::Container
 {
 public:
   static float WEDGE_WIDTH;
@@ -44,5 +42,4 @@ private:
   const char* sampleLogoSwoosh = "osu-logo-swoosh.wav"_spr;
 
 };
-
-
+GDL_NS_END

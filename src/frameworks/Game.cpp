@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "Geode/cocos/robtop/keyboard_dispatcher/CCKeyboardDelegate.h"
+#include "audio/AudioManager.hpp"
 #include "input/events/KeyEvent.hpp"
 #include <mutex>
 #include "graphics/containers/Container.hpp"
@@ -43,6 +44,8 @@ void Game::update(float dt) {
       m_removalQueue.inner()->removeObject(screen);
     }
   }
+
+  AudioManager::get()->update(dt);
 }
 
 void Game::pushScreen(Screen* screen) {

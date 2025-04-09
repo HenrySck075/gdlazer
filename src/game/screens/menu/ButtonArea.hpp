@@ -5,11 +5,12 @@
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../frameworks/graphics/containers/Container.hpp"
 #include "MainMenuButton.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../../frameworks/graphics/CCEase2.hpp"
 
 using namespace cocos2d;
 
-class ButtonArea final : public Container {
+GDL_NS_START
+class ButtonArea final : public frameworks::Container {
 private:
   CCDictionaryExt<std::string, Container*> buttonsMenus;
   CCDictionaryExt<std::string, CCArray*> _buttons;
@@ -28,16 +29,7 @@ public:
   }
   bool init(const CCPoint& anchorPos);
 
-  bool dispatchEvent(NodeEvent* e) override {
-    if (e->eventName()!="keyboardEvent") return Container::dispatchEvent(e);
-    else {
-      auto cur = getCurrent();
-      if (cur.has_value()) {
-        dispatchToChildInList(e, getChildByIDRecursive("buttonarea_"+cur.value())->getChildren());
-      }
-      return true;
-    }
-  };
+  bool doDispatchEvent(frameworks::Event *e, std::type_index) override;
 
   /// @brief Creates the buttons layers and optionally place them at a specific index.
   /// The first button will be placed at the left, the rest goes to the right.
@@ -64,3 +56,4 @@ public:
     return std::optional(tagsStack.at(tagsStack.size()-2));
   }
 };
+GDL_NS_END

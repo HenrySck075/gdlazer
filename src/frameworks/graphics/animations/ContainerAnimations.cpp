@@ -33,7 +33,7 @@ namespace animations {
   void TintTo::update(float dt) {
     cocos2d::CCActionInterval::update(dt);
     if (auto c = dynamic_cast<Container*>(m_pTarget)) {
-#define lerpbloat(v) (GLubyte)gdlazer::GDF_NS::utils::Interpolation::lerp(m_startColor.v, m_destColor.v, dt)
+#define lerpbloat(v) (GLubyte)gdlazer::frameworks::Interpolation::lerp(m_startColor.v, m_destColor.v, dt)
       c->setBackgroundColor({
         lerpbloat(r),
         lerpbloat(g),

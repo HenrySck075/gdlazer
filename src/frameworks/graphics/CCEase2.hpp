@@ -32,11 +32,11 @@ public: \
 #include <Geode/cocos/actions/CCActionEase.h>
 
 namespace easingsActions {
-$createEasing(SineIn, sineIn);
+$createEasing(SineIn, inSine);
 
-$createEasing(SineOut, sineOut);
+$createEasing(SineOut, outSine);
 
-$createEasing(SineInOut, sineInOut);
+$createEasing(SineInOut, inOutSine);
 
 
 $createEasingWithRate(In, inRate);

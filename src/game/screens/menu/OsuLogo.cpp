@@ -8,6 +8,8 @@ float lin2dB(float linear)
 {
   return -(clamp(log10(linear) * 20.0f, -80.f, 1.0f));
 }
+GDL_NS_START
+using namespace frameworks;
 bool OsuLogo::init() {
   ClickableContainer::init("osu-logo-select.wav"_spr);
   /*
@@ -48,12 +50,17 @@ bool OsuLogo::init() {
 }
 void OsuLogo::update(float delta) {
   CCNode::update(delta);
+  
+  float radius = std::fminf(getContentWidth(), getContentHeight()) / 2.f;
+  float oldRadius = getBorderRadius();
+  if (radius != oldRadius) setBorderRadius(radius);
+
   float dominantVol = 0;
   float window = 2048;
   audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
   audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_WINDOWSIZE, &window,nullptr,0);
   // this will go wrong
-  logoSprite->setScale(Interpolation::Damp(logoSprite->getScaleX(),1.f-std::max(0.f,dominantVol/window-0.4f)*0.04f,0.9,audio->getElapsed()));
+  logoSprite->setScale(utils::Interpolation::damp(logoSprite->getScaleX(),1.f-std::max(0.f,dominantVol/window-0.4f)*0.04f,0.9,audio->getElapsed()));
 }
 /*
 void OsuLogo::onBeat(float delta) {
@@ -76,12 +83,13 @@ bool LogoVisualization::init() {
   if (!Container::init()) return false;
   //bar_length = processUnit(600, Unit::UIKit, true);
   drawNode = CCDrawNode::create();
-  addListener("nodeLayoutUpdate",[this](NodeEvent* e){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
     drawNode->setContentSize(CCNode::getContentSize());
     drawNode->setPosition(CCNode::getContentSize()/2);
+    return true;
   });
   drawNode->setAnchorPoint({0.5,0.5});
-  setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
+  setContentSize({100,100},Unit::Percent);
   addChild(drawNode);
   return true;
 }
@@ -142,3 +150,4 @@ void LogoVisualization::update(float delta) {
   offset++;
   if (offset%s == 0) offset=0;
 }
+GDL_NS_END

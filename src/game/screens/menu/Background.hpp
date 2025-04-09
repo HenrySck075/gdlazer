@@ -10,7 +10,7 @@
 using meow = Task<std::string>;
 
 GDL_NS_START
-class Background : public GDF_NS::Container {
+class Background : public frameworks::Container {
 private:
   matjson::Value m_backgrounds = { std::vector<matjson::Value>{} };
   geode::EventListener<meow> m_backgroundGetListener;

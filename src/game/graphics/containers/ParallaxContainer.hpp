@@ -9,7 +9,7 @@ using namespace geode::prelude;
 
 GDL_NS_START
 // why are they using ease out quint just for parallax am i dumb
-class ParallaxContainer final : public GDF_NS::Container {
+class ParallaxContainer final : public frameworks::Container {
 private:
   // used to determine the center position
   CCDirector* m_director;

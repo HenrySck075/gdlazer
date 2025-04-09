@@ -280,10 +280,10 @@ void Container::updateSizeWithUnit() {
 }
 
 void Container::updatePositionWithUnit() {
-  cocos2d::CCNode::setPosition(
+  cocos2d::CCNode::setPosition(calculateAnchoredPosition({
     processUnit(m_position.x, m_positionUnit[0], true),
     processUnit(m_position.y, m_positionUnit[1], false)
-  );
+  }));
 }
 
 void Container::setClippingEnabled(bool enabled) {
@@ -485,3 +485,29 @@ void Container::setRotation(float rotation) {
 }
 
 GDF_NS_END
+cocos2d::CCPoint gdlazer::frameworks::Container::calculateAnchoredPosition(
+    const cocos2d::CCPoint &position) {
+  using namespace geode;
+  auto size = getContentSize();
+  switch (m_anchor) {
+  case Anchor::Center:
+    return {position.x + size.width / 2, position.y + size.height / 2};
+  case Anchor::TopLeft:
+    return {position.x, position.y + size.height};
+  case Anchor::Top:
+    return {position.x + size.width / 2, position.y + size.height};
+  case Anchor::TopRight:
+    return {position.x + size.width, position.y + size.height};
+  case Anchor::Right:
+    return {position.x + size.width, position.y + size.height / 2};
+  case Anchor::BottomRight:
+    return {position.x + size.width, position.y};
+  case Anchor::Bottom:
+    return {position.x + size.width / 2, position.y};
+  case Anchor::Left:
+    return {position.x, position.y + size.height / 2};
+  case Anchor::BottomLeft:
+  default:
+    return position;
+  }
+}

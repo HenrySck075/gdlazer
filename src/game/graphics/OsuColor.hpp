@@ -17,6 +17,7 @@
 #include "../../frameworks/utils/Interpolation.hpp"
 using namespace geode::prelude;
 
+GDL_NS_START
 struct GradientPoint {
   float position;
   Color4 color;
@@ -38,7 +39,7 @@ public:
         if (point >= endStop.position)
           continue;
 
-        return Interpolation::valueAt(point, startStop.color, endStop.color, startStop.position, endStop.position);
+        return frameworks::Interpolation::valueAt(point, startStop.color, endStop.color, startStop.position, endStop.position);
       }
 
       return gradient[-1].color;
@@ -429,3 +430,4 @@ public:
 
   static Color4 DangerousButtonColor;
 };
+GDL_NS_END

@@ -3,12 +3,14 @@
 #include "../../../frameworks/input/events/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../../frameworks/graphics/CCEase2.hpp"
 
+GDL_NS_START
+using namespace frameworks;
 bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
   auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
   m_color = color;
-  ClickableContainer::init(sampleClick, clickAct);
+  ClickableContainer::initWithCallback(sampleClick, clickAct, true);
   ClickableContainer::setContentSize(m);
   //addListener(reactive_listener(updateReactive));
 
@@ -55,17 +57,46 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   hover->setOpacity(0);
   
   setAnchorPoint({0.5,0.5});
-  setHoverEnabled(false);
-  setClickEnabled(false);
 
-  addListener("keyboardEvent", [this](NodeEvent* ev){
-    auto e = static_cast<KeyboardEvent*>(ev);
+  addListener<KeyEvent>([this](KeyEvent* e){
     if (
-      e->key.pressed &&
-      std::find(activationKeys.begin(), activationKeys.end(), e->key.key) != activationKeys.end()
+      e->m_pressed &&
+      std::find(activationKeys.begin(), activationKeys.end(), e->m_key) != activationKeys.end()
     ) {
       click();
     }
+    return true;
+  });
+  addListener<MouseEvent>([this](MouseEvent* e){
+    switch (e->m_eventType) {
+      case MouseEventType::Enter:      
+        runAction(CCEaseElasticOut::create(
+          CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT)
+        ));
+        FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav"_spr);
+        break;
+      case MouseEventType::Exit:
+        runAction(CCEaseElasticOut::create(
+          CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
+        ));
+        break;
+      case MouseEventType::MouseDown:
+        hover->runAction(easingsActions::CCEaseOut::create(
+          CCFadeTo::create(1,255*0.1),5
+        ));
+      case MouseEventType::MouseUp:
+        //if (!static_cast<CCBool*>(getUserObject("clicking"_spr))) return;
+        hover->runAction(easingsActions::CCEaseOut::create(
+          CCFadeTo::create(1,0),5
+        ));
+      case MouseEventType::Click:
+        hover->stopAllActions();
+        hover->setOpacity(255*0.9);
+        hover->runAction(easingsActions::CCEaseExponentialOut::create(
+          CCFadeTo::create(0.8,0)
+        ));
+    }
+    return true;
   });
   return true;
 }
@@ -86,36 +117,4 @@ void MainMenuButton::setContentSize(const CCSize& size) {
   if (m_askForUpdate) m_pParent->updateLayout();
 }
 
-void MainMenuButton::onMouseEnter() {
-  runAction(CCEaseElasticOut::create(
-    CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT)
-  ));
-  FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav"_spr);
-}
-void MainMenuButton::onMouseExit() {
-  runAction(CCEaseElasticOut::create(
-    CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
-  ));
-}
-void MainMenuButton::onMouseDown(MouseEvent* event) {
-  auto n = static_cast<CCScale9Sprite*>(getChildByID("hover"));
-  n->runAction(easingsActions::CCEaseOut::create(
-    CCFadeTo::create(1,255*0.1),5
-  ));
-}
-void MainMenuButton::onMouseUp(MouseEvent* event) {
-  //if (!static_cast<CCBool*>(getUserObject("clicking"_spr))) return;
-  auto n = static_cast<CCScale9Sprite*>(getChildByID("hover"));
-  n->runAction(easingsActions::CCEaseOut::create(
-    CCFadeTo::create(1,0),5
-  ));
-}
-void MainMenuButton::onClick(MouseEvent* event) {
-  ClickableContainer::onClick(event);
-  auto node = static_cast<CCScale9Sprite*>(getChildByID("hover"));
-  node->stopAllActions();
-  node->setOpacity(255*0.9);
-  node->runAction(CCEaseExponentialOut::create(
-    CCFadeTo::create(0.8,0)
-  ));
-}
+GDL_NS_END

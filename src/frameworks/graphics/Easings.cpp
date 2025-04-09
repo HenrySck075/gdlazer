@@ -3,13 +3,13 @@
 #include <cmath>
 
 namespace easings {
-  float sineIn(float x) {
+  float inSine(float x) {
     return 1 - cosf((x * M_PI) / 2);
   }
-  float sineOut(float x) {
+  float outSine(float x) {
     return sinf((x * M_PI) / 2);
   }
-  float sineInOut(float x) {
+  float inOutSine(float x) {
     return -(cosf(M_PI * x) - 1) / 2;
   }
 

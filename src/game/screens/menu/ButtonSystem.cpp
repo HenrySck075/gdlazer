@@ -4,32 +4,12 @@
 #include "../../overlays/toolbar/ToolbarToggleButton.hpp"
 #include "../Playground.hpp"
 #include "ButtonConstants.hpp"
+#include "../../OsuGame.hpp"
 
-float ButtonSystem::WEDGE_WIDTH = 20;
-
+/*
 class SongSelect;
 #include "../select/SongSelect.hpp"
-
-void ButtonSystem::setOsuLogo(OsuLogo* logo) {
-    this->logo = logo;
-    /*
-    if (logo != nullptr)
-    {
-      this->logo.Action = onOsuLogo;
-
-      // osuLogo.SizeForFlow relies on loading to be complete.
-      buttonArea.Flow.Position = ccp(WEDGE_WIDTH * 2 - (BUTTON_WIDTH + logo.SizeForFlow / 4), 0);
-
-      updateLogoState();
-    }
-    else
-    {
-      // We should stop tracking as the facade is now out of scope.
-      
-      logoTrackingContainer.StopTracking();
-    }
-    */
-  }
+*/
 bool tempForceReplace2 = false;
 #include <Geode/modify/CCDirector.hpp>
 struct area51 : Modify<area51, CCDirector>{
@@ -49,6 +29,29 @@ class $modify(LevelSelectLayer) {
     LevelSelectLayer::onBack(s);
   }
 };
+GDL_NS_START
+float ButtonSystem::WEDGE_WIDTH = 20;
+
+void ButtonSystem::setOsuLogo(OsuLogo* logo) {
+  this->logo = logo;
+  /*
+  if (logo != nullptr)
+  {
+    this->logo.Action = onOsuLogo;
+
+    // osuLogo.SizeForFlow relies on loading to be complete.
+    buttonArea.Flow.Position = ccp(WEDGE_WIDTH * 2 - (BUTTON_WIDTH + logo.SizeForFlow / 4), 0);
+
+    updateLogoState();
+  }
+  else
+  {
+    // We should stop tracking as the facade is now out of scope.
+    
+    logoTrackingContainer.StopTracking();
+  }
+  */
+}
 
 bool ButtonSystem::init(OsuLogo* logo) {
   Container::init();
@@ -299,7 +302,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
 
   return true;
 }
-
+GDL_NS_END
 /*
 void ButtonSystem::resize(ReactiveNode* idc, Property prop) {
   if (prop == Property::Size) idc->getParent()->updateLayout();

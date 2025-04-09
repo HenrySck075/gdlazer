@@ -1,5 +1,6 @@
 #pragma once
 #include "..\graphics\containers\Container.hpp"
+#include <string>
 
 GDF_NS_START
 
@@ -16,8 +17,15 @@ struct ScreenTransitionEvent {
 /// btw said transition functions are `onScreenEnter` and `onScreenExit`
 class Screen : public Container {
 public:
+  static Screen* create() {
+    $create_class(Screen, init);
+  };
   virtual void onScreenEnter(ScreenTransitionEvent event) {};
   virtual void onScreenExit(ScreenTransitionEvent event) {};
+  void setTitle(std::string title) {m_title = title;}
+  std::string getTitle() {return m_title;}
+private:
+  std::string m_title;
 };
 
 GDF_NS_END
