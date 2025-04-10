@@ -2,7 +2,7 @@
 #include "../../graphics/OsuIcon.hpp"
 #include "../../overlays/dialog/PopupDialog.hpp"
 #include "../../overlays/toolbar/ToolbarToggleButton.hpp"
-#include "../Playground.hpp"
+#include "../PlaygroundScreen.hpp"
 #include "ButtonConstants.hpp"
 #include "../../OsuGame.hpp"
 
@@ -16,7 +16,7 @@ struct area51 : Modify<area51, CCDirector>{
   bool replaceScene(CCScene* scene) {
     if (tempForceReplace2 && !dynamic_cast<CCTransitionScene*>(getRunningScene())) {
       tempForceReplace2 = false;
-      return CCDirector::replaceScene(CCTransitionFade::create(0.5,OsuGame::get()));
+      return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get()));
     }
     else return CCDirector::replaceScene(scene);
   }
@@ -30,7 +30,7 @@ class $modify(LevelSelectLayer) {
   }
 };
 GDL_NS_START
-float ButtonSystem::WEDGE_WIDTH = 20;
+float ButtonSystem::s_wedgeWidth = 20;
 
 void ButtonSystem::setOsuLogo(OsuLogo* logo) {
   this->logo = logo;
@@ -40,7 +40,7 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
     this->logo.Action = onOsuLogo;
 
     // osuLogo.SizeForFlow relies on loading to be complete.
-    buttonArea.Flow.Position = ccp(WEDGE_WIDTH * 2 - (BUTTON_WIDTH + logo.SizeForFlow / 4), 0);
+    buttonArea.Flow.Position = ccp(s_wedgeWidth * 2 - (BUTTON_WIDTH + logo.SizeForFlow / 4), 0);
 
     updateLogoState();
   }
@@ -60,7 +60,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   m_creatorLayerPtr = CreatorLayer::create();
 
   //float w = CCDirector::sharedDirector()->getWinSize().width;
-  CCPoint an = {-WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
+  CCPoint an = {-s_wedgeWidth*4,c_buttonAreaHeight/2};
   area = ButtonArea::create(an);
   area->setID("buttonarea");
   addChild(area);
@@ -106,7 +106,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       [this](CCNode*j){
         //m_menuLayerPtr->onPlay(m_menuLayerPtr);
         if (Mod::get()->getSettingValue<bool>("devmode")) {
-          OsuGame::get()->pushScreen(SongSelect::create())->setZOrder(-7);
+          //OsuGame::get()->pushScreen(SongSelect::create())->setZOrder(-7);
         } else {
           m_menuLayerPtr->onPlay(nullptr);
         }
@@ -219,7 +219,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       OsuIcon::Debug, 
       Color4(154, 198, 0, 255), 
       [](CCNode* j) {
-        OsuGame::get()->pushScreen(Playground::create());
+        OsuGame::get()->pushScreen(PlaygroundScreen::create());
         //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
       }
     )
@@ -281,17 +281,19 @@ bool ButtonSystem::init(OsuLogo* logo) {
   area->show("toplevel");
   
   setAnchor(Anchor::Center);
-  setContentSizeWithUnit(CCSize(100,BUTTON_AREA_HEIGHT),Unit::Percent,Unit::OpenGL);
+  setContentSize({100,c_buttonAreaHeight},frameworks::Unit::Percent,frameworks::Unit::OpenGL);
   logo->setZOrder(1);
   logo->setPosition({an.x,0});
   logo->setScale(0.4);
   logo->setAnchor(Anchor::Center);
-  logo->setCallback([this](CCNode* self){
+  logo->addListener<frameworks::MouseEvent>([this](frameworks::MouseEvent* e){
+    if (e->m_eventType != frameworks::MouseEventType::Click) return true;
     auto cur = area->getCurrent();
     if (cur.has_value()) 
       static_cast<MainMenuButton*>(
         getChildByIDRecursive("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
       )->click();
+    return true;
   });
   
   //setPositionX(0);

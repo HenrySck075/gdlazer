@@ -10,7 +10,7 @@ GDL_NS_START
 class ButtonSystem final : public frameworks::Container
 {
 public:
-  static float WEDGE_WIDTH;
+  static float s_wedgeWidth;
 
   //Action<ButtonSystemState>? StateChanged;
 

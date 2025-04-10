@@ -1,25 +1,24 @@
 #pragma once
 
-#include "../../../framework/graphics/containers/ClickableContainer.hpp"
-#include "../../graphics/OsuIcon.hpp"
-#include "../../../framework/graphics/containers/FillFlowContainer.hpp"
-#include "../../../framework/graphics/sprites/CCResizableSprite.hpp"
+#include "../../../frameworks/graphics/containers/ClickableContainer.hpp"
+#include "../../../frameworks/graphics/sprites/CCResizableSprite.hpp"
+#include "../../../frameworks/graphics/sprites/IconConstructor.hpp"
+#include "../../graphics/ui/OsuText.hpp"
 
-class ToolbarButton : public ClickableContainer {
-  CCResizableSprite* iconSprite;
+GDL_NS_START
+class ToolbarButton : public frameworks::ClickableContainer {
+  frameworks::CCResizableSprite* iconSprite;
   Container* bg;
   Container* flashBg;
 
   CCLayerRGBA* tooltipContainer; 
-  CCLabelTTF* text;
-  CCLabelTTF* subtext;
+  OsuText* text;
+  OsuText* subtext;
 
 protected:
   CCClippingNode* bgWrapper;
 public:
-  bool init(IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start);
-  void onMouseEnter() override;
-  void onMouseExit() override;
+  bool init(frameworks::IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start);
   void setTooltipAlignment(AxisAlignment align) {
     static_cast<RowLayout*>(tooltipContainer->getLayout())->setAxisAlignment(align);
     switch (align) {
@@ -33,13 +32,13 @@ public:
     }
     tooltipContainer->updateLayout();
   }
-  void onClick(MouseEvent* e) override;
   /**
    * @param icon Toolbar icon
    * @param text Toolbar text
    * @param sub scribe
    */
-  static ToolbarButton* create(IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start) {
+  static ToolbarButton* create(frameworks::IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start) {
     $create_class(ToolbarButton, init, icon, text, sub, align);
   }
 };
+GDL_NS_END

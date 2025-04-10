@@ -39,7 +39,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
   clipNode->setID("dialogbutton-clipnode");
   clipNode->addChild(Triangles::create(4,color));
 
-  auto j = OsuText(label, FontType::Bold);
+  auto j = OsuText::create(label, FontType::Bold);
   j->setID("dialogbutton-label");
   j->setAnchorPoint({0.5, 0.5});
   j->setScale(0.4);

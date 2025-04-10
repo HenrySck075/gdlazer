@@ -151,7 +151,7 @@ void ButtonArea::show(std::string tag) {
       auto pos = i->getPosition();
       i->runAction(CCSequence::createWithTwoActions(
         EasingEffect::create(CCSpawn::createWithTwoActions(
-          CCResizeTo::create(animationSpeed, BUTTON_WIDTH, BUTTON_AREA_HEIGHT),
+          CCResizeTo::create(animationSpeed, BUTTON_WIDTH, c_buttonAreaHeight),
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
@@ -219,7 +219,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         i->runAction(
           EasingEffect::create(
             CCSpawn::createWithTwoActions(
-              CCResizeTo::create(animationSpeed, BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT),
+              CCResizeTo::create(animationSpeed, BUTTON_WIDTH*1.5,c_buttonAreaHeight),
               CCFadeOut::create(animationSpeed)
             )
           )

@@ -6,7 +6,7 @@
 GDF_NS_START
 
 /// A Container which is rounded on the shortest edge
-class CircularContainer : public virtual Container {
+class CircularContainer : public Container {
 public:
   $default_create(CircularContainer);
 

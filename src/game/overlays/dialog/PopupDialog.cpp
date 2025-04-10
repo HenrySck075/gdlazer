@@ -1,8 +1,11 @@
 #include "PopupDialog.hpp"
 #include "../../graphics/backgrounds/Triangles.hpp"
 #include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
-#include "../../graphics/ui/OsuText.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
+
+#include "../../../helpers/colors.hpp"
+#include "../../../utils.hpp"
+#include "../../../frameworks/bindables/EventTarget.hpp"
 
 GDL_NS_START
 using namespace frameworks;
@@ -58,10 +61,10 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSpriteClip->addChild(Triangles::create(45,ccc3(30,23,30)));
   //m_title->limitLabelWidth(size.width - 2.f, 1.f, .1f);
   
-  m_title = OsuText(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter);
+  m_title = OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter);
   m_title->setPosition({size.width / 2, size.height - 71});
 
-  auto label = OsuText(content.c_str());
+  auto label = OsuText::create(content.c_str());
   label->setPosition(m_title->getPosition()-CCPoint{0,12});
   label->setScale(0.4);
   label->setZOrder(0);

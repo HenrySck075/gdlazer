@@ -86,7 +86,7 @@ public:
   private:
   osuColor4 getColor(float saturation, float lightness) {
     auto c = hslToRgb(getBaseHue(ColorScheme), saturation, lightness);
-    return {c.r, c.g, c.b, 255};
+    return {c.r/255.f, c.g/255.f, c.b/255.f, 1};
   };
 
   // See https://github.com/ppy/osu-web/blob/5a536d217a21582aad999db50a981003d3ad5659/app/helpers.php#L1620-L1628

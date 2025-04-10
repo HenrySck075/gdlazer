@@ -5,7 +5,7 @@
 
 GDL_NS_START
 using namespace frameworks;
-static const CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
+static const CCPoint pos {-ButtonSystem::s_wedgeWidth*4,c_buttonAreaHeight/2};
 
 MainMenu* MainMenu::create() {
   $create_class(MainMenu, init);
@@ -30,11 +30,11 @@ bool MainMenu::init() {
   joe->setAnchorPoint({1,1});
   joe->ignoreAnchorPointForPosition(false);
 
-  auto songTitle = OsuText("",FontType::Regular,14,kCCTextAlignmentRight);
+  auto songTitle = OsuText::create("",FontType::Regular,14,kCCTextAlignmentRight);
   joe->addChild(songTitle);
-  auto songArtist = OsuText("",FontType::Regular,12,kCCTextAlignmentRight);
+  auto songArtist = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
   joe->addChild(songArtist);
-  auto levelInfo = OsuText("",FontType::Regular,12,kCCTextAlignmentRight);
+  auto levelInfo = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
   joe->addChild(levelInfo);
   
   joe->setLayout(

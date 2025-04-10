@@ -5,7 +5,8 @@
 
 // theres no way one will use the entirety of this
 namespace FontAwesome {
-
+  using namespace gdlazer::frameworks;
+  
   namespace Brands
   {
     #define Get(icon) IconConstructor{icon, "FontAwesome-Brands.fnt"_spr}

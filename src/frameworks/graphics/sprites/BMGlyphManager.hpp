@@ -119,6 +119,8 @@ private:
   void purgeFontDefDictionary();
 };
 
+
+GDF_NS_START
 /** @brief BMGlyphManager is a modification of BMGlyphManager that supports multiple pages
  * and allows you to extract a character texture from it.
  * it does not allows rendering tho
@@ -182,6 +184,5 @@ protected:
   CCPoint  m_tImageOffset;
   
   // we can't reuse chars here, since we need to generate a new one every `getCharacter`
-
-
 };
+GDF_NS_END

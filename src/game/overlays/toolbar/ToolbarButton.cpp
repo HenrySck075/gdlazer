@@ -1,30 +1,34 @@
 #include "ToolbarButton.hpp"
 #include "ToolbarConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
-#include "../../graphics/ui/OsuText.hpp"
+#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
+#include "../../graphics/OsuIcon.hpp"
 
 using namespace ToolbarConstants;
+GDL_NS_START
+using namespace frameworks;
 
 bool ToolbarButton::init(IconConstructor icon, std::string label, std::string sub, AxisAlignment tooltipAlignment) {
-  setPadding({3});
+  //setPadding({3});
   bgWrapper = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborder.png"_spr));
   if (bgWrapper->getStencil()==nullptr) return false;
   bgWrapper->getStencil()->setAnchorPoint({0,0});
   bgWrapper->setAlphaThreshold(0.03f);
   ClickableContainer::init("toolbar-select.wav"_spr);
-  addListener("nodeLayoutUpdate", [this](NodeEvent* e){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
     bgWrapper->setContentSize(CCNode::getContentSize());
     bgWrapper->getStencil()->setContentSize(CCNode::getContentSize());
     e->stopPropagation();
+    return true;
   });
   setCascadeOpacityEnabled(false);
 
   bg = Container::create();
   bg->setColor(OsuColor::Gray(80));
-  bg->setContentSizeWithUnit(CCSize(100,100), Unit::Percent, Unit::Percent);
+  bg->setContentSize({100,100}, Unit::Percent);
   bg->setOpacity(0);
   flashBg = Container::create();
-  flashBg->setContentSizeWithUnit(CCSize(100,100), Unit::Percent, Unit::Percent);
+  flashBg->setContentSize({100,100}, Unit::Percent);
   flashBg->setOpacity(0);
   bgWrapper->addChild(bg,-7);
   bgWrapper->addChild(flashBg);
@@ -35,9 +39,9 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     (float)(int)(tooltipAlignment==AxisAlignment::End),
     1 
   });
-  tooltipContainer->setContentHeight(ToolbarConstants::TOOLTIP_HEIGHT);
-  text = OsuText(label.c_str(), FontType::Bold, 10);
-  subtext = OsuText(sub.c_str(), FontType::Regular, 10);
+  tooltipContainer->setContentHeight(ToolbarConstants::c_tooltipHeight);
+  text = OsuText::create(label.c_str(), FontType::Bold, 10);
+  subtext = OsuText::create(sub.c_str(), FontType::Regular, 10);
   tooltipContainer->addChild(text);
   tooltipContainer->addChild(subtext);
   tooltipContainer->setLayout(
@@ -53,35 +57,39 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
 
   iconSprite = icon;
   iconSprite->setScale(0.3);
-  addListener("nodeLayoutUpdate",[this](NodeEvent* e){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
     iconSprite->setPosition(CCNode::getContentSize()/2);
     if (static_cast<AxisLayout*>(tooltipContainer->getLayout())->getCrossAxisLineAlignment()==AxisAlignment::End) {
       tooltipContainer->setPosition({CCNode::getContentSize().width,0});
     }
+    return true;
+  });
+
+  addListener<MouseEvent>([this](MouseEvent* e){
+    switch (e->m_eventType) {
+      case MouseEventType::Enter:
+        bg->stopAllActions();
+        bg->runAction(CCFadeTo::create(0.2, 180));
+        tooltipContainer->stopAllActions();
+        tooltipContainer->runAction(CCFadeTo::create(0.2, 255));
+      case MouseEventType::Exit:
+        bg->stopAllActions();
+        bg->runAction(CCFadeTo::create(0.2, 0));
+        tooltipContainer->stopAllActions();
+        tooltipContainer->runAction(CCFadeTo::create(0.2, 0));
+      case MouseEventType::Click:
+        flashBg->runAction(CCSequence::createWithTwoActions(
+          CCFadeTo::create(0.05,100),
+          CCFadeTo::create(0.8,0)
+        ));
+    };
+    return true;
   });
   
-  setContentSizeWithUnit(CCSize(HEIGHT,HEIGHT),Unit::UIKit,Unit::UIKit);
+  setContentSize({c_height,c_height},Unit::UIKit,Unit::UIKit);
   addChild(iconSprite);
 
   return true;
 }
 
-void ToolbarButton::onMouseEnter() {
-  bg->stopAllActions();
-  bg->runAction(CCFadeTo::create(0.2, 180));
-  tooltipContainer->stopAllActions();
-  tooltipContainer->runAction(CCFadeTo::create(0.2, 255));
-}
-void ToolbarButton::onMouseExit() {
-  bg->stopAllActions();
-  bg->runAction(CCFadeTo::create(0.2, 0));
-  tooltipContainer->stopAllActions();
-  tooltipContainer->runAction(CCFadeTo::create(0.2, 0));
-}
-void ToolbarButton::onClick(MouseEvent* e) {
-  ClickableContainer::onClick(e);
-  flashBg->runAction(CCSequence::createWithTwoActions(
-    CCFadeTo::create(0.05,100),
-    CCFadeTo::create(0.8,0)
-  ));
-};
+GDL_NS_END

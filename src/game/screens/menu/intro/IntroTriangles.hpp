@@ -4,7 +4,8 @@
 
 using namespace geode::prelude;
 
-class IntroTriangles : public Screen {
+GDL_NS_START
+class IntroTriangles : public frameworks::Screen {
 private:
   float text_1 = 0.2;
   float text_2 = 0.4;
@@ -49,6 +50,7 @@ public:
   bool init();
   static IntroTriangles* create();
 
-  void onExiting(ScreenTransitionEvent e);
+  void onExiting(frameworks::ScreenTransitionEvent e);
 };
 
+GDL_NS_END

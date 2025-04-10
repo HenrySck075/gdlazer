@@ -2,10 +2,8 @@
 
 #include <Geode/Geode.hpp>
 #include "PopupDialogButton.hpp"
-#include "../../../helpers/colors.hpp"
-#include "../../../utils.hpp"
-#include "../../../frameworks/bindables/EventTarget.hpp"
 #include "../../graphics/containers/OsuOverlayContainer.hpp"
+#include "../../graphics/ui/OsuText.hpp"
 
 using namespace geode::prelude;
 
@@ -18,7 +16,7 @@ private:
   CCLayerRGBA* m_bodyLayout;
   std::vector<PopupDialogButton*> m_buttons;
   CCScale9Sprite* m_bgSprite;
-  CCLabelTTF* m_title;
+  OsuText* m_title;
 
 protected:
   //void onClose(cocos2d::CCObject*) override;

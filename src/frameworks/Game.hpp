@@ -16,7 +16,8 @@ protected:
   // since we're also spamming MouseEvent every frame doing this is faster
   geode::Ref<Screen> m_currentScreen;
   geode::Ref<Container> m_screensContainer;
-
+  
+  geode::cocos::CCArrayExt<OverlayContainer> m_overlayStack;
   geode::Ref<OverlayContainer> m_currentOverlay;
   geode::Ref<OverlayContainer> m_overlaysContainer;
 
@@ -36,8 +37,9 @@ public:
   void pushScreen(Screen* screen);
   Screen* popScreen();
 
-  void pushOverlay(OverlayContainer* overlay) {};
-  void popOverlay(OverlayContainer* overlay) {};
+  /// Use `OverlayContainer::show()` instead idiots
+  void pushOverlay(OverlayContainer* overlay);
+  void popOverlay(OverlayContainer* overlay);
 
   void update(float dt);
 

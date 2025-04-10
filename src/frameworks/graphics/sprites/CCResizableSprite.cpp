@@ -1,6 +1,6 @@
 #include "CCResizableSprite.hpp"
 #include "../../../utils.hpp"
-
+GDF_NS_START
 CCResizableSprite* CCResizableSprite::create() {
   $create_class(CCResizableSprite, init);
 }
@@ -84,3 +84,4 @@ void CCResizableSprite::refreshScaling() {
   m_sprite->setPosition(size/2);
 
 }
+GDF_NS_END

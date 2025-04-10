@@ -18,10 +18,13 @@ enum class FontType {
 class OsuText : public frameworks::Container {
   CCLabelTTF* m_textNode;
 public:
-  static OsuText* create(const char* text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
+  static OsuText* create(const char* text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
     $create_class(OsuText, init, text, font, fontSize, alignment);
   }
   bool init(const char* text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
+  void setString(std::string string) {
+    m_textNode->setString(string.c_str());
+  }
 };
 
 CCLabelTTF* OsuTextF(const char* text, FontType fontType = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);

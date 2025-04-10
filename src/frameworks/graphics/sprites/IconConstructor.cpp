@@ -85,7 +85,7 @@ std::string unicode_to_utf8(int unicode)
   return "";
 }
 
-
+GDF_NS_START
 IconConstructor::operator CCResizableSprite*() {
   const char* g = glyphChar.c_str();
   const char* f = fontName.c_str();
@@ -100,3 +100,4 @@ IconConstructor::operator CCResizableSprite*() {
   }
   return ret;
 }
+GDF_NS_END

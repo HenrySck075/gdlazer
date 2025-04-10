@@ -4,7 +4,7 @@
 GDF_NS_START
 /// Despite its name, this class only provides convenient setup for a [Container]
 /// to behave like a "button", since [Container]s are already clickable (listenable via the click MouseEvent).
-class ClickableContainer : public virtual Container {
+class ClickableContainer : public Container {
   std::string m_sfx;
   bool m_consumeTap;
 public:

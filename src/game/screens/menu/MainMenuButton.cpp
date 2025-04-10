@@ -8,7 +8,7 @@
 GDL_NS_START
 using namespace frameworks;
 bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
-  auto m = CCSize(BUTTON_WIDTH,BUTTON_AREA_HEIGHT);
+  auto m = CCSize(BUTTON_WIDTH,c_buttonAreaHeight);
   m_color = color;
   ClickableContainer::initWithCallback(sampleClick, clickAct, true);
   ClickableContainer::setContentSize(m);
@@ -29,7 +29,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   the->addChild(icon);
   the->setAnchorPoint({0.5,0.5});
   the->setPosition(m/2);
-  auto label = OsuText(text.c_str(), FontType::Regular);
+  auto label = OsuText::create(text.c_str(), FontType::Regular);
   label->setScale(0.4);
   the->addChild(label);
   the->updateLayout();
@@ -71,13 +71,13 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
     switch (e->m_eventType) {
       case MouseEventType::Enter:      
         runAction(CCEaseElasticOut::create(
-          CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,BUTTON_AREA_HEIGHT)
+          CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,c_buttonAreaHeight)
         ));
         FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav"_spr);
         break;
       case MouseEventType::Exit:
         runAction(CCEaseElasticOut::create(
-          CCResizeTo::create(0.5,BUTTON_WIDTH,BUTTON_AREA_HEIGHT)
+          CCResizeTo::create(0.5,BUTTON_WIDTH,c_buttonAreaHeight)
         ));
         break;
       case MouseEventType::MouseDown:

@@ -8,16 +8,17 @@
    // this line is requested by catto
 #define delayRepeat(duration, ...) CCSequence::create(__VA_ARGS__, CCDelayTime::create(duration), nullptr)
 
+GDL_NS_START
 bool IntroTriangles::init() {
   if (!Screen::init()) return false;
-  setColor({0,0,0,255});
+  setBackgroundColor({0,0,0,255});
 
   // Intro text delays (in ms): 200 (wel), 400 (come), 700 ( to), 900 ( osu!), 1600 (triangle glitches)
   // Icons set showcase delays: 1450 (spaced out), 1650 (close together, larger), 1850 (larger)
   // osu! logo: ji
 
   setOpacity(255);
-  auto label = OsuText("");
+  auto label = OsuText::create("");
   //label->setFntFile("LazerFont.fnt"_spr);
   label->setID("welcomeText");
 #ifndef GEODE_IS_ANDROID
@@ -73,7 +74,7 @@ bool IntroTriangles::init() {
   // me in the future here: dont create a new MenuLayer thanks
   
   // e->playMusic("triangles.mp3"_spr,false,0.f,7);
-  OsuGame::get()->startMusicSequence();
+  //OsuGame::get()->startMusicSequence();
   runAction(seq);
 
   return true;
@@ -220,13 +221,14 @@ void IntroTriangles::logo_1_func() {
 }
 /// @warning Not really logo_scale
 void IntroTriangles::logo_scale() {
-  OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-2);
+  //OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-2);
 }
 
-void IntroTriangles::onExiting(ScreenTransitionEvent e) {
-  setColor({255,255,255,255});
+void IntroTriangles::onExiting(frameworks::ScreenTransitionEvent e) {
+  setBackgroundColor({255,255,255,255});
   setOpacity(255);
   runAction(
     CCFadeOut::create(1)
   );
 };
+GDL_NS_END

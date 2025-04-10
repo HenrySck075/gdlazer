@@ -35,7 +35,8 @@ enum class Unit {
   OpenGL,
   UIKit
 };
-class Container : public CCClippingNodeRGBA, public EventTarget {
+/// HOLY SHIT
+class Container : public virtual CCClippingNodeRGBA, public EventTarget {
 public:
 
   static Container* create() {

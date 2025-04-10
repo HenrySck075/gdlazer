@@ -60,7 +60,7 @@ void OsuLogo::update(float delta) {
   audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_DOMINANT_FREQ, &dominantVol,nullptr,0);
   audio->getDSP()->getParameterFloat(FMOD_DSP_FFT_WINDOWSIZE, &window,nullptr,0);
   // this will go wrong
-  logoSprite->setScale(utils::Interpolation::damp(logoSprite->getScaleX(),1.f-std::max(0.f,dominantVol/window-0.4f)*0.04f,0.9,audio->getElapsed()));
+  logoSprite->setScale(Interpolation::damp(logoSprite->getScaleX(),1.f-std::max(0.f,dominantVol/window-0.4f)*0.04f,0.9,audio->getElapsed()));
 }
 /*
 void OsuLogo::onBeat(float delta) {

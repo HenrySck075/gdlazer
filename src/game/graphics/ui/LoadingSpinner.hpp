@@ -5,7 +5,7 @@
 
 GDL_NS_START
 class LoadingSpinner final: public frameworks::VisibilityContainer {
-  CCResizableSprite* spinner;
+  frameworks::CCResizableSprite* spinner;
   bool boxed = false;
 public:
   const float TRANSITION_DURATION = 0.5;

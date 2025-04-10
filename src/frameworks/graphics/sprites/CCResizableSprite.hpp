@@ -3,6 +3,9 @@
 #include <Geode/cocos/include/cocos2d.h>
 using namespace cocos2d;
 
+#include "../../../macro.h"
+
+GDF_NS_START
 enum class BoxFit {
   Fill,
   Contain,
@@ -53,3 +56,4 @@ public:
   CCSprite* getSprite(){return m_sprite;}
   void setSprite(CCSprite* spr){m_sprite = spr;}
 };
+GDF_NS_END

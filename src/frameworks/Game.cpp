@@ -78,6 +78,21 @@ Screen* Game::popScreen() {
   return screen;
 }
 
+void Game::pushOverlay(OverlayContainer* overlay) {
+  m_overlaysContainer->addChild(overlay);
+  m_currentOverlay = overlay;
+  m_overlayStack.push_back(overlay);
+};
+void Game::popOverlay(OverlayContainer* overlay) {
+  m_overlaysContainer->removeChild(overlay);
+  m_overlayStack.pop_back();
+  if (m_overlayStack.size() > 0) {
+    m_currentOverlay = static_cast<OverlayContainer*>(m_overlayStack.inner()->lastObject());
+  } else {
+    m_currentOverlay = nullptr;
+  }
+};
+
 std::mutex g_fish;
 void setInstance(geode::Ref<Game> instance) {
   s_instance = instance;

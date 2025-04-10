@@ -257,6 +257,7 @@ void BMGlyphFontConfig::purgeFontDefDictionary() {
   m_pFontDefDictionary.clear();
 };
 
+GDF_NS_START
 
 static CCDictionaryExt<std::string, BMGlyphManager*> s_dGlyphs;
 
@@ -323,3 +324,4 @@ CCResizableSprite* BMGlyphManager::getCharacter(int id) {
   }
   return spr;
 }
+GDF_NS_END
