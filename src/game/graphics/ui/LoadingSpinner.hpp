@@ -3,7 +3,8 @@
 #include "../../../frameworks/graphics/containers/VisibilityContainer.hpp"
 #include "../../../frameworks/graphics/sprites/CCResizableSprite.hpp"
 
-class LoadingSpinner final: public VisibilityContainer {
+GDL_NS_START
+class LoadingSpinner final: public frameworks::VisibilityContainer {
   CCResizableSprite* spinner;
   bool boxed = false;
 public:
@@ -16,4 +17,4 @@ public:
   void onOpen() override;
   void onClose() override;
 };
-
+GDL_NS_END

@@ -1,11 +1,10 @@
 #include <Geode/Geode.hpp>
 
-#include "Geode/cocos/platform/win32/CCEGLView.h"
 #include "events/KeyEvent.hpp"
 #include "events/MouseEvent.hpp"
 #include "../Game.hpp"
 
-using namespace gdlazer::framework;
+using namespace gdlazer::frameworks;
 using namespace geode;
 
 // ============ Mouse input ============

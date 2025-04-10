@@ -6,7 +6,7 @@
 #include <Geode/utils/ranges.hpp>
 #include "ButtonConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../../frameworks/graphics/CCEase2.hpp"
 
 GDL_NS_START
 using namespace frameworks;
@@ -23,10 +23,11 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
   colorBg->setOpacity(255);
   colorBg->setZOrder(-77);
   addChild(colorBg);
-  addListener("nodeLayoutUpdate",[this](NodeEvent* e){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
     auto the = CCNode::getContentSize();
     colorBg->setContentSize(the);
     colorBg->setPosition(the/2);
+    return true;
   });
 
   return true;
@@ -82,8 +83,8 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   j->addChild(t);
   j->addChild(b);
   j->setID("buttonarea_"+tag);
-  j->setContentSizeWithUnit(CCSize(100,100),Unit::Percent,Unit::Percent);
-  j->setPositionWithUnit({50,0},Unit::Percent,Unit::OpenGL);
+  j->setContentSize({100,100},Unit::Percent);
+  j->setPosition({50,0},Unit::Percent,Unit::OpenGL);
   buttonsMenus[tag] = j;
   _buttons[tag] = buttons.inner();
   log::info("[ButtonArea]: Button menu \"{}\" registered.", tag);
@@ -136,8 +137,7 @@ void ButtonArea::show(std::string tag) {
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
-          i->setHoverEnabled(true);
-          i->setClickEnabled(true);
+          i->setTouchEnabled(true);
           i->askForUpdate(true);
         })
       ));
@@ -155,8 +155,7 @@ void ButtonArea::show(std::string tag) {
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
-          i->setHoverEnabled(true);
-          i->setClickEnabled(true);
+          i->setTouchEnabled(true);
           i->askForUpdate(true);
         })
       ));
@@ -190,8 +189,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
     if (collapse) {
       for (int idx = 0; idx<j.size(); idx++) {
         auto i = j[idx];
-        i->setHoverEnabled(false);
-        i->setClickEnabled(false);
+        i->setTouchEnabled(false);
         auto pos = i->getPosition();
         i->runAction(
           EasingEffect::create(
@@ -216,8 +214,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
     } else {
       for (int idx = 0; idx<j.size(); idx++) {
         auto i = j[idx];
-        i->setHoverEnabled(false);
-        i->setClickEnabled(false);
+        i->setTouchEnabled(false);
         auto pos = i->getPosition();
         i->runAction(
           EasingEffect::create(

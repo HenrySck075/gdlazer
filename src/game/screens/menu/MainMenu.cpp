@@ -3,9 +3,10 @@
 #include "ButtonConstants.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 
+GDL_NS_START
+using namespace frameworks;
 static const CCPoint pos {-ButtonSystem::WEDGE_WIDTH*4,BUTTON_AREA_HEIGHT/2};
 
-GDL_NS_START
 MainMenu* MainMenu::create() {
   $create_class(MainMenu, init);
 }
@@ -48,11 +49,12 @@ bool MainMenu::init() {
   joe->setOpacity(0);
   addChild(joe);
   
-  addListener("nodeLayoutUpdate", [this](NodeEvent* ){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* ){
     joe->setPosition(CCNode::getContentSize()-CCSize{5,5});
+    return true;
   });
 
-  addListener("musicStarted", [this,songTitle,songArtist,levelInfo](NodeEvent*) {
+  addListener<MusicStarted>([this,songTitle,songArtist,levelInfo](MusicStarted*) {
     bg->switchBackground();
     auto a = AudioManager::get();
     songTitle->setString(a->getSongName().c_str());
@@ -70,6 +72,7 @@ bool MainMenu::init() {
       actions->insertObject(CCFadeOut::create(0.25),0);
     }
     joe->runAction(CCSequence::create(actions));
+    return true;
   });
   return true;
 }

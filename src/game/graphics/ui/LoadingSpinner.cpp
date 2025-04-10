@@ -1,19 +1,21 @@
 #include "LoadingSpinner.hpp"
 #include "../../../frameworks/graphics/sprites/FontAwesome.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../../frameworks/graphics/CCEase2.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
+GDL_NS_START
+using namespace frameworks;
 bool LoadingSpinner::init(bool boxedP, bool invert) {
   if (!VisibilityContainer::init()) return false;
   
   GLubyte boxColor = invert ? 255 : 0;
   GLubyte spinnerColor = invert ? 0 : 255;
-  setColor({boxColor,boxColor,boxColor,0});
+  setBackgroundColor({boxColor,boxColor,boxColor,0});
 
   boxed = boxedP;
   if (boxed) {
-    setColor({boxColor,boxColor,boxColor,255});
-    setRadius(20);
+    setBackgroundColor({boxColor,boxColor,boxColor,255});
+    setBorderRadius(20);
   }
   setScale(0.8);
   setAnchorPoint({0.5,0.5});
@@ -22,9 +24,10 @@ bool LoadingSpinner::init(bool boxedP, bool invert) {
   spinner = FontAwesome::Solid::CircleNotch;
   if (boxed) spinner->setScale(0.6);
   spinner->setColor({spinnerColor,spinnerColor,spinnerColor});
-  addListener("nodeLayoutUpdate", [this](NodeEvent* e){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated*){
     spinner->setContentSize(CCNode::getContentSize());
     spinner->setPosition(CCNode::getContentSize()/2);
+    return true;
   });
   addChild(spinner);
   setCascadeOpacityEnabled(false);
@@ -89,3 +92,4 @@ void LoadingSpinner::onClose() {
     )
   );
 }
+GDL_NS_END

@@ -4,7 +4,9 @@ using namespace geode::prelude;
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../frameworks/graphics/containers/Container.hpp"
 
-class Triangles : public Container {
+GDL_NS_START
+
+class Triangles : public frameworks::Container {
 private:
   ccColor3B m_triangleColor;
   int triangles = 0;
@@ -24,4 +26,4 @@ public:
   void onEnter() override;
   static Triangles* create(int quantity, ccColor3B baseColor);
 };
-
+GDL_NS_END

@@ -7,9 +7,6 @@
 
 GDF_NS_START
 
-template<typename T>
-concept GameSubclass = std::is_base_of_v<Game, T>;
-
 class Game : public cocos2d::CCScene, public EventTarget {
 protected:
   bool doDispatchEvent(Event *event, std::type_index type) override;
@@ -45,7 +42,8 @@ public:
   void update(float dt);
 
   static geode::Ref<Game> get(bool createIfNotExist = true);
-  template<GameSubclass T>
+
+  template<typename T, std::enable_if_t<std::is_base_of_v<Game, T>>>
   static geode::Ref<T> getAs(bool createIfNotExist = true) {
     auto instance = get();
     if ((!instance || dynamic_cast<T*>(instance.operator->())) && createIfNotExist) {

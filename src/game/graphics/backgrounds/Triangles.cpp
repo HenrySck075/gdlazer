@@ -1,6 +1,7 @@
 #include "Triangles.hpp"
 #include "../../../utils.hpp"
 
+GDL_NS_START
 Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
   auto ret = new Triangles();
   if (ret && ret->init(quantity, baseColor)) {
@@ -17,7 +18,7 @@ bool Triangles::init(int quantity, ccColor3B color) {
   if (!Container::init()) return false;
   m_triangleColor = color;
   triangles = quantity;
-  setContentSizeWithUnit({100,100},Unit::Percent,Unit::Percent);
+  setContentSize({100,100},frameworks::Unit::Percent);
 
   setCascadeOpacityEnabled(true);
 
@@ -87,3 +88,5 @@ void Triangles::onEnter() {
     j = true;
   });
 }
+
+GDL_NS_END

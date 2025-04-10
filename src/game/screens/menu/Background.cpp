@@ -5,6 +5,8 @@
 #include <random>
 
 GDL_NS_START
+using namespace frameworks;
+
 bool Background::init() {
   Container::init();
   m_backgroundGetListener.bind([this](meow::Event* e){
@@ -105,15 +107,16 @@ bool Background::init() {
   }, "<Background:BGImageGet>")
   );
   setOpacity(255);
-  setColor({0,0,0,0});
+  setBackgroundColor({0,0,0,0});
   setContentSize({100,100},Unit::Percent);
-  addListener("nodeLayoutUpdate", [this](NodeEvent* ev){
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* ev){
     //auto e = static_cast<NodeLayoutUpdate*>(ev);
     if (m_background) {
-      auto s = CCLayer::getContentSize();
+      auto s = this->CCLayer::getContentSize();
       m_background->setPosition(s/2);
       m_background->setContentSize(s);
     }
+    return true;
   });
   return true;
 }
