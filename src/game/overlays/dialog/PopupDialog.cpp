@@ -1,8 +1,11 @@
 #include "PopupDialog.hpp"
 #include "../../graphics/backgrounds/Triangles.hpp"
-#include "../../../framework/graphics/containers/FillFlowContainer.hpp"
+#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../graphics/ui/OsuText.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../../frameworks/graphics/CCEase2.hpp"
+
+GDL_NS_START
+using namespace frameworks;
 
 float PopupDialog::width = 250.f;
 float PopupDialog::height = 230.f;
@@ -12,7 +15,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   CCSize size = CCSize{250,230};
   main->setContentSize(size);
   // sizes the dialog overlay to fullscreen aka not counting the toolbar height
-  setContentSizeWithUnit({1,1},Unit::Viewport,Unit::Viewport);
+  setContentSize({1,1},Unit::Viewport);
   setUserObject("popupdialog"_spr, CCBool::create(true));
 
   auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -84,8 +87,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   main->addChild(btnLayer);
 
   for (auto& btn : buttons) { 
-    btn->setHoverEnabled(false);
-    btn->setClickEnabled(false);
+    btn->setTouchEnabled(false);
     btnLayer->addChild(btn); 
   }
   btnLayer->setID("buttonLayer");
@@ -95,7 +97,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   //label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
 
   // block keyboard inputs
-  addListener("keyboardEvent", [](NodeEvent* e){e->preventDefault();});
+  addListener<KeyEvent>([](KeyEvent* e){e->preventDefault();return true;});
   return true;
 }
 
@@ -111,8 +113,7 @@ void PopupDialog::onOpen() {
     btn->runAction(CCSequence::createWithTwoActions(
       CCDelayTime::create(0.75),
       CCCallFuncL::create([btn]() {
-        btn->setHoverEnabled(true);
-        btn->setClickEnabled(true);
+        btn->setTouchEnabled(true);
       })
     ));
   }
@@ -128,8 +129,7 @@ void PopupDialog::onClose() {
   //setKeypadEnabled(false);
   //setTouchEnabled(false);
   for (auto* btn : CCArrayExt<PopupDialogButton*>(main->getChildByID("buttonLayer")->getChildren())) {
-    btn->setHoverEnabled(false);
-    btn->setClickEnabled(false);
+    btn->setTouchEnabled(false);
   }
   for (auto* obj : CCArrayExt<CCNode*>(main->getChildren())) {
     obj->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
@@ -146,6 +146,22 @@ void PopupDialog::onClose() {
   ));
 }
 
-void PopupDialog::keyBackClicked() {
-  hide();
+bool PopupDialog::init2(
+    std::string const &title, std::string const &content,
+    std::string const &confirmButtonText, std::string const &cancelButtonText,
+    frameworks::ClickableContainer::ButtonCallback confirmCallback) {
+  return init(
+      title, content,
+      {PopupDialogButton::create(confirmButtonText.c_str(),
+                                 dialog_button_primary,
+                                 "dialog-ok-select.wav"_spr,
+                                 [this, confirmCallback](Container *the) {
+                                   confirmCallback(the);
+                                   hide();
+                                 }),
+       PopupDialogButton::create(
+           cancelButtonText.c_str(), dialog_button_secondary,
+           "dialog-cancel-select.wav"_spr, [this](CCNode *self) { hide(); })});
 }
+
+GDL_NS_END

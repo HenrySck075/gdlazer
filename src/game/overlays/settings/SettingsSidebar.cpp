@@ -1,13 +1,18 @@
 #include "SettingsSidebar.hpp"
 #include "../OverlayColorProvider.hpp"
 
-const float SettingsSidebar::CONTRACTED_WIDTH = 70;
-const float SettingsSidebar::EXPANDED_WIDTH = 170;
+GDL_NS_START
+using namespace frameworks;
+
+const float SettingsSidebar::s_contractedWidth = 70;
+const float SettingsSidebar::c_expandedWidth = 170;
 
 bool SettingsSidebar::init() {
   if (!Container::init()) return false;
-  setContentSizeWithUnit({EXPANDED_WIDTH,100},Unit::UIKit,Unit::Percent);
-  setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background5());
+  setContentSize({c_expandedWidth,100},Unit::UIKit,Unit::Percent);
+  setBackgroundColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background5());
   setOpacity(255);
   return true;
 }
+
+GDL_NS_END

@@ -20,7 +20,7 @@ static std::map<FontType, const char*> fontTypeMap = {
 };
 
 // todo: figure out why custom ttf isnt loaded in
-CCLabelTTF* OsuText(const char* text, FontType fontType, float fontSize, CCTextAlignment alignment) {
+CCLabelTTF* OsuTextF(const char* text, FontType fontType, float fontSize, CCTextAlignment alignment) {
   auto fontFile = fontTypeMap[fontType];
   //log::debug("[OsuText]: Font path of {} is {}",fontFile,); 
   // the j
@@ -37,4 +37,10 @@ CCLabelTTF* OsuText(const char* text, FontType fontType, float fontSize, CCTextA
   return ret;
 }
 
+bool OsuText::init(const char* text, FontType font, float fontSize, CCTextAlignment alignment) {
+  if (!frameworks::Container::init()) return false;
+  m_textNode = OsuTextF(text, font, fontSize, alignment);
+  addChild(m_textNode);
+  return true;
+};
 GDL_NS_END

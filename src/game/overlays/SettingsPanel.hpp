@@ -5,6 +5,8 @@
 #include "../../utils.hpp"
 #include "settings/SettingsSidebar.hpp"
 
+GDL_NS_START
+
 class SettingsPanel : public OsuOverlayContainer {
 protected:
   SettingsSidebar* sidebar;
@@ -42,3 +44,5 @@ public:
   void onSectionSelect(Container* old, Container* new_) override;
   $default_create(SettingsSections);
 };
+
+GDL_NS_END

@@ -6,7 +6,7 @@ bool SectionsContainer::init() {
   if (!ScrollContainer::init(contentsContainer)) return false;
   // can you be normal
   //currentSection.addCallback(&SectionsContainer::onSectionSelect);
-  currentSection.addCallback(&SectionsContainer::onSectionSelect);
+  currentSection.addCallback(std::bind(&SectionsContainer::onSectionSelect, this, std::placeholders::_1));
   return true;
 }
 

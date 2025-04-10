@@ -43,8 +43,8 @@ public:
 
   static geode::Ref<Game> get(bool createIfNotExist = true);
 
-  template<typename T, std::enable_if_t<std::is_base_of_v<Game, T>>>
-  static geode::Ref<T> getAs(bool createIfNotExist = true) {
+  template<typename T>
+  static geode::Ref<typename std::enable_if<std::is_base_of<Game, T>::value, T>::type> getAs(bool createIfNotExist = true) {
     auto instance = get();
     if ((!instance || dynamic_cast<T*>(instance.operator->())) && createIfNotExist) {
       instance = new T();
@@ -52,7 +52,7 @@ public:
       instance->init();
       setInstance(instance);
     }
-    return instance;
+    return static_cast<T*>(instance.operator->());
 
   };
 };

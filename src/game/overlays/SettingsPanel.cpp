@@ -1,10 +1,12 @@
 #include "SettingsPanel.hpp"
 #include "../OsuGame.hpp"
 #include "../overlays/toolbar/ToolbarToggleButton.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../frameworks/graphics/CCEase2.hpp"
 #include "OverlayColorProvider.hpp"
 
-const float SettingsPanel::sidebar_width = SettingsSidebar::EXPANDED_WIDTH;
+GDL_NS_START
+
+const float SettingsPanel::sidebar_width = SettingsSidebar::c_expandedWidth;
 const float SettingsPanel::TRANSITION_LENGTH = 0.6;
 const float SettingsPanel::PANEL_WIDTH = 400;
 const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel::PANEL_WIDTH;
@@ -22,7 +24,7 @@ bool SettingsPanel::init() {
   main->addChild(mainPanel);
   
   sidebar = SettingsSidebar::create();
-  sidebar->setPositionWithUnit({-SettingsSidebar::EXPANDED_WIDTH,0},Unit::UIKit,Unit::OpenGL);
+  sidebar->setPositionWithUnit({-SettingsSidebar::c_expandedWidth,0},Unit::UIKit,Unit::OpenGL);
   main->addChild(sidebar);
 
   main->setContentSizeWithUnit({WIDTH,100},Unit::UIKit,Unit::Percent);
@@ -39,14 +41,14 @@ void SettingsPanel::onOpen() {
     CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
   ));
   mainPanel->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{SettingsSidebar::EXPANDED_WIDTH,0}),5
+    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{SettingsSidebar::c_expandedWidth,0}),5
   ));
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   if (s->getActionByTag(7)) s->stopActionByTag(7);
   s->runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(
       SettingsPanel::TRANSITION_LENGTH, 
-      {(float)SettingsSidebar::EXPANDED_WIDTH/4,0}
+      {(float)SettingsSidebar::c_expandedWidth/4,0}
     ),5
   ))->setTag(7);
 }
@@ -59,7 +61,7 @@ void SettingsPanel::onClose() {
   sidebar->runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(
       SettingsPanel::TRANSITION_LENGTH,
-      {-SettingsSidebar::EXPANDED_WIDTH,0}
+      {-SettingsSidebar::c_expandedWidth,0}
     ),5
   ));
   mainPanel->runAction(easingsActions::CCEaseOut::create(
@@ -82,3 +84,5 @@ void SettingsSections::onSectionSelect(Container* old, Container* new_) {
   old->setOpacity(200);
   new_->setOpacity(255);
 };
+
+GDL_NS_END

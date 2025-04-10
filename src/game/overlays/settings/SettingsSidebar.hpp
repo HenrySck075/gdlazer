@@ -1,12 +1,16 @@
 #pragma once 
-#include "../../../framework/graphics/containers/Container.hpp"
+#include "../../../frameworks/graphics/containers/Container.hpp"
 #include "../../../utils.hpp"
 
-class SettingsSidebar : public Container {
+GDL_NS_START
+
+class SettingsSidebar : public frameworks::Container {
 public: 
-  static const float CONTRACTED_WIDTH;
-  static const float EXPANDED_WIDTH;
+  static const float s_contractedWidth;
+  static const float c_expandedWidth;
 
   bool init();
   $default_create(SettingsSidebar);
 };
+
+GDL_NS_END

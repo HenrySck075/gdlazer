@@ -1,18 +1,19 @@
 #pragma once
 
 #include "../graphics/containers/OsuOverlayContainer.hpp"
-#include "../../framework/audio/AudioManager.hpp"
+#include "../../frameworks/audio/AudioManager.hpp"
 
+GDL_NS_START
 class NowPlayingOverlay : public OsuOverlayContainer {
 private:
-  const float player_width = 400;
-  const float player_height = 130;
-  const float transition_length = 0.8;
-  const float progress_height = 10;
-  const float bottom_black_area_height = 55;
+  const float c_playerWidth = 400;
+  const float c_playerHeight = 130;
+  const float c_transitionLength = 0.8;
+  const float c_progressHeight = 10;
+  const float c_bottomBlackAreaHeight = 55;
   const float margin = 10;
 
-  AudioManager* ctrl;
+  frameworks::AudioManager* ctrl;
 public:
   bool init();
   $default_create(NowPlayingOverlay);
@@ -20,3 +21,4 @@ public:
   void onOpen() override;
   void onClose() override;
 };
+GDL_NS_END

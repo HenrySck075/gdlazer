@@ -1,8 +1,12 @@
 #pragma once
 
-#include "../../../framework/graphics/containers/ClickableContainer.hpp"
+#include "../../../frameworks/graphics/containers/ClickableContainer.hpp"
+#include "../../../frameworks/graphics/containers/CircularContainer.hpp"
 
-class SettingsButton : public ClickableContainer {
+GDL_NS_START
+
+class SettingsButton : public frameworks::ClickableContainer, public frameworks::CircularContainer {
+  bool setup(std::string label, ccColor3B color);
 public:
   bool init(std::string label, ccColor3B color);
   bool initWithCallback(std::string label, ccColor3B color, ButtonCallback clickCb);
@@ -13,3 +17,5 @@ public:
     $create_class(SettingsButton, initWithCallback, label, color, clickCb);
   }
 };
+
+GDL_NS_END
