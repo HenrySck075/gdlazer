@@ -5,7 +5,7 @@
 ////////////////////////////////////////////////////////////
 
 #include "Interpolable.hpp"
-#include "..\graphics\color\Color4.hpp"
+#include "../graphics/color/Color4.hpp"
 GDF_NS_START
 
 template<>

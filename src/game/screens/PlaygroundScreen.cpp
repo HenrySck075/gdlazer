@@ -7,7 +7,7 @@
 #include "../../frameworks/input/events/MouseEvent.hpp"
 #include "../../frameworks/Game.hpp"
 
-using namespace gdlazer::framework;
+using namespace gdlazer::frameworks;
 
 GDL_NS_START
 
@@ -36,8 +36,7 @@ bool PlaygroundScreen::init() {
     });
   }
 
-  auto scroll = ScrollContainer::create();
-  scroll->setScrollChild(flowContainer);
+  auto scroll = ScrollContainer::create(flowContainer);
   scroll->setScrollDirection(ScrollDirection::Horizontal);
   this->addChild(scroll);
   geode::queueInMainThread([flowContainer, scroll] {

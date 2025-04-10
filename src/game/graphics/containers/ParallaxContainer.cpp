@@ -4,13 +4,13 @@
 #include "../../OsuGame.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
 
+GDL_NS_START
 class ParallaxStateUpdated : public frameworks::Event {
 public:
   bool m_enabled;
   ParallaxStateUpdated(bool e) : m_enabled(e) {};
 };
 
-GDL_NS_START
 bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   using namespace frameworks;
   if (!Container::init()) return false;
@@ -62,6 +62,6 @@ GDL_NS_END
 
 $execute{
   listenForSettingChanges("parallax", +[](bool v){
-    gdlazer::game::OsuGame::get()->dispatchEvent(new ParallaxStateUpdated(v));
+    gdlazer::game::OsuGame::get()->dispatchEvent(new gdlazer::game::ParallaxStateUpdated(v));
   });
 }

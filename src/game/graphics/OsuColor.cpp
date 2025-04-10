@@ -1,5 +1,7 @@
 #include "OsuColor.hpp"
 
+GDL_NS_START
+
 Color4 OsuColor::TeamColorRed = Color4::fromHex("AA1414");
 Color4 OsuColor::TeamColorBlue = Color4::fromHex("1462AA");
 
@@ -162,3 +164,6 @@ Color4 OsuColor::SpotlightColor = Green2;
 Color4 OsuColor::FeaturedArtistColor = Blue2;
 
 Color4 OsuColor::DangerousButtonColor = Pink3;
+
+
+GDL_NS_END
