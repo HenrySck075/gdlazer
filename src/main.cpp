@@ -29,7 +29,7 @@ struct e : public Modify<e, MenuLayer> {
     return true;
   };
   void onMyButton(CCObject*) {
-    auto g = gdlazer::frameworks::Game::get();
+    auto g = gdlazer::game::OsuGame::get();
     cocos2d::CCDirector::get()->pushScene(g);
     g->pushScreen(GDL_NS::MainMenu::create());
   }

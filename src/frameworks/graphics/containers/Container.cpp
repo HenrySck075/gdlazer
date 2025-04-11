@@ -146,6 +146,7 @@ fish:
     return true;
   });
 
+  scheduleUpdate();
   return true;
 }
 
@@ -284,6 +285,7 @@ void Container::updatePositionWithUnit() {
     processUnit(m_position.x, m_positionUnit[0], true),
     processUnit(m_position.y, m_positionUnit[1], false)
   }));
+  log::debug("{}", m_obPosition);
 }
 
 void Container::setClippingEnabled(bool enabled) {
@@ -440,7 +442,7 @@ void Container::updateContainerBox() {
 
   //geode::log::debug("inner rect of {}: {}", this, innerRect);
 
-  auto p = h2d::CPolylineF(innerRect).getPts();
+  std::set<h2d::Point2dF> p;
   if (m_borderRadius > 0) {
     auto size = getContentSize();
     auto radius = m_borderRadius;
@@ -451,10 +453,15 @@ void Container::updateContainerBox() {
     }
 
     p.clear();
-    p.insert(p.begin(), vertices.begin(), vertices.end());
+    p.insert(vertices.begin(), vertices.end());
+  } else {
+    auto& rp = h2d::CPolylineF(innerRect).getPts();
+    p.insert(rp.begin(), rp.end());
   }
-  if (!m_containerBoxO) m_containerBoxO = new h2d::CPolylineF(p);
-  else ((h2d::CPolylineF*)m_containerBoxO)->set(p);
+  std::vector<h2d::Point2dF> t;
+  t.assign(p.begin(), p.end());
+  if (!m_containerBoxO) m_containerBoxO = new h2d::CPolylineF(t);
+  else ((h2d::CPolylineF*)m_containerBoxO)->set(t);
 
   transformContainerBox();
   //log::debug("{}", p.getPts());
@@ -484,8 +491,7 @@ void Container::setRotation(float rotation) {
   m_containerBoxDesynced = true;
 }
 
-GDF_NS_END
-cocos2d::CCPoint gdlazer::frameworks::Container::calculateAnchoredPosition(
+cocos2d::CCPoint Container::calculateAnchoredPosition(
     const cocos2d::CCPoint &position) {
   using namespace geode;
   auto size = getContentSize();
@@ -511,3 +517,4 @@ cocos2d::CCPoint gdlazer::frameworks::Container::calculateAnchoredPosition(
     return position;
   }
 }
+GDF_NS_END

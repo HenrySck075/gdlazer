@@ -148,7 +148,7 @@ private:
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
   cocos2d::CCPoint m_position;
   Unit m_positionUnit[2] {Unit::OpenGL, Unit::OpenGL};
-  bool m_clippingEnabled = true;
+  bool m_clippingEnabled = false;
   /// whether or not the mouse was in bounds prior to the current mouse event
   bool m_lastInBounds = false;
 

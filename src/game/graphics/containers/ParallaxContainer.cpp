@@ -19,7 +19,7 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   m_director = CCDirector::sharedDirector();
   setAnchorPoint({0.5, 0.5});
   //setPosition(director->getWinSize() / 2);
-  //setAnchor(Anchor::Center);
+  setAnchor(Anchor::Center);
   setContentSize({100,100},Unit::Percent);
   if (scale) setScale(1 + abs(parallaxAmount));
   addListener<MouseEvent>([this](MouseEvent* e){
@@ -55,7 +55,6 @@ void ParallaxContainer::updateParallax(const CCPoint& cursorPos) {
   if (!m_parallax) return;
   auto ws = m_director->getWinSize()/2;
   auto dist = (cursorPos - ws) * m_parallaxAmount;
-  dist.y = -dist.y;
   setPosition(dist);
 }
 GDL_NS_END

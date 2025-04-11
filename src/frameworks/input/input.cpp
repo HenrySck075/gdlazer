@@ -48,7 +48,7 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
     CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
     auto g = Game::get(false);
     if (g!=nullptr && cocos2d::CCScene::get() == g) {
-      g->setContentSize(cocos2d::CCDirector::get()->getWinSize());
+      g->setContentSize(getDesignResolutionSize());
       g->dispatchEvent(new NodeLayoutUpdated(nullptr));
     }
   }
