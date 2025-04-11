@@ -38,37 +38,37 @@ namespace impl {
 
 class EventTarget {
 public:
-    template<EventType T>
-    using EventListener = std::function<bool(T*)>;
+  template<EventType T>
+  using EventListener = std::function<bool(T*)>;
 
-    template<EventType T>
-    void addListener(const EventListener<T>& listener) {
-      m_listeners[typeindex(T)].push_back(
-        std::make_shared<impl::EventListenerFuncTemplated<T>>(listener)
-      );
-    };
+  template<EventType T>
+  void addListener(const EventListener<T>& listener) {
+    m_listeners[typeindex(T)].push_back(
+      std::make_shared<impl::EventListenerFuncTemplated<T>>(listener)
+    );
+  };
 
-    template<EventType T>
-    void removeListener(const EventListener<T>& listener) {
-      auto it = m_listeners.find(typeindex(T));
-      if (it != m_listeners.end()) {
-        auto &listeners = it->second;
-        // Remove all matching listeners
-         listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
-           [&](const EventListenerFunc &l) {
-             return l == listener;
-           }),
-        listeners.end());
-      }
-    };
-
-    template<EventType T>
-    bool dispatchEvent(T* event) {
-      return doDispatchEvent(event, typeindex(T));
+  template<EventType T>
+  void removeListener(const EventListener<T>& listener) {
+    auto it = m_listeners.find(typeindex(T));
+    if (it != m_listeners.end()) {
+      auto &listeners = it->second;
+      // Remove all matching listeners
+       listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
+         [&](const EventListenerFunc &l) {
+           return l == listener;
+         }),
+      listeners.end());
     }
-  protected:
-    virtual bool doDispatchEvent(Event* event, std::type_index type);
-  private:
-    std::unordered_map<std::type_index, std::list<std::shared_ptr<EventListenerFunc>>> m_listeners;
+  };
+
+  template<EventType T>
+  bool dispatchEvent(T* event) {
+    return doDispatchEvent(event, typeindex(T));
+  }
+protected:
+  virtual bool doDispatchEvent(Event* event, std::type_index type);
+private:
+  std::unordered_map<std::type_index, std::list<std::shared_ptr<EventListenerFunc>>> m_listeners;
 };
 GDF_NS_END

@@ -5,7 +5,7 @@
 
 GDL_NS_START
 
-class SettingsButton : public frameworks::ClickableContainer, public frameworks::CircularContainer {
+class SettingsButton : public frameworks::ClickableContainer{
   bool setup(std::string label, ccColor3B color);
 public:
   bool init(std::string label, ccColor3B color);

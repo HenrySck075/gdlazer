@@ -11,7 +11,7 @@ struct CircularContainerImpl {
     float oldRadius = container->getBorderRadius();
     if (radius != oldRadius) container->setBorderRadius(radius);
   }
-}
+};
 
 /// A Container which is rounded on the shortest edge
 class CircularContainer : public Container {

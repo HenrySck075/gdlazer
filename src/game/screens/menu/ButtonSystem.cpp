@@ -233,7 +233,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       OsuIcon::Settings, 
       Color4(85, 85, 85, 255), 
       [this](CCNode*j){
-        dynamic_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->select();
+        static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->select();
       }
     ),
     MainMenuButton::create(

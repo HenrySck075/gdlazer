@@ -16,7 +16,7 @@ public:
   bool initWithCallback(std::string sfx, ClickableContainer::ButtonCallback callback, bool consumeTap = false);
 
   /// im just setting one of them to virtual because wdym non rtti object
-  virtual void click();
+  void click();
 };
 
 GDF_NS_END

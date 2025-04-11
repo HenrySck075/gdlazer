@@ -57,7 +57,7 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   b->setLayout(RowLayout::create()->setGap(-1)->setAutoScale(false)->setAxisAlignment(AxisAlignment::Start)->setAxisReverse(true));
   int buttonsCount = buttons.size();
   for (int i = 1; i<buttonsCount; i++) {
-    auto item = dynamic_cast<MainMenuButton*>(buttons.inner()->objectAtIndex(i-1));
+    auto item = buttons[i];
     b->addChild(item);
     item->setZOrder(buttonsCount-i);
   };
@@ -69,7 +69,7 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   t->setAnchorPoint({1,0.5});
   t->setPosition(anchorPosition-gap);
   {
-    auto leftChild = static_cast<CCNode*>(buttons.inner()->firstObject());
+    auto leftChild = buttons[0];
     t->addChild(leftChild);
     leftChild->setAnchorPoint({1,0.5});
   }
@@ -120,7 +120,7 @@ void ButtonArea::show(std::string tag) {
     colorBg->runAction(CCEaseSineIn::create(CCScaleTo::create(0.3,1,1)));
   }
 
-  CCArrayExt<CCNode*> j = _buttons[tag].operator->();
+  CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
   /*
   auto menuLayout = buttonsMenus[tag]->getLayout();
   buttonsMenus[tag]->setLayout(nullptr);
@@ -141,7 +141,7 @@ void ButtonArea::show(std::string tag) {
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
-          auto nugget = dynamic_cast<MainMenuButton*>(i);
+          auto nugget = i;
           nugget->setTouchEnabled(true);
           nugget->askForUpdate(true);
         })
@@ -160,7 +160,7 @@ void ButtonArea::show(std::string tag) {
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
-          auto nugget = dynamic_cast<MainMenuButton*>(i);
+          auto nugget = i;
           nugget->setTouchEnabled(true);
           nugget->askForUpdate(true);
         })
@@ -187,14 +187,14 @@ void ButtonArea::show(std::string tag) {
 void ButtonArea::hide(std::string tag, bool collapse, bool close) {
   if (buttonsMenus.contains(tag)) {
     log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
-    CCArrayExt<CCNode*> j = _buttons[tag].operator->();
+    CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
     if (close) {
       colorBg->runAction(easingsActions::CCEaseOut::create(CCScaleTo::create(0.3,1,0), 5));
       hidden = true;
     }
     if (collapse) {
       for (int idx = 0; idx<j.size(); idx++) {
-        auto i = dynamic_cast<MainMenuButton*>(j[idx]);
+        auto i = j[idx];
         i->setTouchEnabled(false);
         auto pos = i->getPosition();
         i->runAction(
@@ -219,7 +219,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
       );
     } else {
       for (int idx = 0; idx<j.size(); idx++) {
-        auto i = dynamic_cast<MainMenuButton*>(j[idx]);
+        auto i = j[idx];
         i->setTouchEnabled(false);
         auto pos = i->getPosition();
         i->runAction(
