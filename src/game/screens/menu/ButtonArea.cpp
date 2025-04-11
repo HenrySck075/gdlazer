@@ -57,8 +57,9 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   b->setLayout(RowLayout::create()->setGap(-1)->setAutoScale(false)->setAxisAlignment(AxisAlignment::Start)->setAxisReverse(true));
   int buttonsCount = buttons.size();
   for (int i = 1; i<buttonsCount; i++) {
-    b->addChild(buttons[i]);
-    buttons[i]->setZOrder(buttonsCount-i);
+    auto item = dynamic_cast<MainMenuButton*>(buttons.inner()->objectAtIndex(i-1));
+    b->addChild(item);
+    item->setZOrder(buttonsCount-i);
   };
   b->updateLayout();
   b->setTag(2);
@@ -67,8 +68,11 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   t->ignoreAnchorPointForPosition(false);
   t->setAnchorPoint({1,0.5});
   t->setPosition(anchorPosition-gap);
-  t->addChild(buttons[0]);
-  buttons[0]->setAnchorPoint({1,0.5});
+  {
+    auto leftChild = static_cast<CCNode*>(buttons.inner()->firstObject());
+    t->addChild(leftChild);
+    leftChild->setAnchorPoint({1,0.5});
+  }
   t->setLayout(RowLayout::create()
     ->setGap(-1)
     ->setAutoScale(false)
@@ -116,7 +120,7 @@ void ButtonArea::show(std::string tag) {
     colorBg->runAction(CCEaseSineIn::create(CCScaleTo::create(0.3,1,1)));
   }
 
-  CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
+  CCArrayExt<CCNode*> j = _buttons[tag].operator->();
   /*
   auto menuLayout = buttonsMenus[tag]->getLayout();
   buttonsMenus[tag]->setLayout(nullptr);
@@ -137,8 +141,9 @@ void ButtonArea::show(std::string tag) {
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
-          i->setTouchEnabled(true);
-          i->askForUpdate(true);
+          auto nugget = dynamic_cast<MainMenuButton*>(i);
+          nugget->setTouchEnabled(true);
+          nugget->askForUpdate(true);
         })
       ));
     }
@@ -155,8 +160,9 @@ void ButtonArea::show(std::string tag) {
           CCFadeIn::create(animationSpeed)
         )),
         CCCallFuncL::create([i](){
-          i->setTouchEnabled(true);
-          i->askForUpdate(true);
+          auto nugget = dynamic_cast<MainMenuButton*>(i);
+          nugget->setTouchEnabled(true);
+          nugget->askForUpdate(true);
         })
       ));
     }
@@ -181,14 +187,14 @@ void ButtonArea::show(std::string tag) {
 void ButtonArea::hide(std::string tag, bool collapse, bool close) {
   if (buttonsMenus.contains(tag)) {
     log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
-    CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
+    CCArrayExt<CCNode*> j = _buttons[tag].operator->();
     if (close) {
       colorBg->runAction(easingsActions::CCEaseOut::create(CCScaleTo::create(0.3,1,0), 5));
       hidden = true;
     }
     if (collapse) {
       for (int idx = 0; idx<j.size(); idx++) {
-        auto i = j[idx];
+        auto i = dynamic_cast<MainMenuButton*>(j[idx]);
         i->setTouchEnabled(false);
         auto pos = i->getPosition();
         i->runAction(
@@ -213,7 +219,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
       );
     } else {
       for (int idx = 0; idx<j.size(); idx++) {
-        auto i = j[idx];
+        auto i = dynamic_cast<MainMenuButton*>(j[idx]);
         i->setTouchEnabled(false);
         auto pos = i->getPosition();
         i->runAction(

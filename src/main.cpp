@@ -1,3 +1,4 @@
+#include "game/screens/menu/MainMenu.hpp"
 #include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
@@ -30,7 +31,7 @@ struct e : public Modify<e, MenuLayer> {
   void onMyButton(CCObject*) {
     auto g = gdlazer::frameworks::Game::get();
     cocos2d::CCDirector::get()->pushScene(g);
-    g->pushScreen(GDL_NS::PlaygroundScreen::create());
+    g->pushScreen(GDL_NS::MainMenu::create());
   }
 };
 

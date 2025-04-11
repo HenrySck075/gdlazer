@@ -111,7 +111,7 @@ void drawSegment2(CCDrawNode* drawNode, const CCPoint& startPoint, const CCPoint
 void LogoVisualization::update(float delta) {
   CCNode::update(delta);
   t+=delta;
-  auto logo = static_cast<OsuLogo*>(m_pParent);
+  auto logo = dynamic_cast<OsuLogo*>(m_pParent);
   drawNode->setScale(logo->logoSprite->getScale());
   if (t<time_between_updates/1000) return;
   float dominantVol = 0;

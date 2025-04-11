@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Geode/cocos/layers_scenes_transitions_nodes/CCScene.h>
 #include <type_traits>
 #include "bindables/EventTarget.hpp"

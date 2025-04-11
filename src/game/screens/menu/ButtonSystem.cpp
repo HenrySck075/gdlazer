@@ -233,7 +233,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       OsuIcon::Settings, 
       Color4(85, 85, 85, 255), 
       [this](CCNode*j){
-        static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->select();
+        dynamic_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->select();
       }
     ),
     MainMenuButton::create(
@@ -290,7 +290,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     if (e->m_eventType != frameworks::MouseEventType::Click) return true;
     auto cur = area->getCurrent();
     if (cur.has_value()) 
-      static_cast<MainMenuButton*>(
+      dynamic_cast<MainMenuButton*>(
         getChildByIDRecursive("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
       )->click();
     return true;

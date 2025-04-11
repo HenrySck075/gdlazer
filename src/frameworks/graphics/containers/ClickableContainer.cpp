@@ -30,6 +30,7 @@ bool ClickableContainer::init(std::string sfx, bool consumeTap) {
     if (m_consumeTap) e->stopPropagation();
     return true;
   });
+  return true;
 };
 void ClickableContainer::click() {
   auto box = boundingBoxFromContentSize(this);
