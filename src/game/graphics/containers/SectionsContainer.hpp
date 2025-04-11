@@ -9,9 +9,9 @@
 GDF_NS_START
 class SectionsContainer : public ScrollContainer {
 private:
-  FillFlowContainer* contentsContainer;
+  FillFlowContainer* m_contentsContainer;
 protected:
-  Bindable<Container*> currentSection;
+  Bindable<Container*> m_currentSection;
 public:
   bool init();
   $default_create(SectionsContainer);

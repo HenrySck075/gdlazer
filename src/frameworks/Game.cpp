@@ -61,6 +61,20 @@ void Game::pushScreen(Screen* screen) {
   m_currentScreen = screen;
 }
 
+void Game::replaceScreen(Screen* screen) {
+  m_screensContainer->addChild(screen);
+  screen->setContentSize({100,100}, Unit::Percent);
+  ScreenTransitionEvent e{m_currentScreen, screen};
+  screen->onScreenEnter(e);
+  if (m_currentScreen) {
+    m_currentScreen->onScreenExit(e);
+    m_screenStack.pop_back();
+    m_invisibleQueue.push_back(m_currentScreen);
+  }
+  m_screenStack.push_back(screen);
+  m_currentScreen = screen;
+}
+
 Screen* Game::popScreen() {
   if (m_screenStack.size() == 0) return nullptr;
   auto screen = m_screenStack.pop_back();
@@ -94,7 +108,7 @@ void Game::popOverlay(OverlayContainer* overlay) {
 };
 
 std::mutex g_fish;
-void setInstance(geode::Ref<Game> instance) {
+void Game::setInstance(geode::Ref<Game> instance) {
   s_instance = instance;
 };
 

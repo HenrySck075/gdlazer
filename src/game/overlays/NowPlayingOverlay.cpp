@@ -7,21 +7,21 @@ using namespace frameworks;
 
 bool NowPlayingOverlay::init() {
   if (!OsuOverlayContainer::init()) return false;
-  main->setAnchor(Anchor::TopRight);
-  main->setAnchorPoint({1,1});
+  m_main->setAnchor(Anchor::TopRight);
+  m_main->setAnchorPoint({1,1});
   //main->setPadding({3});
-  main->setBorderRadius(5);
-  main->setContentSize({c_playerWidth,c_playerHeight}, Unit::UIKit);
-  main->setScale(0.9);
-  main->setColor(OsuColor::YellowDarker);
-  main->setOpacity(0);
-  //name = "NowPlayingOverlay";
+  m_main->setBorderRadius(5);
+  m_main->setContentSize({c_playerWidth,c_playerHeight}, Unit::UIKit);
+  m_main->setScale(0.9);
+  m_main->setColor(OsuColor::YellowDarker);
+  m_main->setOpacity(0);
+  setName("NowPlayingOverlay");
   return true;
 }
 void NowPlayingOverlay::onOpen() {
   stopAllActions();
-  main->stopAllActions();
-  main->runAction(
+  m_main->stopAllActions();
+  m_main->runAction(
     CCSpawn::createWithTwoActions(
       easingsActions::CCEaseElasticOut::create(CCScaleTo::create(c_transitionLength, 1)),
       easingsActions::CCEaseOut::create(CCFadeTo::create(c_transitionLength, 255),5)
@@ -30,8 +30,8 @@ void NowPlayingOverlay::onOpen() {
 };
 void NowPlayingOverlay::onClose() {
   stopAllActions();
-  main->stopAllActions();
-  main->runAction(
+  m_main->stopAllActions();
+  m_main->runAction(
     CCSpawn::createWithTwoActions(
       easingsActions::CCEaseElasticOut::create(CCScaleTo::create(c_transitionLength, 0.9)),
       easingsActions::CCEaseOut::create(CCFadeTo::create(c_transitionLength, 0),5)

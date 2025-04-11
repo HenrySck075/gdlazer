@@ -6,7 +6,7 @@ GDF_NS_START
 // @note Cascade opacity has been disabled
 class OverlayContainer : public VisibilityContainer {
 protected:
-  Container* main;
+  Container* m_main;
 public:
   bool init();
 

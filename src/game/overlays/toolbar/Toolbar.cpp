@@ -1,21 +1,24 @@
 #include "Toolbar.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "ToolbarButtons.hpp"
-#include <henrysck075.easings/include/easings.hpp>
+#include "../../../frameworks/graphics/CCEase2.hpp"
 
 using namespace ToolbarConstants;
+GDL_NS_START
+using namespace frameworks;
+
 bool Toolbar::init() {
   if (!Container::init()) return false;
-  m_anchor = Anchor::Top;
-  auto bgColor = OsuColor::Gray(0.1f*255);
-  setContentSizeWithUnit({1,HEIGHT},Unit::Viewport,Unit::UIKit);
-  setAnchorPoint({0.5,1});
-  setPositionUnit(Unit::OpenGL,Unit::UIKit);
   setAnchor(Anchor::Top);
-  setPositionY(-HEIGHT);
+  auto bgColor = OsuColor::Gray(0.1f*255);
+  setContentSize({1,c_height},Unit::Viewport,Unit::UIKit);
+  setAnchorPoint({0.5,1});
+  setPosition({getPositionX(), -c_height},Unit::OpenGL,Unit::UIKit);
+  setAnchor(Anchor::Top);
+  setPositionY(-c_height);
 
-  //auto j = processUnit(TOOLTIP_HEIGHT,Unit::UIKit,false);
-  auto j = TOOLTIP_HEIGHT;
+  //auto j = processUnit(TOOLTIP_c_height,Unit::UIKit,false);
+  auto j = c_tooltipHeight;
   gradient = CCLayerGradient2::create({0,0,0,0},{0,0,0,0},{0,1},CCLG2Target::Start);
   gradient->setAnchorPoint({0,1});// keeping it at the bottom
   gradient->ignoreAnchorPointForPosition(false);
@@ -56,7 +59,7 @@ bool Toolbar::init() {
   setColor(bgColor);
   setOpacity(255);
 
-  addListener("nodeLayoutUpdate",[this,j,right](NodeEvent*e){
+  addListener<NodeLayoutUpdated>([this,j,right](NodeLayoutUpdated*e){
     gradient->setContentSize({CCNode::getContentSize().width,j});
     right->setPositionX(
       CCNode::getContentSize().width
@@ -64,14 +67,27 @@ bool Toolbar::init() {
       -10
 #endif
     );
+    return true;
   });
 
-  addListener("mouseEvent", [this](NodeEvent* e){
+  addListener<MouseEvent>([this](MouseEvent* e){
     if (
       // the one that sends as click is a different event
-      static_cast<MouseEvent*>(e)->eventType == MouseEventType::MouseDown &&
+      e->m_eventType == MouseEventType::MouseDown &&
       isMouseEntered()
     ) e->preventDefault();
+    if (e->m_eventType == MouseEventType::Enter) {
+      if (!shown) return true;
+      gradient->stopAllActions();
+      gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(2.5,255), 5));
+    }
+    
+    if (e->m_eventType == MouseEventType::Exit) {
+      if (!shown) return true;
+      gradient->stopAllActions();
+      gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(0.2,0), 5));
+    }
+    return true;
   });
 
   return true;
@@ -86,18 +102,9 @@ void Toolbar::show() {
 
 void Toolbar::hide() {
   if (shown) runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(0.5,{0,-HEIGHT}), 5
+    CCMoveTo::create(0.5,{0,-c_height}), 5
   ));
   VisibilityContainer::hide();
 }
 
-void Toolbar::onMouseEnter() {
-  if (!shown) return;
-  gradient->stopAllActions();
-  gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(2.5,255), 5));
-}
-void Toolbar::onMouseExit() {
-  if (!shown) return;
-  gradient->stopAllActions();
-  gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(0.2,0), 5));
-}
+GDL_NS_END

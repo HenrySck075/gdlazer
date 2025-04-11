@@ -16,7 +16,7 @@ float PopupDialog::height = 230.f;
 bool PopupDialog::init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
   if (!OsuOverlayContainer::init()) return false;
   CCSize size = CCSize{250,230};
-  main->setContentSize(size);
+  m_main->setContentSize(size);
   // sizes the dialog overlay to fullscreen aka not counting the toolbar height
   setContentSize({1,1},Unit::Viewport);
   setUserObject("popupdialog"_spr, CCBool::create(true));
@@ -28,7 +28,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSprite->setAnchorPoint({0,0});
   m_bgSprite->setColor(ccc3(33, 26, 32));
   m_bgSprite->setContentSize(size);
-  main->addChild(m_bgSprite);
+  m_main->addChild(m_bgSprite);
 
   m_bodyLayout = CCLayerRGBA::create();
   m_bodyLayout->setContentSize(size);
@@ -45,7 +45,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   );
   m_bodyLayout->setCascadeOpacityEnabled(true);
   
-  main->addChild(m_bodyLayout);
+  m_main->addChild(m_bodyLayout);
 
   //auto batchNode = getChildOfType<CCSpriteBatchNode>(main,0);
   m_bgSpriteClip = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr));
@@ -56,7 +56,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSpriteClip->getStencil()->setAnchorPoint({0,0});
   m_bgSpriteClip->setAnchorPoint({0,0}); // in case inherited dialogs also modifies this (who will do this)
   //m_bgSprite->removeFromParent();
-  main->addChild(m_bgSpriteClip);
+  m_main->addChild(m_bgSpriteClip);
 
   m_bgSpriteClip->addChild(Triangles::create(45,ccc3(30,23,30)));
   //m_title->limitLabelWidth(size.width - 2.f, 1.f, .1f);
@@ -87,7 +87,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   btnLayer->setPosition(size/2);
   btnLayer->setContentSize(size);
   btnLayer->setCascadeOpacityEnabled(true);
-  main->addChild(btnLayer);
+  m_main->addChild(btnLayer);
 
   for (auto& btn : buttons) { 
     btn->setTouchEnabled(false);
@@ -105,14 +105,14 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
 }
 
 void PopupDialog::onOpen() {
-  main->stopAllActions();
-  main->setScale(0.7);
+  m_main->stopAllActions();
+  m_main->setScale(0.7);
   m_bgSprite->setOpacity(0);
 
-  main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
+  m_main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
   m_bgSprite->runAction(easingsActions::CCEaseOut::create(CCFadeIn::create(0.2), 5));
 
-  for (auto* btn : CCArrayExt<PopupDialogButton*>(main->getChildByID("buttonLayer")->getChildren())) {
+  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_main->getChildByID("buttonLayer")->getChildren())) {
     btn->runAction(CCSequence::createWithTwoActions(
       CCDelayTime::create(0.75),
       CCCallFuncL::create([btn]() {
@@ -131,13 +131,13 @@ void PopupDialog::onClose() {
   hiding = true;
   //setKeypadEnabled(false);
   //setTouchEnabled(false);
-  for (auto* btn : CCArrayExt<PopupDialogButton*>(main->getChildByID("buttonLayer")->getChildren())) {
+  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_main->getChildByID("buttonLayer")->getChildren())) {
     btn->setTouchEnabled(false);
   }
-  for (auto* obj : CCArrayExt<CCNode*>(main->getChildren())) {
+  for (auto* obj : CCArrayExt<CCNode*>(m_main->getChildren())) {
     obj->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
   }
-  main->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
+  m_main->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
   m_bgSpriteClip->getChildByType<Triangles>(0)->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
   
   auto en = FMODAudioEngine::sharedEngine();

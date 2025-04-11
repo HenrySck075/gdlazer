@@ -2,15 +2,16 @@
 
 #include <Geode/Geode.hpp>
 #include "../../../utils.hpp"
-#include "../../../framework/graphics/containers/VisibilityContainer.hpp"
+#include "../../../frameworks/graphics/containers/VisibilityContainer.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
 using namespace geode::prelude;
 
+GDL_NS_START
 
-class Toolbar : public VisibilityContainer {
+class Toolbar : public frameworks::VisibilityContainer {
 private:
   double const transition_time = 0.5;
   CCLayerGradient2* gradient;
@@ -35,7 +36,5 @@ public:
   
   void show();
   void hide();
-
-  void onMouseEnter() override;
-  void onMouseExit() override;
 };
+GDL_NS_END

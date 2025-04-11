@@ -6,11 +6,11 @@
 GDF_NS_START
 bool OverlayContainer::init() {
   if (!VisibilityContainer::init()) return false;
-  main = Container::create();
-  main->setContentSize({0,0});
-  main->setAnchorPoint({0.5,0.5});
+  m_main = Container::create();
+  m_main->setContentSize({0,0});
+  m_main->setAnchorPoint({0.5,0.5});
   //main->setAnchor(Anchor::Center);
-  addChild(main);
+  addChild(m_main);
   setContentSize({100,100},Unit::Percent,Unit::Percent);
   setCascadeOpacityEnabled(false);
   addListener<KeyEvent>([this](KeyEvent* e){

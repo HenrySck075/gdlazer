@@ -3,6 +3,9 @@
 #include "ToolbarButton.hpp"
 #include "ToolbarToggleButton.hpp"
 #include "../NowPlayingOverlay.hpp"
+#include "../../graphics/OsuIcon.hpp"
+
+GDL_NS_START
 
 class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
@@ -31,35 +34,13 @@ class ToolbarGeodeButton : public ToolbarButton {
   CCLayer* m_modsLayer;
 public:
   $default_create(ToolbarGeodeButton);
-  bool init() { 
-    return ToolbarButton::init(
-      OsuIcon::Gear,
-      "geode mod loader",
-      "manages the mods (F12)",
-      AxisAlignment::End
-    );
-  }
-  void onClick(MouseEvent *e) override;
+  bool init(); 
 };
 
 class ToolbarModDisableButton : public ToolbarButton {
 public:
   $default_create(ToolbarModDisableButton);
-  bool init() { 
-    // for why im not hooking/patching ModsLayer to override its onBack to pop the scene,
-    // idk
-    return ToolbarButton::init(
-      OsuIcon::CrossCircle,
-      "(Prerelease feature) Disable mod",
-      "disable this mf",
-      AxisAlignment::End
-    );
-  }
-  void onClick(MouseEvent* e) override {
-    ToolbarButton::onClick(e);
-    Mod::get()->disable();
-    game::restart();
-  }
+  bool init();
 };
 
 class ToolbarMusicButton : public ToolbarToggleButton {
@@ -85,3 +66,5 @@ public:
     o->release();
   }
 };
+
+GDL_NS_END

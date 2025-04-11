@@ -36,7 +36,7 @@ enum class Unit {
   UIKit
 };
 /// HOLY SHIT
-class Container : public virtual CCClippingNodeRGBA, public EventTarget {
+class Container : public CCClippingNodeRGBA, public EventTarget {
 public:
 
   static Container* create() {
@@ -60,6 +60,7 @@ public:
   // Mouse events
   inline bool getTouchEnabled() {return m_touchEnabled;};
   inline void setTouchEnabled(bool e) {m_touchEnabled = e;};
+  inline bool isMouseEntered() {return m_lastInBounds;}
   // General-use unit conversion function
   float processUnit(float value, Unit unit, bool isWidth);
 

@@ -108,7 +108,12 @@ struct m : public geode::Modify<m, cocos2d::CCTouchDispatcher> {
 struct kd : public geode::Modify<kd, CCKeyboardDispatcher> {
   bool dispatchKeyboardMSG(cocos2d::enumKeyCodes key, bool down, bool repeat) {
     auto g = Game::get(false);
-    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new KeyEvent(key, down));
+    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new KeyEvent(key, down, {
+      .ctrl = getControlKeyPressed(),
+      .shift = getShiftKeyPressed(),
+      .cmd = getCommandKeyPressed(),
+      .alt = getAltKeyPressed()
+    }));
     return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeat);
   }
 };

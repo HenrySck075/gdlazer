@@ -36,6 +36,7 @@ public:
 
   void pushScreen(Screen* screen);
   Screen* popScreen();
+  void replaceScreen(Screen* screen);
 
   /// Use `OverlayContainer::show()` instead idiots
   void pushOverlay(OverlayContainer* overlay);

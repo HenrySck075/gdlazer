@@ -9,25 +9,25 @@ GDL_NS_START
 
 class SettingsPanel : public OsuOverlayContainer {
 protected:
-  SettingsSidebar* sidebar;
-  Container* mainPanel;
+  SettingsSidebar* m_sidebar;
+  Container* m_mainPanel;
 public:
-  const float CONTENT_MARGINS = 20;
+  const float c_contentMargins = 20;
 
-  static const float TRANSITION_LENGTH;
+  static const float c_transitionLength;
 
-  private: static const float sidebar_width;
+  private: static const float c_sidebarWidth;
 
 public: 
   /// <summary>
   /// The width of the settings panel content, excluding the sidebar.
   /// </summary>
-  static const float PANEL_WIDTH;
+  static const float c_panelWidth;
 
   /// <summary>
   /// The full width of the settings panel, including the sidebar.
   /// </summary>
-  static const float WIDTH;
+  static const float c_width;
 
   bool init();
   static SettingsPanel* create() {
@@ -39,9 +39,9 @@ public:
 };
 
 // SectionsContainer with the fade stuff idk
-class SettingsSections : public SectionsContainer {
+class SettingsSections : public frameworks::SectionsContainer {
 public:
-  void onSectionSelect(Container* old, Container* new_) override;
+  void onSectionSelect(Container* new_) override;
   $default_create(SettingsSections);
 };
 

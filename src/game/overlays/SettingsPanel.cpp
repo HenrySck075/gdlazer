@@ -6,72 +6,74 @@
 
 GDL_NS_START
 
-const float SettingsPanel::sidebar_width = SettingsSidebar::c_expandedWidth;
-const float SettingsPanel::TRANSITION_LENGTH = 0.6;
-const float SettingsPanel::PANEL_WIDTH = 400;
-const float SettingsPanel::WIDTH = SettingsPanel::sidebar_width + SettingsPanel::PANEL_WIDTH;
+const float SettingsPanel::c_sidebarWidth = SettingsSidebar::c_expandedWidth;
+const float SettingsPanel::c_transitionLength = 0.6;
+const float SettingsPanel::c_panelWidth = 400;
+const float SettingsPanel::c_width = SettingsPanel::c_sidebarWidth + SettingsPanel::c_panelWidth;
+
+using namespace frameworks;
 
 bool SettingsPanel::init() {
   if (!OsuOverlayContainer::init()) return false;
   setColor({0,0,0});
-  name = "SettingsPanel";
+  setName("SettingsPanel");
 
-  mainPanel = Container::create();
-  mainPanel->setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
-  mainPanel->setContentSizeWithUnit({PANEL_WIDTH,100},Unit::UIKit,Unit::Percent);
-  mainPanel->setPositionWithUnit({-PANEL_WIDTH,0},Unit::UIKit,Unit::OpenGL);
-  mainPanel->setOpacity(255);
-  main->addChild(mainPanel);
+  m_mainPanel = Container::create();
+  m_mainPanel->setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
+  m_mainPanel->setContentSize({c_panelWidth,100},Unit::UIKit,Unit::Percent);
+  m_mainPanel->setPosition({-c_panelWidth,0},Unit::UIKit,Unit::OpenGL);
+  m_mainPanel->setOpacity(255);
+  m_main->addChild(m_mainPanel);
   
-  sidebar = SettingsSidebar::create();
-  sidebar->setPositionWithUnit({-SettingsSidebar::c_expandedWidth,0},Unit::UIKit,Unit::OpenGL);
-  main->addChild(sidebar);
+  m_sidebar = SettingsSidebar::create();
+  m_sidebar->setPosition({-SettingsSidebar::c_expandedWidth,0},Unit::UIKit,Unit::OpenGL);
+  m_main->addChild(m_sidebar);
 
-  main->setContentSizeWithUnit({WIDTH,100},Unit::UIKit,Unit::Percent);
-  main->setAnchor(Anchor::Left);
-  main->setAnchorPoint({0,0.5});
+  m_main->setContentSize({c_width,100},Unit::UIKit,Unit::Percent);
+  m_main->setAnchor(Anchor::Left);
+  m_main->setAnchorPoint({0,0.5});
 
   return true;
 }
 
 void SettingsPanel::onOpen() {
   stopAllActions();
-  sidebar->stopAllActions();
-  sidebar->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{0,0}),5
+  m_sidebar->stopAllActions();
+  m_sidebar->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength,{0,0}),5
   ));
-  mainPanel->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{SettingsSidebar::c_expandedWidth,0}),5
+  m_mainPanel->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength,{SettingsSidebar::c_expandedWidth,0}),5
   ));
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   if (s->getActionByTag(7)) s->stopActionByTag(7);
   s->runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(
-      SettingsPanel::TRANSITION_LENGTH, 
+      SettingsPanel::c_transitionLength, 
       {(float)SettingsSidebar::c_expandedWidth/4,0}
     ),5
   ))->setTag(7);
 }
 void SettingsPanel::onClose() {
   stopAllActions();
-  sidebar->stopAllActions();
+  m_sidebar->stopAllActions();
   runAction(
-    CCDelayTime::create(SettingsPanel::TRANSITION_LENGTH)
+    CCDelayTime::create(SettingsPanel::c_transitionLength)
   );
-  sidebar->runAction(easingsActions::CCEaseOut::create(
+  m_sidebar->runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(
-      SettingsPanel::TRANSITION_LENGTH,
+      SettingsPanel::c_transitionLength,
       {-SettingsSidebar::c_expandedWidth,0}
     ),5
   ));
-  mainPanel->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH,{-PANEL_WIDTH,0}),5
+  m_mainPanel->runAction(easingsActions::CCEaseOut::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength,{-c_panelWidth,0}),5
   ));
 
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   s->stopActionByTag(7);
   s->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::TRANSITION_LENGTH, {0,0}),5
+    CCMoveTo::create(SettingsPanel::c_transitionLength, {0,0}),5
   ))->setTag(7);
 }
 
@@ -79,9 +81,9 @@ void SettingsPanel::onClose() {
  * SettingsSections
  */
 
-void SettingsSections::onSectionSelect(Container* old, Container* new_) {
-  SectionsContainer::onSectionSelect(old, new_);
-  old->setOpacity(200);
+void SettingsSections::onSectionSelect(Container* new_) {
+  SectionsContainer::onSectionSelect(new_);
+  m_currentSection.get()->setOpacity(200);
   new_->setOpacity(255);
 };
 

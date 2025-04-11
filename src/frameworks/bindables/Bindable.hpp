@@ -18,6 +18,9 @@ bool operator==(std::function<FT1> const& oat, std::function<FT2> const& meal) {
 }
 
 template<LegallyBindable T>
+/// A struct that allows you to listen to its state's change.
+///
+/// When the value changes, you can access the object's old value before all the callbacks are processed.
 struct Bindable {
 private:
   T m_value;
@@ -30,10 +33,10 @@ public:
 
   Bindable<T>& operator=(const T& other) {
     if (m_value != other) {
-      m_value = other;
       for (auto& l : m_listeners) {
-        l(m_value);
+        l(other);
       }
+      m_value = other;
     }
     return *this;
   }
@@ -43,6 +46,8 @@ public:
   void addCallback(std::function<void(T)> listener) {
     m_listeners.push_back(listener);
   }
+  T& operator->() {return m_value;}
+  T& get() {return m_value;}
   void removeCallback(std::function<void(T)> listener) {
     m_listeners.erase(std::remove_if(m_listeners.begin(), m_listeners.end(), [listener](auto& l) {
       return l == listener;
