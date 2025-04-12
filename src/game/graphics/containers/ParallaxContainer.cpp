@@ -1,5 +1,4 @@
 #include "ParallaxContainer.hpp"
-#include <Geode/DefaultInclude.hpp>
 #include <Geode/loader/Setting.hpp>
 #include "../../OsuGame.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
@@ -22,11 +21,7 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   setAnchor(Anchor::Center);
   setContentSize({100,100},Unit::Percent);
   if (scale) setScale(1 + abs(parallaxAmount));
-  addListener<MouseEvent>([this](MouseEvent* e){
-    if (e->m_eventType == MouseEventType::Move) 
-      updateParallax(e->m_position); 
-    return true;
-  });
+  addListener<MouseEvent>(m_parallaxMouseListener = std::bind(&ParallaxContainer::onMouseEvent, this, std::placeholders::_1));
   addListener<ParallaxStateUpdated>([this](ParallaxStateUpdated* e){
     m_parallax = e->m_enabled;
     if (!m_parallax) runAction(easingsActions::CCEaseSineOut::create(CCMoveTo::create(0.2, m_director->getWinSize()/2)));
@@ -51,12 +46,20 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   return true;
 }
 
+bool ParallaxContainer::onMouseEvent(frameworks::MouseEvent* e) {
+  if (e->m_eventType == frameworks::MouseEventType::Move) {
+    updateParallax(e->m_position); 
+  }
+  return true;
+}
+
 void ParallaxContainer::updateParallax(const CCPoint& cursorPos) {
   if (!m_parallax) return;
   auto ws = m_director->getWinSize()/2;
   auto dist = (cursorPos - ws) * m_parallaxAmount;
   setPosition(dist);
 }
+
 GDL_NS_END
 
 $execute{

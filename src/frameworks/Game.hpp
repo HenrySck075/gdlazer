@@ -21,7 +21,7 @@ protected:
   
   geode::cocos::CCArrayExt<OverlayContainer> m_overlayStack;
   geode::Ref<OverlayContainer> m_currentOverlay;
-  geode::Ref<OverlayContainer> m_overlaysContainer;
+  geode::Ref<Container> m_overlaysContainer;
 
   geode::cocos::CCArrayExt<Screen> m_invisibleQueue;
   geode::cocos::CCArrayExt<Screen> m_removalQueue;

@@ -10,7 +10,7 @@ using namespace frameworks;
 bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
   auto m = CCSize(BUTTON_WIDTH,c_buttonAreaHeight);
   m_color = color;
-  ClickableContainer::initWithCallback(sampleClick, clickAct, true);
+  ClickableContainer::initWithCallback(sampleClick, clickAct, false);
   ClickableContainer::setContentSize(m);
   //addListener(reactive_listener(updateReactive));
 

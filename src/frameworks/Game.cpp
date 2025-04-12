@@ -24,8 +24,11 @@ bool Game::init() {
 
   m_screensContainer = Container::create();
   m_screensContainer->setContentSize({100,100}, Unit::Percent);
+  m_overlaysContainer = Container::create();
+  m_overlaysContainer->setContentSize({100,100}, Unit::Percent);
 
   this->addChild(m_screensContainer);
+  this->addChild(m_overlaysContainer);
 
   return true;
 };

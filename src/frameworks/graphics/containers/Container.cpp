@@ -66,9 +66,12 @@ bool Container::init() {
     // request a box update (if needed)
     if (m_containerBoxDesynced) updateContainerBox();
     else if (m_containerBoxShapeDesynced) transformContainerBox();
-    bool isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
-      currentPos.x, currentPos.y
-    ).isInside(*((h2d::CPolylineF*)m_containerBox));
+    bool isInBounds = true;
+    if (m_clippingEnabled) {
+      isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
+        currentPos.x, currentPos.y
+      ).isInside(*((h2d::CPolylineF*)m_containerBox));
+    }
     //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
     if (!isInBounds) {
       //mouseEvent->stopPropagation();
@@ -139,9 +142,11 @@ fish:
   });
 
   this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
-    if (event->getContainer() == getParent()) {
+    log::warn("[{}]: {} | {}", getObjectName(this), event->getTarget(), getParent());
+    if (event->getTarget() == getParent()) {
       updateSizeWithUnit();
       updatePositionWithUnit();
+      event->stopPropagation();
     }
     return true;
   });
@@ -281,11 +286,16 @@ void Container::updateSizeWithUnit() {
 }
 
 void Container::updatePositionWithUnit() {
-  cocos2d::CCNode::setPosition(calculateAnchoredPosition({
+  cocos2d::CCPoint unanchoredPos {
     processUnit(m_position.x, m_positionUnit[0], true),
     processUnit(m_position.y, m_positionUnit[1], false)
-  }));
-  log::debug("{}", m_obPosition);
+  };
+  setUserObject("gdlazer/devtools/position", cocos2d::CCArray::create(
+    cocos2d::CCInteger::create(unanchoredPos.x),
+    cocos2d::CCInteger::create(unanchoredPos.y),
+    nullptr
+  ));
+  cocos2d::CCNode::setPosition(calculateAnchoredPosition(unanchoredPos));
 }
 
 void Container::setClippingEnabled(bool enabled) {
@@ -516,5 +526,10 @@ cocos2d::CCPoint Container::calculateAnchoredPosition(
   default:
     return position;
   }
+}
+void Container::setAnchor(geode::Anchor anchor) {
+  m_anchor = anchor;
+  setUserObject("gdlazer/devtools/anchor", cocos2d::CCInteger::create((int)anchor));
+  updatePositionWithUnit();
 }
 GDF_NS_END

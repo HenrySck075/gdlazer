@@ -23,6 +23,7 @@ bool MainMenu::init() {
   
   buttonSysParallax = ParallaxContainer::create(0.01f);
   buttonSys = ButtonSystem::create(logo);
+  buttonSys->setAnchor(Anchor::Center);
   buttonSysParallax->addChild(buttonSys);
   addChild(buttonSysParallax);
 

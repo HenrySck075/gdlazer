@@ -6,6 +6,7 @@ using namespace geode::prelude;
 #include <Geode/modify/MenuLayer.hpp>
 #include "frameworks/Game.hpp"
 #include "game/screens/PlaygroundScreen.hpp"
+bool g_screenPushed = false;
 struct e : public Modify<e, MenuLayer> {
   bool init() {
     if (!MenuLayer::init()) return false;
@@ -31,7 +32,8 @@ struct e : public Modify<e, MenuLayer> {
   void onMyButton(CCObject*) {
     auto g = gdlazer::game::OsuGame::get();
     cocos2d::CCDirector::get()->pushScene(g);
-    g->pushScreen(GDL_NS::MainMenu::create());
+    if (!g_screenPushed) g->pushScreen(GDL_NS::MainMenu::create());
+    g_screenPushed = true;
   }
 };
 

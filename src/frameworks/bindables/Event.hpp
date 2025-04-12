@@ -11,6 +11,9 @@ public:
         autorelease();
     }
     bool defaultPrevented() const { return m_defaultPrevented; }
+    bool setDispatchOrder(bool reversed) {
+        m_dispatchOrderReversed = reversed;
+    }
     // currently an alias to stopImmediatePropagation
     // but could be used to block cocos2d from processing the input in the future
     void preventDefault() { m_defaultPrevented = true; }
@@ -24,5 +27,6 @@ private:
     bool m_defaultPrevented = false;
     bool m_propagateStopped = false;
     bool m_immediatePropagateStopped = false;
+    bool m_dispatchOrderReversed = false;
 };
 GDF_NS_END

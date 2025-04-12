@@ -43,13 +43,18 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
 
+  void updateWindow(int w, int h) {
+    log::debug("{}, {}", w, h);
+    CCEGLView::updateWindow(w, h);
+  }
   // == window size ==
   void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height) {
     CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
+    log::debug("{}, {}", width, height);
     auto g = Game::get(false);
     if (g!=nullptr && cocos2d::CCScene::get() == g) {
       g->setContentSize(getDesignResolutionSize());
-      g->dispatchEvent(new NodeLayoutUpdated(nullptr));
+      g->dispatchEvent(new NodeLayoutUpdated(g));
     }
   }
 };

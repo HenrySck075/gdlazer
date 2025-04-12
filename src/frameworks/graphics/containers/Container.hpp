@@ -14,18 +14,15 @@
 
 
 GDF_NS_START
-
-class Container;
-
 class NodeLayoutUpdated : public Event {
 public:
-    NodeLayoutUpdated(Container* container) 
-        : m_container(container) {}
+    NodeLayoutUpdated(cocos2d::CCNode* target) 
+        : m_target(target) {}
 
-    Container* getContainer() const { return m_container; }
+    cocos2d::CCNode* getTarget() const { return m_target; }
 
 private:
-    Container* m_container;
+    cocos2d::CCNode* m_target;
 };
 
 
@@ -105,10 +102,7 @@ public:
   void transformContainerBox();
 
   // Anchor point
-  void setAnchor(geode::Anchor anchor) {
-    m_anchor = anchor;
-    updatePositionWithUnit();
-  }
+  void setAnchor(geode::Anchor anchor);
 
   cocos2d::CCPoint calculateAnchoredPosition(const cocos2d::CCPoint &position);
   geode::Anchor getAnchor() const { return m_anchor; }

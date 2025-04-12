@@ -14,8 +14,10 @@ ClickableContainer* createWithCallback(std::string sfx, ClickableContainer::Butt
 
 bool ClickableContainer::initWithCallback(std::string sfx, ClickableContainer::ButtonCallback callback, bool consumeTap) {
   if (!ClickableContainer::init(sfx, consumeTap)) return false;
-  addListener<MouseEvent>([callback, this](MouseEvent*){
-    callback(this);
+  addListener<MouseEvent>([callback, this](MouseEvent* e){
+    if (e->m_eventType == MouseEventType::Click) {
+      callback(this);
+    }
     return true;
   });
   return true;
@@ -26,8 +28,11 @@ bool ClickableContainer::init(std::string sfx, bool consumeTap) {
   m_sfx = sfx;
   m_consumeTap = consumeTap;
   addListener<MouseEvent>([this](MouseEvent* e){
-    FMODAudioEngine::sharedEngine()->playEffect(m_sfx, 1, 0, GameManager::sharedState()->m_sfxVolume);
-    if (m_consumeTap) e->stopPropagation();
+    if (e->m_eventType == MouseEventType::Click) {
+      log::debug("sup");
+      FMODAudioEngine::sharedEngine()->playEffect(m_sfx, 1, 0, GameManager::sharedState()->m_sfxVolume);
+      if (m_consumeTap) e->stopPropagation();
+    }
     return true;
   });
   return true;

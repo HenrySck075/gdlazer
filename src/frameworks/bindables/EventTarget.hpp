@@ -55,8 +55,8 @@ public:
       auto &listeners = it->second;
       // Remove all matching listeners
        listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
-         [&](const EventListenerFunc &l) {
-           return l == listener;
+         [&](std::shared_ptr<EventListenerFunc> l) {
+           return l->get() == listener.template target<bool(T*)>();
          }),
       listeners.end());
     }
