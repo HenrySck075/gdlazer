@@ -142,12 +142,8 @@ fish:
   });
 
   this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
-    log::warn("[{}]: {} | {}", getObjectName(this), event->getTarget(), getParent());
-    if (event->getTarget() == getParent()) {
-      updateSizeWithUnit();
-      updatePositionWithUnit();
-      event->stopPropagation();
-    }
+    updateSizeWithUnit();
+    updatePositionWithUnit();
     return true;
   });
 
@@ -281,7 +277,6 @@ void Container::updateSizeWithUnit() {
     processUnit(width, m_sizeUnit[0], true),
     processUnit(height, m_sizeUnit[1], false)
   ));
-  dispatchEvent(new NodeLayoutUpdated(this));
   m_containerBoxDesynced = true;
 }
 
@@ -323,7 +318,8 @@ struct LogNestManager {
 };
 bool Container::doDispatchEvent(Event *event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
-  //LogNestManager logNest;
+  LogNestManager logNest;
+  if (!dynamic_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
     return false;
