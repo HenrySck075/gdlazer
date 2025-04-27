@@ -6,22 +6,22 @@ using namespace geode::prelude;
 #include <cstdio>
 
 struct Color4 {
-  float r = 0;
-  float g = 0;
-  float b = 0;
-  float a = 0;
+  double r = 0;
+  double g = 0;
+  double b = 0;
+  double a = 0;
 
   Color4 clamp() {
-#define c(v) std::max(std::min(v,1.f),0.f)
+#define c(v) std::max(std::min(v,1.0),0.0)
     return {c(r),c(g),c(b),c(a)};
 #undef c
   }
   Color4 lighten(int amount) {
-    int scalar = std::max(255,255+amount);
+    int scalar = std::max(255,255+amount)/255;
     return Color4{r*scalar,g*scalar,b*scalar,a}.clamp();
   }
   Color4 darken(int amount) {
-    int scalar = std::max(255,255+amount);
+    int scalar = std::max(255,255+amount)/255;
     return Color4{r/scalar,g/scalar,b/scalar,a}.clamp();
   }
   Color4 opacity(int opacity) {
@@ -50,11 +50,13 @@ struct Color4 {
       case 9:
       sscanf(hex.c_str(), "#%02x%02x%02x%02x", &r,&g,&b,&a);
     }
+    /*
     if (c<5) {
       r*=17;
       g*=17;
       b*=17;
     }
+    */
     if (
       c==3 ||
       (c==4 && hex.c_str()[0]=='#' ) ||
@@ -82,7 +84,7 @@ struct Color4 {
       a/e.a
     };
   }
-  Color4 operator/(int div) {
+  Color4 operator/(double div) {
     return {
       r/div,
       g/div,
@@ -106,7 +108,7 @@ struct Color4 {
     return ccc4f(r/255.f,g/255.f,b/255.f,a/255.f);
   }
 
-  Color4(float red, float green, float blue, float alpha) : r(red * 255), g(green * 255), b(blue * 255), a(alpha * 255) {};
+  Color4(double red, double green, double blue, double alpha) : r(red), g(green), b(blue), a(alpha) {};
   Color4(ccColor3B const& c) : r(c.r), g(c.g), b(c.b), a(255) {};
   Color4(ccColor4B const& c) : r(c.r), g(c.g), b(c.b), a(c.a) {};
 
@@ -127,8 +129,8 @@ struct Color4 {
   };
 
 private:
-  static constexpr float gamma = 2.4;
-  static float toLinearV(float color) {
+  static constexpr double gamma = 2.4;
+  static double toLinearV(double color) {
     if (color == 1)
         return 1;
 

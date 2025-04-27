@@ -42,7 +42,7 @@ bool ButtonArea::doDispatchEvent(frameworks::Event *e, std::type_index i) {
       for (auto *child : geode::cocos::CCArrayExt<CCNode *>(
       getChildByIDRecursive("buttonarea_" + cur.value()) ->getChildren()
       )) {
-        if (auto container = dynamic_cast<Container *>(child)) {
+        if (auto container = geode::cast::typeinfo_cast<Container *>(child)) {
       }
       };
     }

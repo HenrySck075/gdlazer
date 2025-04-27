@@ -9,7 +9,7 @@ FillFlowLayout* FillFlowLayout::create(FillDirection direction) {
 }
 
 void FillFlowLayout::apply(cocos2d::CCNode* on) {
-  auto container = dynamic_cast<Container*>(on);
+  auto container = geode::cast::typeinfo_cast<Container*>(on);
   if (!container) return;
 
   float currentPos = 0;

@@ -62,7 +62,7 @@ std::vector<float> GridLayout::calculateSizes(const DimensionVector& dimensions,
 }
 
 void GridLayout::apply(cocos2d::CCNode* on) {
-  auto container = dynamic_cast<Container*>(on);
+  auto container = geode::cast::typeinfo_cast<Container*>(on);
   if (!container) return;
 
   auto children = container->getChildren();

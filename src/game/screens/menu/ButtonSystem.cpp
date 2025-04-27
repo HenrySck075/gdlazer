@@ -14,7 +14,7 @@ bool tempForceReplace2 = false;
 #include <Geode/modify/CCDirector.hpp>
 struct area51 : Modify<area51, CCDirector>{
   bool replaceScene(CCScene* scene) {
-    if (tempForceReplace2 && !dynamic_cast<CCTransitionScene*>(getRunningScene())) {
+    if (tempForceReplace2 && !geode::cast::typeinfo_cast<CCTransitionScene*>(getRunningScene())) {
       tempForceReplace2 = false;
       return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get()));
     }
@@ -290,7 +290,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     if (e->m_eventType != frameworks::MouseEventType::Click) return true;
     auto cur = area->getCurrent();
     if (cur.has_value()) 
-      dynamic_cast<MainMenuButton*>(
+      geode::cast::typeinfo_cast<MainMenuButton*>(
         getChildByIDRecursive("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
       )->click();
     return true;

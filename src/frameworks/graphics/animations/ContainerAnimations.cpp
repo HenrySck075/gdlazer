@@ -23,7 +23,7 @@ namespace animations {
   }
 
   void TintTo::startWithTarget(cocos2d::CCNode* target) {
-    if (auto c = dynamic_cast<Container*>(target)) {
+    if (auto c = geode::cast::typeinfo_cast<Container*>(target)) {
       m_startColor = c->getBackgroundColor();
       return CCActionInterval::startWithTarget(target);
     }
@@ -32,7 +32,7 @@ namespace animations {
 
   void TintTo::update(float dt) {
     cocos2d::CCActionInterval::update(dt);
-    if (auto c = dynamic_cast<Container*>(m_pTarget)) {
+    if (auto c = geode::cast::typeinfo_cast<Container*>(m_pTarget)) {
 #define lerpbloat(v) (GLubyte)gdlazer::frameworks::Interpolation::lerp(m_startColor.v, m_destColor.v, dt)
       c->setBackgroundColor({
         lerpbloat(r),

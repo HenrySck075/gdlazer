@@ -254,8 +254,7 @@ void Container::setPosition(cocos2d::CCPoint const& position) {
 }
 void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
-  updateSizeWithUnit();
-  updatePositionWithUnit();
+  dispatchEvent(new NodeLayoutUpdated(parent));
 }
 
 void Container::updateSizeWithUnit() {
@@ -319,7 +318,7 @@ struct LogNestManager {
 bool Container::doDispatchEvent(Event *event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   LogNestManager logNest;
-  if (!dynamic_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
+  if (!geode::cast::typeinfo_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
     return false;
@@ -332,8 +331,6 @@ bool Container::doDispatchEvent(Event *event, std::type_index type) {
   auto children = getChildren();
   if (children) {
     for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
-      // casting directly to Container makes it use this overridden
-      // dispatchEvent function
       auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
       if (childContainer == nullptr)
         continue;

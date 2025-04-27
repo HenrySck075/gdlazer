@@ -4,7 +4,7 @@ void CCClippingNodeRGBA::setOpacity(GLubyte opacity) {
   _realOpacity = opacity;
   if (_cascadeOpacityEnabled) {
     GLubyte parentOpacity = 255;
-    if (auto parent = dynamic_cast<CCRGBAProtocol *>(getParent())) {
+    if (auto parent = geode::cast::typeinfo_cast<CCRGBAProtocol *>(getParent())) {
       parentOpacity = parent->getDisplayedOpacity();
     }
     updateDisplayedOpacity(parentOpacity);
@@ -17,7 +17,7 @@ void CCClippingNodeRGBA::setColor(const cocos2d::ccColor3B &color) {
   _realColor = color;
   if (_cascadeColorEnabled) {
     cocos2d::ccColor3B parentColor = cocos2d::ccWHITE;
-    if (auto parent = dynamic_cast<CCRGBAProtocol *>(getParent())) {
+    if (auto parent = geode::cast::typeinfo_cast<CCRGBAProtocol *>(getParent())) {
       parentColor = parent->getDisplayedColor();
     }
     updateDisplayedColor(parentColor);
@@ -34,7 +34,7 @@ void CCClippingNodeRGBA::updateDisplayedOpacity(GLubyte parentOpacity) {
   _displayedOpacity = _realOpacity * parentOpacity / 255.0f;
   if (_cascadeOpacityEnabled) {
     for (auto child : geode::cocos::CCArrayExt<CCNode>(getChildren())) {
-      if (auto rgbaChild = dynamic_cast<CCRGBAProtocol *>(child)) {
+      if (auto rgbaChild = geode::cast::typeinfo_cast<CCRGBAProtocol *>(child)) {
         rgbaChild->updateDisplayedOpacity(_displayedOpacity);
       }
     }
@@ -47,7 +47,7 @@ void CCClippingNodeRGBA::updateDisplayedColor(
   _displayedColor.b = _realColor.b * parentColor.b / 255;
   if (_cascadeColorEnabled) {
     for (auto child : geode::cocos::CCArrayExt<CCNode>(getChildren())) {
-      if (auto rgbaChild = dynamic_cast<CCRGBAProtocol *>(child)) {
+      if (auto rgbaChild = geode::cast::typeinfo_cast<CCRGBAProtocol *>(child)) {
         rgbaChild->updateDisplayedColor(_displayedColor);
       }
     }

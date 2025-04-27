@@ -79,7 +79,7 @@ bool tempForceReplace = false;
 struct hook51 : Modify<hook51, CCDirector>{
   bool replaceScene(CCScene* scene) {
     log::debug("geegjgofwejgviewjgvoiewnvfew");
-    if (tempForceReplace && !dynamic_cast<CCTransitionScene*>(getRunningScene())) {
+    if (tempForceReplace && !geode::cast::typeinfo_cast<CCTransitionScene*>(getRunningScene())) {
       tempForceReplace = false;
       return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get()));
     }
