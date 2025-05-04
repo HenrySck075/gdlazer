@@ -54,7 +54,7 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
 }
 
 bool ButtonSystem::init(OsuLogo* logo) {
-  Container::init();
+  if (!Container::init()) return false;
   setOsuLogo(logo);
   m_menuLayerPtr = GameManager::sharedState()->m_menuLayer;
   m_creatorLayerPtr = CreatorLayer::create();
@@ -299,8 +299,13 @@ bool ButtonSystem::init(OsuLogo* logo) {
   //setPositionX(0);
   //auto me = CCMenu::createWithItem(logo);
   //me->setPosition({0,0});
-  addChild(logo);
+  //addChild(logo);
   setAnchorPoint({0.5,0.5});
+
+  addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated* e){
+    geode::log::debug("[ButtonSystem]: {}", getChildren());
+    return true;
+  });
 
   return true;
 }

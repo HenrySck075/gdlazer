@@ -11,7 +11,7 @@
 GDL_NS_START
 using namespace frameworks;
 bool ButtonArea::init(const CCPoint& anchorPos) {
-  Container::init();
+  if (!Container::init()) return false;
   anchorPosition = anchorPos;
   setAnchorPoint({0.5,0.5});
   setAnchor(Anchor::Center);

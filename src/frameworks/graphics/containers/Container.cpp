@@ -332,8 +332,9 @@ bool Container::doDispatchEvent(Event *event, std::type_index type) {
   if (children) {
     for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
       auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
-      if (childContainer == nullptr)
+      if (childContainer == nullptr) {
         continue;
+      }
       if (!childContainer->doDispatchEvent(event, type)) {
         return false;
       }

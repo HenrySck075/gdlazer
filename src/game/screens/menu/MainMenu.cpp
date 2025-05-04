@@ -16,10 +16,11 @@ bool MainMenu::init() {
   setTitle("Welcome to Geometry Dash!");
   auto logo = OsuLogo::create();
 
-  auto bgParal = ParallaxContainer::create();
+  auto bgParallax = ParallaxContainer::create();
   bg = Background::create();
-  bgParal->addChild(bg);
-  addChild(bgParal);
+  bg->setContentSize({100,100},Unit::Percent);
+  bgParallax->addChild(bg);
+  addChild(bgParallax);
   
   buttonSysParallax = ParallaxContainer::create(0.01f);
   buttonSys = ButtonSystem::create(logo);

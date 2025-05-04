@@ -14,12 +14,17 @@ struct ScreenTransitionEvent {
 /// Also scene but handled completely differently since I didn't bother to figure out
 /// what to do with TransitionScene
 ///
-/// btw said transition functions are `onScreenEnter` and `onScreenExit`
+/// btw transition functions are `onScreenEnter` and `onScreenExit`
 class Screen : public Container {
 public:
   static Screen* create() {
     $create_class(Screen, init);
   };
+  bool init() override {
+    if (!Container::init()) return false;
+    setContentSize({100,100},Unit::Percent);
+    return true;
+  }
   virtual void onScreenEnter(ScreenTransitionEvent event) {};
   virtual void onScreenExit(ScreenTransitionEvent event) {};
   void setTitle(std::string title) {m_title = title;}
