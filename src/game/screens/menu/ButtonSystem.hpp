@@ -15,10 +15,10 @@ public:
   //Action<ButtonSystemState>? StateChanged;
 
 private:
-  OsuLogo* logo;
+  OsuLogo* m_logo;
 
 public:
-  ButtonArea* area;
+  ButtonArea* m_area;
   /// <summary>
   /// Assign the <see cref="OsuLogo"/> that this ButtonSystem should manage the position of.
   /// </summary>
@@ -35,7 +35,7 @@ private:
   CreatorLayer* m_creatorLayerPtr;
   //void resize(ReactiveNode* calledNode, Property props);
 
-  /*priv read*/ MainMenuButton* backButton;
+  /*priv read*/ MainMenuButton* m_backButton;
 
 
   const char* sampleBackToLogo = "back-to-logo.wav"_spr;

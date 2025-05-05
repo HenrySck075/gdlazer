@@ -33,7 +33,7 @@ GDL_NS_START
 float ButtonSystem::s_wedgeWidth = 20;
 
 void ButtonSystem::setOsuLogo(OsuLogo* logo) {
-  this->logo = logo;
+  this->m_logo = logo;
   /*
   if (logo != nullptr)
   {
@@ -61,9 +61,9 @@ bool ButtonSystem::init(OsuLogo* logo) {
 
   //float w = CCDirector::sharedDirector()->getWinSize().width;
   CCPoint an = {-s_wedgeWidth*4,c_buttonAreaHeight/2};
-  area = ButtonArea::create(an);
-  area->setID("buttonarea");
-  addChild(area);
+  m_area = ButtonArea::create(an);
+  m_area->setID("buttonarea");
+  addChild(m_area);
 
   // because cocos2d-x does not allows a node to be in multiple parent (everyone knows that)
   #define backBtnCreate MainMenuButton::create( \
@@ -71,13 +71,13 @@ bool ButtonSystem::init(OsuLogo* logo) {
     "back-to-top.wav"_spr,          \
     OsuIcon::PrevCircle,            \
     Color4(51, 58, 94, 255),          \
-    [this](CCNode*j){area->pop();},       \
+    [this](CCNode*j){m_area->pop();},       \
     {enumKeyCodes::KEY_Escape}        \
   )
   
   #define $cca(...) CCArray::create(__VA_ARGS__, nullptr)
   // daily/weekly levels
-  area->constructButtons($cca(
+  m_area->constructButtons($cca(
     backBtnCreate,
     MainMenuButton::create(
       "Daily", 
@@ -96,7 +96,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       {enumKeyCodes::KEY_W}
     )
   ), "challenges");
-  area->constructButtons($cca(
+  m_area->constructButtons($cca(
     backBtnCreate,
     MainMenuButton::create(
       "Main levels", 
@@ -123,14 +123,14 @@ bool ButtonSystem::init(OsuLogo* logo) {
     )
   ),"play_local");
   // play  
-  area->constructButtons($cca(
+  m_area->constructButtons($cca(
     backBtnCreate,
     MainMenuButton::create(
       "Local", 
       "button-play-select.wav"_spr, 
       OsuIcon::Player, 
       Color4(102, 68, 204, 255),
-      [this](CCNode*j){area->show("play_local");},
+      [this](CCNode*j){m_area->show("play_local");},
       {enumKeyCodes::KEY_P}
     ),
     MainMenuButton::create(
@@ -162,13 +162,13 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-play-select.wav"_spr, 
       OsuIcon::DailyChallenge,
       Color4(94, 63, 186, 255), 
-      [this](CCNode*j) {area->show("challenges");},
+      [this](CCNode*j) {m_area->show("challenges");},
       {enumKeyCodes::KEY_C}
     )
   ), "play");
 
   // edit
-  area->constructButtons($cca(
+  m_area->constructButtons($cca(
     backBtnCreate,
     MainMenuButton::create(
       "New", 
@@ -191,7 +191,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   ), "edit");
   
   // debug
-  area->constructButtons($cca(
+  m_area->constructButtons($cca(
     backBtnCreate,
     MainMenuButton::create(
       "Open toolbar", 
@@ -226,7 +226,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   ), "debug");
 
   // toplevel
-  area->constructButtons($cca(
+  m_area->constructButtons($cca(
     MainMenuButton::create(
       "Settings", 
       "osu-logo-downbeat.wav"_spr, 
@@ -241,7 +241,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-play-select.wav"_spr, 
       OsuIcon::Logo, 
       Color4(102, 68, 204, 255), 
-      [this](CCNode* j) {area->show("play");},
+      [this](CCNode* j) {m_area->show("play");},
       {enumKeyCodes::KEY_P, enumKeyCodes::KEY_M, enumKeyCodes::KEY_L}
     ),
     MainMenuButton::create(
@@ -249,7 +249,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-play-select.wav"_spr, 
       OsuIcon::EditCircle, 
       Color4(238, 170, 0, 255), 
-      [this](CCNode* j) {area->show("edit");},
+      [this](CCNode* j) {m_area->show("edit");},
       {enumKeyCodes::KEY_E}
     ),
     MainMenuButton::create(
@@ -257,7 +257,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-play-select.wav"_spr, 
       OsuIcon::Beatmap, 
       Color4(165, 204, 0, 255), 
-      [this](CCNode* j) {area->show("debug");},
+      [this](CCNode* j) {m_area->show("debug");},
       {enumKeyCodes::KEY_B, enumKeyCodes::KEY_D}
     ),
     MainMenuButton::create(
@@ -278,7 +278,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
     )
   ), "toplevel");
 
-  area->show("toplevel");
+  m_area->show("toplevel");
   
   setAnchor(Anchor::Center);
   setContentSize({100,c_buttonAreaHeight},frameworks::Unit::Percent,frameworks::Unit::OpenGL);
@@ -288,7 +288,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   logo->setAnchor(Anchor::Center);
   logo->addListener<frameworks::MouseEvent>([this](frameworks::MouseEvent* e){
     if (e->m_eventType != frameworks::MouseEventType::Click) return true;
-    auto cur = area->getCurrent();
+    auto cur = m_area->getCurrent();
     if (cur.has_value()) 
       geode::cast::typeinfo_cast<MainMenuButton*>(
         getChildByIDRecursive("buttonarea_"+cur.value())->getChildByTag(2)->getChildren()->lastObject()
@@ -299,7 +299,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
   //setPositionX(0);
   //auto me = CCMenu::createWithItem(logo);
   //me->setPosition({0,0});
-  //addChild(logo);
+  addChild(logo);
   setAnchorPoint({0.5,0.5});
 
   addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated* e){

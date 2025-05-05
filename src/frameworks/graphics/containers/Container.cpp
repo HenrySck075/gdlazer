@@ -315,7 +315,22 @@ struct LogNestManager {
     geode::log::popNest(geode::Mod::get());
   }
 };
-bool Container::doDispatchEvent(Event *event, std::type_index type) {
+bool propagateToChildren(CCArray* children, Event* event, std::type_index type) {
+  geode::Ref<Event> eventRefHolder(event);
+  if (children == nullptr) return true;
+  for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
+    if (child == nullptr) continue;
+    auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
+    if (childContainer == nullptr) {
+      if (!propagateToChildren(child->getChildren(), event, type)) return false;
+    }
+    if (!childContainer->doDispatchEvent(event, type)) {
+      return false;
+    }
+  }
+  return true;
+}
+bool Container::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   //LogNestManager logNest;
   //if (!geode::cast::typeinfo_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
@@ -328,21 +343,7 @@ bool Container::doDispatchEvent(Event *event, std::type_index type) {
     return true;
   }
   // Propagate to children
-  geode::cocos::CCArrayExt<cocos2d::CCArray> childrenQueue;
-  if (auto children = getChildren()) childrenQueue.push_back(children);
-  while (childrenQueue.size() != 0) {
-    for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(childrenQueue.pop_back())) {
-      auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
-      if (childContainer == nullptr) {
-        if (auto c = child->getChildren()) childrenQueue.push_back(c);
-        continue;
-      }
-      if (!childContainer->doDispatchEvent(event, type)) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return propagateToChildren(getChildren(), event, type);
 };
 
 template<typename T>

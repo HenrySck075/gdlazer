@@ -95,7 +95,7 @@ void gdlazer::game::MainMenu::onScreenExit(
     bg->runAction(CCFadeOut::create(2));
     runAction(CCSequence::createWithTwoActions(CCDelayTime::create(2),
                                                CCFadeOut::create(1)));
-    buttonSys->area->hide(buttonSys->area->getCurrent().value(), true, true);
+    buttonSys->m_area->hide(buttonSys->m_area->getCurrent().value(), true, true);
   }
 }
 GDL_NS_END
