@@ -86,9 +86,9 @@ public:
   void setSkewY(float skewY) override;
   void setRotation(float rotation) override;
 
-  void setParent(cocos2d::CCNode *parent) override;
+  void setParent(cocos2d::CCNode* parent) override;
 
-  bool doDispatchEvent(Event *event, std::type_index type) override;
+  bool doDispatchEvent(Event* event, std::type_index type) override;
 
   void setBorderRadius(float radius);
   float getBorderRadius() {return m_borderRadius;};

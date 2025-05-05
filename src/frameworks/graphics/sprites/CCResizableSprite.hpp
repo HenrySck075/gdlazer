@@ -32,6 +32,7 @@ public:
   void setContentSize(CCSize const& size) override;
   void setWrappedSpriteScale(float scale) {
     m_wsscale = scale;
+    refreshScaling();
   }
 
   void refreshScaling(); 

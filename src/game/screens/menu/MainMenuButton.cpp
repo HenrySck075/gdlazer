@@ -25,7 +25,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   the->setID("ui");
   CCResizableSprite* icon = symbol;
   icon->setScale(0.62);
-  the->setLayout(ColumnLayout::create()->setGap(3)->setAutoScale(false)->setAxisReverse(true));
+  the->setLayout(ColumnLayout::create()->setGap(8)->setAutoScale(false)->setAxisReverse(true));
   the->addChild(icon);
   the->setAnchorPoint({0.5,0.5});
   the->setPosition(m/2);

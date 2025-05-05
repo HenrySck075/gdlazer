@@ -29,7 +29,7 @@ public:
   }
   bool init(const CCPoint& anchorPos);
 
-  bool doDispatchEvent(frameworks::Event *e, std::type_index) override;
+  //bool doDispatchEvent(frameworks::Event *e, std::type_index) override;
 
   /// @brief Creates the buttons layers and optionally place them at a specific index.
   /// The first button will be placed at the left, the rest goes to the right.

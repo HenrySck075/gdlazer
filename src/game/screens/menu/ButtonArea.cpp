@@ -33,6 +33,7 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
 
   return true;
 }
+/*
 bool ButtonArea::doDispatchEvent(frameworks::Event *e, std::type_index i) {
   if (i == std::type_index(typeid(KeyEvent)))
     return Container::dispatchEvent(e);
@@ -49,6 +50,7 @@ bool ButtonArea::doDispatchEvent(frameworks::Event *e, std::type_index i) {
     return true;
   }
 };
+*/
 void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
   auto b = CCLayer::create();
   CCPoint gap = {20,0};

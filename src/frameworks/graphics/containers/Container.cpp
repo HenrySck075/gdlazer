@@ -317,8 +317,8 @@ struct LogNestManager {
 };
 bool Container::doDispatchEvent(Event *event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
-  LogNestManager logNest;
-  if (!geode::cast::typeinfo_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
+  //LogNestManager logNest;
+  //if (!geode::cast::typeinfo_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
     return false;
@@ -328,11 +328,13 @@ bool Container::doDispatchEvent(Event *event, std::type_index type) {
     return true;
   }
   // Propagate to children
-  auto children = getChildren();
-  if (children) {
-    for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
+  geode::cocos::CCArrayExt<cocos2d::CCArray> childrenQueue;
+  if (auto children = getChildren()) childrenQueue.push_back(children);
+  while (childrenQueue.size() != 0) {
+    for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(childrenQueue.pop_back())) {
       auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
       if (childContainer == nullptr) {
+        if (auto c = child->getChildren()) childrenQueue.push_back(c);
         continue;
       }
       if (!childContainer->doDispatchEvent(event, type)) {
@@ -498,7 +500,7 @@ void Container::setRotation(float rotation) {
 cocos2d::CCPoint Container::calculateAnchoredPosition(
     const cocos2d::CCPoint &position) {
   using namespace geode;
-  auto size = getContentSize();
+  auto size = getParent() ? getParent()->getContentSize() : CCSize{0,0};
   switch (m_anchor) {
   case Anchor::Center:
     return {position.x + size.width / 2, position.y + size.height / 2};
