@@ -89,6 +89,7 @@ public:
   void setParent(cocos2d::CCNode* parent) override;
 
   bool doDispatchEvent(Event* event, std::type_index type) override;
+  bool propagateToChildren(CCArray* children, Event* event, std::type_index type);
 
   void setBorderRadius(float radius);
   float getBorderRadius() {return m_borderRadius;};

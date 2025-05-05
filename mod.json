@@ -9,7 +9,7 @@
   "id": "henrysck075.gdlazer",
   "name": "gd!lazer",
   "version": "v0.0.7",
-  "developer": "Ayumu Uehara",
+  "developer": "Henry Spheria",
   "description": "jumping is just a *click* away!",
   "early-load": true,
   "settings": {
@@ -31,6 +31,12 @@
       "name": "this menu does not work dont enable",
       "type": "bool",
       "default": true
+    },
+    "dont": {
+      "name": "Just, don't.",
+      "description": "Does not do anything... Well, nothing useful.",
+      "type": "bool",
+      "default": false
     },
     "uiscale": {
       "type": "float",

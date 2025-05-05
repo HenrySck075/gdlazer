@@ -30,7 +30,7 @@ if(MSVC)
 endif()
 # android
 # target_link_libraries(${PROJECT_NAME} -L/data/data/com.termux/files/usr/lib/libGLESv2.so.2)
-
+target_compile_definitions(geode-sdk INTERFACE GEODE_EXPOSE_SECRET_INTERNALS_IN_HEADERS_DO_NOT_DEFINE_PLEASE)
 # include("${CMAKE_CURRENT_SOURCE_DIR}/src/devtools/CMakeLists.txt")
 # setupCustomDevtools()
 # Set up dependencies, resources, and link Geode.

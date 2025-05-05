@@ -66,12 +66,12 @@ bool Container::init() {
     // request a box update (if needed)
     if (m_containerBoxDesynced) updateContainerBox();
     else if (m_containerBoxShapeDesynced) transformContainerBox();
+    auto d = ((h2d::CPolylineF*)(m_containerBox));
+    geode::log::debug("[Container]: {} {}", currentPos, d->size() >= 2 ? d->getBB() : h2d::FRectD{});
     bool isInBounds = true;
-    if (m_clippingEnabled) {
-      isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
-        currentPos.x, currentPos.y
-      ).isInside(*((h2d::CPolylineF*)m_containerBox));
-    }
+    isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
+      currentPos.x, currentPos.y
+    ).isInside(*d);
     //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
     if (!isInBounds) {
       //mouseEvent->stopPropagation();
@@ -104,14 +104,16 @@ bool Container::init() {
             m_dragStartPos, currentPos, 
             m_lastDragOffset
           ));
-          mouseEvent->stopPropagation();
+          //mouseEvent->stopPropagation();
         } else if (mouseEvent->m_clicked && isInBounds) {
           m_isDragging = true;
           dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
-          mouseEvent->stopPropagation();
+          //mouseEvent->stopPropagation();
         }
         if (m_lastInBounds != isInBounds) {
           dispatchEvent(new MouseEvent(isInBounds ? MouseEventType::Enter : MouseEventType::Exit, currentPos, mouseEvent->m_clicked));
+          m_lastInBounds = isInBounds;
+          //geode::log::debug("[Container]: Move enter/exit checking for {}: {}", this, isInBounds);
         }
         m_lastMousePos = currentPos;
         break;
@@ -126,13 +128,13 @@ bool Container::init() {
             dispatchEvent(new MouseDragEvent(MouseDragEventType::Stop, m_dragStartPos, currentPos, m_lastDragOffset));
         }
         mouseEvent->stopPropagation();
-        m_lastInBounds = isInBounds;
+        m_lastInBounds = false;
         return true;
         break;
       case MouseEventType::Enter:
         //log::debug("enter | {}", isInBounds);
         mouseEvent->stopPropagation();
-        m_lastInBounds = isInBounds;
+        m_lastInBounds = true;
         return true;
         break;
     }
@@ -315,14 +317,17 @@ struct LogNestManager {
     geode::log::popNest(geode::Mod::get());
   }
 };
-bool propagateToChildren(CCArray* children, Event* event, std::type_index type) {
-  geode::Ref<Event> eventRefHolder(event);
+bool Container::propagateToChildren(CCArray* children, Event* event, std::type_index type) {
   if (children == nullptr) return true;
+  geode::Ref<Event> eventRefHolder(event);
   for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
-    if (child == nullptr) continue;
     auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
     if (childContainer == nullptr) {
       if (!propagateToChildren(child->getChildren(), event, type)) return false;
+      if (event->m_propagateStopped) {
+        return true;
+      }
+      continue;
     }
     if (!childContainer->doDispatchEvent(event, type)) {
       return false;
@@ -332,8 +337,8 @@ bool propagateToChildren(CCArray* children, Event* event, std::type_index type) 
 }
 bool Container::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
-  //LogNestManager logNest;
-  //if (!geode::cast::typeinfo_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
+  LogNestManager logNest;
+  if (!geode::cast::typeinfo_cast<MouseEvent*>(event)) log::debug("dispatching {} to {}", type.name(), this);
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
     return false;
