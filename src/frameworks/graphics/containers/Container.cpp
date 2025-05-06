@@ -67,7 +67,10 @@ bool Container::init() {
     if (m_containerBoxDesynced) updateContainerBox();
     else if (m_containerBoxShapeDesynced) transformContainerBox();
     auto d = ((h2d::CPolylineF*)(m_containerBox));
-    geode::log::debug("[Container]: {} {}", currentPos, d->size() >= 2 ? d->getBB() : h2d::FRectD{});
+    geode::log::debug("[Container]: {} {}", currentPos, d->size() >= 2 ? d->getBB() : h2d::FRectD{
+      h2d::Point2dD{0,0},
+      h2d::Point2dD{1,1}
+    });
     bool isInBounds = true;
     isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
       currentPos.x, currentPos.y
@@ -317,6 +320,7 @@ struct LogNestManager {
     geode::log::popNest(geode::Mod::get());
   }
 };
+[[clang::optnone]]
 bool Container::propagateToChildren(CCArray* children, Event* event, std::type_index type) {
   if (children == nullptr) return true;
   geode::Ref<Event> eventRefHolder(event);
@@ -329,7 +333,7 @@ bool Container::propagateToChildren(CCArray* children, Event* event, std::type_i
       }
       continue;
     }
-    if (!childContainer->doDispatchEvent(event, type)) {
+    else if (!childContainer->doDispatchEvent(event, type)) {
       return false;
     }
   }

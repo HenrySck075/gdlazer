@@ -17,53 +17,53 @@ bool MainMenu::init() {
   auto logo = OsuLogo::create();
 
   auto bgParallax = ParallaxContainer::create();
-  bg = Background::create();
-  bg->setContentSize({100,100},Unit::Percent);
-  bgParallax->addChild(bg);
+  m_background = Background::create();
+  m_background->setContentSize({100,100},Unit::Percent);
+  bgParallax->addChild(m_background);
   addChild(bgParallax);
   
-  buttonSysParallax = ParallaxContainer::create(0.01f);
-  buttonSys = ButtonSystem::create(logo);
-  buttonSys->setAnchor(Anchor::Center);
-  buttonSysParallax->addChild(buttonSys);
-  addChild(buttonSysParallax);
+  m_buttonSysParallax = ParallaxContainer::create(0.01f);
+  m_buttonSys = ButtonSystem::create(logo);
+  m_buttonSys->setAnchor(Anchor::Center);
+  m_buttonSysParallax->addChild(m_buttonSys);
+  addChild(m_buttonSysParallax);
 
-  joe = CCLayerRGBA::create();
-  joe->setAnchorPoint({1,1});
-  joe->ignoreAnchorPointForPosition(false);
+  m_nowPlayingBox = CCLayerRGBA::create();
+  m_nowPlayingBox->setAnchorPoint({1,1});
+  m_nowPlayingBox->ignoreAnchorPointForPosition(false);
 
   auto songTitle = OsuText::create("",FontType::Regular,14,kCCTextAlignmentRight);
-  joe->addChild(songTitle);
+  m_nowPlayingBox->addChild(songTitle);
   auto songArtist = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
-  joe->addChild(songArtist);
+  m_nowPlayingBox->addChild(songArtist);
   auto levelInfo = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
-  joe->addChild(levelInfo);
+  m_nowPlayingBox->addChild(levelInfo);
   
-  joe->setLayout(
+  m_nowPlayingBox->setLayout(
     ColumnLayout::create()
     ->setAxisReverse(true)
     ->setCrossAxisLineAlignment(AxisAlignment::End)
     ->setAxisAlignment(AxisAlignment::End)
     ->setGap(0)
   );
-  joe->setContentSize({300,40});
-  joe->setCascadeOpacityEnabled(true);
-  joe->setOpacity(0);
-  addChild(joe);
+  m_nowPlayingBox->setContentSize({300,40});
+  m_nowPlayingBox->setCascadeOpacityEnabled(true);
+  m_nowPlayingBox->setOpacity(0);
+  addChild(m_nowPlayingBox);
   
   addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* ){
-    joe->setPosition(CCNode::getContentSize()-CCSize{5,5});
+    m_nowPlayingBox->setPosition(CCNode::getContentSize()-CCSize{5,5});
     return true;
   });
 
   addListener<MusicStarted>([this,songTitle,songArtist,levelInfo](MusicStarted*) {
-    bg->switchBackground();
+    m_background->switchBackground();
     auto a = AudioManager::get();
     songTitle->setString(a->getSongName().c_str());
     songArtist->setString(a->getSongAuthor().c_str());
     levelInfo->setString(fmt::format("{} - {}", a->getLevelName(), a->getLevelAuthor()).c_str());
 
-    joe->updateLayout();
+    m_nowPlayingBox->updateLayout();
     CCArray* actions = CCArray::create(
       CCFadeIn::create(0.5),
       CCDelayTime::create(5),
@@ -73,7 +73,7 @@ bool MainMenu::init() {
     if (getActionManager()->numberOfRunningActionsInTarget(actions)!=0) {
       actions->insertObject(CCFadeOut::create(0.25),0);
     }
-    joe->runAction(CCSequence::create(actions));
+    m_nowPlayingBox->runAction(CCSequence::create(actions));
     return true;
   });
   return true;
@@ -81,8 +81,8 @@ bool MainMenu::init() {
 
 void MainMenu::onLogoClickIdle() {
   auto logo = this->getChildByType<OsuLogo>(0);
-  logoMoveAction = CCMoveToModifiable::create(0.5, pos);
-  logo->runAction(logoMoveAction);
+  m_logoMoveAction = CCMoveToModifiable::create(0.5, pos);
+  logo->runAction(m_logoMoveAction);
 }
 
 void gdlazer::game::MainMenu::onScreenExit(
@@ -92,10 +92,10 @@ void gdlazer::game::MainMenu::onScreenExit(
     removeFromParent();
   else {
     setCascadeOpacityEnabled(true);
-    bg->runAction(CCFadeOut::create(2));
+    m_background->runAction(CCFadeOut::create(2));
     runAction(CCSequence::createWithTwoActions(CCDelayTime::create(2),
                                                CCFadeOut::create(1)));
-    buttonSys->m_area->hide(buttonSys->m_area->getCurrent().value(), true, true);
+    m_buttonSys->m_area->hide(m_buttonSys->m_area->getCurrent().value(), true, true);
   }
 }
 GDL_NS_END

@@ -16,7 +16,7 @@ enum class FontType {
 
 /// Wrapper around CCLabelTTF to provide a text node with Container features
 class OsuText : public frameworks::Container {
-  CCLabelTTF* m_textNode;
+  geode::Ref<CCLabelTTF> m_textNode;
 public:
   static OsuText* create(const char* text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
     $create_class(OsuText, init, text, font, fontSize, alignment);

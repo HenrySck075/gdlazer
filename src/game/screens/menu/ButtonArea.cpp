@@ -61,6 +61,7 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   int buttonsCount = buttons.size();
   for (int i = 1; i<buttonsCount; i++) {
     auto item = buttons[i];
+    if (item == nullptr) continue;
     b->addChild(item);
     item->setZOrder(buttonsCount-i);
   };
@@ -73,8 +74,10 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
   t->setPosition(anchorPosition-gap);
   {
     auto leftChild = buttons[0];
-    t->addChild(leftChild);
-    leftChild->setAnchorPoint({1,0.5});
+    if (leftChild != nullptr) {
+      t->addChild(leftChild);
+      leftChild->setAnchorPoint({1,0.5});
+    }
   }
   t->setLayout(RowLayout::create()
     ->setGap(-1)

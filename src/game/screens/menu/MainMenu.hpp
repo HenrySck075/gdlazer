@@ -15,12 +15,12 @@ using MenuSideFlashes = CCLayer;
 
 GDL_NS_START
 class MainMenu final : public frameworks::Screen {
-  ButtonSystem* buttonSys;
-  Background* bg;
-  ParallaxContainer* buttonSysParallax;
-  CCMoveToModifiable* logoMoveAction;
+  Ref<ButtonSystem> m_buttonSys;
+  Ref<Background> m_background;
+  Ref<ParallaxContainer> m_buttonSysParallax;
+  Ref<CCMoveToModifiable> m_logoMoveAction;
 
-  CCLayerRGBA* joe;
+  Ref<CCLayerRGBA> m_nowPlayingBox;
 public:
   float FADE_IN_DURATION = 300;
 
