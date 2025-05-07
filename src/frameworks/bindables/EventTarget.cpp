@@ -1,6 +1,7 @@
 #include "EventTarget.hpp"
 
 GDF_NS_START
+[[clang::optnone]]
 bool EventTarget::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   auto listeners = m_listeners.find(type);

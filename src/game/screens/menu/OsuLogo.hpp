@@ -24,15 +24,7 @@ public:
   void update(float delta) override;
 
   static OsuLogo* create() {
-    OsuLogo *ret = new OsuLogo();
-    if (ret && ret->init()) {
-      ret->ClickableContainer::autorelease();
-    } else {
-      if (ret) {
-        delete (ret);
-      }
-    }
-    return ret;
+    $create_class(OsuLogo, init);
   }
   bool init();
   friend class LogoVisualization;

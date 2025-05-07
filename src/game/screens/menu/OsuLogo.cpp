@@ -11,7 +11,7 @@ float lin2dB(float linear)
 GDL_NS_START
 using namespace frameworks;
 bool OsuLogo::init() {
-  ClickableContainer::init("osu-logo-select.wav"_spr);
+  if (!ClickableContainer::init("osu-logo-select.wav"_spr)) return false;
   /*
   m_listener = template addEventListener<EventFilter<BeatEvent>>([this](float elapsed) {
     const char* sfxName;
