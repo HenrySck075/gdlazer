@@ -36,7 +36,7 @@ bool MainMenu::init() {
   m_nowPlayingBox->addChild(songTitle);
   auto songArtist = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(songArtist);
-  auto levelInfo = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
+  auto levelInfo = OsuText::create("",FontType::Regular,10,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(levelInfo);
   
   m_nowPlayingBox->setLayout(

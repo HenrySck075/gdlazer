@@ -327,10 +327,12 @@ bool Container::propagateToChildren(CCArray* children, Event* event, std::type_i
   for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
     auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
     if (childContainer == nullptr) {
+      /*
       if (!propagateToChildren(child->getChildren(), event, type)) return false;
       if (event->m_propagateStopped) {
         return true;
       }
+        */
       continue;
     }
     else if (!childContainer->doDispatchEvent(event, type)) {
@@ -339,6 +341,7 @@ bool Container::propagateToChildren(CCArray* children, Event* event, std::type_i
   }
   return true;
 }
+[[clang::optnone]]
 bool Container::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   LogNestManager logNest;

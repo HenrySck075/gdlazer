@@ -1,6 +1,4 @@
 #include "OsuText.hpp"
-#include <cstddef>
-#include <stdexcept>
 #ifdef GEODE_IS_WINDOWS
 #define torusRegular "torus-regular.ttf"_spr
 #define torusBold "torus-bold.ttf"_spr
@@ -44,9 +42,10 @@ CCLabelTTF* OsuTextF(const char* text, FontType fontType, float fontSize, CCText
 
 bool OsuText::init(const char* text, FontType font, float fontSize, CCTextAlignment alignment) {
   if (!frameworks::Container::init()) return false;
-  m_textNode = OsuTextF(text, font, fontSize, alignment);
+  m_textNode = OsuTextF((m_text = text).c_str(), font, fontSize, alignment);
   if (m_textNode == nullptr) return false;
   addChild(m_textNode);
+  setContentSize(m_textNode->getContentSize());
   return true;
 };
 GDL_NS_END

@@ -4,6 +4,7 @@
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/sprites/CCResizableSprite.hpp"
 
 GDL_NS_START
 using namespace frameworks;

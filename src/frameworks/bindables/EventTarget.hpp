@@ -68,6 +68,7 @@ public:
   }
 protected:
   virtual bool doDispatchEvent(Event* event, std::type_index type);
+  void clearAllListeners();
 private:
   std::unordered_map<std::type_index, std::list<std::shared_ptr<EventListenerFunc>>> m_listeners;
 };

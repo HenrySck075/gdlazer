@@ -5,9 +5,7 @@
 //#include "../../graphics/containers/BeatSyncedContainer.hpp"
 #include "../../../frameworks/graphics/color/Color4.hpp"
 #include "../../../frameworks/graphics/containers/ClickableContainer.hpp"
-#include "../../../frameworks/graphics/sprites/CCResizableSprite.hpp"
 #include "../../../frameworks/graphics/sprites/IconConstructor.hpp"
-#include "../../../utils.hpp"
 
 using namespace geode::prelude;
 
@@ -60,8 +58,8 @@ private:
   float const BOUNCE_ROTATION = 8;
   bool m_askForUpdate = false;
 
-  CCScale9Sprite* background;
-  CCScale9Sprite* hover;
+  geode::Ref<CCScale9Sprite> background;
+  geode::Ref<CCScale9Sprite> hover;
   /*
   public readonly Key[] TriggerKeys;
 

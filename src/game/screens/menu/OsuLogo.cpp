@@ -72,7 +72,7 @@ void OsuLogo::onBeat(float delta) {
 
 /// If 0.0024f feels to small then multiply it
 static const float bars_per_visualizer = 200;
-static const float decay_per_millisecond = 0.0024f;
+static const float decay_per_millisecond = 0.0024f*2;
 static const float time_between_updates = 50.f;
 /// @brief amount of time passed
 static float t = 0;
