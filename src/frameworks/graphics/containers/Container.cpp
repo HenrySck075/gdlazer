@@ -51,6 +51,11 @@ float Container::processUnit(float value, Unit unit, bool isWidth) {
   }
 }
 
+void Container::requestBoxUpdate() {
+  if (m_containerBoxDesynced) updateContainerBox();
+  else if (m_containerBoxShapeDesynced) transformContainerBox();
+}
+
 bool Container::init() {
   if (!CCClippingNode::init())
     return false;
@@ -64,13 +69,17 @@ bool Container::init() {
   this->addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
     auto currentPos = convertToNodeSpaceA(this, mouseEvent->m_position);
     // request a box update (if needed)
-    if (m_containerBoxDesynced) updateContainerBox();
-    else if (m_containerBoxShapeDesynced) transformContainerBox();
+    requestBoxUpdate();
     auto d = ((h2d::CPolylineF*)(m_containerBox));
-    geode::log::debug("[Container]: {} {}", currentPos, (d != nullptr && d->size() >= 2) ? d->getBB() : h2d::FRectD{
+    /*
+    geode::log::debug("[{}]: {} {}", getObjectName(this), currentPos, d == nullptr ? h2d::FRectD{
+      h2d::Point2dD{0,0},
+      h2d::Point2dD{2,2}
+    } : d->size() >= 2 ? d->getBB() : h2d::FRectD{
       h2d::Point2dD{0,0},
       h2d::Point2dD{1,1}
     });
+    */
     bool isInBounds = true;
     isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
       currentPos.x, currentPos.y
@@ -178,7 +187,7 @@ void Container::drawBorder() {
     cocos2d::CCPoint* vertices = new cocos2d::CCPoint[t_vc];
     */
     cocos2d::CCPoint vertices[c_verticesPointsSize];
-    //if (m_containerBoxShapeDesynced || m_containerBoxDesynced) calculatePolygonVertPoints();
+    requestBoxUpdate();
     // Draw corners
     for (int i = 0; i < /*t_vc*/c_verticesPointsSize; i++) {            
       vertices[i] = cocos2d::CCPoint{m_verticesPoints[i][0], m_verticesPoints[i][1]};
@@ -327,12 +336,10 @@ bool Container::propagateToChildren(CCArray* children, Event* event, std::type_i
   for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
     auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
     if (childContainer == nullptr) {
-      /*
       if (!propagateToChildren(child->getChildren(), event, type)) return false;
       if (event->m_propagateStopped) {
         return true;
       }
-        */
       continue;
     }
     else if (!childContainer->doDispatchEvent(event, type)) {
@@ -420,9 +427,13 @@ void skewPolygon(h2d::CPolyline_<T> polygon, h2d::Point2d_<T> origin, float hf, 
   polygon.set(points);
 }
 */
+[[clang::optnone]]
 void Container::transformContainerBox() {
   if (!m_containerBoxDesynced) return;
 
+  /// TODO: the homographies currently demolishes the entire polyline thus making the container box empty
+  /// it has been replaced with the original box for now
+  /*
   // homographies transformation
   h2d::HomogrF h;
   h.addRotation(getRotation()*M_PI/180)
@@ -432,8 +443,10 @@ void Container::transformContainerBox() {
   h.set(1, 0, getSkewY());
 
   auto& points = (h * *((h2d::CPolylineF*)m_containerBoxO)).getPts();
-  if (!m_containerBox) m_containerBox = new h2d::CPolylineF(points);
-  else ((h2d::CPolylineF*)m_containerBox)->set(points);
+  delete m_containerBox;
+  m_containerBox = new h2d::CPolylineF(points);
+  */
+  m_containerBox = m_containerBoxO;
   m_containerBoxDesynced = false;
 }
 [[clang::optnone]]
@@ -444,7 +457,7 @@ void Container::updateContainerBox() {
     // doubt it is this
     getContentWidth() < m_borderRadius || getContentHeight() < m_borderRadius
   ) {
-    //geode::log::warn("Homographies crash check failed for {}, no container box is created.", this);
+    geode::log::warn("Homographies crash check failed for {}, no container box is created.", this);
     return;
   }
   auto cs2 = getContentSize() - (cocos2d::CCPoint{m_borderRadius, m_borderRadius});
@@ -483,8 +496,8 @@ void Container::updateContainerBox() {
     m_containerBoxO = new h2d::CPolylineF(innerRect);
   }
 
-  m_containerBoxShapeDesynced = true;
-  m_containerBoxDesynced = false;
+  m_containerBoxShapeDesynced = false;
+  m_containerBoxDesynced = true;
 
   transformContainerBox();
   //log::debug("{}", p.getPts());

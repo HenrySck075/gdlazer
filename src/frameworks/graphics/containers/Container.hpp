@@ -118,6 +118,7 @@ protected:
   virtual void updateSizeWithUnit();
   void updatePositionWithUnit();
   void calculatePolygonVertPoints();
+  void requestBoxUpdate();
 
 private:
   /// new naming: t_ for temp (debugging) variables
