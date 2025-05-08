@@ -13,7 +13,7 @@ concept EventType = std::is_base_of_v<Event, T>;
 
 // just to mask away the templated type
 struct EventListenerFunc {
-  virtual bool call(Event* event) const = 0;
+  virtual bool call(Event* event) = 0;
   virtual bool operator==(const EventListenerFunc&) const = 0;
   virtual void* get() const = 0;
 };
@@ -24,7 +24,7 @@ namespace impl {
     std::function<bool(T*)> func;
     EventListenerFuncTemplated(std::function<bool(T*)> f)
       : func(f) {}
-    bool call(Event* event) const override {
+    bool call(Event* event) override {
       return func(static_cast<T*>(event));
     }
     bool operator==(const EventListenerFunc& otter) const override {

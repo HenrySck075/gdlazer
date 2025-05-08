@@ -67,7 +67,7 @@ bool Container::init() {
     if (m_containerBoxDesynced) updateContainerBox();
     else if (m_containerBoxShapeDesynced) transformContainerBox();
     auto d = ((h2d::CPolylineF*)(m_containerBox));
-    geode::log::debug("[Container]: {} {}", currentPos, d->size() >= 2 ? d->getBB() : h2d::FRectD{
+    geode::log::debug("[Container]: {} {}", currentPos, (d != nullptr && d->size() >= 2) ? d->getBB() : h2d::FRectD{
       h2d::Point2dD{0,0},
       h2d::Point2dD{1,1}
     });
@@ -178,7 +178,7 @@ void Container::drawBorder() {
     cocos2d::CCPoint* vertices = new cocos2d::CCPoint[t_vc];
     */
     cocos2d::CCPoint vertices[c_verticesPointsSize];
-    if (m_containerBoxShapeDesynced || m_containerBoxDesynced) calculatePolygonVertPoints();
+    //if (m_containerBoxShapeDesynced || m_containerBoxDesynced) calculatePolygonVertPoints();
     // Draw corners
     for (int i = 0; i < /*t_vc*/c_verticesPointsSize; i++) {            
       vertices[i] = cocos2d::CCPoint{m_verticesPoints[i][0], m_verticesPoints[i][1]};
@@ -422,7 +422,6 @@ void skewPolygon(h2d::CPolyline_<T> polygon, h2d::Point2d_<T> origin, float hf, 
 */
 void Container::transformContainerBox() {
   if (!m_containerBoxDesynced) return;
-  m_containerBoxDesynced = false;
 
   // homographies transformation
   h2d::HomogrF h;
@@ -435,11 +434,11 @@ void Container::transformContainerBox() {
   auto& points = (h * *((h2d::CPolylineF*)m_containerBoxO)).getPts();
   if (!m_containerBox) m_containerBox = new h2d::CPolylineF(points);
   else ((h2d::CPolylineF*)m_containerBox)->set(points);
+  m_containerBoxDesynced = false;
 }
+[[clang::optnone]]
 void Container::updateContainerBox() {
   if (!m_containerBoxShapeDesynced) return;
-  m_containerBoxShapeDesynced = false;
-  m_containerBoxDesynced = true;
   if (
     getContentSize() == cocos2d::CCSize{0,0} ||
     // doubt it is this
@@ -451,21 +450,17 @@ void Container::updateContainerBox() {
   auto cs2 = getContentSize() - (cocos2d::CCPoint{m_borderRadius, m_borderRadius});
   auto bl = h2d::Point2dF{m_borderRadius, m_borderRadius},
        tr = h2d::Point2dF{cs2.width, cs2.height};
-  if (h2d::detail::shareCommonCoord(bl, tr)) {
-    //geode::log::warn("Common coordinate check failed: {}, {} | {}", bl, tr, getContentSize());
-    return;
-  }
-  h2d::FRectF innerRect {
-    bl, tr
-  };
+  
 
   //geode::log::debug("inner rect of {}: {}", this, innerRect);
 
-  std::set<h2d::Point2dF> p;
   if (m_borderRadius > 0) {
+    std::set<h2d::Point2dF> p;
     auto size = getContentSize();
     auto radius = m_borderRadius;
     std::array<h2d::Point2dF, c_verticesPointsSize> vertices;
+
+    calculatePolygonVertPoints();
 
     for (int i = 0; i < c_verticesPointsSize; i++) {
       vertices[i] = {m_verticesPoints[i][0], m_verticesPoints[i][1]};
@@ -473,14 +468,23 @@ void Container::updateContainerBox() {
 
     p.clear();
     p.insert(vertices.begin(), vertices.end());
-  } else {
-    auto& rp = h2d::CPolylineF(innerRect).getPts();
-    p.insert(rp.begin(), rp.end());
+    if (p.size() == 1) return;
+
+    std::vector<h2d::Point2dF> t;
+    t.assign(p.begin(), p.end());
+    delete m_containerBoxO;
+    m_containerBoxO = new h2d::CPolylineF(t);
+  /// if it is straight up a circle
+  } else if (!h2d::detail::shareCommonCoord(bl, tr)) {
+    h2d::FRectF innerRect {
+      bl, tr
+    };
+    delete m_containerBoxO;
+    m_containerBoxO = new h2d::CPolylineF(innerRect);
   }
-  std::vector<h2d::Point2dF> t;
-  t.assign(p.begin(), p.end());
-  if (!m_containerBoxO) m_containerBoxO = new h2d::CPolylineF(t);
-  else ((h2d::CPolylineF*)m_containerBoxO)->set(t);
+
+  m_containerBoxShapeDesynced = true;
+  m_containerBoxDesynced = false;
 
   transformContainerBox();
   //log::debug("{}", p.getPts());

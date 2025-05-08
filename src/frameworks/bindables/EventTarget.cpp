@@ -6,7 +6,7 @@ bool EventTarget::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   auto listeners = m_listeners.find(type);
   if (listeners != m_listeners.end()) {
-    for (auto &listener : listeners->second) {
+    for (std::shared_ptr<EventListenerFunc>& listener : listeners->second) {
       if (!listener->call(event) || event->m_immediatePropagateStopped)
         break;
     }

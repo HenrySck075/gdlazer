@@ -13,8 +13,8 @@ using namespace geode::prelude;
 GDL_NS_START
 class OsuLogo : public frameworks::ClickableContainer {
 private:
-  frameworks::AudioManager* audio;
-  CCSprite* logoSprite;
+  Ref<frameworks::AudioManager> audio;
+  Ref<CCSprite> logoSprite;
   //int beatCount = 0; // TODO: its not guaranteed to be always 0, but we mute the music anyways so
 public: 
   void onEnter() override {
@@ -31,7 +31,7 @@ public:
 };
 
 class GEODE_HIDDEN LogoVisualization : public frameworks::Container {
-  CCDrawNode* drawNode;
+  Ref<CCDrawNode> drawNode;
   float bars[200] = {0.f};
 public:
   $default_create(LogoVisualization);
