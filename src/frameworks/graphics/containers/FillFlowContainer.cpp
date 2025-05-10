@@ -12,7 +12,7 @@ FillFlowContainer* FillFlowContainer::create(FillDirection direction) {
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
-
+[[clang::optnone]]
 bool FillFlowContainer::init(FillDirection direction) {
     if (!Container::init()) return false;
     

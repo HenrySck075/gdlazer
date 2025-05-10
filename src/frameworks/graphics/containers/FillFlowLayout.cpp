@@ -31,6 +31,7 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
       Container* e = geode::cast::typeinfo_cast<Container*>(child);
       if (!e) continue;
       e->setPositionY(currentPos);
+      e->setAnchorPoint({0.5,0});
       e->updateContainerBox();
       currentPos += child->getContentSize().height;
       maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
@@ -38,6 +39,6 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
     on->cocos2d::CCNode::setContentSize({maxCrossAxisSize, currentPos});
   }
   // to call updateContainerBox
-  container->setBorderRadius(container->getBorderRadius());
+  container->updateContainerBox();
 }
 GDF_NS_END

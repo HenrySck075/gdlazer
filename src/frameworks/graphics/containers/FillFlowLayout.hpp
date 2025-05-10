@@ -8,7 +8,7 @@ protected:
     FillDirection m_direction;
 
 public:
-    FillFlowLayout(FillDirection direction) : geode::AxisLayout((geode::Axis)direction), m_direction(FillDirection::Horizontal) {}
+    FillFlowLayout(FillDirection direction) : geode::AxisLayout((geode::Axis)direction), m_direction(direction) {}
     static FillFlowLayout* create(FillDirection direction = FillDirection::Horizontal);
     void apply(cocos2d::CCNode* on) override;
 };

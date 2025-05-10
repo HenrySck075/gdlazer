@@ -47,7 +47,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
   // Gradient layers
 #define gradientSetup(side) \
   m_grad##side = CCLayerGradient::create(ccc4BFromccc4F(ccc4FFromccc3B(color)), ccc4(color.r, color.g, color.b, 0), {1, 0}); \
-  m_grad##side->setContentSize({0,m_height}); \
+  m_grad##side->setContentSize({0,processUnit(m_height, Unit::UIKit, false)}); \
   m_grad##side->setID("gradient"#side); \
   m_grad##side->setOpacity(0); \
   addChild(m_grad##side)
@@ -64,31 +64,34 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
   ClickableContainer::initWithCallback(clickSfx, clickCb, true);
 
   addListener<MouseEvent>([this, dialogBg](MouseEvent* e){
+    float height = getContentHeight();
     switch (e->m_eventType) {
-      case MouseEventType::Enter:
+      case MouseEventType::Enter: {
         FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
         dialogBg->runAction(
           easingsActions::CCEaseOut::create(
             CCResizeTo::create(
               0.1f,
               m_pParent->getParent()->getContentWidth()*c_hoverWidth, 
-              m_height
+              height
             ),
             5
           )
         );
-        #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
+        #define gradAct easingsActions::CCEaseOut::create(CCFadeIn::create(0.1f),5)
         m_gradLeft->runAction(gradAct);
         m_gradRight->runAction(gradAct);
         #undef gradAct
+        break;
+      }
       
-      case MouseEventType::Exit:
+      case MouseEventType::Exit: {
         dialogBg->runAction(
           easingsActions::CCEaseOut::create(
             CCResizeTo::create(
               0.1f, 
               m_pParent->getParent()->getContentWidth()*c_idleWidth,
-              m_height
+              height
             ),
             5
           )
@@ -97,31 +100,36 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
         m_gradLeft->runAction(gradAct);
         m_gradRight->runAction(gradAct);
         #undef gradAct
+        break;
+      }
 
-      case MouseEventType::MouseDown:
+      case MouseEventType::MouseDown: {
         dialogBg->runAction(
           easingsActions::CCEaseOut::create(
             CCResizeTo::create(
               c_clickDuration*4, 
               m_pParent->getParent()->getContentWidth()*c_hoverWidth*0.98f,
-              m_height
+              height
             ),
             4
           )
         );
+        break;
+      }
 
-
-      case MouseEventType::MouseUp: 
+      case MouseEventType::MouseUp: {
         dialogBg->runAction(
           CCEaseIn::create(
             CCResizeTo::create(
               c_clickDuration, 
               m_pParent->getParent()->getContentWidth()*c_hoverWidth,
-              m_height
+              height
             ),
             1
           )
         );
+        break;
+      }
 
     }
     return true;
@@ -131,7 +139,7 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
     auto size = getContentSize();
     j->setPosition(size/2);
     if (dialogBg!=nullptr) {
-      dialogBg->setContentWidth(size.width * 0.8);
+      dialogBg->setContentSize({size.width * 0.8f, size.height});
       dialogBg->setPosition(size / 2);
     }
 

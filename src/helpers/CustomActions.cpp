@@ -59,7 +59,7 @@ CCActionSkip* CCActionSkip::create(float startTime, CCActionInterval* action) {
 bool CCActionSkip::initWithACatgirl(CCActionInterval* action, float startTime) {
   if (initWithAction(action) && initWithDuration(action->getDuration() - startTime)) {
     m_fInnerDuration = action->getDuration();
-    m_fStartTime = startTime / action->getDuration();
+    m_fStartTime = startTime;
     action->retain();
     return true;
   }
