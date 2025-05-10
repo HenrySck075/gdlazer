@@ -28,15 +28,17 @@ void Triangles::spawnTriangle() {
   auto tri = makeTriangle();
   addChild(tri);
   assignAction(tri, 0);
-  log::debug("[Triangles]: ");
 }
-void Triangles::assignAction(CCNode* node, float startTime) {
+void Triangles::spawnTriangleSkipped() {
+  auto tri = makeTriangle();
+  addChild(tri);
+  assignAction(tri, randomFloat()/2+0.25);
+}
+void Triangles::assignAction(CCNode* node, float startTimeDelta) {
   auto space = CCNode::getContentSize();
 
   auto dur = randomFloat() * 15 + 10;
-  if (startTime > dur) {
-    startTime = dur - 3;
-  }
+  float startTime = dur * startTimeDelta;
   float offset = randomFloat()*2;
   auto moveToAction = CCMoveTo::create(
     dur, 
@@ -82,7 +84,7 @@ void Triangles::onEnter() {
   queueInMainThread([this]{
     if (!j) {
       for (;triangles!=0;triangles--) {
-        spawnTriangle();
+        spawnTriangleSkipped();
       }
     }
     j = true;

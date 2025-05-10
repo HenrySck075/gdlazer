@@ -44,8 +44,18 @@ bool OsuText::init(const char* text, FontType font, float fontSize, CCTextAlignm
   if (!frameworks::Container::init()) return false;
   m_textNode = OsuTextF((m_text = text).c_str(), font, fontSize, alignment);
   if (m_textNode == nullptr) return false;
+  m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);
+  addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated*){
+    m_textNode->setPosition(getContentSize()/2);
+    return true;
+  });
   setContentSize(m_textNode->getContentSize());
   return true;
 };
+
+void OsuText::setOpacity(GLubyte opacity) {
+  frameworks::Container::setOpacity(opacity);
+  m_textNode->setOpacity(opacity);
+}
 GDL_NS_END

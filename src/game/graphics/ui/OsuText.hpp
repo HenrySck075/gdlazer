@@ -26,6 +26,8 @@ public:
   void setString(std::string string) {
     m_textNode->setString(string.c_str());
   }
+
+  void setOpacity(GLubyte opacity) override;
 };
 
 CCLabelTTF* OsuTextF(const char* text, FontType fontType = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);

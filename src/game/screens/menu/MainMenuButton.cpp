@@ -1,17 +1,15 @@
 #include "MainMenuButton.hpp" 
-#include "../../graphics/ui/OsuText.hpp"
 #include "../../../frameworks/input/events/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
-#include "../../../frameworks/graphics/sprites/CCResizableSprite.hpp"
 
 GDL_NS_START
 using namespace frameworks;
 bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstructor symbol, Color4 color, ButtonCallback clickAct, std::vector<enumKeyCodes> activa) {
   auto m = CCSize(BUTTON_WIDTH,c_buttonAreaHeight);
   m_color = color;
-  ClickableContainer::initWithCallback(sampleClick, clickAct, false);
+  ClickableContainer::initWithCallback(sampleClick, clickAct, true);
   ClickableContainer::setContentSize(m);
   //addListener(reactive_listener(updateReactive));
 
@@ -21,20 +19,23 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
     return in;
   });
   activationKeys = activa;
-  auto the = CCLayerRGBA::create();
-  the->setCascadeOpacityEnabled(true);
-  the->setID("ui");
-  CCResizableSprite* icon = symbol;
-  icon->setScale(0.62);
-  the->setLayout(ColumnLayout::create()->setGap(8)->setAutoScale(false)->setAxisReverse(true));
-  the->addChild(icon);
-  the->setAnchorPoint({0.5,0.5});
-  the->setPosition(m/2);
-  auto label = OsuText::create(text.c_str(), FontType::Regular);
-  if (label == nullptr) return false;
-  label->setScale(0.4);
-  the->addChild(label);
-  the->updateLayout();
+  m_body = CCNodeRGBA::create();
+  m_body->setContentSize({20,120});
+  m_body->setID("ui");
+  m_body->setLayout(ColumnLayout::create()->setGap(8)->setAutoScale(false)->setAxisReverse(true));
+  m_body->setAnchorPoint({0.5,0.5});
+  m_body->setPosition(m/2);
+  
+  m_icon = symbol;
+  m_icon->setScale(0.62);
+  m_body->addChild(m_icon);
+  
+  m_label = OsuText::create(text.c_str(), FontType::Regular);
+  if (m_label == nullptr) return false;
+  m_label->setScale(0.4);
+  m_body->addChild(m_label);
+
+  m_body->updateLayout();
   
   #define bgSetup(var, id, col)                       \
   var = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr); \
@@ -45,18 +46,14 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   var->setAnchorPoint(CCPoint(0.5,0.5));                  \
   var->setPosition(m/2);                          \
 
-  bgSetup(background, "background", color);
-  bgSetup(hover, "hover", ccc3(255,255,255));
-  setCascadeOpacityEnabled(true);
+  bgSetup(m_background, "background", color);
+  bgSetup(m_hover, "hover", ccc3(255,255,255));
   setColor(Color4{255,255,255,0});
-  addChild(background);
-  addChild(hover);
-  addChild(the);
-  hover->setOpacity(0);
-  hover->setOpacity(0);
-  hover->setOpacity(0);
-  hover->setOpacity(0);
-  hover->setOpacity(0);
+  addChild(m_background);
+  addChild(m_hover);
+  addChild(m_body);
+  setCascadeOpacityEnabled(true);
+  m_hover->setOpacity(0);
   
   setAnchorPoint({0.5,0.5});
 
@@ -70,8 +67,9 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
     return true;
   });
   addListener<MouseEvent>([this](MouseEvent* e){
+    //geode::log::debug("[MainMenuButton]: {}", (int)(e->m_eventType));
     switch (e->m_eventType) {
-      case MouseEventType::Enter:      
+      case MouseEventType::Enter: 
         runAction(CCEaseElasticOut::create(
           CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,c_buttonAreaHeight)
         ));
@@ -83,18 +81,21 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
         ));
         break;
       case MouseEventType::MouseDown:
-        hover->runAction(easingsActions::CCEaseOut::create(
+        geode::log::debug("hi");
+        m_hover->runAction(easingsActions::CCEaseOut::create(
           CCFadeTo::create(1,255*0.1),5
         ));
+        break;
       case MouseEventType::MouseUp:
+        geode::log::debug("hello");
         //if (!static_cast<CCBool*>(getUserObject("clicking"_spr))) return;
-        hover->runAction(easingsActions::CCEaseOut::create(
+        m_hover->runAction(easingsActions::CCEaseOut::create(
           CCFadeTo::create(1,0),5
         ));
       case MouseEventType::Click:
-        hover->stopAllActions();
-        hover->setOpacity(255*0.9);
-        hover->runAction(easingsActions::CCEaseExponentialOut::create(
+        m_hover->stopAllActions();
+        m_hover->setOpacity(255*0.9);
+        m_hover->runAction(easingsActions::CCEaseExponentialOut::create(
           CCFadeTo::create(0.8,0)
         ));
     }
@@ -107,13 +108,13 @@ void MainMenuButton::setContentSize(const CCSize& size) {
   ClickableContainer::setContentSize(size);
   auto s = getContentSize();
   // todo: move to container
-  if (background) {
-    background->setContentSize(s);
-    background->setPosition(s/2);
+  if (m_background) {
+    m_background->setContentSize(s);
+    m_background->setPosition(s/2);
   }
-  if (hover) {
-    hover->setContentSize(s);
-    hover->setPosition(s/2);
+  if (m_hover) {
+    m_hover->setContentSize(s);
+    m_hover->setPosition(s/2);
   }
   if (auto ui = getChildByID("ui")) ui->setPosition(s/2);
   if (m_askForUpdate) m_pParent->updateLayout();

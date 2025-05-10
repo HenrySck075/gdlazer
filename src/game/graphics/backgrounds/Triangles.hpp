@@ -20,6 +20,7 @@ private:
 
   CCSprite* makeTriangle();
   void spawnTriangle();
+  void spawnTriangleSkipped();
   // mf crashes when the node does not have a parent :laugh:
   void assignAction(CCNode* node, float startTime);
 public:

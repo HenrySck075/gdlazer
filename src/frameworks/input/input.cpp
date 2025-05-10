@@ -35,28 +35,15 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
   };
 	void onGLFWMouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 		auto g = Game::get(false);
-    g_mouseClicked = action == GLFW_PRESS;
-    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
-			action == GLFW_PRESS ? MouseEventType::MouseDown : MouseEventType::MouseUp,
-			g_mousePos, g_mouseClicked
-		));
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+      g_mouseClicked = action == GLFW_PRESS;
+      if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseEvent(
+        action == GLFW_PRESS ? MouseEventType::MouseDown : MouseEventType::MouseUp,
+        g_mousePos, g_mouseClicked
+      ));
+    }
 		CCEGLView::onGLFWMouseCallBack(window, button, action, mods);
 	}
-
-  void updateWindow(int w, int h) {
-    log::debug("{}, {}", w, h);
-    CCEGLView::updateWindow(w, h);
-  }
-  // == window size ==
-  void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height) {
-    CCEGLView::onGLFWWindowSizeFunCallback(window, width, height);
-    log::debug("{}, {}", width, height);
-    auto g = Game::get(false);
-    if (g!=nullptr && cocos2d::CCScene::get() == g) {
-      g->setContentSize(getDesignResolutionSize());
-      g->dispatchEvent(new NodeLayoutUpdated(g));
-    }
-  }
 };
 
 #include <Geode/modify/CCMouseDispatcher.hpp>

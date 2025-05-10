@@ -27,11 +27,11 @@ bool ClickableContainer::init(std::string sfx, bool consumeTap) {
   if (!Container::init()) return false;
   m_sfx = sfx;
   m_consumeTap = consumeTap;
+  setTouchEnabled(true);
   addListener<MouseEvent>([this](MouseEvent* e){
     if (e->m_eventType == MouseEventType::Click) {
-      log::debug("sup");
-      FMODAudioEngine::sharedEngine()->playEffect(m_sfx, 1, 0, GameManager::sharedState()->m_sfxVolume);
-      if (m_consumeTap) e->stopPropagation();
+      FMODAudioEngine::sharedEngine()->playEffect(m_sfx/*, 1, 0, GameManager::sharedState()->m_sfxVolume*/);
+      //if (m_consumeTap) e->stopPropagation();
     }
     return true;
   });

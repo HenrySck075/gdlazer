@@ -33,6 +33,8 @@ bool Game::init() {
   return true;
 };
 
+static CCSize s_lastWinSize = {0,0};
+
 void Game::update(float dt) {
   CCNode::update(dt);
   for (auto screen : m_invisibleQueue) {
@@ -49,6 +51,16 @@ void Game::update(float dt) {
   }
 
   AudioManager::get()->update(dt);
+
+  /// heavy workaround because glfw win size hooks stopped working
+  CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+  if (s_lastWinSize != winSize) {
+    if (s_lastWinSize != CCSize{0,0}) {
+      setContentSize(winSize);
+      dispatchEvent(new NodeLayoutUpdated(this));
+    }
+    s_lastWinSize = winSize;
+  }
 }
 
 void Game::pushScreen(Screen* screen) {
@@ -102,7 +114,7 @@ void Game::pushOverlay(OverlayContainer* overlay) {
 };
 void Game::popOverlay(OverlayContainer* overlay) {
   m_overlaysContainer->removeChild(overlay);
-  m_overlayStack.pop_back();
+  if (m_overlayStack.size() > 0) m_overlayStack.pop_back();
   if (m_overlayStack.size() > 0) {
     m_currentOverlay = static_cast<OverlayContainer*>(m_overlayStack.inner()->lastObject());
   } else {
@@ -134,6 +146,11 @@ bool Game::doDispatchEvent(Event* event, std::type_index type) {
 
   // Propagate to children
   if (event->m_propagateStopped) {
+    return true;
+  }
+  if (type == typeid(NodeLayoutUpdated)) {
+    m_screensContainer->doDispatchEvent(event, type);
+    m_overlaysContainer->doDispatchEvent(event, type);
     return true;
   }
   if (m_currentOverlay) m_currentOverlay->doDispatchEvent(event, type);

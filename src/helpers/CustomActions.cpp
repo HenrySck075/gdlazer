@@ -96,7 +96,7 @@ CCActionSkip::~CCActionSkip() {
 }
 
 void CCActionSkip::update(float time) {
-  m_pInner->update(time + (m_fStartTime/m_fInnerDuration));
+  m_pInner->update((m_fDuration*time + m_fStartTime) / m_fInnerDuration);
 }
 
 //

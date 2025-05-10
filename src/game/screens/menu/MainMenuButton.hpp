@@ -7,6 +7,9 @@
 #include "../../../frameworks/graphics/containers/ClickableContainer.hpp"
 #include "../../../frameworks/graphics/sprites/IconConstructor.hpp"
 
+#include "../../../frameworks/graphics/sprites/CCResizableSprite.hpp"
+#include "../../graphics/ui/OsuText.hpp"
+
 using namespace geode::prelude;
 
 GDL_NS_START
@@ -43,9 +46,11 @@ public:
   bool init(std::string text, std::string sampleClick, frameworks::IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
   void setContentSize(const CCSize& s) override;
   void setOpacity(GLubyte opacity) override {
-    GLubyte old = hover->getOpacity();
+    GLubyte old = m_hover->getOpacity();
     Container::setOpacity(opacity);
-    hover->setOpacity(old);
+    m_icon->setOpacity(opacity);
+    m_label->setOpacity(opacity);
+    m_hover->setOpacity(old);
   }
   
 protected:
@@ -58,8 +63,11 @@ private:
   float const BOUNCE_ROTATION = 8;
   bool m_askForUpdate = false;
 
-  geode::Ref<CCScale9Sprite> background;
-  geode::Ref<CCScale9Sprite> hover;
+  geode::Ref<CCScale9Sprite> m_background;
+  geode::Ref<CCNodeRGBA> m_body;
+  geode::Ref<frameworks::CCResizableSprite> m_icon;
+  geode::Ref<OsuText> m_label;
+  geode::Ref<CCScale9Sprite> m_hover;
   /*
   public readonly Key[] TriggerKeys;
 

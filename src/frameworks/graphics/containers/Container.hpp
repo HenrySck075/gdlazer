@@ -134,6 +134,7 @@ private:
   cocos2d::CCSize m_minSize;
   cocos2d::CCSize m_maxSize;
   bool m_isDragging = false;
+  bool m_shouldSendClick = false;
   cocos2d::CCPoint m_lastMousePos;
   cocos2d::CCPoint m_lastDragOffset;
   cocos2d::CCPoint m_dragStartPos;
