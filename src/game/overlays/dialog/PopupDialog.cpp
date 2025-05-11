@@ -22,7 +22,9 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   setUserObject("popupdialog"_spr, CCBool::create(true));
 
   auto winSize = CCDirector::sharedDirector()->getWinSize();
-  m_buttons = buttons;
+  for (auto b : buttons) {
+    m_buttons.push_back(b);
+  }
 
   m_bgSprite = CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr);
   m_bgSprite->setAnchorPoint({0,0});
@@ -83,8 +85,8 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     ->setGap(0)
   );
   */
-  btnLayer->setAnchorPoint({0.5, 0.5});
-  btnLayer->setPosition(size/2);
+  btnLayer->setAnchorPoint({0, 0});
+  btnLayer->setPosition(CCPoint{0,40});
   btnLayer->setContentSize(size);
   btnLayer->setCascadeOpacityEnabled(true);
   m_main->addChild(btnLayer);
@@ -94,7 +96,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     btnLayer->addChild(btn); 
   }
   btnLayer->setID("buttonLayer");
-  btnLayer->updateLayout();
+  queueInMainThread([btnLayer]{btnLayer->updateLayout();});
 
   m_bodyLayout->updateLayout();
   //label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
@@ -143,10 +145,7 @@ void PopupDialog::onClose() {
   auto en = FMODAudioEngine::sharedEngine();
   en->playEffect("dialog-pop-out.wav"_spr);
   en->setBackgroundMusicVolume(volume);
-  runAction(CCSequence::createWithTwoActions(
-    CCDelayTime::create(0.5), 
-    CCRemoveSelf::create()
-  ));
+  runAction(CCDelayTime::create(0.5));
 }
 
 bool PopupDialog::init2(

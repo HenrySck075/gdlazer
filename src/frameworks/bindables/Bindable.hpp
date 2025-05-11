@@ -24,7 +24,8 @@ template<LegallyBindable T>
 struct Bindable {
 private:
   T m_value;
-  std::vector<std::function<void(T)>> m_listeners;
+  using Callback = std::function<void(T oldV, T newV)>;
+  std::vector<Callback> m_listeners;
 public:
   Bindable() : m_value(T()) {}
   Bindable(T value) : m_value(value) {};
@@ -33,22 +34,23 @@ public:
 
   Bindable<T>& operator=(const T& other) {
     if (m_value != other) {
-      for (auto& l : m_listeners) {
-        l(other);
-      }
+      T oldValue = m_value;
       m_value = other;
+      for (auto& l : m_listeners) {
+        l(oldValue, other);
+      }
     }
     return *this;
   }
   Bindable<T>& operator=(const Bindable<T>& other) {
     return this->operator=(other.m_value);
   }
-  void addCallback(std::function<void(T)> listener) {
+  void addCallback(Callback listener) {
     m_listeners.push_back(listener);
   }
   T& operator->() {return m_value;}
   T& get() {return m_value;}
-  void removeCallback(std::function<void(T)> listener) {
+  void removeCallback(Callback listener) {
     m_listeners.erase(std::remove_if(m_listeners.begin(), m_listeners.end(), [listener](auto& l) {
       return l == listener;
     }), m_listeners.end());

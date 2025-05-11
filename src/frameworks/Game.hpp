@@ -25,6 +25,7 @@ protected:
 
   geode::cocos::CCArrayExt<Screen> m_invisibleQueue;
   geode::cocos::CCArrayExt<Screen> m_removalQueue;
+  geode::cocos::CCArrayExt<OverlayContainer> m_overlayRemovalQueue;
 
   static void setInstance(geode::Ref<Game> instance);
 public:

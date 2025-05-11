@@ -4,6 +4,7 @@
 #include "../../../helpers/CustomActions.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/color/Color4.hpp"
 
 GDL_NS_START
 using namespace frameworks;
@@ -155,6 +156,9 @@ bool PopupDialogButton::init(const char* label, ccColor3B color, const char* cli
   setAnchorPoint({ 0.5,0.5 });
 
   setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setCascadeOpacityEnabled(true);
+  setBackgroundColor(Color4::fromHex("150e14"));
 
   setMinSize({-1,m_height}), setMaxSize({-1,m_height});
 

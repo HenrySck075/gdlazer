@@ -139,7 +139,7 @@ private:
   cocos2d::CCPoint m_lastDragOffset;
   cocos2d::CCPoint m_dragStartPos;
   float m_borderRadius = 0.0f;
-  cocos2d::CCDrawNode* m_backgroundNode = nullptr;
+  cocos2d::CCLayerColor* m_backgroundNode = nullptr;
   cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
   cocos2d::CCSize m_size;
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};

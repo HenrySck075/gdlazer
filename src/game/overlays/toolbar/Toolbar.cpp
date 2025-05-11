@@ -77,13 +77,13 @@ bool Toolbar::init() {
       isMouseEntered()
     ) e->preventDefault();
     if (e->m_eventType == MouseEventType::Enter) {
-      if (!shown) return true;
+      if (!m_shown) return true;
       gradient->stopAllActions();
       gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(2.5,255), 5));
     }
     
     if (e->m_eventType == MouseEventType::Exit) {
-      if (!shown) return true;
+      if (!m_shown) return true;
       gradient->stopAllActions();
       gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(0.2,0), 5));
     }
@@ -94,14 +94,14 @@ bool Toolbar::init() {
 }
 
 void Toolbar::show() {
-  if (!shown) runAction(easingsActions::CCEaseOut::create(
+  if (!m_shown) runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(0.5,{0,0}), 5
   ));
   VisibilityContainer::show();
 }
 
 void Toolbar::hide() {
-  if (shown) runAction(easingsActions::CCEaseOut::create(
+  if (m_shown) runAction(easingsActions::CCEaseOut::create(
     CCMoveTo::create(0.5,{0,-c_height}), 5
   ));
   VisibilityContainer::hide();

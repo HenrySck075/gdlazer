@@ -53,7 +53,7 @@ bool ButtonArea::doDispatchEvent(frameworks::Event *e, std::type_index i) {
 */
 void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::string tag) {
   auto b = CCLayer::create();
-  CCPoint gap = {20,0};
+  CCPoint gap = {30,0};
   b->ignoreAnchorPointForPosition(true);
   b->setAnchorPoint({0,0.5});
   b->setPosition(anchorPosition+gap);

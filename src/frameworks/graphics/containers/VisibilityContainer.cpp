@@ -3,7 +3,7 @@
 GDF_NS_START
 bool VisibilityContainer::init() {
   if (!Container::init()) return false;
-  shown.addCallback([this](bool value) {
+  m_shown.addCallback([this](bool, bool value) {
     if (value) onOpen();
     else onClose(); 
   });
@@ -11,12 +11,12 @@ bool VisibilityContainer::init() {
 }
 
 void VisibilityContainer::show() {
-  shown = true;
+  m_shown = true;
 };
 void VisibilityContainer::hide() {
-  shown = false;
+  m_shown = false;
 };
 void VisibilityContainer::toggleVisibility() {
-  shown = !shown;
+  m_shown = !m_shown;
 };
 GDF_NS_END

@@ -12,11 +12,11 @@ class PopupDialog : public OsuOverlayContainer {
 private:
   float volume;   
   bool hiding = false;
-  CCClippingNode* m_bgSpriteClip;
-  CCLayerRGBA* m_bodyLayout;
-  std::vector<PopupDialogButton*> m_buttons;
-  CCScale9Sprite* m_bgSprite;
-  OsuText* m_title;
+  geode::Ref<CCClippingNode> m_bgSpriteClip;
+  geode::Ref<CCLayerRGBA> m_bodyLayout;
+  geode::Ref<CCScale9Sprite> m_bgSprite;
+  geode::Ref<OsuText> m_title;
+  geode::cocos::CCArrayExt<PopupDialogButton> m_buttons;
 
 protected:
   //void onClose(cocos2d::CCObject*) override;

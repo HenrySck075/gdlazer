@@ -60,7 +60,7 @@ bool Container::init() {
   if (!CCClippingNode::init())
     return false;
 
-  m_backgroundNode = cocos2d::CCDrawNode::create();
+  m_backgroundNode = cocos2d::CCLayerColor::create();
   this->addChild(m_backgroundNode, -998);
   
   setStencil(cocos2d::CCDrawNode::create());
@@ -165,6 +165,7 @@ fish:
   this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
     updateSizeWithUnit();
     updatePositionWithUnit();
+    m_backgroundNode->setContentSize(getContentSize());
     return true;
   });
 
@@ -173,7 +174,6 @@ fish:
 }
 
 void Container::drawBorder() {
-  m_backgroundNode->clear();
   auto stencil = geode::cast::typeinfo_cast<CCDrawNode*>(getStencil());
   stencil->clear();
   
@@ -201,11 +201,6 @@ void Container::drawBorder() {
     }
     
     if (stencil) stencil->drawPolygon(vertices, c_verticesPointsSize, {1,1,1,1}, 0, {0,0,0,0});
-    
-    // Draw background
-    ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
-    //m_backgroundNode->drawPolygon(vertices, c_verticesPointsSize, bgColor, 0, {0,0,0,0});
-    m_backgroundNode->drawRect({0,0}, size, bgColor, 0, bgColor);
 
     //delete[] vertices;
   } else {
@@ -217,7 +212,6 @@ void Container::drawBorder() {
     };
     // Draw rectangle background for no radius
     ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
-    m_backgroundNode->drawPolygon(amougis, 4, bgColor, 0.f, bgColor);
     if (stencil) stencil->drawPolygon(amougis, 4, bgColor, 0.f, bgColor);
   }
 }
@@ -240,6 +234,8 @@ void Container::setBorderRadius(float radius) {
 
 void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundColor = color;
+  m_backgroundNode->setColor({color.r,color.g,color.b});
+  m_backgroundNode->setOpacity(color.a);
 }
 void Container::setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit) {
   m_size = size;
@@ -577,4 +573,5 @@ void Container::setAnchor(geode::Anchor anchor) {
   setUserObject("gdlazer/devtools/anchor", cocos2d::CCInteger::create((int)anchor));
   updatePositionWithUnit();
 }
+
 GDF_NS_END

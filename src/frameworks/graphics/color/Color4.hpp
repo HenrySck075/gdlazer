@@ -25,7 +25,7 @@ struct Color4 {
     return Color4{r/scalar,g/scalar,b/scalar,a}.clamp();
   }
   Color4 opacity(int opacity) {
-    return Color4(r,g,b,opacity).clamp();
+    return Color4(r,g,b,opacity/255.f).clamp();
   }
 
   // converters
@@ -99,18 +99,19 @@ struct Color4 {
 
   // convert to cocos2d color because we're making this for cocos2d ofc
   operator ccColor3B() const {
-    return ccc3(r,g,b);
+    return ccc3(r*255,g*255,b*255);
   }
   operator ccColor4B() const {
-    return ccc4(r,g,b,a);
+    return ccc4(r*255,g*255,b*255,a*255);
   }
   operator ccColor4F() const {
-    return ccc4f(r/255.f,g/255.f,b/255.f,a/255.f);
+    return ccc4f(r,g,b,a);
   }
-
+  
+  Color4(int red, int green, int blue, int alpha) : r(red/255.f), g(green/255.f), b(blue/255.f), a(alpha/255.f) {};
   Color4(double red, double green, double blue, double alpha) : r(red), g(green), b(blue), a(alpha) {};
-  Color4(ccColor3B const& c) : r(c.r), g(c.g), b(c.b), a(255) {};
-  Color4(ccColor4B const& c) : r(c.r), g(c.g), b(c.b), a(c.a) {};
+  Color4(ccColor3B const& c) : r(c.r/255.f), g(c.g/255.f), b(c.b/255.f), a(1) {};
+  Color4(ccColor4B const& c) : r(c.r/255.f), g(c.g/255.f), b(c.b/255.f), a(c.a/255.f) {};
 
   // @note my addition
   // currently doing additive

@@ -43,11 +43,25 @@ void Game::update(float dt) {
       m_invisibleQueue.inner()->removeObject(screen);
     }
   }
+  decltype(m_removalQueue) rqRemove;
   for (auto screen : m_removalQueue) {
     if (screen->numberOfRunningActions() == 0) {
       screen->removeFromParentAndCleanup(true);
-      m_removalQueue.inner()->removeObject(screen);
+      rqRemove.push_back(screen);
     }
+  }
+  for (auto screen : rqRemove) {
+    m_removalQueue.inner()->removeObject(screen);
+  }
+  decltype(m_overlayRemovalQueue) orqRemove;
+  for (auto overlay : m_overlayRemovalQueue) {
+    if (overlay->numberOfRunningActions() == 0) {
+      overlay->removeFromParentAndCleanup(true);
+      orqRemove.push_back(overlay);
+    }
+  }
+  for (auto overlay : orqRemove) {
+    m_overlayRemovalQueue.inner()->removeObject(overlay);
   }
 
   AudioManager::get()->update(dt);
@@ -108,12 +122,14 @@ Screen* Game::popScreen() {
 }
 
 void Game::pushOverlay(OverlayContainer* overlay) {
+  if (!overlay->m_shown) return overlay->show();
   m_overlaysContainer->addChild(overlay);
   m_currentOverlay = overlay;
   m_overlayStack.push_back(overlay);
 };
 void Game::popOverlay(OverlayContainer* overlay) {
-  m_overlaysContainer->removeChild(overlay);
+  if (overlay->m_shown) return overlay->hide();
+  m_overlayRemovalQueue.push_back(overlay);
   if (m_overlayStack.size() > 0) m_overlayStack.pop_back();
   if (m_overlayStack.size() > 0) {
     m_currentOverlay = static_cast<OverlayContainer*>(m_overlayStack.inner()->lastObject());

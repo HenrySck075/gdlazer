@@ -32,7 +32,7 @@ bool OverlayContainer::init() {
     return true;
   });
   
-  shown.addCallback([this](bool value){
+  m_shown.addCallback([this](bool, bool value){
     auto g = Game::get();
     if (value) {
       geode::log::debug("[OverlayContainer]: show overlay");

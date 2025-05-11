@@ -18,6 +18,7 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
   
   if (m_direction == FillDirection::Horizontal) {
     for (auto child : children) {
+      child->setAnchorPoint({0,0});
       Container* e = geode::cast::typeinfo_cast<Container*>(child);
       if (!e) continue;
       e->setPositionX(currentPos);
@@ -28,10 +29,10 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
     on->cocos2d::CCNode::setContentSize({currentPos, maxCrossAxisSize});
   } else {
     for (auto child : children) {
+      child->setAnchorPoint({0,0});
       Container* e = geode::cast::typeinfo_cast<Container*>(child);
       if (!e) continue;
       e->setPositionY(currentPos);
-      e->setAnchorPoint({0.5,0});
       e->updateContainerBox();
       currentPos += child->getContentSize().height;
       maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
