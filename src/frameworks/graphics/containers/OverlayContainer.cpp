@@ -35,14 +35,12 @@ bool OverlayContainer::init() {
   m_shown.addCallback([this](bool, bool value){
     auto g = Game::get();
     if (value) {
-      geode::log::debug("[OverlayContainer]: show overlay");
       g->pushOverlay(this);
       g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popin));
     }
     else {
-      geode::log::debug("[OverlayContainer]: hide overlay");
-      g->popOverlay(this);
       g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popout));
+      g->popOverlay(this);
     }
   });
   return true;

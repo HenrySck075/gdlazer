@@ -19,10 +19,10 @@ class OsuText : public frameworks::Container {
   geode::Ref<CCLabelTTF> m_textNode;
   std::string m_text; // debugging purpose
 public:
-  static OsuText* create(const char* text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
+  static OsuText* create(std::string text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
     $create_class(OsuText, init, text, font, fontSize, alignment);
   }
-  bool init(const char* text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
+  bool init(std::string text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
   void setString(std::string string) {
     m_textNode->setString(string.c_str());
   }
@@ -30,7 +30,7 @@ public:
   void setOpacity(GLubyte opacity) override;
 };
 
-CCLabelTTF* OsuTextF(const char* text, FontType fontType = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
+CCLabelTTF* OsuTextF(const std::string& text, FontType fontType = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
 GDL_NS_END
 /*
 class OsuText : public CCLabelBMFont {

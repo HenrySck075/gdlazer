@@ -8,8 +8,8 @@ using namespace geode::prelude;
 GDL_NS_START
 class PopupDialogButton : public frameworks::ClickableContainer {
 private:
-  CCLayerGradient* m_gradLeft = nullptr;
-  CCLayerGradient* m_gradRight = nullptr;
+  geode::Ref<CCLayerGradient> m_gradLeft;
+  geode::Ref<CCLayerGradient> m_gradRight;
 
   const float c_idleWidth = 0.8f;
   const float c_hoverWidth = 0.9f;
@@ -19,12 +19,12 @@ private:
 
   float m_height = 50;
   ccColor3B m_color;
-  const char* m_sfx;
+  std::string m_sfx;
 
-  bool init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
+  bool init(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb);
 public:
   void setOpacity(GLubyte opacity) override;
-  static PopupDialogButton* create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb);
+  static PopupDialogButton* create(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb);
   void setContentHeight(float height);
 };
 GDL_NS_END

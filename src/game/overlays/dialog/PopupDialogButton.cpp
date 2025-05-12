@@ -9,7 +9,7 @@
 GDL_NS_START
 using namespace frameworks;
 
-PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
+PopupDialogButton* PopupDialogButton::create(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb) {
   auto ret = new PopupDialogButton();
   if (ret && ret->init(label, color, clickSfx, clickCb)) {
     ret->autorelease();
@@ -21,7 +21,7 @@ PopupDialogButton* PopupDialogButton::create(const char* label, ccColor3B color,
   return ret;
 }
 
-bool PopupDialogButton::init(const char* label, ccColor3B color, const char* clickSfx, ButtonCallback clickCb) {
+bool PopupDialogButton::init(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb) {
   m_color = color;
   setZOrder(3);
 

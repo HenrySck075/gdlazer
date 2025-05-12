@@ -20,12 +20,12 @@ static std::map<FontType, const char*> fontTypeMap = {
 };
 
 // todo: figure out why custom ttf isnt loaded in
-CCLabelTTF* OsuTextF(const char* text, FontType fontType, float fontSize, CCTextAlignment alignment) {
+CCLabelTTF* OsuTextF(const std::string& text, FontType fontType, float fontSize, CCTextAlignment alignment) {
   auto fontFile = fontTypeMap[fontType];
   //log::debug("[OsuText]: Font path of {} is {}",fontFile,); 
   // the j
   auto ret = CCLabelTTF::create(
-    text, 
+    text.c_str(), 
     #ifdef GEODE_IS_WINDOWS
     (geode::Mod::get()->getResourcesDir() / fontFile).string().c_str(), 
     #else
@@ -40,9 +40,9 @@ CCLabelTTF* OsuTextF(const char* text, FontType fontType, float fontSize, CCText
   return ret;
 }
 
-bool OsuText::init(const char* text, FontType font, float fontSize, CCTextAlignment alignment) {
+bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignment alignment) {
   if (!frameworks::Container::init()) return false;
-  m_textNode = OsuTextF((m_text = text).c_str(), font, fontSize, alignment);
+  m_textNode = OsuTextF((m_text = text), font, fontSize, alignment);
   if (m_textNode == nullptr) return false;
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);

@@ -4,22 +4,14 @@ using namespace cocos2d;
 
 class CCClippingNodeRGBA : public cocos2d::CCClippingNode, public cocos2d::CCRGBAProtocol {
 protected:
-  GLubyte _displayedOpacity;
-  GLubyte _realOpacity;
-  cocos2d::ccColor3B _displayedColor;
-  cocos2d::ccColor3B _realColor;
-  bool _cascadeOpacityEnabled;
-  bool _cascadeColorEnabled;
+  GLubyte _displayedOpacity = 255;
+  GLubyte _realOpacity = 255;
+  cocos2d::ccColor3B _displayedColor {255,255,255};
+  cocos2d::ccColor3B _realColor {255,255,255};
+  bool _cascadeOpacityEnabled = false;
+  bool _cascadeColorEnabled = false;
 
 public:
-  CCClippingNodeRGBA()
-    : _displayedOpacity(255),
-      _realOpacity(255),
-      _displayedColor(cocos2d::ccWHITE),
-      _realColor(cocos2d::ccWHITE),
-      _cascadeOpacityEnabled(false),
-      _cascadeColorEnabled(false) {}
-
   static CCClippingNodeRGBA* create() {
     CCClippingNodeRGBA* ret = new CCClippingNodeRGBA();
     if (ret && ret->init()) {

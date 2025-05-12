@@ -44,7 +44,7 @@ public:
 };
 
 class ToolbarMusicButton : public ToolbarToggleButton {
-  NowPlayingOverlay* o;
+  geode::Ref<NowPlayingOverlay> o;
 public:
   $default_create(ToolbarMusicButton);
   bool init() {
@@ -61,10 +61,6 @@ public:
   }
   void select() override;
   void deselect() override;
-
-  ~ToolbarMusicButton() {
-    o->release();
-  }
 };
 
 GDL_NS_END

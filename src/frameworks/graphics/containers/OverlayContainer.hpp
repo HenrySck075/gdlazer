@@ -6,7 +6,7 @@ GDF_NS_START
 // @note Cascade opacity has been disabled
 class OverlayContainer : public VisibilityContainer {
 protected:
-  Container* m_main;
+  geode::Ref<Container> m_main;
 public:
   bool init();
 

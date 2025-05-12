@@ -46,8 +46,8 @@ void Game::update(float dt) {
   decltype(m_removalQueue) rqRemove;
   for (auto screen : m_removalQueue) {
     if (screen->numberOfRunningActions() == 0) {
-      screen->removeFromParentAndCleanup(true);
       rqRemove.push_back(screen);
+      screen->removeFromParentAndCleanup(true);
     }
   }
   for (auto screen : rqRemove) {
@@ -56,8 +56,8 @@ void Game::update(float dt) {
   decltype(m_overlayRemovalQueue) orqRemove;
   for (auto overlay : m_overlayRemovalQueue) {
     if (overlay->numberOfRunningActions() == 0) {
-      overlay->removeFromParentAndCleanup(true);
       orqRemove.push_back(overlay);
+      overlay->removeFromParentAndCleanup(true);
     }
   }
   for (auto overlay : orqRemove) {
@@ -106,7 +106,7 @@ void Game::replaceScreen(Screen* screen) {
 
 Screen* Game::popScreen() {
   if (m_screenStack.size() == 0) return nullptr;
-  auto screen = m_screenStack.pop_back();
+  geode::Ref<Screen> screen = m_screenStack.pop_back();
   ScreenTransitionEvent e{m_currentScreen, screen};
   if (screen) screen->onScreenEnter(e);
   if (m_currentScreen) {
@@ -129,12 +129,14 @@ void Game::pushOverlay(OverlayContainer* overlay) {
 };
 void Game::popOverlay(OverlayContainer* overlay) {
   if (overlay->m_shown) return overlay->hide();
-  m_overlayRemovalQueue.push_back(overlay);
-  if (m_overlayStack.size() > 0) m_overlayStack.pop_back();
   if (m_overlayStack.size() > 0) {
-    m_currentOverlay = static_cast<OverlayContainer*>(m_overlayStack.inner()->lastObject());
-  } else {
-    m_currentOverlay = nullptr;
+    m_overlayRemovalQueue.push_back(overlay);
+    m_overlayStack.inner()->removeObject(overlay);
+    if (m_overlayStack.size() > 0) {
+      m_currentOverlay = static_cast<OverlayContainer*>(m_overlayStack.inner()->lastObject());
+    } else {
+      m_currentOverlay = nullptr;
+    }
   }
 };
 
