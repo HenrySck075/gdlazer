@@ -1,6 +1,5 @@
 #include "PopupDialog.hpp"
 #include "../../graphics/backgrounds/Triangles.hpp"
-#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
 
 #include "../../../helpers/colors.hpp"
@@ -26,7 +25,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_buttons.push_back(b);
   }
 
-  m_bgSprite = CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr);
+  m_bgSprite = GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr));
   m_bgSprite->setAnchorPoint({0,0});
   m_bgSprite->setColor(ccc3(33, 26, 32));
   m_bgSprite->setContentSize(size);
@@ -50,7 +49,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_main->addChild(m_bodyLayout);
 
   //auto batchNode = getChildOfType<CCSpriteBatchNode>(main,0);
-  m_bgSpriteClip = CCClippingNode::create(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr));
+  m_bgSpriteClip = CCClippingNode::create(GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr)));
   m_bgSpriteClip->setAlphaThreshold(0.02f);
   m_bgSpriteClip->setPosition(m_bgSprite->getPosition());
   m_bgSpriteClip->setContentSize(size);
@@ -63,10 +62,10 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSpriteClip->addChild(Triangles::create(45,ccc3(30,23,30)));
   //m_title->limitLabelWidth(size.width - 2.f, 1.f, .1f);
   
-  m_title = OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter);
+  m_title = GDL_VALIDATE(OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter));
   m_title->setPosition({size.width / 2, size.height - 71});
 
-  auto label = OsuText::create(content.c_str());
+  auto label = GDL_VALIDATE(OsuText::create(content.c_str()));
   label->setPosition(m_title->getPosition()-CCPoint{0,12});
   label->setScale(0.4);
   label->setZOrder(0);
@@ -76,7 +75,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bodyLayout->addChild(m_title);
   m_bodyLayout->addChild(label);
 
-  auto btnLayer = FillFlowContainer::create(FillDirection::Vertical);
+  m_btnLayer = FillFlowContainer::create(FillDirection::Vertical);
   /*
   btnLayer->setLayout(
     ColumnLayout::create()
@@ -85,18 +84,18 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     ->setGap(0)
   );
   */
-  btnLayer->setAnchorPoint({0, 0});
-  btnLayer->setPosition(CCPoint{0,40});
-  btnLayer->setContentSize(size);
-  btnLayer->setCascadeOpacityEnabled(true);
-  m_main->addChild(btnLayer);
+  m_btnLayer->setAnchorPoint({0, 0});
+  m_btnLayer->setPosition(CCPoint{0,40});
+  m_btnLayer->setContentSize(size);
+  m_btnLayer->setCascadeOpacityEnabled(true);
+  m_main->addChild(m_btnLayer);
 
   for (auto& btn : buttons) { 
     btn->setTouchEnabled(false);
-    btnLayer->addChild(btn); 
+    m_btnLayer->addChild(btn); 
   }
-  btnLayer->setID("buttonLayer");
-  queueInMainThread([btnLayer]{btnLayer->updateLayout();});
+  m_btnLayer->setID("buttonLayer");
+  queueInMainThread([this]{m_btnLayer->updateLayout();});
 
   m_bodyLayout->updateLayout();
   //label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
@@ -114,7 +113,7 @@ void PopupDialog::onOpen() {
   m_main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
   m_bgSprite->runAction(easingsActions::CCEaseOut::create(CCFadeIn::create(0.2), 5));
 
-  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_main->getChildByID("buttonLayer")->getChildren())) {
+  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_btnLayer->getChildren())) {
     btn->runAction(CCSequence::createWithTwoActions(
       CCDelayTime::create(0.75),
       CCCallFuncL::create([btn]() {
@@ -133,7 +132,7 @@ void PopupDialog::onClose() {
   hiding = true;
   //setKeypadEnabled(false);
   //setTouchEnabled(false);
-  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_main->getChildByID("buttonLayer")->getChildren())) {
+  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_btnLayer->getChildren())) {
     btn->setTouchEnabled(false);
   }
   for (auto* obj : CCArrayExt<CCNode*>(m_main->getChildren())) {
@@ -149,21 +148,29 @@ void PopupDialog::onClose() {
 }
 
 bool PopupDialog::init2(
-    std::string const &title, std::string const &content,
-    std::string const &confirmButtonText, std::string const &cancelButtonText,
-    frameworks::ClickableContainer::ButtonCallback confirmCallback) {
+  std::string const &title, std::string const &content,
+  std::string const &confirmButtonText, std::string const &cancelButtonText,
+  frameworks::ClickableContainer::ButtonCallback confirmCallback) {
   return init(
-      title, content,
-      {PopupDialogButton::create(confirmButtonText.c_str(),
-                                 dialog_button_primary,
-                                 "dialog-ok-select.wav"_spr,
-                                 [this, confirmCallback](Container *the) {
-                                   confirmCallback(the);
-                                   hide();
-                                 }),
-       PopupDialogButton::create(
-           cancelButtonText.c_str(), dialog_button_secondary,
-           "dialog-cancel-select.wav"_spr, [this](CCNode *self) { hide(); })});
+    title, content,
+    {
+      PopupDialogButton::create(
+        confirmButtonText.c_str(),
+        dialog_button_primary,
+        "dialog-ok-select.wav"_spr,
+        [this, confirmCallback](Container *the) {
+          confirmCallback(the);
+          hide();
+        }
+      ),
+      PopupDialogButton::create(
+        cancelButtonText.c_str(), 
+        dialog_button_secondary,
+        "dialog-cancel-select.wav"_spr, 
+        [this](CCNode *self) { hide(); }
+      )
+    }
+  );
 }
 
 GDL_NS_END

@@ -3,6 +3,7 @@
 #include <Geode/Geode.hpp>
 #include "PopupDialogButton.hpp"
 #include "../../graphics/containers/OsuOverlayContainer.hpp"
+#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 
 using namespace geode::prelude;
@@ -14,6 +15,7 @@ private:
   bool hiding = false;
   geode::Ref<CCClippingNode> m_bgSpriteClip;
   geode::Ref<CCLayerRGBA> m_bodyLayout;
+  geode::Ref<frameworks::FillFlowContainer> m_btnLayer;
   geode::Ref<CCScale9Sprite> m_bgSprite;
   geode::Ref<OsuText> m_title;
   geode::cocos::CCArrayExt<PopupDialogButton> m_buttons;

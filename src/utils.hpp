@@ -9,6 +9,17 @@ using namespace geode::prelude;
 float randomFloat();
 bool randomBool();
 
+#if defined(__GNUC__) || defined(__clang__)
+  #define GDL_VALIDATE(...) \
+  ({ \
+    auto res##__LINE__ = __VA_ARGS__; \
+    if (!res##__LINE__) return false; \
+    res##__LINE__; \
+  })
+#else
+  #error "we banned msvc unfortunately, go use clang"
+#endif
+
 #define rgbColor(r,g,b) r/255.f, g/255.f, b/255.f
 
 /// Assured reimplementation of CCNode::boundingBox()

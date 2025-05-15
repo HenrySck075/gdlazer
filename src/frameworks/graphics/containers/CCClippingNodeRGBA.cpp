@@ -34,7 +34,7 @@ void CCClippingNodeRGBA::updateDisplayedOpacity(GLubyte parentOpacity) {
   _displayedOpacity = _realOpacity * parentOpacity / 255.0f;
   if (_cascadeOpacityEnabled) {
     for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(getChildren())) {
-      if (auto rgbaChild = dynamic_cast<cocos2d::CCRGBAProtocol *>(child)) {
+      if (auto rgbaChild = geode::cast::typeinfo_cast<cocos2d::CCRGBAProtocol *>(child)) {
         rgbaChild->updateDisplayedOpacity(_displayedOpacity);
       }
     }

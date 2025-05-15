@@ -20,7 +20,7 @@ public:
     Popin
   };
 private:
-  OverlayContainer* overlay;
+  geode::Ref<OverlayContainer> overlay;
   OverlayEvent::Type eventType;
 public:
   OverlayEvent(OverlayContainer* o, Type type) 
