@@ -4,12 +4,12 @@
 #undef rad1
 #undef min
 #undef max
-#include "../../utils/h2dFormatter.hpp"
+//#include "../../utils/h2dFormatter.hpp"
 
 GDF_NS_START
 void Container::setMinSize(const cocos2d::CCSize &size) {
-  assert(m_maxSize.width > 0 || size.width >= m_maxSize.width);
-  assert(m_maxSize.height > 0 || size.height >= m_maxSize.height);
+  assert(m_maxSize.width > 0 || size.width <= m_maxSize.width);
+  assert(m_maxSize.height > 0 || size.height <= m_maxSize.height);
   m_minSize = size;
 }
 
@@ -70,7 +70,6 @@ bool Container::init() {
     auto currentPos = convertToNodeSpaceA(this, mouseEvent->m_position);
     // request a box update (if needed)
     requestBoxUpdate();
-    auto d = ((h2d::CPolylineF*)(m_containerBox));
     /*
     geode::log::debug("[{}]: {} {}", getObjectName(this), currentPos, d == nullptr ? h2d::FRectD{
       h2d::Point2dD{0,0},
@@ -83,7 +82,7 @@ bool Container::init() {
     bool isInBounds = true;
     isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
       currentPos.x, currentPos.y
-    ).isInside(*d);
+    ).isInside(*(m_containerBox));
     //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
     if (!isInBounds) {
       //mouseEvent->stopPropagation();
@@ -332,11 +331,14 @@ struct LogNestManager {
     geode::log::popNest(geode::Mod::get());
   }
 };
-[[clang::optnone]]
 bool Container::propagateToChildren(CCArray* children, Event* event, std::type_index type) {
   if (children == nullptr) return true;
   geode::Ref<Event> eventRefHolder(event);
   for (auto child : geode::cocos::CCArrayExt<cocos2d::CCNode>(children)) {
+    if (child == nullptr) {
+      log::warn("[{}]: The container contains a nullptr child.", getObjectName(this));
+      continue;
+    };
     auto childContainer = geode::cast::typeinfo_cast<Container*>(child);
     if (childContainer == nullptr) {
       if (!propagateToChildren(child->getChildren(), event, type)) return false;
@@ -351,25 +353,9 @@ bool Container::propagateToChildren(CCArray* children, Event* event, std::type_i
   }
   return true;
 }
-[[clang::optnone]]
 bool Container::doDispatchEvent(Event* event, std::type_index type) {
   geode::Ref<Event> eventRefHolder(event);
   LogNestManager logNest;
-  /*
-  if (type == typeid(NodeLayoutUpdated)) {
-    log::debug("[{}]: dispatching {}", getObjectName(this), type.name());
-  }
-  
-  auto me = static_cast<MouseEvent*>(event);
-  if (
-    type == typeid(MouseEvent) && 
-    (
-      me->m_eventType == MouseEventType::MouseDown ||
-      me->m_eventType == MouseEventType::MouseUp
-    )
-  ) 
-  log::debug("[{}]: {}", getObjectName(this), (int)(me->m_eventType));
-  */
   // Handle the event
   if (!EventTarget::doDispatchEvent(event, type)) {
     return false;
@@ -458,9 +444,8 @@ void Container::transformContainerBox() {
   //h.set(0, 1, getSkewX());
   //h.set(1, 0, getSkewY());
 
-  auto mo = (h * *((h2d::CPolylineF*)m_containerBoxO));
-  delete m_containerBox;
-  m_containerBox = new h2d::CPolylineF(mo);
+  auto mo = (h * *(m_containerBoxO));
+  m_containerBox = std::make_unique<h2d::CPolylineF>(mo);
   //m_containerBox = m_containerBoxO;
   m_containerBoxDesynced = false;
 }
@@ -500,15 +485,13 @@ void Container::updateContainerBox() {
 
     std::vector<h2d::Point2dF> t;
     t.assign(p.begin(), p.end());
-    delete m_containerBoxO;
-    m_containerBoxO = new h2d::CPolylineF(t);
+    m_containerBoxO = std::make_unique<h2d::CPolylineF>(t);
   /// if it is straight up a circle
   } else if (!h2d::detail::shareCommonCoord(bl, tr)) {
     h2d::FRectF innerRect {
       bl, tr
     };
-    delete m_containerBoxO;
-    m_containerBoxO = new h2d::CPolylineF(innerRect);
+    m_containerBoxO = std::make_unique<h2d::CPolylineF>(innerRect);
   }
 
   m_containerBoxShapeDesynced = false;

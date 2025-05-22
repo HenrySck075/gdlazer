@@ -167,7 +167,7 @@ bool PopupDialog::init2(
         cancelButtonText.c_str(), 
         dialog_button_secondary,
         "dialog-cancel-select.wav"_spr, 
-        [this](CCNode *self) { hide(); }
+        [this](Container* self) { hide(); }
       )
     }
   );

@@ -37,6 +37,8 @@ public:
     MenuLayer::get()->onMoreGames(nullptr);
   }
 
+  void onExit() override {}
+
   void pushScreen(Screen* screen);
   Screen* popScreen();
   void replaceScreen(Screen* screen);

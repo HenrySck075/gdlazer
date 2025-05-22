@@ -156,11 +156,10 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   setAnchorPoint({ 0.5,0.5 });
 
   setCascadeOpacityEnabled(true);
-  setCascadeOpacityEnabled(true);
-  setCascadeOpacityEnabled(true);
   setBackgroundColor(Color4::fromHex("150e14"));
 
-  setMinSize({-1,m_height}), setMaxSize({-1,m_height});
+  setMinSize({-1,m_height-1});
+  setMaxSize({-1,m_height});
 
   return true;
 

@@ -24,7 +24,6 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
   colorBg->setZOrder(-77);
   addChild(colorBg);
   addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
-    log::debug("[ButtonArea]: Parent content size: {}", m_pParent->getContentSize());
     auto the = CCNode::getContentSize();
     colorBg->setContentSize(the);
     colorBg->setPosition(the/2);
@@ -101,6 +100,7 @@ void ButtonArea::constructButtons(CCArrayExt<MainMenuButton*> buttons, std::stri
 }
 
 void ButtonArea::show(std::string tag) {
+  stopActionByTag(7777);
   auto _cur = getCurrent();
   int shownIndex, index;
   if (_cur.has_value()) {
@@ -127,19 +127,15 @@ void ButtonArea::show(std::string tag) {
   }
 
   CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
-  /*
-  auto menuLayout = buttonsMenus[tag]->getLayout();
-  buttonsMenus[tag]->setLayout(nullptr);
-  */
+  if (buttonsMenus[tag]->getParent() == nullptr) 
+    addChild(buttonsMenus[tag]);
+
   // expand
   if (shownIndex<index) {
-    addChild(buttonsMenus[tag]);
     tagsStack.push_back(tag);
     for (int idx = 0; idx<j.size(); idx++) {
       auto i = j[idx];
-      if (i->retainCount() == 0) {
-        log::debug("[ButtonArea]: the button at index {} has nothing retaining gg", idx);
-      }
+      i->stopAllActions();
       auto pos = i->getPosition();
       i->runAction(CCSequence::createWithTwoActions(
         EasingEffect::create(CCSpawn::createWithTwoActions(
@@ -159,6 +155,7 @@ void ButtonArea::show(std::string tag) {
   else {
     for (int idx = 0; idx<j.size(); idx++) {
       auto i = j[idx];
+      i->stopAllActions();
       auto pos = i->getPosition();
       i->runAction(CCSequence::createWithTwoActions(
         EasingEffect::create(CCSpawn::createWithTwoActions(
@@ -202,6 +199,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
       for (int idx = 0; idx<j.size(); idx++) {
         auto i = j[idx];
         i->setTouchEnabled(false);
+        i->stopAllActions();
         auto pos = i->getPosition();
         i->runAction(
           EasingEffect::create(
@@ -213,20 +211,11 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         );
       }
       curZOrder--;
-      runAction(
-        CCSequence::createWithTwoActions(
-          CCDelayTime::create(animationSpeed),
-          CCCallFuncL::create([this,tag](){
-            buttonsMenus[tag]->getChildByTag(1)->updateLayout();
-            buttonsMenus[tag]->getChildByTag(2)->updateLayout();
-            removeChild(buttonsMenus[tag]);
-          })
-        )
-      );
     } else {
       for (int idx = 0; idx<j.size(); idx++) {
         auto i = j[idx];
         i->setTouchEnabled(false);
+        i->stopAllActions();
         auto pos = i->getPosition();
         i->runAction(
           EasingEffect::create(
@@ -248,6 +237,16 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         CCMoveTo::create(animationSpeed, ccp(w/2,btnL2->getPositionY()))
       ));
     }
+    runAction(
+      CCSequence::createWithTwoActions(
+        CCDelayTime::create(animationSpeed),
+        CCCallFuncL::create([this,tag](){
+          buttonsMenus[tag]->getChildByTag(1)->updateLayout();
+          buttonsMenus[tag]->getChildByTag(2)->updateLayout();
+          removeChild(buttonsMenus[tag]);
+        })
+      )
+    )->setTag(7777);
   }
 }
 GDL_NS_END

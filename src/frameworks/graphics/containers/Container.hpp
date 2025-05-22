@@ -2,10 +2,12 @@
 
 #include <Geode/Geode.hpp>
 #include "CCClippingNodeRGBA.hpp"
+#include <memory>
 #include <typeindex>
 #include "../../bindables/EventTarget.hpp"
 #include "../../bindables/Event.hpp"
 #include "../../../macro.h"
+#include "../../utils/homog2d.hpp"
 
 /// Included for free
 #include "../../input/events/MouseEvent.hpp"
@@ -47,11 +49,6 @@ public:
     }
   }
 
-  ~Container() {
-    delete m_containerBox;
-    delete m_containerBoxO;
-  }
-  
   bool init() override;
 
   // Mouse events
@@ -150,10 +147,10 @@ private:
   bool m_lastInBounds = false;
 
   /// the untransformed box to later apply the transformation
-  void* m_containerBoxO = nullptr;
+  std::unique_ptr<h2d::CPolylineF> m_containerBoxO = nullptr;
   /// used to determine if we're going to accept the input
   /// type is h2d::CPolylineF but its not included to prevent including the entirely of homog2d
-  void* m_containerBox = nullptr;
+  std::unique_ptr<h2d::CPolylineF> m_containerBox = nullptr;
 
   /// this one causes a container box retransform (everything else)
   bool m_containerBoxDesynced = true;

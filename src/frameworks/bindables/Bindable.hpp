@@ -1,21 +1,15 @@
 #pragma once
 
 #include "../../macro.h"
-#include <type_traits>
+#include <list>
 
 GDF_NS_START
 
 template<typename T>
 concept LegallyBindable = 
   requires(T one, T two) {
-    one == two;
+    one == two; // ????????
   };
-
-template<class FT1, class FT2>
-bool operator==(std::function<FT1> const& oat, std::function<FT2> const& meal) {
-  if (oat.target_type() != meal.target_type()) return false;
-  return oat.template target<FT1>() == meal.template target<FT1>();
-}
 
 template<LegallyBindable T>
 /// A struct that allows you to listen to its state's change.
@@ -25,7 +19,7 @@ struct Bindable {
 private:
   T m_value;
   using Callback = std::function<void(T oldV, T newV)>;
-  std::vector<Callback> m_listeners;
+  std::list<Callback> m_listeners;
 public:
   Bindable() : m_value(T()) {}
   Bindable(T value) : m_value(value) {};
