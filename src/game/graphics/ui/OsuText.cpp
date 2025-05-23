@@ -1,15 +1,8 @@
 #include "OsuText.hpp"
-#ifdef GEODE_IS_WINDOWS
 #define torusRegular "torus-regular.ttf"_spr
 #define torusBold "torus-bold.ttf"_spr
 #define torusItalic "torus-italic.ttf"_spr
 #define torusLight "torus-light.ttf"_spr
-#else
-#define torusRegular "torus-regular.ttf"
-#define torusBold "torus-bold.ttf"
-#define torusItalic "torus-italic.ttf"
-#define torusLight "torus-light.ttf"
-#endif
 GDL_NS_START
 
 static std::map<FontType, const char*> fontTypeMap = {

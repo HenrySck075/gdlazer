@@ -139,11 +139,18 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-default-select.wav"_spr, 
       OsuIcon::Online, 
       Color4(94, 63, 186, 255), 
-      [](CCNode*j){PopupDialog::createSimpleDialog(
-        "Not implemented yet!", "mrow", 
-        ":sphere_thumbsup:", "alr", 
-        [](CCNode*wfhuio){CCApplication::sharedApplication()->openURL("https://www.pixiv.net/en/artworks/112989297");}
-      )->show();},
+      [this](Container*j){
+        auto p = m_menuLayerPtr->getChildByID("bottom-menu")->getChildByID("dankmeme.globed2/main-menu-button");
+        if (p) {
+          typeinfo_cast<CCMenuItemSpriteExtra*>(p)->activate();
+          return;
+        }
+        PopupDialog::createSimpleDialog(
+          "Not implemented yet!", "mrow", 
+          ":sphere_thumbsup:", "alr", 
+          [](CCNode*wfhuio){CCApplication::sharedApplication()->openURL("https://www.pixiv.net/en/artworks/112989297");}
+        )->show();
+      },
       {enumKeyCodes::KEY_M}
     ),
     MainMenuButton::create(

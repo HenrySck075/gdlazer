@@ -1,4 +1,5 @@
 #include <Geode/cocos/misc_nodes/CCClippingNode.h>
+#include "../../../utils.hpp"
 
 using namespace cocos2d;
 
@@ -12,16 +13,13 @@ protected:
   bool _cascadeColorEnabled = false;
 
 public:
-  static CCClippingNodeRGBA* create() {
-    CCClippingNodeRGBA* ret = new CCClippingNodeRGBA();
-    if (ret && ret->init()) {
-      ret->autorelease();
-      return ret;
-    }
-    delete ret;
-    return nullptr;
+  static CCClippingNodeRGBA* create(cocos2d::CCNode* stencil) {
+    $create_class(CCClippingNodeRGBA, init, stencil);
   }
-
+  static CCClippingNodeRGBA* create() {
+    $create_class(CCClippingNodeRGBA, init);
+  }
+  
   // CCRGBAProtocol methods
   GLubyte getOpacity() override;
   GLubyte getDisplayedOpacity() override;

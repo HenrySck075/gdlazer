@@ -48,7 +48,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_main->addChild(m_bodyLayout);
 
   //auto batchNode = getChildOfType<CCSpriteBatchNode>(main,0);
-  m_bgSpriteClip = CCClippingNode::create(GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr)));
+  m_bgSpriteClip = CCClippingNodeRGBA::create(GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr)));
   m_bgSpriteClip->setAlphaThreshold(0.02f);
   m_bgSpriteClip->setPosition(m_bgSprite->getPosition());
   m_bgSpriteClip->setContentSize(size);
@@ -98,6 +98,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
 
   m_bodyLayout->updateLayout();
   m_bodyLayout->setCascadeOpacityEnabled(true);
+  m_main->setCascadeOpacityEnabled(true);
   //label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
 
   // block keyboard inputs
@@ -111,7 +112,7 @@ void PopupDialog::onOpen() {
   m_bgSprite->setOpacity(0);
 
   m_main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
-  m_bgSprite->runAction(easingsActions::CCEaseOut::create(CCFadeIn::create(0.2), 5));
+  m_main->runAction(easingsActions::CCEaseOut::create(CCFadeIn::create(0.2), 5));
 
   for (auto* btn : CCArrayExt<PopupDialogButton*>(m_btnLayer->getChildren())) {
     btn->runAction(CCSequence::createWithTwoActions(
@@ -139,7 +140,8 @@ void PopupDialog::onClose() {
     obj->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
   }
   m_main->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
-  m_bgSpriteClip->getChildByType<Triangles>(0)->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
+  /*m_bgSpriteClip->getChildByType<Triangles>(0)*/
+  m_main->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
   
   auto en = FMODAudioEngine::sharedEngine();
   en->playEffect("dialog-pop-out.wav"_spr);

@@ -3,15 +3,7 @@
 
 GDL_NS_START
 Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
-  auto ret = new Triangles();
-  if (ret && ret->init(quantity, baseColor)) {
-    ret->autorelease();
-  }
-  else {
-    delete ret;
-    ret = nullptr;
-  }
-  return ret;
+  $create_class(Triangles, init, quantity, baseColor);
 }
 
 bool Triangles::init(int quantity, ccColor3B color) {
