@@ -8,8 +8,8 @@
 
 GDF_NS_START
 void Container::setMinSize(const cocos2d::CCSize &size) {
-  assert(m_maxSize.width > 0 || size.width <= m_maxSize.width);
-  assert(m_maxSize.height > 0 || size.height <= m_maxSize.height);
+  assert(m_maxSize.width >= 0 || size.width <= m_maxSize.width);
+  assert(m_maxSize.height >= 0 || size.height <= m_maxSize.height);
   m_minSize = size;
 }
 

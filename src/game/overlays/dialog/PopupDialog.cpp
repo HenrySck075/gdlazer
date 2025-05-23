@@ -150,7 +150,7 @@ void PopupDialog::onClose() {
 bool PopupDialog::init2(
   std::string const &title, std::string const &content,
   std::string const &confirmButtonText, std::string const &cancelButtonText,
-  frameworks::ClickableContainer::ButtonCallback confirmCallback) {
+  frameworks::ButtonCallback confirmCallback) {
   return init(
     title, content,
     {

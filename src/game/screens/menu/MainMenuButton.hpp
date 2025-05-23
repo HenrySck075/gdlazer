@@ -40,10 +40,10 @@ public:
   */
    void askForUpdate(bool e) {m_askForUpdate = e;}
 
-  static MainMenuButton* create(std::string text, std::string sampleClick, frameworks::IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
+  static MainMenuButton* create(std::string text, std::string sampleClick, frameworks::IconConstructor symbol, Color4 color, frameworks::ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys = {}) {
     $create_class(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
   };
-  bool init(std::string text, std::string sampleClick, frameworks::IconConstructor symbol, Color4 color, ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
+  bool init(std::string text, std::string sampleClick, frameworks::IconConstructor symbol, Color4 color, frameworks::ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
   void setContentSize(const CCSize& s) override;
   void setOpacity(GLubyte opacity) override {
     GLubyte old = m_hover->getOpacity();

@@ -10,37 +10,25 @@ GDL_NS_START
 using namespace frameworks;
 
 PopupDialogButton* PopupDialogButton::create(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb) {
-  auto ret = new PopupDialogButton();
-  if (ret && ret->init(label, color, clickSfx, clickCb)) {
-    ret->autorelease();
-  }
-  else {
-    delete ret;
-    ret = nullptr;
-  }
-  return ret;
+  $create_class(PopupDialogButton, init, label, color, clickSfx, clickCb);
 }
 
 bool PopupDialogButton::init(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb) {
   m_color = color;
   setZOrder(3);
 
-  auto dialogBg = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr);
-  if (dialogBg!=nullptr) {
-    dialogBg->setID("dialogbutton-background");
-    dialogBg->setAnchorPoint({0.5, 0.5});
-    dialogBg->setContentHeight(m_height);
-    dialogBg->setColor(color);
-    dialogBg->setSkewX(7);
-  } else {
-    log::debug("what the fuck?");
-  }
+  auto dialogBg = GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("square.png"_spr));
+  dialogBg->setID("dialogbutton-background");
+  dialogBg->setAnchorPoint({0.5, 0.5});
+  dialogBg->setContentHeight(m_height);
+  dialogBg->setColor(color);
+  dialogBg->setSkewX(7);
 
   auto clipNode = CCClippingNode::create();
   clipNode->setID("dialogbutton-clipnode");
   clipNode->addChild(Triangles::create(4,color));
 
-  auto j = OsuText::create(label, FontType::Bold);
+  auto j = GDL_VALIDATE(OsuText::create(label, FontType::Bold));
   j->setID("dialogbutton-label");
   j->setAnchorPoint({0.5, 0.5});
   j->setScale(0.4);
@@ -62,7 +50,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   //addChild(clipNode);
   addChild(j);
   
-  ClickableContainer::initWithCallback(clickSfx, clickCb, true);
+  GDL_VALIDATE(ClickableContainer::initWithCallback(clickSfx, clickCb, true));
 
   addListener<MouseEvent>([this, dialogBg](MouseEvent* e){
     float height = getContentHeight();

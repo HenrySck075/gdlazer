@@ -21,10 +21,10 @@ private:
   ccColor3B m_color;
   std::string m_sfx;
 
-  bool init(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb);
+  bool init(std::string label, ccColor3B color, std::string clickSfx, frameworks::ButtonCallback clickCb);
 public:
   void setOpacity(GLubyte opacity) override;
-  static PopupDialogButton* create(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb);
+  static PopupDialogButton* create(std::string label, ccColor3B color, std::string clickSfx, frameworks::ButtonCallback clickCb);
   void setContentHeight(float height);
 };
 GDL_NS_END
