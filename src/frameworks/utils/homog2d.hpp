@@ -21,6 +21,10 @@
 See https://github.com/skramm/homog2d
 */
 
+#undef rad1
+#undef min
+#undef max
+
 #ifndef HG_HOMOG2D_HPP
 #define HG_HOMOG2D_HPP
 

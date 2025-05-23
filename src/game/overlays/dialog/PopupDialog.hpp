@@ -14,7 +14,7 @@ private:
   float volume;   
   bool hiding = false;
   geode::Ref<CCClippingNode> m_bgSpriteClip;
-  geode::Ref<CCLayerRGBA> m_bodyLayout;
+  geode::Ref<CCNodeRGBA> m_bodyLayout;
   geode::Ref<frameworks::FillFlowContainer> m_btnLayer;
   geode::Ref<CCScale9Sprite> m_bgSprite;
   geode::Ref<OsuText> m_title;

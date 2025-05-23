@@ -12,9 +12,9 @@ bool randomBool();
 #if defined(__GNUC__) || defined(__clang__)
   #define GDL_VALIDATE(...) \
   ({ \
-    auto res##__LINE__ = __VA_ARGS__; \
-    if (!res##__LINE__) return false; \
-    res##__LINE__; \
+    auto GEODE_CONCAT(res,__LINE__) = __VA_ARGS__; \
+    if (!GEODE_CONCAT(res,__LINE__)) return false; \
+    GEODE_CONCAT(res,__LINE__); \
   })
 #else
   #error "we banned msvc unfortunately, go use clang"

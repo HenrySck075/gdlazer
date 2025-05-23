@@ -1,9 +1,6 @@
 #include "Container.hpp"
 
 #include "../../../utils.hpp"
-#undef rad1
-#undef min
-#undef max
 //#include "../../utils/h2dFormatter.hpp"
 
 GDF_NS_START

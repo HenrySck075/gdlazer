@@ -38,6 +38,9 @@ public:
   }
 
   void onExit() override {}
+  void onEnter() override {
+    if (!m_bRunning) CCNode::onEnter();
+  }
 
   void pushScreen(Screen* screen);
   Screen* popScreen();

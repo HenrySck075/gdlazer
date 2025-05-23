@@ -15,12 +15,6 @@ bool Game::init() {
   scheduleUpdate();
 
   /*TEST CODE ~ Remove after finished*/
-  addListener<KeyEvent>([](KeyEvent* e){
-    if (e->m_key == cocos2d::KEY_Escape && e->m_pressed) {
-      cocos2d::CCDirector::get()->popScene();
-    }
-    return true;
-  });
 
   m_screensContainer = Container::create();
   m_screensContainer->setContentSize({100,100}, Unit::Percent);

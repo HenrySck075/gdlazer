@@ -31,7 +31,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSprite->setContentSize(size);
   m_main->addChild(m_bgSprite);
 
-  m_bodyLayout = CCLayerRGBA::create();
+  m_bodyLayout = CCNodeRGBA::create();
   m_bodyLayout->setContentSize(size);
   m_bodyLayout->setAnchorPoint({0, 0});
   m_bodyLayout->setPosition(m_bgSprite->getPosition());
@@ -44,7 +44,6 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     ->setAxisReverse(true)
     ->setCrossAxisOverflow(false)
   );
-  m_bodyLayout->setCascadeOpacityEnabled(true);
   
   m_main->addChild(m_bodyLayout);
 
@@ -98,6 +97,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   queueInMainThread([this]{m_btnLayer->updateLayout();});
 
   m_bodyLayout->updateLayout();
+  m_bodyLayout->setCascadeOpacityEnabled(true);
   //label->limitLabelWidth(size.width - 2.f, 0.4f, .1f);
 
   // block keyboard inputs
