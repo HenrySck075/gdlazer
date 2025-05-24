@@ -13,7 +13,7 @@ class PopupDialog : public OsuOverlayContainer {
 private:
   float volume;   
   bool hiding = false;
-  geode::Ref<CCClippingNode> m_bgSpriteClip;
+  geode::Ref<CCClippingNodeRGBA> m_bgSpriteClip;
   geode::Ref<CCNodeRGBA> m_bodyLayout;
   geode::Ref<frameworks::FillFlowContainer> m_btnLayer;
   geode::Ref<CCScale9Sprite> m_bgSprite;

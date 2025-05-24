@@ -16,6 +16,7 @@ bool randomBool();
     if (!GEODE_CONCAT(res,__LINE__)) return false; \
     GEODE_CONCAT(res,__LINE__); \
   })
+  
 #else
   #error "we banned msvc unfortunately, go use clang"
 #endif

@@ -1,12 +1,17 @@
 #pragma once
 #include <Geode/Geode.hpp>
 #include "../../../../frameworks/screens/Screen.hpp"
+#include "../../../graphics/ui/OsuText.hpp"
 
 using namespace geode::prelude;
 
 GDL_NS_START
 class IntroTriangles : public frameworks::Screen {
 private:
+  geode::Ref<OsuText> m_welcomeText;
+  geode::Ref<CCLayer> m_textGlitch;
+  geode::Ref<CCLayer> m_iconSets;
+
   float text_1 = 0.2;
   float text_2 = 0.4;
   float text_3 = 0.7;

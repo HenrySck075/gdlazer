@@ -59,6 +59,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_main->addChild(m_bgSpriteClip);
 
   m_bgSpriteClip->addChild(Triangles::create(45,ccc3(30,23,30)));
+  m_bgSpriteClip->setCascadeOpacityEnabled(true);
   //m_title->limitLabelWidth(size.width - 2.f, 1.f, .1f);
   
   m_title = GDL_VALIDATE(OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter));
@@ -73,6 +74,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
 
   m_bodyLayout->addChild(m_title);
   m_bodyLayout->addChild(label);
+  m_bodyLayout->setCascadeOpacityEnabled(true);
 
   m_btnLayer = FillFlowContainer::create(FillDirection::Vertical);
   /*
@@ -91,10 +93,15 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
 
   for (auto& btn : buttons) { 
     btn->setTouchEnabled(false);
+    btn->setCascadeOpacityEnabled(true);
     m_btnLayer->addChild(btn); 
   }
   m_btnLayer->setID("buttonLayer");
   queueInMainThread([this]{m_btnLayer->updateLayout();});
+  addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated* e) {
+    m_btnLayer->updateLayout();
+    return true;
+  });
 
   m_bodyLayout->updateLayout();
   m_bodyLayout->setCascadeOpacityEnabled(true);

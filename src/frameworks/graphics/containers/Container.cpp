@@ -231,7 +231,7 @@ void Container::setBorderRadius(float radius) {
 void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundColor = color;
   m_backgroundNode->setColor({color.r,color.g,color.b});
-  m_backgroundNode->setOpacity(color.a);
+  m_backgroundNode->setOpacity(m_backgroundColorFollowsOpacity ? getDisplayedOpacity() : color.a);
 }
 void Container::setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit) {
   m_size = size;
@@ -553,5 +553,14 @@ void Container::setAnchor(geode::Anchor anchor) {
   setUserObject("gdlazer/devtools/anchor", cocos2d::CCInteger::create((int)anchor));
   updatePositionWithUnit();
 }
-
+void Container::setBackgroundColorFollowsOpacity(bool follows) {
+  m_backgroundColorFollowsOpacity = follows;
+  if (m_backgroundNode) {
+    m_backgroundNode->setOpacity(getDisplayedOpacity());
+  }
+}
+void Container::updateDisplayedOpacity(GLubyte parentOpacity) {
+  CCClippingNodeRGBA::updateDisplayedOpacity(parentOpacity);
+  m_backgroundNode->setOpacity(m_backgroundColorFollowsOpacity ? getDisplayedOpacity() : m_backgroundColor.a);
+}
 GDF_NS_END

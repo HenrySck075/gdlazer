@@ -49,6 +49,9 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   if (dialogBg!=nullptr) addChild(dialogBg);
   //addChild(clipNode);
   addChild(j);
+
+  m_grimace = CCNodeRGBA::create();
+  m_grimace->setOpacity(0);
   
   GDL_VALIDATE(ClickableContainer::initWithCallback(clickSfx, clickCb, true));
 
@@ -70,6 +73,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
         #define gradAct easingsActions::CCEaseOut::create(CCFadeIn::create(0.1f),5)
         m_gradLeft->runAction(gradAct);
         m_gradRight->runAction(gradAct);
+        m_grimace->runAction(gradAct);
         #undef gradAct
         break;
       }
@@ -88,6 +92,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
         #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
         m_gradLeft->runAction(gradAct);
         m_gradRight->runAction(gradAct);
+        m_grimace->runAction(gradAct);
         #undef gradAct
         break;
       }
@@ -144,19 +149,13 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   setAnchorPoint({ 0.5,0.5 });
 
   setCascadeOpacityEnabled(true);
+  setBackgroundColorFollowsOpacity(true);
   setBackgroundColor(Color4::fromHex("150e14"));
 
   setMinSize({-1,m_height-1});
   setMaxSize({-1,m_height});
 
   return true;
-
-}
-
-void PopupDialogButton::setOpacity(GLubyte opacity) {
-  CCClippingNodeRGBA::setOpacity(opacity); 
-  m_gradLeft->setOpacity(opacity);
-  m_gradRight->setOpacity(opacity);
 }
 
 /*
@@ -168,4 +167,19 @@ void PopupDialogButton::setContentWidth(float width) {
 void PopupDialogButton::setContentHeight(float height) {
 }
 
+void PopupDialogButton::updateDisplayedOpacity(GLubyte parentOpacity) {
+  frameworks::ClickableContainer::updateDisplayedOpacity(parentOpacity);
+  m_gradLeft->setOpacity(m_grimace->getOpacity()*(parentOpacity/255));
+  m_gradRight->setOpacity(m_grimace->getOpacity()*(parentOpacity/255));
+}
+/// Pretend that m_grimace is part of the node tree
+void PopupDialogButton::onEnter() {
+  frameworks::ClickableContainer::onEnter();
+  m_grimace->onEnter();
+}
+
+void PopupDialogButton::onExit() {
+  frameworks::ClickableContainer::onExit();
+  m_grimace->onExit();
+}
 GDL_NS_END

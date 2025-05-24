@@ -10,6 +10,7 @@ class PopupDialogButton : public frameworks::ClickableContainer {
 private:
   geode::Ref<CCLayerGradient> m_gradLeft;
   geode::Ref<CCLayerGradient> m_gradRight;
+  geode::Ref<CCNodeRGBA> m_grimace;
 
   const float c_idleWidth = 0.8f;
   const float c_hoverWidth = 0.9f;
@@ -23,8 +24,11 @@ private:
 
   bool init(std::string label, ccColor3B color, std::string clickSfx, frameworks::ButtonCallback clickCb);
 public:
-  void setOpacity(GLubyte opacity) override;
   static PopupDialogButton* create(std::string label, ccColor3B color, std::string clickSfx, frameworks::ButtonCallback clickCb);
   void setContentHeight(float height);
+  // i love when opacity cascading DOESNT FUCKING WORK!!!!!!!!!!!
+  void updateDisplayedOpacity(GLubyte parentOpacity) override;
+  void onEnter() override;
+  void onExit() override;
 };
 GDL_NS_END

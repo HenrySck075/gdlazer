@@ -3,9 +3,17 @@
 #define torusBold "torus-bold.ttf"_spr
 #define torusItalic "torus-italic.ttf"_spr
 #define torusLight "torus-light.ttf"_spr
+
+#ifdef GEODE_IS_WINDOWS
+#define torusRegular (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-regular.ttf").string()
+#define torusBold (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-bold.ttf").string()
+#define torusItalic (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-italic.ttf").string()
+#define torusLight (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-light.ttf").string()
+#endif
+
 GDL_NS_START
 
-static std::map<FontType, const char*> fontTypeMap = {
+static std::map<FontType, std::string> fontTypeMap = {
   {FontType::Regular, torusRegular },  
   {FontType::Bold, torusBold },
   {FontType::Italic, torusItalic },
@@ -50,5 +58,10 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
 void OsuText::setOpacity(GLubyte opacity) {
   frameworks::Container::setOpacity(opacity);
   m_textNode->setOpacity(opacity);
+}
+
+void OsuText::updateDisplayedOpacity(GLubyte parentOpacity) {
+  frameworks::Container::updateDisplayedOpacity(parentOpacity);
+  m_textNode->setOpacity(getDisplayedOpacity());
 }
 GDL_NS_END

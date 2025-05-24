@@ -105,8 +105,8 @@ public:
   cocos2d::CCPoint calculateAnchoredPosition(const cocos2d::CCPoint &position);
   geode::Anchor getAnchor() const { return m_anchor; }
 
-  private:
-  geode::Anchor m_anchor = geode::Anchor::BottomLeft;
+  void setBackgroundColorFollowsOpacity(bool follows);
+  void updateDisplayedOpacity(GLubyte parentOpacity) override;
 
 protected:
   void updateClipping();
@@ -118,6 +118,8 @@ protected:
   void requestBoxUpdate();
 
 private:
+  geode::Anchor m_anchor = geode::Anchor::BottomLeft;
+
   /// new naming: t_ for temp (debugging) variables
   //int t_fc = 0;
   //int t_vc = 3;
@@ -138,6 +140,7 @@ private:
   float m_borderRadius = 0.0f;
   cocos2d::CCLayerColor* m_backgroundNode = nullptr;
   cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
+  bool m_backgroundColorFollowsOpacity = false;
   cocos2d::CCSize m_size;
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
   cocos2d::CCPoint m_position;

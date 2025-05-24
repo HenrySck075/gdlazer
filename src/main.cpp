@@ -1,4 +1,5 @@
 #include "game/screens/menu/MainMenu.hpp"
+#include "game/screens/menu/intro/IntroTriangles.hpp"
 #include <Geode/Geode.hpp>
 #include <random>
 
@@ -32,15 +33,15 @@ struct e : public Modify<e, MenuLayer> {
   void onMyButton(CCObject*) {
     auto g = gdlazer::game::OsuGame::get();
     cocos2d::CCDirector::get()->pushScene(g);
-    if (!g_screenPushed) g->pushScreen(GDL_NS::MainMenu::create());
+    if (!g_screenPushed) g->pushScreen(GDL_NS::IntroTriangles::create());
     g_screenPushed = true;
   }
 };
 
 
-/// The "nothing useful feature": Replace the mod dev name with any of the 73 hardcoded names.
+/// The "nothing useful feature": Replace the mod dev name with any of these hardcoded names.
 
-static const std::string c_smug[] = {
+static const char* c_smug[] = {
   "Honoka Kosaka",
   "Eli Ayase",
   "Kotori Minami",
@@ -64,6 +65,7 @@ static const std::string c_smug[] = {
   "Mari Ohara",
   "Sarah Kazuno",
   "Leah Kazuno",
+  "Yu Takasaki",
   "Ayumu Uehara",
   "Setsuna Yuki",
   "Ai Miyashita",
@@ -78,7 +80,6 @@ static const std::string c_smug[] = {
   "Chisato Arashi",
   "Sumire Heanna",
   "Ren Hazuki",
-  "Yu Takasaki",
   "Shioriko Mifune",
   "Mia Taylor",
   "Lanzhu Zhong",
@@ -113,14 +114,24 @@ static const std::string c_smug[] = {
   "Maya Mikasa",
   "Sayaka Harukaze",
   "Izumi Katsuragi",
-  "Ceras Yanagida Lilienfeld"
+  "Ceras Yanagida Lilienfeld",
+  "Polka Takahashi",
+  "Mai Azabu",
+  "Akira Goto",
+  "Hanabi Komagata",
+  "Miracle Kanazawa",
+  "Noriko Chofu",
+  "Yukuri Harumiya",
+  "Aurora Konohana",
+  "Midori Yamada",
+  "Shion Sasaki"
 };
 
 $on_mod(Loaded) {
   if (!geode::Mod::get()->getSettingValue<bool>("dont")) return;
   std::random_device dev;
   std::mt19937 rng(dev());
-  std::uniform_int_distribution<std::mt19937::result_type> dist(1,6); 
+  std::uniform_int_distribution<std::mt19937::result_type> dist(1,sizeof(c_smug)/sizeof(c_smug[0])); 
   int i = dist(rng);
   auto met = geode::Mod::get()->getMetadata();
   met.setDevelopers({c_smug[i]});

@@ -18,7 +18,7 @@ bool IntroTriangles::init() {
   // osu! logo: ji
 
   setOpacity(255);
-  auto label = OsuText::create("");
+  auto label = m_welcomeText = OsuText::create("");
   //label->setFntFile("LazerFont.fnt"_spr);
   label->setID("welcomeText");
 #ifndef GEODE_IS_ANDROID
@@ -58,7 +58,7 @@ bool IntroTriangles::init() {
     nullptr
   );
    
-  auto trianglesNode = CCLayer::create();
+  auto trianglesNode = m_textGlitch = CCLayer::create();
   trianglesNode->setID("textGlitchNode");
   trianglesNode->setContentSize(CCSize{ 400,100 });
   trianglesNode->setPosition(d / 2);
@@ -81,28 +81,20 @@ bool IntroTriangles::init() {
 }
 
 IntroTriangles* IntroTriangles::create() {
-  auto ret = new IntroTriangles();
-  if (ret && ret->init()) {
-    ret->autorelease();
-  }
-  else {
-    delete ret;
-    ret = nullptr;
-  }
-  return ret;
+  $create_class(IntroTriangles, init);
 }
 
 void IntroTriangles::text_1_func() {
-  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("wel");
+  m_welcomeText->setString("wel");
 }
 void IntroTriangles::text_2_func() {
-  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("welcome");
+  m_welcomeText->setString("welcome");
 }
 void IntroTriangles::text_3_func() {
-  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("welcome to");
+  m_welcomeText->setString("welcome to");
 }
 void IntroTriangles::text_4_func() {
-  static_cast<CCLabelTTF*>(getChildByID("welcomeText"))->setString("welcome to osu!");
+  m_welcomeText->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
   auto a = CCCallFuncP::create(0,13,5,this, callfuncp_selector(IntroTriangles::text_4_set_spacing));
   a->setTag(7);
@@ -110,7 +102,7 @@ void IntroTriangles::text_4_func() {
 #endif
 }
 void IntroTriangles::text_4_set_spacing(float spacing) {
-  auto welcomeTextNode = static_cast<CCLabelTTF*>(getChildByID("welcomeText"));
+  auto welcomeTextNode = m_welcomeText;
   CCObject* obj;
   int c = 0;
   CCARRAY_FOREACH(welcomeTextNode->getChildren(), obj) {
@@ -122,7 +114,7 @@ void IntroTriangles::text_4_set_spacing(float spacing) {
 }
 
 void IntroTriangles::renderTriangles() {
-  auto node = static_cast<CCLayer*>(getChildByID("textGlitchNode"));
+  auto node = m_textGlitch;
 
   int triangleCount = (int)(randomFloat()*3)+1; // m
   auto nodeSize = node->getContentSize();
@@ -156,7 +148,7 @@ void IntroTriangles::rulesets_1_func() {
   // cancel every ongoing actions related to stage 1
   stopActionByTag(7);
 
-  auto tgn = getChildByID("textGlitchNode");
+  auto tgn = m_textGlitch;
   auto m = tgn->getChildren();
   auto l = tgn->getChildrenCount();
   for (int i = 0; i < l; i++) {
@@ -165,7 +157,7 @@ void IntroTriangles::rulesets_1_func() {
   removeAllChildren();
   //static_cast<CCNode*>(getChildByID("welcomeText"))->setVisible(false);
 
-  auto n = CCLayer::create();
+  auto n = m_iconSets = CCLayer::create();
   n->setID("iconsets");
   n->setLayout(
     RowLayout::create()
@@ -198,35 +190,37 @@ void IntroTriangles::rulesets_1_func() {
   addChild(n);
 }
 void IntroTriangles::rulesets_1_change_gap(float gap) {
-  auto n = getChildByID("iconsets");
+  auto n = m_iconSets;
   static_cast<RowLayout*>(n->getLayout())->setGap(gap);
   n->updateLayout();
 }
 void IntroTriangles::rulesets_2_func() {
-  auto n = getChildByID("iconsets");
+  auto n = m_iconSets;
   stopActionByTag(9);
   static_cast<RowLayout*>(n->getLayout())->setGap(15);
   n->setScale(1.1);
   n->updateLayout();
 }
 void IntroTriangles::rulesets_3_func() {
-  auto n = getChildByID("iconsets");
+  auto n = m_iconSets;
   static_cast<RowLayout*>(n->getLayout())->setGap(5);
   n->setScale(1.6);
   n->updateLayout();
 }
 
 void IntroTriangles::logo_1_func() {
-  getChildByID("iconsets")->removeFromParent();
+  m_iconSets->removeFromParent();
 }
 /// @warning Not really logo_scale
 void IntroTriangles::logo_scale() {
-  //OsuGame::get()->replaceScreen(MainMenu::create())->setZOrder(-2);
+  setZOrder(77);
+  OsuGame::get()->replaceScreen(MainMenu::create());
 }
 
 void IntroTriangles::onExiting(frameworks::ScreenTransitionEvent e) {
   setBackgroundColor({255,255,255,255});
   setOpacity(255);
+  setBackgroundColorFollowsOpacity(true);
   runAction(
     CCFadeOut::create(1)
   );

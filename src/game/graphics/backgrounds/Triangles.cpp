@@ -66,6 +66,8 @@ CCSprite* Triangles::makeTriangle() {
 
   s->setPosition({ randomFloat() * space.width, 0});
   s->setAnchorPoint({ 0.5, 1 });
+
+  s->setOpacity(getDisplayedOpacity());
   
   return s;
 }
