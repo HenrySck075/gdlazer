@@ -108,6 +108,8 @@ public:
   void setBackgroundColorFollowsOpacity(bool follows);
   void updateDisplayedOpacity(GLubyte parentOpacity) override;
 
+  void removeAllChildrenWithCleanup(bool cleanup) override;
+
 protected:
   void updateClipping();
   void drawBorder();

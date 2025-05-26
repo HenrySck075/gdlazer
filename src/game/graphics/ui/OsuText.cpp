@@ -1,16 +1,18 @@
 #include "OsuText.hpp"
-#define torusRegular "torus-regular.ttf"_spr
-#define torusBold "torus-bold.ttf"_spr
-#define torusItalic "torus-italic.ttf"_spr
-#define torusLight "torus-light.ttf"_spr
+#define torusRegular "torus_regular.ttf"_spr
+#define torusBold "torus_bold.ttf"_spr
+#define torusItalic "torus_italic.ttf"_spr
+#define torusLight "torus_light.ttf"_spr
 
-#ifdef GEODE_IS_WINDOWS
-#define torusRegular (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-regular.ttf").string()
-#define torusBold (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-bold.ttf").string()
-#define torusItalic (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-italic.ttf").string()
-#define torusLight (geode::Mod::get()->getResourcesDir() / geode::Mod::get()->getID() / "torus-light.ttf").string()
+/*
+//#ifdef GEODE_IS_WINDOWS
+#if 1
+#define torusRegular (geode::Mod::get()->getResourcesDir() / "torus_regular.ttf").string()
+#define torusBold (geode::Mod::get()->getResourcesDir() / "torus_bold.ttf").string()
+#define torusItalic (geode::Mod::get()->getResourcesDir() / "torus_italic.ttf").string()
+#define torusLight (geode::Mod::get()->getResourcesDir() / "torus_light.ttf").string()
 #endif
-
+*/
 GDL_NS_START
 
 static std::map<FontType, std::string> fontTypeMap = {
@@ -20,31 +22,17 @@ static std::map<FontType, std::string> fontTypeMap = {
   {FontType::Light, torusLight }
 };
 
-// todo: figure out why custom ttf isnt loaded in
-CCLabelTTF* OsuTextF(const std::string& text, FontType fontType, float fontSize, CCTextAlignment alignment) {
-  auto fontFile = fontTypeMap[fontType];
-  //log::debug("[OsuText]: Font path of {} is {}",fontFile,); 
-  // the j
-  auto ret = CCLabelTTF::create(
-    text.c_str(), 
-    #ifdef GEODE_IS_WINDOWS
-    (geode::Mod::get()->getResourcesDir() / fontFile).string().c_str(), 
-    #else
-    fontFile,
-    #endif
-    fontSize
-  );
-  if (ret == nullptr) {
-    return nullptr;
-  }
-  ret->setHorizontalAlignment(alignment);
-  return ret;
-}
-
 bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignment alignment) {
   if (!frameworks::Container::init()) return false;
-  m_textNode = OsuTextF((m_text = text), font, fontSize, alignment);
-  if (m_textNode == nullptr) return false;
+  auto fontFile = fontTypeMap[font];
+  geode::log::debug("[OsuText]: {}", fontFile);
+  m_text = text;
+  m_textNode = GDL_VALIDATE(CCLabelTTF::create(
+    m_text.c_str(), 
+    fontFile.c_str(),
+    fontSize
+  ));
+  m_textNode->setHorizontalAlignment(alignment);
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);
   addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated*){
@@ -64,4 +52,9 @@ void OsuText::updateDisplayedOpacity(GLubyte parentOpacity) {
   frameworks::Container::updateDisplayedOpacity(parentOpacity);
   m_textNode->setOpacity(getDisplayedOpacity());
 }
+void OsuText::setString(std::string string) {
+  m_text = string;
+  m_textNode->setString(m_text.c_str());
+}
+
 GDL_NS_END

@@ -483,12 +483,14 @@ void Container::updateContainerBox() {
     std::vector<h2d::Point2dF> t;
     t.assign(p.begin(), p.end());
     m_containerBoxO = std::make_unique<h2d::CPolylineF>(t);
-  /// if it is straight up a circle
+  /// if it is not a circle
   } else if (!h2d::detail::shareCommonCoord(bl, tr)) {
     h2d::FRectF innerRect {
       bl, tr
     };
     m_containerBoxO = std::make_unique<h2d::CPolylineF>(innerRect);
+  } else {
+    m_containerBoxO = std::make_unique<h2d::CPolylineF>();
   }
 
   m_containerBoxShapeDesynced = false;
@@ -562,5 +564,10 @@ void Container::setBackgroundColorFollowsOpacity(bool follows) {
 void Container::updateDisplayedOpacity(GLubyte parentOpacity) {
   CCClippingNodeRGBA::updateDisplayedOpacity(parentOpacity);
   m_backgroundNode->setOpacity(m_backgroundColorFollowsOpacity ? getDisplayedOpacity() : m_backgroundColor.a);
+}
+
+void Container::removeAllChildrenWithCleanup(bool cleanup) {
+  CCNode::removeAllChildrenWithCleanup(cleanup);
+  CCNode::addChild(m_backgroundNode);
 }
 GDF_NS_END
