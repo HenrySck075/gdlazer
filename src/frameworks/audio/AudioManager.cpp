@@ -15,14 +15,29 @@ AudioManager* AudioManager::get() {
 };
 
 bool AudioManager::init() {
-  sys = FMODAudioEngine::sharedEngine()->m_system;
+  m_sys = FMODAudioEngine::sharedEngine()->m_system;
   FMOD::ChannelGroup* masterChannel = FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel;
-  tools = new LevelTools();
+  m_tools = new LevelTools();
   
-  sys->createDSPByType(FMOD_DSP_TYPE_FFT, &dsp);
-  masterChannel->addDSP(2, dsp);
+  m_sys->createDSPByType(FMOD_DSP_TYPE_FFT, &m_dsp);
+  masterChannel->addDSP(2, m_dsp);
+
+  m_sys->createDSPByType(FMOD_DSP_TYPE_LOWPASS, &m_lowpassdsp);
+  //masterChannel->addDSP(7, m_lowpassdsp);
+  m_lowpassdsp->setParameterFloat(FMOD_DSP_LOWPASS_RESONANCE, 0.f);
 
   return true;
+}
+
+void AudioManager::setLowPassStrength(float lps) {
+  m_lowPassStrength = lps;
+  updateLowPassFilter();
+}
+void AudioManager::updateLowPassFilter() {
+  m_lowpassdsp->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, m_lowPassStrength);
+  auto master = FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel;
+  if (m_lowPassStrength <= 0) master->removeDSP(m_lowpassdsp);
+  master->addDSP(7, m_lowpassdsp);
 }
 
 /** TODO: Some tracks plays "Stereo Madness" but it actually uses a custom song
@@ -30,7 +45,7 @@ bool AudioManager::init() {
 */
 void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
   if (level == nullptr) return;
-  currentLevel = level;
+  m_currentLevel = level;
   int track = 1;
   SongInfoObject* customSongInfo = nullptr;
   if (!level->m_songIDs.empty()) {
@@ -62,26 +77,26 @@ void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
     else track = level->m_audioTrack;
   }
 
-  songName = currentLevel
+  m_songName = m_currentLevel
     ? (
       customSongInfo == nullptr
-      ? tools->getAudioTitle(track) 
+      ? m_tools->getAudioTitle(track) 
       : customSongInfo->m_songName
     )
     : "The Most Mysterious Song On The Internet";
-  songAuthor = currentLevel
+  m_songAuthor = m_currentLevel
     ? (
       customSongInfo == nullptr
-      ? tools->nameForArtist(tools->artistForAudio(track))
+      ? m_tools->nameForArtist(m_tools->artistForAudio(track))
       : customSongInfo->m_artistName
     )
     : "Unknown";
-  levelName = currentLevel?currentLevel->m_levelName:"";
-  levelAuthor = currentLevel?currentLevel->m_creatorName:"";
+  m_levelName = m_currentLevel?m_currentLevel->m_levelName:"";
+  m_levelAuthor = m_currentLevel?m_currentLevel->m_creatorName:"";
 
   log::debug(
     "Playing \"{}\" by {} (id: {}), used in \"{}\" by {}", 
-    songName, songAuthor, track, levelName, levelAuthor
+    m_songName, m_songAuthor, track, m_levelName, m_levelAuthor
   );
 
   set(
@@ -107,7 +122,7 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
 };
 
 void AudioManager::onSongEnd() {
-  ended = true;
+  m_ended = true;
   log::debug("[AudioManager]: song ended, dispatching music ended event");
   Game::get()->dispatchEvent(new MusicEnded());
 }
@@ -115,47 +130,47 @@ void AudioManager::onSongEnd() {
 void AudioManager::set(gd::string filePath, float fadeTime) {
   unsigned int prevFadePoint = 0;
   auto playNewSound = [this,filePath,fadeTime,&prevFadePoint]{
-    if (sound) sound->release();
-    channel->setChannelGroup(nullptr);
-    channel->stop();
-    sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &sound);
-    sys->playSound(sound,nullptr,true,&channel);
+    if (m_sound) m_sound->release();
+    m_channel->setChannelGroup(nullptr);
+    m_channel->stop();
+    m_sys->createSound(filePath.c_str(), FMOD_DEFAULT, nullptr, &m_sound);
+    m_sys->playSound(m_sound,nullptr,true,&m_channel);
     seek(0);
-    channel->setCallback(&fmodSoundCallback);
-    channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
-    ended = false;
+    m_channel->setCallback(&fmodSoundCallback);
+    m_channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel);
+    m_ended = false;
     if (fadeTime>0) {
       // fading
       unsigned int* pos;
       // remove fadePoints set by the function below this
-      channel->removeFadePoints(prevFadePoint,prevFadePoint+fadeTime*1000);
+      m_channel->removeFadePoints(prevFadePoint,prevFadePoint+fadeTime*1000);
       // seek forward current+fadeTime to
-      channel->setPosition(fadeTime*1000,FMOD_TIMEUNIT_MS);
+      m_channel->setPosition(fadeTime*1000,FMOD_TIMEUNIT_MS);
       // get the fade end position
-      channel->getPosition(pos,FMOD_TIMEUNIT_PCM);
+      m_channel->getPosition(pos,FMOD_TIMEUNIT_PCM);
       // seek it back
-      channel->setPosition(0,FMOD_TIMEUNIT_MS);
+      m_channel->setPosition(0,FMOD_TIMEUNIT_MS);
       // add fade points
-      channel->addFadePoint(0, 0);
-      channel->addFadePoint((unsigned long long)pos, 1);
+      m_channel->addFadePoint(0, 0);
+      m_channel->addFadePoint((unsigned long long)pos, 1);
     }
-    channel->setPaused(paused);
+    m_channel->setPaused(m_paused);
     Game::get()->dispatchEvent(new MusicStarted());
   };
-  if (sound && fadeTime>0 && !ended) {
+  if (m_sound && fadeTime>0 && !m_ended) {
     runAction(cocos2d::CCSequence::create(
       CCCallFuncL::create([this,fadeTime,&prevFadePoint]{
         unsigned int pos = 0;
         unsigned int posMS = 0;
         // get the current position
-        channel->getPosition(&posMS,FMOD_TIMEUNIT_MS);
+        m_channel->getPosition(&posMS,FMOD_TIMEUNIT_MS);
         prevFadePoint = posMS;
         // do the exact same as what playNewSound did, except with the current position
-        channel->setPosition(posMS+fadeTime*1000,FMOD_TIMEUNIT_MS);
-        channel->getPosition(&pos,FMOD_TIMEUNIT_PCM);
-        channel->setPosition(posMS,FMOD_TIMEUNIT_MS);
-        channel->addFadePoint((unsigned long long)posMS, 1);
-        channel->addFadePoint((unsigned long long)pos, 0);
+        m_channel->setPosition(posMS+fadeTime*1000,FMOD_TIMEUNIT_MS);
+        m_channel->getPosition(&pos,FMOD_TIMEUNIT_PCM);
+        m_channel->setPosition(posMS,FMOD_TIMEUNIT_MS);
+        m_channel->addFadePoint((unsigned long long)posMS, 1);
+        m_channel->addFadePoint((unsigned long long)pos, 0);
       }),
       CCDelayTime::create(fadeTime),
       CCCallFuncL::create(playNewSound),

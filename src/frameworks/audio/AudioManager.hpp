@@ -18,62 +18,67 @@ struct MusicStarted : public Event {};
 /// 
 /// but still why is GJGameLevel inherits CCNode
 class AudioManager : public cocos2d::CCNode {
-  GameLevelManager* levelManager;
-  GJGameLevel* currentLevel;
-  LevelTools* tools;
+  GameLevelManager* m_levelManager;
+  GJGameLevel* m_currentLevel;
+  LevelTools* m_tools;
 
   // there will always be someone spamming level select
 
-  gd::string songName = "";
-  gd::string songAuthor = "";
-  gd::string levelName = "";
-  gd::string levelAuthor = "";
+  gd::string m_songName = "";
+  gd::string m_songAuthor = "";
+  gd::string m_levelName = "";
+  gd::string m_levelAuthor = "";
 
-  FMOD::System* sys;
-  FMOD::Channel* channel;
-  FMOD::DSP* dsp;
-  FMOD::Sound* sound;
+  FMOD::System* m_sys;
+  FMOD::Channel* m_channel;
+  FMOD::DSP* m_dsp;
+  FMOD::DSP* m_lowpassdsp;
+  FMOD::Sound* m_sound;
 
-  bool paused = false;
-  bool ended = false;
+  bool m_paused = false;
+  bool m_ended = false;
+  float m_lowPassStrength = 0;
 
   void onSongEnd();
+  void updateLowPassFilter();
 public:
-  FMOD::DSP* getDSP() {return dsp;}
+  FMOD::DSP* getDSP() {return m_dsp;}
 
   static AudioManager* get();
   bool init();
 
   void set(gd::string filePath, float fadeTime);
   void play() {
-    paused = false;
-    channel->setPaused(false);
+    m_paused = false;
+    m_channel->setPaused(false);
   };
   void playFromLevel(GJGameLevel* level, float fadeTime);
   void stop() {
-    paused = true;
-    channel->setPaused(true);
+    m_paused = true;
+    m_channel->setPaused(true);
   };
 
-  inline gd::string getSongName() {return songName;}
-  inline gd::string getSongAuthor() {return songAuthor;}
-  inline gd::string getLevelName() {return levelName;}
-  inline gd::string getLevelAuthor() {return levelAuthor;}
+  void setLowPassStrength(float lps);
+
+  inline gd::string getSongName() {return m_songName;}
+  inline gd::string getSongAuthor() {return m_songAuthor;}
+  inline gd::string getLevelName() {return m_levelName;}
+  inline gd::string getLevelAuthor() {return m_levelAuthor;}
 
   float getSongDuration() {
-    if (!sound) return 0;
+    if (!m_sound) return 0;
     unsigned int ret;
-    sound->getLength(&ret, FMOD_TIMEUNIT_MS);
+    m_sound->getLength(&ret, FMOD_TIMEUNIT_MS);
     return (float)ret/1000;
   }
   float getElapsed() {
-    if (!sound) return 0;
+    if (!m_sound) return 0;
     unsigned int ret;
-    channel->getPosition(&ret, FMOD_TIMEUNIT_MS);
+    m_channel->getPosition(&ret, FMOD_TIMEUNIT_MS);
     return ret/1000.f;
   }
   void seek(float position) {
-    if (channel) channel->setPosition((unsigned int)(position*1000), FMOD_TIMEUNIT_MS);
+    if (m_channel) m_channel->setPosition((unsigned int)(position*1000), FMOD_TIMEUNIT_MS);
   }
 
   friend FMOD_RESULT fmodSoundCallback(

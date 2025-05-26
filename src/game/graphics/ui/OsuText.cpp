@@ -28,10 +28,10 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
   m_text = text;
   m_textNode = GDL_VALIDATE(CCLabelBMFont::create(
     m_text.c_str(), 
-    fontFile.c_str(),
-    3939
+    fontFile.c_str()
     //text.length()*fontSize/2
   ));
+  m_textNode->setScale(fontSize/42);
   m_textNode->setAlignment(alignment);
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);
@@ -39,7 +39,7 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
     m_textNode->setPosition(getContentSize()/2);
     return true;
   });
-  setContentSize(m_textNode->getContentSize());
+  setContentSize(m_textNode->getScaledContentSize());
   return true;
 };
 

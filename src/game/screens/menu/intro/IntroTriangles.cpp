@@ -70,10 +70,10 @@ bool IntroTriangles::init() {
   
   auto e = FMODAudioEngine::sharedEngine();
   e->stopAllMusic(true);
-  // channel 0 got interrupted by menu loop when pushing a screen that does not even play that for some reason
+  // channel 0 got interrupted by menu loop when pushing a screen
   // me in the future here: dont create a new MenuLayer thanks
   
-  // e->playMusic("triangles.mp3"_spr,false,0.f,7);
+  e->playMusic("triangles.mp3"_spr,false,0.f,7);
   //OsuGame::get()->startMusicSequence();
   runAction(seq);
 
@@ -183,7 +183,7 @@ void IntroTriangles::rulesets_1_func() {
   addIcon("swing.png"_spr);
   addIcon("jetpack.png"_spr);
   n->updateLayout();
-  auto a = CCCallFuncP::create(50, 30, rulesets_2 - rulesets_1 + 0.3, this, callfuncp_selector(IntroTriangles::rulesets_1_change_gap));
+  auto a = CCCallFuncP::create(40, 30, rulesets_2 - rulesets_1 + 0.3, this, callfuncp_selector(IntroTriangles::rulesets_1_change_gap));
   a->setTag(9);
   runAction(a);
 

@@ -12,6 +12,8 @@ out = ""
 pages = 1
 def from_bytes_little(b: bytes):
     return int.from_bytes(b,"little")
+def from_bytes_little_signed(b: bytes):
+    return int.from_bytes(b,"little",signed=True)
 def from_bytes_big(b: bytes):
     return int.from_bytes(b,"big")
 
@@ -30,14 +32,14 @@ while True:
 
     # also there's currently no record of these blocks swapping places
     if (blockType == 1):
-        size = from_bytes_little(content.read(2))
+        size = from_bytes_little_signed(content.read(2))
         content.seek(2,1)
         sh = from_bytes_little(content.read(2))
         aa = from_bytes_little(content.read(1))
         content.seek(7,1)
 
         fontName = content.read(blockSize-15).decode()
-        "BE CAREFUL! If you left the null character, the bushes will hide all the facts!"
+        "BE CAREFUL! If you left a null character, the bushes will hide all the facts!"
         # (specifically it makes notepad autodetects the file into utf-16 BE)
         content.seek(1,1)
         out += (
@@ -91,9 +93,9 @@ while True:
                     from_bytes_little(content.read(2)), # y
                     from_bytes_little(content.read(2)), # width
                     from_bytes_little(content.read(2)), # height
-                    from_bytes_little(content.read(2)), # xoffset
-                    from_bytes_little(content.read(2)), # yoffset
-                    from_bytes_little(content.read(2)), # xadvance
+                    from_bytes_little_signed(content.read(2)), # xoffset
+                    from_bytes_little_signed(content.read(2)), # yoffset
+                    from_bytes_little_signed(content.read(2)), # xadvance
                     from_bytes_little(content.read(1)), # page
                     from_bytes_little(content.read(1))  # channel
                 )
@@ -109,7 +111,7 @@ while True:
                 .format(
                     from_bytes_little(content.read(4)),
                     from_bytes_little(content.read(4)),
-                    from_bytes_little(content.read(2))
+                    from_bytes_little_signed(content.read(2))
                 )
             )
         out+="\n".join(kerningInfo)
