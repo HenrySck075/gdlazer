@@ -114,4 +114,5 @@ while True:
             )
         out+="\n".join(kerningInfo)
 
-open(os.path.join(fntfolderpath, os.path.basename(fntfilepath)+".text"),"w",encoding="utf-8").write(out)
+f = os.path.basename(fntfilepath)
+open(os.path.join(fntfolderpath, f[:f.rfind(".")]+".fnt"),"w",encoding="utf-8").write(out)

@@ -55,7 +55,7 @@ public:
   bool init();
   static IntroTriangles* create();
 
-  void onExiting(frameworks::ScreenTransitionEvent e);
+  void onScreenExit(frameworks::ScreenTransitionEvent e) override;
 };
 
 GDL_NS_END

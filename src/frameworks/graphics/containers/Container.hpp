@@ -109,6 +109,7 @@ public:
   void updateDisplayedOpacity(GLubyte parentOpacity) override;
 
   void removeAllChildrenWithCleanup(bool cleanup) override;
+  void setOpacity(GLubyte opacity) override;
 
 protected:
   void updateClipping();
@@ -140,7 +141,7 @@ private:
   cocos2d::CCPoint m_lastDragOffset;
   cocos2d::CCPoint m_dragStartPos;
   float m_borderRadius = 0.0f;
-  cocos2d::CCLayerColor* m_backgroundNode = nullptr;
+  geode::Ref<cocos2d::CCLayerColor> m_backgroundNode;
   cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
   bool m_backgroundColorFollowsOpacity = false;
   cocos2d::CCSize m_size;

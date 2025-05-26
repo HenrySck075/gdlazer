@@ -69,8 +69,8 @@
       "resources/sfx/gameplay/pause-loop.mp3",
       "resources/glyphs/*.fnt",
       "resources/glyphs/*.png",
-      "resources/fonts/FontAwesome5/*.fnt",
-      "resources/fonts/FontAwesome5/*.png",
+      "resources/fonts/**/*.fnt",
+      "resources/fonts/**/*.png",
       "resources/fonts/*.png",
       "resources/torus/*.ttf"
     ]

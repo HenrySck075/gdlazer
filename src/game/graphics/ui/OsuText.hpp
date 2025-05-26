@@ -14,9 +14,9 @@ enum class FontType {
   Light
 };
 
-/// Wrapper around CCLabelTTF to provide a text node with Container features
+/// Wrapper around CCLabelBMFont to provide a text node with Container features
 class OsuText : public frameworks::Container {
-  geode::Ref<CCLabelTTF> m_textNode;
+  geode::Ref<CCLabelBMFont> m_textNode;
   std::string m_text; // debugging purpose
 public:
   static OsuText* create(std::string text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
@@ -30,11 +30,3 @@ public:
 };
 
 GDL_NS_END
-/*
-class OsuText : public CCLabelBMFont {
-public:
-  static OsuText* create(const char* text, FontType fontType) {
-    $create_class(OsuText, initWithString, text, m[fontType]);
-  };
-};
-*/

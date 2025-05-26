@@ -1,16 +1,16 @@
 #include "OsuText.hpp"
-#define torusRegular "torus_regular.ttf"_spr
-#define torusBold "torus_bold.ttf"_spr
-#define torusItalic "torus_italic.ttf"_spr
-#define torusLight "torus_light.ttf"_spr
+#define torusRegular "Torus-Regular.fnt"_spr
+#define torusBold "Torus-Bold.fnt"_spr
+#define torusItalic "Torus-Italic.fnt"_spr
+#define torusLight "Torus-Light.fnt"_spr
 
 /*
 //#ifdef GEODE_IS_WINDOWS
 #if 1
-#define torusRegular (geode::Mod::get()->getResourcesDir() / "torus_regular.ttf").string()
-#define torusBold (geode::Mod::get()->getResourcesDir() / "torus_bold.ttf").string()
-#define torusItalic (geode::Mod::get()->getResourcesDir() / "torus_italic.ttf").string()
-#define torusLight (geode::Mod::get()->getResourcesDir() / "torus_light.ttf").string()
+#define torusRegular (geode::Mod::get()->getResourcesDir() / "torus_regular.fnt").string()
+#define torusBold (geode::Mod::get()->getResourcesDir() / "torus_bold.fnt").string()
+#define torusItalic (geode::Mod::get()->getResourcesDir() / "torus_italic.fnt").string()
+#define torusLight (geode::Mod::get()->getResourcesDir() / "torus_light.fnt").string()
 #endif
 */
 GDL_NS_START
@@ -25,14 +25,14 @@ static std::map<FontType, std::string> fontTypeMap = {
 bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignment alignment) {
   if (!frameworks::Container::init()) return false;
   auto fontFile = fontTypeMap[font];
-  geode::log::debug("[OsuText]: {}", fontFile);
   m_text = text;
-  m_textNode = GDL_VALIDATE(CCLabelTTF::create(
+  m_textNode = GDL_VALIDATE(CCLabelBMFont::create(
     m_text.c_str(), 
     fontFile.c_str(),
-    fontSize
+    3939
+    //text.length()*fontSize/2
   ));
-  m_textNode->setHorizontalAlignment(alignment);
+  m_textNode->setAlignment(alignment);
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);
   addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated*){

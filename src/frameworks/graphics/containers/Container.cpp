@@ -570,4 +570,8 @@ void Container::removeAllChildrenWithCleanup(bool cleanup) {
   CCNode::removeAllChildrenWithCleanup(cleanup);
   CCNode::addChild(m_backgroundNode);
 }
+void Container::setOpacity(GLubyte opacity) {
+  CCClippingNodeRGBA::setOpacity(opacity);
+  if (m_backgroundColorFollowsOpacity) m_backgroundNode->setOpacity(opacity);
+}
 GDF_NS_END

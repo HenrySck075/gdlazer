@@ -213,12 +213,11 @@ void IntroTriangles::logo_1_func() {
 }
 /// @warning Not really logo_scale
 void IntroTriangles::logo_scale() {
-  //OsuGame::get()->replaceScreen(MainMenu::create());
+  OsuGame::get()->replaceScreen(MainMenu::create());
   setZOrder(772);
-  onExiting({});
 }
 
-void IntroTriangles::onExiting(frameworks::ScreenTransitionEvent e) {
+void IntroTriangles::onScreenExit(frameworks::ScreenTransitionEvent e) {
   setBackgroundColor({255,255,255,255});
   setOpacity(255);
   setBackgroundColorFollowsOpacity(true);

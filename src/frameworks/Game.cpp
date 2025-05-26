@@ -92,7 +92,7 @@ void Game::replaceScreen(Screen* screen) {
   if (m_currentScreen) {
     m_currentScreen->onScreenExit(e);
     m_screenStack.pop_back();
-    m_invisibleQueue.push_back(m_currentScreen);
+    m_removalQueue.push_back(m_currentScreen);
   }
   m_screenStack.push_back(screen);
   m_currentScreen = screen;
