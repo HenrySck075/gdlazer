@@ -12,14 +12,13 @@ bool Toolbar::init() {
   setAnchor(Anchor::Top);
   auto bgColor = OsuColor::Gray(0.1f*255);
   setContentSize({1,c_height},Unit::Viewport,Unit::UIKit);
-  setAnchorPoint({0.5,1});
-  setPosition({getPositionX(), -c_height},Unit::OpenGL,Unit::UIKit);
+  setAnchorPoint({0,1});
   setAnchor(Anchor::Top);
-  setPositionY(-c_height);
+  setPosition({0, c_height},Unit::OpenGL,Unit::UIKit);
 
   //auto j = processUnit(TOOLTIP_c_height,Unit::UIKit,false);
   auto j = c_tooltipHeight;
-  gradient = CCLayerGradient2::create({0,0,0,0},{0,0,0,0},{0,1},CCLG2Target::Start);
+  gradient = $verifyPtr(CCLayerGradient2::create({0,0,0,0},{0,0,0,0},{0,1},CCLG2Target::Start));
   gradient->setAnchorPoint({0,1});// keeping it at the bottom
   gradient->ignoreAnchorPointForPosition(false);
   gradient->setPosition({0,-j});
@@ -27,8 +26,8 @@ bool Toolbar::init() {
   addChild(gradient);
 
   auto left = CCLayer::create();
-  left->addChild(ToolbarSettingsButton::create());
-  left->addChild(ToolbarHomeButton::create());
+  left->addChild($verifyPtr(ToolbarSettingsButton::create()));
+  left->addChild($verifyPtr(ToolbarHomeButton::create()));
 
   auto lay = 
     RowLayout::create()
@@ -102,7 +101,7 @@ void Toolbar::show() {
 
 void Toolbar::hide() {
   if (m_shown) runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(0.5,{0,-c_height}), 5
+    CCMoveTo::create(0.5,{0,c_height}), 5
   ));
   VisibilityContainer::hide();
 }

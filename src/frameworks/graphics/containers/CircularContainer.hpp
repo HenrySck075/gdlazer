@@ -16,7 +16,7 @@ struct CircularContainerImpl {
 /// A Container which is rounded on the shortest edge
 class CircularContainer : public Container {
 public:
-  $default_create(CircularContainer);
+  $defaultCreate(CircularContainer);
 
   void update(float dt) override {
     CircularContainerImpl::updateBorder(this);

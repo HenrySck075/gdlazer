@@ -11,10 +11,10 @@ public:
   bool init(std::string label, ccColor3B color);
   bool initWithCallback(std::string label, ccColor3B color, frameworks::ButtonCallback clickCb);
   static SettingsButton* create(std::string label, ccColor3B color) {
-    $create_class(SettingsButton, init, label, color);
+    $createClass(SettingsButton, init, label, color);
   }
   static SettingsButton* create(std::string label, ccColor3B color, frameworks::ButtonCallback clickCb) {
-    $create_class(SettingsButton, initWithCallback, label, color, clickCb);
+    $createClass(SettingsButton, initWithCallback, label, color, clickCb);
   }
 };
 

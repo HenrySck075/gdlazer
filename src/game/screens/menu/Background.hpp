@@ -21,7 +21,7 @@ private:
   bool m_rescale = false;
 public:
   static Background* create() {
-    $create_class(Background, init);
+    $createClass(Background, init);
   };
   bool init();
   void switchBackground();

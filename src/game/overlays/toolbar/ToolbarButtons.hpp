@@ -10,7 +10,7 @@ GDL_NS_START
 class ToolbarSettingsButton : public ToolbarToggleButton {
 public:
   bool init();
-  $default_create(ToolbarSettingsButton);
+  $defaultCreate(ToolbarSettingsButton);
   void select() override;
   void deselect() override;
 };
@@ -18,7 +18,7 @@ public:
 class ToolbarHomeButton : public ToolbarButton {
 public:
   static ToolbarHomeButton* create() {
-    $create_class(ToolbarHomeButton, init);
+    $createClass(ToolbarHomeButton, init);
   }
   bool init() {
     setID("home");
@@ -33,20 +33,20 @@ class ToolbarGeodeButton : public ToolbarButton {
   SEL_MenuHandler ModsLayer_onBack_original;
   CCLayer* m_modsLayer;
 public:
-  $default_create(ToolbarGeodeButton);
+  $defaultCreate(ToolbarGeodeButton);
   bool init(); 
 };
 
 class ToolbarModDisableButton : public ToolbarButton {
 public:
-  $default_create(ToolbarModDisableButton);
+  $defaultCreate(ToolbarModDisableButton);
   bool init();
 };
 
 class ToolbarMusicButton : public ToolbarToggleButton {
   geode::Ref<NowPlayingOverlay> o;
 public:
-  $default_create(ToolbarMusicButton);
+  $defaultCreate(ToolbarMusicButton);
   bool init() {
     setID("music");
     o = NowPlayingOverlay::create();

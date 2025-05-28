@@ -10,14 +10,14 @@ GDL_NS_START
 using namespace frameworks;
 
 PopupDialogButton* PopupDialogButton::create(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb) {
-  $create_class(PopupDialogButton, init, label, color, clickSfx, clickCb);
+  $createClass(PopupDialogButton, init, label, color, clickSfx, clickCb);
 }
 
 bool PopupDialogButton::init(std::string label, ccColor3B color, std::string clickSfx, ButtonCallback clickCb) {
   m_color = color;
   setZOrder(3);
 
-  auto dialogBg = GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("square.png"_spr));
+  auto dialogBg = $verifyPtr(CCScale9Sprite::createWithSpriteFrameName("square.png"_spr));
   dialogBg->setID("dialogbutton-background");
   dialogBg->setAnchorPoint({0.5, 0.5});
   dialogBg->setContentHeight(m_height);
@@ -28,7 +28,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   clipNode->setID("dialogbutton-clipnode");
   clipNode->addChild(Triangles::create(4,color));
 
-  auto j = GDL_VALIDATE(OsuText::create(label, FontType::Bold));
+  auto j = $verifyPtr(OsuText::create(label, FontType::Bold));
   j->setID("dialogbutton-label");
   j->setAnchorPoint({0.5, 0.5});
   j->setScale(0.4);
@@ -53,7 +53,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   m_grimace = CCNodeRGBA::create();
   m_grimace->setOpacity(0);
   
-  GDL_VALIDATE(ClickableContainer::initWithCallback(clickSfx, clickCb, true));
+  $verifyPtr(ClickableContainer::initWithCallback(clickSfx, clickCb, true));
 
   addListener<MouseEvent>([this, dialogBg](MouseEvent* e){
     float height = getContentHeight();

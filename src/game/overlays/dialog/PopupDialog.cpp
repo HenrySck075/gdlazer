@@ -25,7 +25,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
     m_buttons.push_back(b);
   }
 
-  m_bgSprite = GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr));
+  m_bgSprite = $verifyPtr(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr));
   m_bgSprite->setAnchorPoint({0,0});
   m_bgSprite->setColor(ccc3(33, 26, 32));
   m_bgSprite->setContentSize(size);
@@ -48,7 +48,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_main->addChild(m_bodyLayout);
 
   //auto batchNode = getChildOfType<CCSpriteBatchNode>(main,0);
-  m_bgSpriteClip = CCClippingNodeRGBA::create(GDL_VALIDATE(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr)));
+  m_bgSpriteClip = CCClippingNodeRGBA::create($verifyPtr(CCScale9Sprite::createWithSpriteFrameName("roundborderlarge.png"_spr)));
   m_bgSpriteClip->setAlphaThreshold(0.02f);
   m_bgSpriteClip->setPosition(m_bgSprite->getPosition());
   m_bgSpriteClip->setContentSize(size);
@@ -62,10 +62,10 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSpriteClip->setCascadeOpacityEnabled(true);
   //m_title->limitLabelWidth(size.width - 2.f, 1.f, .1f);
   
-  m_title = GDL_VALIDATE(OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter));
+  m_title = $verifyPtr(OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter));
   m_title->setPosition({size.width / 2, size.height - 71});
 
-  auto label = GDL_VALIDATE(OsuText::create(content.c_str()));
+  auto label = $verifyPtr(OsuText::create(content.c_str()));
   label->setPosition(m_title->getPosition()-CCPoint{0,12});
   label->setScale(0.4);
   label->setZOrder(0);

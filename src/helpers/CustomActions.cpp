@@ -1,6 +1,6 @@
 #include "CustomActions.hpp"
 
-bool CCCallFuncP::initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector) {
+bool CCCustomTween::initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector) {
   if (!CCActionInterval::initWithDuration(duration)) {
     return false;
   };
@@ -18,17 +18,17 @@ bool CCCallFuncP::initWithACatgirl(float from, float to, float duration, CCObjec
   return true;
 }
 
-void CCCallFuncP::update(float time) {
+void CCCustomTween::update(float time) {
   // percentage distance * current time percentage + percent start value
   execute((m_to-m_from)*(m_reversed?1-(time/m_fDuration):time/m_fDuration)+m_from);
 }
 
-void CCCallFuncP::execute(float percentage) {
+void CCCustomTween::execute(float percentage) {
   (m_target->*m_pCallFunc)(percentage);
 }
 
-CCCallFuncP* CCCallFuncP::create(float from, float to, float duration, CCObject* target, CallFuncP selector) {
-  CCCallFuncP* pRet = new CCCallFuncP();
+CCCustomTween* CCCustomTween::create(float from, float to, float duration, CCObject* target, CallFuncP selector) {
+  CCCustomTween* pRet = new CCCustomTween();
   if (pRet && pRet->initWithACatgirl(from, to, duration, target, selector)) {
     pRet->m_pCallFunc = selector;
     return pRet;
@@ -39,8 +39,8 @@ CCCallFuncP* CCCallFuncP::create(float from, float to, float duration, CCObject*
   return pRet;
 }
 
-CCCallFuncP* CCCallFuncP::reverse() {
-  return CCCallFuncP::create(m_to, m_from, m_fDuration, m_target, m_pCallFunc);
+CCCustomTween* CCCustomTween::reverse() {
+  return CCCustomTween::create(m_to, m_from, m_fDuration, m_target, m_pCallFunc);
 }
 
 /// CCActionSkip
@@ -66,7 +66,7 @@ bool CCActionSkip::initWithACatgirl(CCActionInterval* action, float startTime) {
   return false;
 }
 
-
+/*
 CCObject* CCActionSkip::copyWithZone(CCZone* pZone)
 {
   CCZone* pNewZone = NULL;
@@ -90,7 +90,7 @@ CCObject* CCActionSkip::copyWithZone(CCZone* pZone)
   CC_SAFE_DELETE(pNewZone);
   return pCopy;
 }
-
+*/
 CCActionSkip::~CCActionSkip() {
   CC_SAFE_RELEASE(m_pInner);
 }
@@ -145,7 +145,7 @@ bool CCResizeTo::initWithDuration(float duration, float sx, float sy)
 
   return false;
 }
-
+/*
 CCObject* CCResizeTo::copyWithZone(CCZone* pZone)
 {
   CCZone* pNewZone = NULL;
@@ -169,22 +169,22 @@ CCObject* CCResizeTo::copyWithZone(CCZone* pZone)
   CC_SAFE_DELETE(pNewZone);
   return pCopy;
 }
-
-void CCResizeTo::startWithTarget(CCNode* pTarget)
-{
+*/
+void CCResizeTo::startWithTarget(CCNode* pTarget) {
   CCActionInterval::startWithTarget(pTarget);
   m_fStartContentWidth = pTarget->getContentWidth();
   m_fStartContentHeight = pTarget->getContentHeight();
-  m_fDeltaX = m_fEndContentWidth - m_fStartContentWidth;
-  m_fDeltaY = m_fEndContentHeight - m_fStartContentHeight;
+  m_fDeltaWidth = m_fEndContentWidth - m_fStartContentWidth;
+  m_fDeltaHeight = m_fEndContentHeight - m_fStartContentHeight;
 }
 
 void CCResizeTo::update(float time)
 {
-  if (m_pTarget)
-  {
-    m_pTarget->setContentWidth(m_fStartContentWidth + m_fDeltaX * time);
-    m_pTarget->setContentHeight(m_fStartContentHeight + m_fDeltaY * time);
+  if (m_pTarget) {
+    m_pTarget->setContentSize({
+      m_fStartContentWidth + m_fDeltaWidth * time,
+      m_fStartContentHeight + m_fDeltaHeight * time
+    });
   }
 }
 
@@ -213,7 +213,7 @@ CCCallFuncL::~CCCallFuncL(void)
     cocos2d::CCScriptEngineManager::sharedManager()->getScriptEngine()->removeScriptHandler(m_nScriptHandler);
   }
 }
-
+/*
 CCObject * CCCallFuncL::copyWithZone(CCZone *pZone) {
   CCZone* pNewZone = NULL;
   CCCallFuncL* pRet = NULL;
@@ -234,7 +234,7 @@ CCObject * CCCallFuncL::copyWithZone(CCZone *pZone) {
   CC_SAFE_DELETE(pNewZone);
   return pRet;
 }
-
+*/
 void CCCallFuncL::update(float time) {
   CC_UNUSED_PARAM(time);
   m_pCallFunc();

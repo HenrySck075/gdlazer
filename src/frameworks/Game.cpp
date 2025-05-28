@@ -21,8 +21,8 @@ bool Game::init() {
   m_overlaysContainer = Container::create();
   m_overlaysContainer->setContentSize({100,100}, Unit::Percent);
 
-  this->addChild(m_screensContainer);
-  this->addChild(m_overlaysContainer);
+  addChild(m_screensContainer);
+  addChild(m_overlaysContainer);
 
   return true;
 };
@@ -143,8 +143,12 @@ geode::Ref<Game> Game::get(bool create) {
   if (!s_instance && create) {
     g_fish.lock();
     s_instance = new Game();
-    s_instance->autorelease();
-    s_instance->init();
+    if (s_instance->init()) {
+      s_instance->autorelease();
+    } else {
+      delete s_instance;
+      s_instance = nullptr;
+    }
     g_fish.unlock();
   }
   return s_instance;

@@ -273,6 +273,7 @@ void Container::setParent(cocos2d::CCNode *parent) {
 void Container::updateSizeWithUnit() {
   float width = m_size.width,
   height = m_size.height;
+  
   #define $applyConstraint(edge) \
   if (m_minSize.edge > 0) { \
   edge = std::max(edge, m_minSize.edge); \
@@ -292,10 +293,21 @@ void Container::updateSizeWithUnit() {
   m_containerBoxDesynced = true;
 }
 
+static bool isTopAnchor(geode::Anchor anchor) {
+  return anchor == geode::Anchor::Top ||
+         anchor == geode::Anchor::TopLeft ||
+         anchor == geode::Anchor::TopRight;
+}
+static bool isRightAnchor(geode::Anchor anchor) {
+  return anchor == geode::Anchor::Right ||
+         anchor == geode::Anchor::TopRight ||
+         anchor == geode::Anchor::BottomRight;
+}
+
 void Container::updatePositionWithUnit() {
   cocos2d::CCPoint unanchoredPos {
-    processUnit(m_position.x, m_positionUnit[0], true),
-    processUnit(m_position.y, m_positionUnit[1], false)
+    processUnit(m_position.x*(isRightAnchor(m_anchor)?-1:1), m_positionUnit[0], true),
+    processUnit(m_position.y*(isTopAnchor(m_anchor)?-1:1), m_positionUnit[1], false)
   };
   setUserObject("gdlazer/devtools/position", cocos2d::CCArray::create(
     cocos2d::CCInteger::create(unanchoredPos.x),

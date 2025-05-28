@@ -10,7 +10,7 @@ float randomFloat();
 bool randomBool();
 
 #if defined(__GNUC__) || defined(__clang__)
-  #define GDL_VALIDATE(...) \
+  #define $verifyPtr(...) \
   ({ \
     auto GEODE_CONCAT(res,__LINE__) = __VA_ARGS__; \
     if (!GEODE_CONCAT(res,__LINE__)) return false; \

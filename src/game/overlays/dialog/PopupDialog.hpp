@@ -35,10 +35,10 @@ public:
              std::string const &cancelButtonText,
              frameworks::ButtonCallback confirmCallback);
   static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
-    $create_class(PopupDialog, init, title, content, buttons);
+    $createClass(PopupDialog, init, title, content, buttons);
   }
   static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, frameworks::ButtonCallback confirmCallback) {
-    $create_class(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
+    $createClass(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
   }
   void onDismiss() override {}
 };

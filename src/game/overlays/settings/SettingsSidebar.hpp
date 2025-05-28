@@ -10,7 +10,7 @@ public:
   static const float c_expandedWidth;
 
   bool init();
-  $default_create(SettingsSidebar);
+  $defaultCreate(SettingsSidebar);
 };
 
 GDL_NS_END

@@ -18,7 +18,7 @@ private:
 public:
   
   static Toolbar* create() {
-    $create_class(Toolbar, init);
+    $createClass(Toolbar, init);
   }
   bool init() override;
 

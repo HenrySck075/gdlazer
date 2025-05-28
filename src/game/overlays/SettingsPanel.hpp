@@ -31,7 +31,7 @@ public:
 
   bool init();
   static SettingsPanel* create() {
-    $create_class(SettingsPanel, init);
+    $createClass(SettingsPanel, init);
   }
   virtual CCArrayExt<Container*> createSections() {return CCArray::create();};
   void onOpen() override;
@@ -42,7 +42,7 @@ public:
 class SettingsSections : public frameworks::SectionsContainer {
 public:
   void onSectionSelect(Container* new_) override;
-  $default_create(SettingsSections);
+  $defaultCreate(SettingsSections);
 };
 
 GDL_NS_END

@@ -12,7 +12,7 @@ class ToolbarToggleButton : public ToolbarButton {
 public:
   bool init(frameworks::IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start, std::string overlayName = "");
   static ToolbarToggleButton* create(frameworks::IconConstructor icon, std::string text, std::string sub, ccColor3B stateColor, AxisAlignment align = AxisAlignment::Start) {
-    $create_class(ToolbarToggleButton, init, icon, text, sub, align);
+    $createClass(ToolbarToggleButton, init, icon, text, sub, align);
   };
 
   virtual void select() {

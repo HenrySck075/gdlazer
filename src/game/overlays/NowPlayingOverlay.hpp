@@ -16,7 +16,7 @@ private:
   frameworks::AudioManager* ctrl;
 public:
   bool init();
-  $default_create(NowPlayingOverlay);
+  $defaultCreate(NowPlayingOverlay);
 
   void onOpen() override;
   void onClose() override;

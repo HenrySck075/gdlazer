@@ -8,7 +8,7 @@ using namespace frameworks;
 static const CCPoint pos {-ButtonSystem::s_wedgeWidth*4,c_buttonAreaHeight/2};
 
 MainMenu* MainMenu::create() {
-  $create_class(MainMenu, init);
+  $createClass(MainMenu, init);
 }
 
 bool MainMenu::init() {

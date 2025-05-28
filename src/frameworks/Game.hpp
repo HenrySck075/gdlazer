@@ -29,7 +29,7 @@ protected:
 
   static void setInstance(geode::Ref<Game> instance);
 public:
-  bool init();
+  virtual bool init() override;
   void yeah(cocos2d::CCObject*) {
     cocos2d::CCDirector::get()->popScene();
   }
@@ -53,18 +53,5 @@ public:
   void update(float dt);
 
   static geode::Ref<Game> get(bool createIfNotExist = true);
-
-  template<typename T>
-  static geode::Ref<typename std::enable_if<std::is_base_of<Game, T>::value, T>::type> getAs(bool createIfNotExist = true) {
-    auto instance = get();
-    if ((!instance || dynamic_cast<T*>(instance.operator->())) && createIfNotExist) {
-      instance = new T();
-      instance->autorelease();
-      instance->init();
-      setInstance(instance);
-    }
-    return static_cast<T*>(instance.operator->());
-
-  };
 };
 GDF_NS_END

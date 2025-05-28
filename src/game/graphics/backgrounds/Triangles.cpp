@@ -3,7 +3,7 @@
 
 GDL_NS_START
 Triangles* Triangles::create(int quantity, ccColor3B baseColor) {
-  $create_class(Triangles, init, quantity, baseColor);
+  $createClass(Triangles, init, quantity, baseColor);
 }
 
 bool Triangles::init(int quantity, ccColor3B color) {

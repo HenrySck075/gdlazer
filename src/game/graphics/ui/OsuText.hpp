@@ -20,7 +20,7 @@ class OsuText : public frameworks::Container {
   std::string m_text; // debugging purpose
 public:
   static OsuText* create(std::string text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
-    $create_class(OsuText, init, text, font, fontSize, alignment);
+    $createClass(OsuText, init, text, font, fontSize, alignment);
   }
   bool init(std::string text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
   void setString(std::string string);

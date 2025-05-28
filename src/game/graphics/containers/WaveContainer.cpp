@@ -61,7 +61,7 @@ CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor
 }
 
 WaveContainer* WaveContainer::create(ColorScheme color, CCNode* body) {
-  $create_class(WaveContainer, init, color, body);
+  $createClass(WaveContainer, init, color, body);
 }
 
 bool WaveContainer::init(ColorScheme color, CCNode* pBody) {

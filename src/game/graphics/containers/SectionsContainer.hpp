@@ -14,7 +14,7 @@ protected:
   Bindable<Container*> m_currentSection;
 public:
   bool init();
-  $default_create(SectionsContainer);
+  $defaultCreate(SectionsContainer);
 
   void addChild(CCNode* node);
   virtual void onSectionSelect(Container* new_);

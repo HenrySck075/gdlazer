@@ -6,10 +6,10 @@
 
 GDF_NS_START
 ClickableContainer* ClickableContainer::create(std::string sfx, bool consumeTap) {
-  $create_class(ClickableContainer, init, sfx, consumeTap);
+  $createClass(ClickableContainer, init, sfx, consumeTap);
 };
 ClickableContainer* createWithCallback(std::string sfx, ButtonCallback callback, bool consumeTap) {
-  $create_class(ClickableContainer, initWithCallback, sfx, callback, consumeTap);
+  $createClass(ClickableContainer, initWithCallback, sfx, callback, consumeTap);
 };
 
 bool ClickableContainer::initWithCallback(std::string sfx, ButtonCallback callback, bool consumeTap) {

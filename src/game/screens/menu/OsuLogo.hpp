@@ -24,7 +24,7 @@ public:
   void update(float delta) override;
 
   static OsuLogo* create() {
-    $create_class(OsuLogo, init);
+    $createClass(OsuLogo, init);
   }
   bool init();
   friend class LogoVisualization;
@@ -34,7 +34,7 @@ class GEODE_HIDDEN LogoVisualization : public frameworks::Container {
   Ref<CCDrawNode> drawNode;
   float bars[200] = {0.f};
 public:
-  $default_create(LogoVisualization);
+  $defaultCreate(LogoVisualization);
   void update(float delta) override;
   bool init();
 };

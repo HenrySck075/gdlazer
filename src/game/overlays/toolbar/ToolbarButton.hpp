@@ -38,7 +38,7 @@ public:
    * @param sub scribe
    */
   static ToolbarButton* create(frameworks::IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start) {
-    $create_class(ToolbarButton, init, icon, text, sub, align);
+    $createClass(ToolbarButton, init, icon, text, sub, align);
   }
 };
 GDL_NS_END

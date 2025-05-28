@@ -26,7 +26,7 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
   if (!frameworks::Container::init()) return false;
   auto fontFile = fontTypeMap[font];
   m_text = text;
-  m_textNode = GDL_VALIDATE(CCLabelBMFont::create(
+  m_textNode = $verifyPtr(CCLabelBMFont::create(
     m_text.c_str(), 
     fontFile.c_str()
     //text.length()*fontSize/2

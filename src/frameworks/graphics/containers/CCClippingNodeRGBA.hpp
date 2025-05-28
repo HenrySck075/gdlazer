@@ -14,10 +14,10 @@ protected:
 
 public:
   static CCClippingNodeRGBA* create(cocos2d::CCNode* stencil) {
-    $create_class(CCClippingNodeRGBA, init, stencil);
+    $createClass(CCClippingNodeRGBA, init, stencil);
   }
   static CCClippingNodeRGBA* create() {
-    $create_class(CCClippingNodeRGBA, init);
+    $createClass(CCClippingNodeRGBA, init);
   }
   
   // CCRGBAProtocol methods

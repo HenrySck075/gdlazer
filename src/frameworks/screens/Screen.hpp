@@ -18,7 +18,7 @@ struct ScreenTransitionEvent {
 class Screen : public Container {
 public:
   static Screen* create() {
-    $create_class(Screen, init);
+    $createClass(Screen, init);
   };
   bool init() override {
     if (!Container::init()) return false;

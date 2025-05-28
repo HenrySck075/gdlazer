@@ -8,7 +8,7 @@ using namespace geode::prelude;
 typedef void (CCObject::*CallFuncP)(float);
 #define callfuncp_selector(...) (CallFuncP)(&__VA_ARGS__)
 
-class CCCallFuncP : public CCActionInterval {
+class CCCustomTween : public CCActionInterval {
 private:
   bool m_reversed;
   float m_to;
@@ -28,8 +28,8 @@ private:
   /// <returns>bool</returns>
   bool initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector);
 public:
-  static CCCallFuncP* create(float from, float to, float duration, CCObject* target, CallFuncP selector);
-  CCCallFuncP* reverse();
+  static CCCustomTween* create(float from, float to, float duration, CCObject* target, CallFuncP selector);
+  CCCustomTween* reverse();
 };
 
 class CCActionSkip : public CCActionEase {
@@ -40,7 +40,7 @@ private:
   bool initWithACatgirl(CCActionInterval* action, float startTime);
   void update(float time) override;
 public:
-  CCObject* copyWithZone(CCZone* pZone);
+  //CCObject* copyWithZone(CCZone* pZone);
   ~CCActionSkip();
   static CCActionSkip* create(float startTime, CCActionInterval* action);
 };
@@ -61,7 +61,7 @@ public:
    *  @js NA
    *  @lua NA
    */
-  virtual CCObject* copyWithZone(CCZone* pZone);
+  //virtual CCObject* copyWithZone(CCZone* pZone);
   virtual void startWithTarget(CCNode* pTarget);
   virtual void update(float time);
 
@@ -79,8 +79,8 @@ protected:
   float m_fStartContentHeight;
   float m_fEndContentWidth;
   float m_fEndContentHeight;
-  float m_fDeltaX;
-  float m_fDeltaY;
+  float m_fDeltaWidth;
+  float m_fDeltaHeight;
 };
 
 
@@ -116,11 +116,7 @@ public:
    * @lua NA
    */
   virtual void update(float time);
-  /**
-   * @js  NA
-   * @lua NA
-   */
-  CCObject * copyWithZone(CCZone *pZone);
+  //CCObject * copyWithZone(CCZone *pZone);
   /**
    * @lua NA
    */
@@ -144,7 +140,7 @@ public:
     return true;
   };
   static CCMoveFromTo* create(float duration, const CCPoint& startPos, const CCPoint& endPos) {
-    $create_class(CCMoveFromTo, initWithDuration, duration, startPos, endPos);
+    $createClass(CCMoveFromTo, initWithDuration, duration, startPos, endPos);
   }
   void update(float t) {
     if (m_pTarget) {
@@ -161,7 +157,7 @@ public:
 class CCMoveToModifiable : public CCMoveTo {
 public:
   static CCMoveToModifiable* create(float duration, CCPoint const& position) {
-    $create_class(CCMoveToModifiable, initWithDuration, duration, position);
+    $createClass(CCMoveToModifiable, initWithDuration, duration, position);
   }
   void startWithTarget(CCNode* pTarget) {
     m_startPosition = pTarget->getPosition();
@@ -189,7 +185,7 @@ public:
     return true;
   }
   static CCRepeatUntil* create(CCAction* action, decltype(m_predicate) predicate) {
-    $create_class(CCRepeatUntil, initWithPredicate, action, predicate);
+    $createClass(CCRepeatUntil, initWithPredicate, action, predicate);
   }
   void step(float dt) {
     m_pAction->step(dt);
@@ -221,7 +217,7 @@ public:
     return true;
   }
   static CCWaitUntil* create(CCAction* action) {
-    $create_class(CCWaitUntil, initWithAction, action);
+    $createClass(CCWaitUntil, initWithAction, action);
   }
   bool isDone() override {
     return m_pInner->isDone();

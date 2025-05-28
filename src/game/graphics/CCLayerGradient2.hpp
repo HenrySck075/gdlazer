@@ -28,12 +28,12 @@ public:
 
   /** Creates a full-screen CCLayer with a gradient between start and end. */
   static CCLayerGradient2* create(const ccColor4B& start, const ccColor4B& end, CCLG2Target targetUpdate = CCLG2Target::Both) {
-    $create_class(CCLayerGradient2, initWithTarget, start, end, targetUpdate);
+    $createClass(CCLayerGradient2, initWithTarget, start, end, targetUpdate);
   };
 
   /** Creates a full-screen CCLayer with a gradient between start and end in the direction of v. */
   static CCLayerGradient2* create(const ccColor4B& start, const ccColor4B& end, const CCPoint& v, CCLG2Target targetUpdate = CCLG2Target::Both) {
-    $create_class(CCLayerGradient2, initWithTarget, start, end, v, targetUpdate);
+    $createClass(CCLayerGradient2, initWithTarget, start, end, v, targetUpdate);
   };
 
   void setTargetColorUpdate(CCLG2Target target) {m_targetColorUpdate = target;}

@@ -1,0 +1,2 @@
+- Toolbar functionality
+- Settings (which will mostly be placeholders)

@@ -19,16 +19,17 @@
   #define breakpoint() if (IsDebuggerPresent()) DebugBreak()
 #endif
 
-#define $create_class(classname, initfunc, ...) \
+#define $createClass(classname, initfunc, ...) \
   classname* ret = new classname();      \
   if (ret && ret->initfunc(__VA_ARGS__)) {   \
     ret->autorelease();            \
   } else {                   \
-    CC_SAFE_RELEASE_NULL(ret);         \
+    delete ret;        \
+    ret = nullptr; \
   };                     \
   return ret
 
-#define $default_create(classname) \
+#define $defaultCreate(classname) \
   static noinline classname* create() {  \
-  $create_class(classname, init);\
+  $createClass(classname, init);\
   }

@@ -2,15 +2,15 @@
 #include "../../../utils.hpp"
 GDF_NS_START
 CCResizableSprite* CCResizableSprite::create() {
-  $create_class(CCResizableSprite, init);
+  $createClass(CCResizableSprite, init);
 }
 
 CCResizableSprite* CCResizableSprite::createWithSpriteFrameName(const char *pszSpriteFrameName)
 {
-  $create_class(CCResizableSprite, initWithSpriteFrameName, pszSpriteFrameName);
+  $createClass(CCResizableSprite, initWithSpriteFrameName, pszSpriteFrameName);
 }
 CCResizableSprite* CCResizableSprite::createWithTexture(CCTexture2D* texture) {
-  $create_class(CCResizableSprite, initWithTexture, texture);
+  $createClass(CCResizableSprite, initWithTexture, texture);
 };
 
 bool CCResizableSprite::init() {
