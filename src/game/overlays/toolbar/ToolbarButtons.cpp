@@ -33,7 +33,7 @@ bool ToolbarSettingsButton::init() {
 /**
  * ToolbarModDisableButton
  */
-
+/*
 bool ToolbarModDisableButton::init() { 
   // for why im not hooking/patching ModsLayer to override its onBack to pop the scene,
   // idk
@@ -51,7 +51,7 @@ bool ToolbarModDisableButton::init() {
     AxisAlignment::End
   );
 }
-
+*/
 
 /**
  * ToolbarMusicButton

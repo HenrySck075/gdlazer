@@ -36,12 +36,13 @@ public:
   $defaultCreate(ToolbarGeodeButton);
   bool init(); 
 };
-
+/*
 class ToolbarModDisableButton : public ToolbarButton {
 public:
   $defaultCreate(ToolbarModDisableButton);
   bool init();
 };
+*/
 
 class ToolbarMusicButton : public ToolbarToggleButton {
   geode::Ref<NowPlayingOverlay> o;

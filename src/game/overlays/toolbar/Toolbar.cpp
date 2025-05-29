@@ -43,7 +43,7 @@ bool Toolbar::init() {
   auto right = CCLayer::create();
   right->addChild(ToolbarMusicButton::create());
   right->addChild(ToolbarGeodeButton::create());
-  right->addChild(ToolbarModDisableButton::create());
+  //right->addChild(ToolbarModDisableButton::create());
 
   // this will also cause issues
   right->setLayout(
