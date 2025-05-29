@@ -25,7 +25,7 @@
     ret->autorelease();            \
   } else {                   \
     delete ret;        \
-    ret = nullptr; \
+    return nullptr; \
   };                     \
   return ret
 
@@ -33,3 +33,15 @@
   static noinline classname* create() {  \
   $createClass(classname, init);\
   }
+
+#if defined(__GNUC__) || defined(__clang__)
+  #define $verifyPtr(...) \
+  ({ \
+    auto GEODE_CONCAT(res,__LINE__) = __VA_ARGS__; \
+    if (!GEODE_CONCAT(res,__LINE__)) return false; \
+    GEODE_CONCAT(res,__LINE__); \
+  })
+  
+#else
+  #error "we banned msvc unfortunately, go use clang"
+#endif

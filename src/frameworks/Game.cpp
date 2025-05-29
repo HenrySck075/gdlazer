@@ -164,6 +164,7 @@ bool Game::doDispatchEvent(Event* event, std::type_index type) {
   if (event->m_propagateStopped) {
     return true;
   }
+  if (!doDEMidhook(event, type)) return false;
   if (type == typeid(NodeLayoutUpdated)) {
     m_screensContainer->doDispatchEvent(event, type);
     m_overlaysContainer->doDispatchEvent(event, type);

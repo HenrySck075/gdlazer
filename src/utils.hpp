@@ -9,18 +9,6 @@ using namespace geode::prelude;
 float randomFloat();
 bool randomBool();
 
-#if defined(__GNUC__) || defined(__clang__)
-  #define $verifyPtr(...) \
-  ({ \
-    auto GEODE_CONCAT(res,__LINE__) = __VA_ARGS__; \
-    if (!GEODE_CONCAT(res,__LINE__)) return false; \
-    GEODE_CONCAT(res,__LINE__); \
-  })
-  
-#else
-  #error "we banned msvc unfortunately, go use clang"
-#endif
-
 #define rgbColor(r,g,b) r/255.f, g/255.f, b/255.f
 
 /// Assured reimplementation of CCNode::boundingBox()

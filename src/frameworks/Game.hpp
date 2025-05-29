@@ -11,7 +11,7 @@ GDF_NS_START
 
 class Game : public cocos2d::CCScene, public EventTarget {
 protected:
-  bool doDispatchEvent(Event *event, std::type_index type) override;
+  bool doDispatchEvent(Event* event, std::type_index type) override;
 
   geode::cocos::CCArrayExt<Screen> m_screenStack;
   // techinically we can do m_screenStack->lastObject() but
@@ -28,6 +28,8 @@ protected:
   geode::cocos::CCArrayExt<OverlayContainer> m_overlayRemovalQueue;
 
   static void setInstance(geode::Ref<Game> instance);
+  // lame
+  virtual bool doDEMidhook(Event* event, std::type_index type) {};
 public:
   virtual bool init() override;
   void yeah(cocos2d::CCObject*) {

@@ -189,7 +189,6 @@ void ButtonArea::show(std::string tag) {
 
 void ButtonArea::hide(std::string tag, bool collapse, bool close) {
   if (buttonsMenus.contains(tag)) {
-    log::debug("[ButtonArea]: hiding tag {} with{} collapse", tag, collapse?"":"out");
     CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
     if (close) {
       colorBg->runAction(easingsActions::CCEaseOut::create(CCScaleTo::create(0.3,1,0), 5));

@@ -18,6 +18,9 @@ public:
   virtual void hide();
   void toggleVisibility();
 
+  /// VisibilityContainer will explicitly cancels mouse events if its considered "not shown"
+  bool doDispatchEvent(Event *event, std::type_index type) override;
+
   virtual void onOpen() {};
   virtual void onClose() {};
   

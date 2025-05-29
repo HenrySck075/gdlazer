@@ -17,5 +17,6 @@ public:
 private:
   geode::Ref<Toolbar> m_toolbar;
   void setScreensContainerHeight(float height);
+  bool doDEMidhook(frameworks::Event* event, std::type_index type) override;
 };
 GDL_NS_END

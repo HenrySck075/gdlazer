@@ -6,13 +6,13 @@
 using namespace geode::prelude;
 
 typedef void (CCObject::*CallFuncP)(float);
-#define callfuncp_selector(...) (CallFuncP)(&__VA_ARGS__)
+#define customtween_selector(...) (CallFuncP)(&__VA_ARGS__)
 
 class CCCustomTween : public CCActionInterval {
 private:
-  bool m_reversed;
   float m_to;
   float m_from;
+  float m_delta;
   CCObject* m_target;
   CallFuncP m_pCallFunc;
 

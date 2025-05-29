@@ -2,6 +2,8 @@
 #include "../../graphics/OsuColor.hpp"
 #include "ToolbarButtons.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../helpers/CustomActions.hpp"
 
 using namespace ToolbarConstants;
 GDL_NS_START
@@ -10,11 +12,11 @@ using namespace frameworks;
 bool Toolbar::init() {
   if (!Container::init()) return false;
   setAnchor(Anchor::Top);
-  auto bgColor = OsuColor::Gray(0.1f*255);
+  setBackgroundColor(OsuColor::Gray(0.1f*255));
   setContentSize({1,c_height},Unit::Viewport,Unit::UIKit);
   setAnchorPoint({0,1});
-  setAnchor(Anchor::Top);
-  setPosition({0, c_height},Unit::OpenGL,Unit::UIKit);
+  setAnchor(Anchor::TopLeft);
+  setPosition({0, -c_height},Unit::OpenGL,Unit::UIKit);
 
   //auto j = processUnit(TOOLTIP_c_height,Unit::UIKit,false);
   auto j = c_tooltipHeight;
@@ -55,7 +57,6 @@ bool Toolbar::init() {
 
   addChild(left);
   addChild(right);
-  setColor(bgColor);
   setOpacity(255);
 
   addListener<NodeLayoutUpdated>([this,j,right](NodeLayoutUpdated*e){
@@ -94,14 +95,14 @@ bool Toolbar::init() {
 
 void Toolbar::show() {
   if (!m_shown) runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(0.5,{0,0}), 5
+    ContainerMoveTo::create(0.5,{0,0}), 5
   ));
   VisibilityContainer::show();
 }
 
 void Toolbar::hide() {
   if (m_shown) runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(0.5,{0,c_height}), 5
+    ContainerMoveTo::create(0.5,{0,-c_height}), 5
   ));
   VisibilityContainer::hide();
 }

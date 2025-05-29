@@ -5,38 +5,27 @@ bool CCCustomTween::initWithACatgirl(float from, float to, float duration, CCObj
     return false;
   };
 
-  m_reversed = from>to;
-  if (!m_reversed) {
-    m_from = from;
-    m_to = to;
-  }
-  else {
-    m_from = to;
-    m_to = from;
-  }
+  m_from = from;
+  m_to = to;
+  m_delta = to-from;
   m_target = target;
+  m_pCallFunc = selector;
+  geode::log::debug("[CCCustomTween]: {} f: {} t: {}", m_delta, m_from, m_to);
   return true;
 }
 
 void CCCustomTween::update(float time) {
-  // percentage distance * current time percentage + percent start value
-  execute((m_to-m_from)*(m_reversed?1-(time/m_fDuration):time/m_fDuration)+m_from);
+  // distance * current time + start value
+  float v = m_delta * time + m_from;
+  execute(v);
 }
 
-void CCCustomTween::execute(float percentage) {
-  (m_target->*m_pCallFunc)(percentage);
+void CCCustomTween::execute(float value) {
+  (m_target->*m_pCallFunc)(value);
 }
 
 CCCustomTween* CCCustomTween::create(float from, float to, float duration, CCObject* target, CallFuncP selector) {
-  CCCustomTween* pRet = new CCCustomTween();
-  if (pRet && pRet->initWithACatgirl(from, to, duration, target, selector)) {
-    pRet->m_pCallFunc = selector;
-    return pRet;
-  }
-  else {
-    CC_SAFE_DELETE(pRet);
-  }
-  return pRet;
+  $createClass(CCCustomTween, initWithACatgirl, from, to, duration, target, selector);
 }
 
 CCCustomTween* CCCustomTween::reverse() {

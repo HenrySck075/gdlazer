@@ -310,10 +310,6 @@ bool ButtonSystem::init(OsuLogo* logo) {
   addChild(logo);
   setAnchorPoint({0.5,0.5});
 
-  addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated* e){
-    geode::log::debug("[ButtonSystem]: {}", getChildren());
-    return true;
-  });
 
   return true;
 }

@@ -19,4 +19,11 @@ void VisibilityContainer::hide() {
 void VisibilityContainer::toggleVisibility() {
   m_shown = !m_shown;
 };
+bool gdlazer::frameworks::VisibilityContainer::doDispatchEvent(
+    Event *event, std::type_index type) {
+  if (type != typeid(MouseEvent) || m_shown)
+    return Container::doDispatchEvent(event, type);
+  return true;
+}
+
 GDF_NS_END

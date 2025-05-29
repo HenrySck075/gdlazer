@@ -96,7 +96,7 @@ void IntroTriangles::text_3_func() {
 void IntroTriangles::text_4_func() {
   m_welcomeText->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
-  auto a = CCCustomTween::create(0,13,5,this, callfuncp_selector(IntroTriangles::text_4_set_spacing));
+  auto a = CCCustomTween::create(0,13,5,this, customtween_selector(IntroTriangles::text_4_set_spacing));
   a->setTag(7);
   runAction(a);
 #endif
@@ -183,7 +183,7 @@ void IntroTriangles::rulesets_1_func() {
   addIcon("swing.png"_spr);
   addIcon("jetpack.png"_spr);
   n->updateLayout();
-  auto a = CCCustomTween::create(40, 30, rulesets_2 - rulesets_1 + 0.3, this, callfuncp_selector(IntroTriangles::rulesets_1_change_gap));
+  auto a = CCCustomTween::create(40, 30, rulesets_2 - rulesets_1 + 0.3, this, customtween_selector(IntroTriangles::rulesets_1_change_gap));
   a->setTag(9);
   runAction(a);
 

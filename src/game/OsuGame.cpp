@@ -26,16 +26,10 @@ geode::Ref<OsuGame> OsuGame::get(bool create) {
 
 bool OsuGame::init() {
   if (!Game::init()) return false;
-  geode::log::debug("amogus");
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar);
 
   m_screensContainer->setContentSize(m_screensContainer->getContentSize());
-
-  m_screensContainer->addListener<frameworks::NodeLayoutUpdated>([](frameworks::NodeLayoutUpdated*){
-    geode::log::debug("[OsuGame->m_screensContainer]: ");
-    return true;
-  });
 
   return true;
 }
@@ -48,17 +42,44 @@ bool OsuGame::doDispatchEvent(frameworks::Event* event, std::type_index type) {
   return true;
 }
 
+bool OsuGame::doDEMidhook(frameworks::Event* event, std::type_index type) {
+  bool ret = m_toolbar->doDispatchEvent(event, type);
+
+  return type == typeid(frameworks::NodeLayoutUpdated) || ret;
+}
+
 void OsuGame::showToolbar() {
   m_toolbar->show();
   m_screensContainer->runAction(easingsActions::CCEaseOut::create(
-    CCCustomTween::create(getContentHeight(), getContentHeight()-ToolbarConstants::c_height, 0.5, this, [](float gaming){}), 5
+    CCCustomTween::create(
+      getContentHeight(), 
+      getContentHeight()-m_screensContainer->processUnit(
+        ToolbarConstants::c_height, 
+        frameworks::Unit::UIKit, false
+      ), 
+      0.5, 
+      this, customtween_selector(OsuGame::setScreensContainerHeight)
+    ), 5
   ));
 };
 void OsuGame::hideToolbar() {
   m_toolbar->hide();
   m_screensContainer->runAction(easingsActions::CCEaseOut::create(
-    CCResizeTo::create(0.5,getContentWidth(),getContentHeight()), 5
+    CCCustomTween::create(
+      getContentHeight()-m_screensContainer->processUnit(
+        ToolbarConstants::c_height, 
+        frameworks::Unit::UIKit, false
+      ), 
+      getContentHeight(), 
+      0.5, 
+      this, customtween_selector(OsuGame::setScreensContainerHeight)
+    ), 5
   ));
 };
+
+void OsuGame::setScreensContainerHeight(float height) {
+  m_screensContainer->setContentSize({100, height}, frameworks::Unit::Percent, frameworks::Unit::OpenGL);
+  m_screensContainer->dispatchEvent(new frameworks::NodeLayoutUpdated(m_screensContainer)); // why
+}
 
 GDL_NS_END

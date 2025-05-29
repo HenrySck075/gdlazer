@@ -81,13 +81,11 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
         ));
         break;
       case MouseEventType::MouseDown:
-        geode::log::debug("hi");
         m_hover->runAction(easingsActions::CCEaseOut::create(
           CCFadeTo::create(1,255*0.1),5
         ));
         break;
       case MouseEventType::MouseUp:
-        geode::log::debug("hello");
         //if (!static_cast<CCBool*>(getUserObject("clicking"_spr))) return;
         m_hover->runAction(easingsActions::CCEaseOut::create(
           CCFadeTo::create(1,0),5

@@ -5,7 +5,6 @@
 #include "../../../frameworks/graphics/containers/VisibilityContainer.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
-#include "../../../helpers/CustomActions.hpp"
 
 using namespace geode::prelude;
 

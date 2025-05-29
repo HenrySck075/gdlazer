@@ -146,7 +146,7 @@ private:
   bool m_backgroundColorFollowsOpacity = false;
   cocos2d::CCSize m_size;
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
-  cocos2d::CCPoint m_position;
+  cocos2d::CCPoint m_position;                                      friend class ContainerMoveTo;
   Unit m_positionUnit[2] {Unit::OpenGL, Unit::OpenGL};
   bool m_clippingEnabled = false;
   /// whether or not the mouse was in bounds prior to the current mouse event
