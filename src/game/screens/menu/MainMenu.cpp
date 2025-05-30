@@ -76,6 +76,13 @@ bool MainMenu::init() {
     m_nowPlayingBox->runAction(CCSequence::create(actions));
     return true;
   });
+
+  /////////////////////////////////////////////
+  {
+    if (auto game = OsuGame::get(false)) game->showToolbar();
+  }
+  /////////////////////////////////////////////
+
   return true;
 }
 

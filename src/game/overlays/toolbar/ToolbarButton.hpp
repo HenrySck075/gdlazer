@@ -16,7 +16,6 @@ class ToolbarButton : public frameworks::ClickableContainer {
   OsuText* subtext;
 
 protected:
-  CCClippingNode* bgWrapper;
 public:
   bool init(frameworks::IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start);
   void setTooltipAlignment(AxisAlignment align) {

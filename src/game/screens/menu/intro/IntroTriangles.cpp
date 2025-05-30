@@ -220,7 +220,7 @@ void IntroTriangles::logo_scale() {
 void IntroTriangles::onScreenExit(frameworks::ScreenTransitionEvent e) {
   setBackgroundColor({255,255,255,255});
   setOpacity(255);
-  setBackgroundColorFollowsOpacity(true);
+
   runAction(
     CCFadeOut::create(1)
   );

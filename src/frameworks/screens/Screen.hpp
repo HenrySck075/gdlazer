@@ -22,6 +22,7 @@ public:
   };
   bool init() override {
     if (!Container::init()) return false;
+    setOpacity(255);
     setContentSize({100,100},Unit::Percent);
     return true;
   }

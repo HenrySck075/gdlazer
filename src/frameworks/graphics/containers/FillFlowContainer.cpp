@@ -12,7 +12,6 @@ FillFlowContainer* FillFlowContainer::create(FillDirection direction) {
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
-[[clang::optnone]]
 bool FillFlowContainer::init(FillDirection direction) {
     if (!Container::init()) return false;
     
@@ -21,5 +20,11 @@ bool FillFlowContainer::init(FillDirection direction) {
     this->setLayout(layout);
     
     return true;
+}
+void FillFlowContainer::setGap(float gap) {
+    static_cast<FillFlowLayout*>(this->getLayout())->setGap(gap);
+}
+float FillFlowContainer::getGap() {
+    return static_cast<FillFlowLayout*>(getLayout())->getGap();
 }
 GDF_NS_END

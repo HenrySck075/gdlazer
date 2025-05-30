@@ -28,10 +28,14 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
     return true;
   });
   toggleBg = Container::create();
-  toggleBg->setColor(OsuColor::Carmine.opacity(180));
-  toggleBg->setContentSize(CCSize(100,100), Unit::Percent, Unit::Percent);
+  toggleBg->setBackgroundColor(OsuColor::Carmine.opacity(180));
+  toggleBg->setContentSize({92,92}, Unit::Percent);
+  toggleBg->setAnchor(Anchor::Center);
   toggleBg->setOpacity(0);
-  bgWrapper->addChild(toggleBg,-4);
+  toggleBg->setBorderRadius(4);
+  toggleBg->setClippingEnabled(true);
+
+  addChild(toggleBg,-4);
   return true;
 }
 GDL_NS_END

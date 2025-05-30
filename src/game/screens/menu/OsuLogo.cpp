@@ -141,7 +141,7 @@ void LogoVisualization::update(float delta) {
     drawNode->drawSegment(
       ccpRotateByAngle(start,center,rot),
       ccpRotateByAngle(start+CCPoint{0,bars[i]},center,rot),
-      5,{1.f,1.f,1.f,1.f}
+      5,{1.f,1.f,1.f,0.5f}
     );
   }
   t = 0;

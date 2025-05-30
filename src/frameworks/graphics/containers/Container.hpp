@@ -96,7 +96,7 @@ public:
 
   bool getClippingEnabled() const { return m_clippingEnabled; }
   void setClippingEnabled(bool enabled);
-  void updateContainerBox();
+  void updateContainerBox(bool force = false);
   void transformContainerBox();
 
   // Anchor point
@@ -105,7 +105,6 @@ public:
   cocos2d::CCPoint calculateAnchoredPosition(const cocos2d::CCPoint &position);
   geode::Anchor getAnchor() const { return m_anchor; }
 
-  void setBackgroundColorFollowsOpacity(bool follows);
   void updateDisplayedOpacity(GLubyte parentOpacity) override;
 
   void removeAllChildrenWithCleanup(bool cleanup) override;
@@ -143,7 +142,6 @@ private:
   float m_borderRadius = 0.0f;
   geode::Ref<cocos2d::CCLayerColor> m_backgroundNode;
   cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
-  bool m_backgroundColorFollowsOpacity = false;
   cocos2d::CCSize m_size;
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
   cocos2d::CCPoint m_position;                                      friend class ContainerMoveTo;

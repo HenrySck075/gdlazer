@@ -231,7 +231,7 @@ void Container::setBorderRadius(float radius) {
 void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundColor = color;
   m_backgroundNode->setColor({color.r,color.g,color.b});
-  m_backgroundNode->setOpacity(m_backgroundColorFollowsOpacity ? getDisplayedOpacity() : color.a);
+  m_backgroundNode->setOpacity(getDisplayedOpacity()/255 * color.a);
 }
 void Container::setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit) {
   m_size = size;
@@ -386,31 +386,22 @@ h2d::Point2d_<T> operator+(h2d::Point2d_<T> lhs, h2d::Point2d_<T> rhs) {
 }
 
 void Container::calculatePolygonVertPoints() {
-  const float angleInc = M_PI / (2.0f * c_segments);
   float width = getContentWidth();
   float height = getContentHeight();
-  float cornerCenters[4][2] {
+  /// Mathematically counter-clockwise
+  float corners[4][2] = {
+    {width-m_borderRadius, height-m_borderRadius},
+    {m_borderRadius, height-m_borderRadius},
     {m_borderRadius, m_borderRadius},
-    {width - m_borderRadius, m_borderRadius},
-    {width - m_borderRadius, height - m_borderRadius},
-    {m_borderRadius, height - m_borderRadius},
+    {width-m_borderRadius, m_borderRadius},
   };
-  float cornerFourthDivNumber[4] {
-    1,
-    3.f/2,
-    0,
-    1.f/2
-  };
-  for (int cornerId = 0; cornerId < 4; cornerId++) {
+  for (int corner = 0; corner < 4; corner++) {
     for (int i = 0; i <= c_segments; i++) {
-      const float curAngle = cornerFourthDivNumber[cornerId]*M_PI + i*angleInc;
-      float x_off = m_borderRadius * cosf(curAngle);
-      float y_off = m_borderRadius * sinf(curAngle);
+      int dex = i + (c_segments * corner) + corner;
+      float angle = (M_PI / 2 / c_segments) * (i + (c_segments * corner));
 
-      m_verticesPoints[i+cornerId*c_segments+cornerId][0] =
-        cornerCenters[cornerId][0] + x_off;
-      m_verticesPoints[i+cornerId*c_segments+cornerId][1] =
-        cornerCenters[cornerId][1] + y_off;
+      m_verticesPoints[dex][0] = m_borderRadius * cosf(angle) + corners[corner][0];
+      m_verticesPoints[dex][1] = m_borderRadius * sinf(angle) + corners[corner][1];
     }
   }
 }
@@ -459,8 +450,8 @@ void Container::transformContainerBox() {
   m_containerBoxDesynced = false;
 }
 //[[clang::optnone]]
-void Container::updateContainerBox() {
-  if (!m_containerBoxShapeDesynced) return;
+void Container::updateContainerBox(bool force) {
+  if (!m_containerBoxShapeDesynced && !force) return;
   if (
     getContentSize() == cocos2d::CCSize{0,0} ||
     // doubt it is this
@@ -567,15 +558,9 @@ void Container::setAnchor(geode::Anchor anchor) {
   setUserObject("gdlazer/devtools/anchor", cocos2d::CCInteger::create((int)anchor));
   updatePositionWithUnit();
 }
-void Container::setBackgroundColorFollowsOpacity(bool follows) {
-  m_backgroundColorFollowsOpacity = follows;
-  if (m_backgroundNode) {
-    m_backgroundNode->setOpacity(getDisplayedOpacity());
-  }
-}
 void Container::updateDisplayedOpacity(GLubyte parentOpacity) {
   CCClippingNodeRGBA::updateDisplayedOpacity(parentOpacity);
-  m_backgroundNode->setOpacity(m_backgroundColorFollowsOpacity ? getDisplayedOpacity() : m_backgroundColor.a);
+  m_backgroundNode->setOpacity(getDisplayedOpacity()/255*m_backgroundColor.a);
 }
 
 void Container::removeAllChildrenWithCleanup(bool cleanup) {
@@ -584,6 +569,6 @@ void Container::removeAllChildrenWithCleanup(bool cleanup) {
 }
 void Container::setOpacity(GLubyte opacity) {
   CCClippingNodeRGBA::setOpacity(opacity);
-  if (m_backgroundColorFollowsOpacity) m_backgroundNode->setOpacity(opacity);
+  m_backgroundNode->setOpacity(opacity/255*m_backgroundColor.a);
 }
 GDF_NS_END

@@ -1,13 +1,56 @@
 #include "ContainerActions.hpp"
 #include "Container.hpp"
 
+cocos2d::ccColor4B operator+(
+    cocos2d::ccColor4B lhs, cocos2d::ccColor4B rhs) {
+  return {
+    static_cast<GLubyte>(lhs.r + rhs.r),
+    static_cast<GLubyte>(lhs.g + rhs.g),
+    static_cast<GLubyte>(lhs.b + rhs.b),
+    static_cast<GLubyte>(lhs.a + rhs.a)
+  };
+}
+
+cocos2d::ccColor4B operator-(
+    cocos2d::ccColor4B lhs, cocos2d::ccColor4B rhs) {
+  return {
+    static_cast<GLubyte>(lhs.r - rhs.r),
+    static_cast<GLubyte>(lhs.g - rhs.g),
+    static_cast<GLubyte>(lhs.b - rhs.b),
+    static_cast<GLubyte>(lhs.a - rhs.a)
+  };
+}
+
+cocos2d::ccColor4B operator*(
+    cocos2d::ccColor4B lhs, float rhs) {
+  return {
+    static_cast<GLubyte>(lhs.r * rhs),
+    static_cast<GLubyte>(lhs.g * rhs),
+    static_cast<GLubyte>(lhs.b * rhs),
+    static_cast<GLubyte>(lhs.a * rhs)
+  };
+}
+
 GDF_NS_START
+Container* __checkTarget(cocos2d::CCNode* target) {
+  auto node = geode::cast::typeinfo_cast<Container*>(target);
+  if (!node) {
+    throw std::invalid_argument("Container actions is built for Container only.");
+  }
+  return node;
+}
+
+#pragma region ContainerMoveTo
+//////////////////////////
+/// ContainerMoveTo
+//////////////////////////
+
 ContainerMoveTo* ContainerMoveTo::create(
   float duration, cocos2d::CCPoint position
 ) {
-  $createClass(ContainerMoveTo, initWithDuration, duration, position);
+  $createClass(ContainerMoveTo, init, duration, position);
 }
-bool ContainerMoveTo::initWithDuration(
+bool ContainerMoveTo::init(
   float duration, cocos2d::CCPoint position
 ) {
   if (!cocos2d::CCActionInterval::initWithDuration(duration))
@@ -18,10 +61,7 @@ bool ContainerMoveTo::initWithDuration(
   return true;
 }
 void ContainerMoveTo::startWithTarget(cocos2d::CCNode* target) {
-  auto node = geode::cast::typeinfo_cast<Container*>(target);
-  if (!node) {
-    throw std::invalid_argument("Container actions is built for Container only.");
-  }
+  auto node = __checkTarget(target);
   CCActionInterval::startWithTarget(target);
   m_startPosition = node->m_position;
 
@@ -35,5 +75,60 @@ void ContainerMoveTo::update(float dt) {
     node->m_positionUnit[1]
   );
 }
+#pragma endregion
+
+#pragma region ContainerTintTo
+
+//////////////////////////
+/// ContainerTintTo
+//////////////////////////
+
+ContainerTintTo* ContainerTintTo::create(
+  float duration, cocos2d::ccColor4B color
+) {
+  $createClass(ContainerTintTo, init, duration, color);
+}
+bool ContainerTintTo::init(
+  float duration, cocos2d::ccColor4B color
+) {
+  if (!cocos2d::CCActionInterval::initWithDuration(duration))
+    return false;
+
+  m_endColor = color;
+
+  return true;
+}
+void ContainerTintTo::startWithTarget(cocos2d::CCNode* target) {
+  auto node = __checkTarget(target);
+  CCActionInterval::startWithTarget(target);
+  m_startColor = node->getBackgroundColor();
+  
+  m_deltaColor = m_endColor - m_startColor;
+}
+void ContainerTintTo::update(float dt) {
+  static_cast<Container*>(getTarget())->setBackgroundColor(
+    m_deltaColor*dt + m_startColor
+  );
+}
+
+ContainerTintOpacityTo* ContainerTintOpacityTo::create(
+  float duration, GLubyte opacity
+) {
+  $createClass(ContainerTintOpacityTo, init, duration, opacity);
+}
+bool ContainerTintOpacityTo::init(float d, GLubyte o) {
+  m_opacity = o;
+  return ContainerTintTo::init(d, {0,0,0,o});
+}
+void ContainerTintOpacityTo::startWithTarget(cocos2d::CCNode* target) {
+  auto node = __checkTarget(target);
+  CCActionInterval::startWithTarget(target);
+  m_endColor = m_startColor = node->getBackgroundColor();
+  m_endColor.a *= m_opacity/255;
+  
+  m_deltaColor = m_endColor - m_startColor;
+}
+
+#pragma endregion
 
 GDF_NS_END

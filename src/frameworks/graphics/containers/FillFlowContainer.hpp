@@ -8,5 +8,7 @@ class FillFlowContainer : public Container {
 public:
     static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal);
     bool init(FillDirection direction);
+    void setGap(float gap);
+    float getGap();
 };
 GDF_NS_END

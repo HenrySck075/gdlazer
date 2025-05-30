@@ -3,6 +3,7 @@
 #include "ToolbarButtons.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
 #include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
 using namespace ToolbarConstants;
@@ -11,7 +12,7 @@ using namespace frameworks;
 
 bool Toolbar::init() {
   if (!Container::init()) return false;
-  setAnchor(Anchor::Top);
+  setOpacity(255);
   setBackgroundColor(OsuColor::Gray(0.1f*255));
   setContentSize({1,c_height},Unit::Viewport,Unit::UIKit);
   setAnchorPoint({0,1});
@@ -27,33 +28,44 @@ bool Toolbar::init() {
   gradient->setScaleY(-1);
   addChild(gradient);
 
-  auto left = CCLayer::create();
+  auto left = FillFlowContainer::create(FillDirection::Horizontal);
+  left->setGap(2);
   left->addChild($verifyPtr(ToolbarSettingsButton::create()));
   left->addChild($verifyPtr(ToolbarHomeButton::create()));
+  left->setAnchor(Anchor::Left);
+  left->setAnchorPoint({0,0.5});
+  left->setPosition({
+    #ifdef GEODE_IS_ANDROID
+    10
+    #else
+    2
+    #endif
+    ,0
+  });
 
-  auto lay = 
-    RowLayout::create()
-    ->setAutoScale(false)
-    ->setAxisAlignment(AxisAlignment::Start)
-    ->setGap(-0.5);
-  // this will cause issues
-  left->setLayout(lay);
-  left->setAnchorPoint({0,0});
-
-  auto right = CCLayer::create();
+  auto right = FillFlowContainer::create(FillDirection::Horizontal);
+  right->setGap(2);
   right->addChild(ToolbarMusicButton::create());
   right->addChild(ToolbarGeodeButton::create());
+  right->setAnchor(Anchor::Right);
+  right->setAnchorPoint({1,0.5});
+  right->setPosition({
+    #ifdef GEODE_IS_ANDROID
+    10
+    #else
+    2
+    #endif
+    ,0
+  });
   //right->addChild(ToolbarModDisableButton::create());
 
-  // this will also cause issues
-  right->setLayout(
-    lay
-    ->setAxisAlignment(AxisAlignment::End)
-  );
-  right->setAnchorPoint({1,0});
 #ifdef GEODE_IS_ANDROID
   left->setPositionX(10);
 #endif
+  queueInMainThread([left, right]{
+    left->updateLayout();
+    right->updateLayout();
+  });
 
   addChild(left);
   addChild(right);
@@ -61,31 +73,31 @@ bool Toolbar::init() {
 
   addListener<NodeLayoutUpdated>([this,j,right](NodeLayoutUpdated*e){
     gradient->setContentSize({CCNode::getContentSize().width,j});
-    right->setPositionX(
-      CCNode::getContentSize().width
-#ifdef GEODE_IS_ANDROID
-      -10
-#endif
-    );
     return true;
   });
 
   addListener<MouseEvent>([this](MouseEvent* e){
+    /*
     if (
       // the one that sends as click is a different event
       e->m_eventType == MouseEventType::MouseDown &&
       isMouseEntered()
     ) e->preventDefault();
+     */
     if (e->m_eventType == MouseEventType::Enter) {
       if (!m_shown) return true;
       gradient->stopAllActions();
-      gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(2.5,255), 5));
+      gradient->runAction(easingsActions::CCEaseOut::create(
+        CCFadeTo::create(2.5,255), 5
+      ));
     }
     
     if (e->m_eventType == MouseEventType::Exit) {
       if (!m_shown) return true;
       gradient->stopAllActions();
-      gradient->runAction(easingsActions::CCEaseOut::create(CCFadeTo::create(0.2,0), 5));
+      gradient->runAction(easingsActions::CCEaseOut::create(
+        CCFadeTo::create(0.2,0), 5
+      ));
     }
     return true;
   });
