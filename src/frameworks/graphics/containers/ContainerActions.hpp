@@ -5,6 +5,15 @@
 #include "../../../macro.h"
 
 GDF_NS_START
+
+struct ccc4BSigned {
+  int r;
+  int g;
+  int b;
+  int a;
+};
+
+
 class ContainerMoveTo : public cocos2d::CCActionInterval {
 public:
   static ContainerMoveTo* create(float duration, cocos2d::CCPoint position);
@@ -27,7 +36,7 @@ public:
 protected:
   cocos2d::ccColor4B m_startColor;
   cocos2d::ccColor4B m_endColor;
-  cocos2d::ccColor4B m_deltaColor;
+  ccc4BSigned m_deltaColor;
 };
 
 class ContainerTintOpacityTo : public ContainerTintTo {

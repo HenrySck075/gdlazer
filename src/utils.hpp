@@ -1,5 +1,5 @@
 #pragma once
-// file in date ordee
+/// Unorganized collections of utilities
 #include <Geode/Geode.hpp>
 #include <cmath>
 #include <cstddef>
@@ -56,5 +56,7 @@ T* postconfig(T* node, std::function<void(T*)> func) {
   func(node);
   return node;
 }
+
+uintptr_t getGeodeLib();
 
 std::string getObjectName(CCObject* node);

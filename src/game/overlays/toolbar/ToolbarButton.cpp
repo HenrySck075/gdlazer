@@ -21,7 +21,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   bg->setBorderRadius(4);
   bg->setClippingEnabled(true);
   //bg->updateContainerBox(true);
-  bg->setBackgroundColor(OsuColor::Gray(80));
+  bg->setBackgroundColor(OsuColor::Gray(80).opacity(0));
   bg->setOpacity(255);
 
   flashBg = Container::create();
@@ -29,8 +29,8 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   flashBg->setAnchor(Anchor::Center); flashBg->setAnchorPoint({0.5,0.5});
   flashBg->setBorderRadius(4);
   flashBg->setClippingEnabled(true);
-  flashBg->updateContainerBox(true);
-  flashBg->setBackgroundColor(Color4::White);
+  //flashBg->updateContainerBox(true);
+  flashBg->setBackgroundColor(Color4::White.opacity(0));
   flashBg->setOpacity(255);
 
   addChild(bg,-7);

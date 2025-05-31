@@ -40,6 +40,8 @@ public:
   }
 
   void onExit() override {}
+  void onExitTransitionDidStart() override {}
+  void cleanup() override {}
   void onEnter() override {
     if (!m_bRunning) CCNode::onEnter();
   }

@@ -5,6 +5,7 @@
 #include "math.h"
 #include "../../../../utils.hpp"
 #include "../../../../helpers/CustomActions.hpp"
+#include "../../../../frameworks/graphics/containers/ContainerActions.hpp"
    // this line is requested by catto
 #define delayRepeat(duration, ...) CCSequence::create(__VA_ARGS__, CCDelayTime::create(duration), nullptr)
 
@@ -222,7 +223,7 @@ void IntroTriangles::onScreenExit(frameworks::ScreenTransitionEvent e) {
   setOpacity(255);
 
   runAction(
-    CCFadeOut::create(1)
+    frameworks::ContainerTintOpacityTo::create(1, 0)
   );
 };
 GDL_NS_END

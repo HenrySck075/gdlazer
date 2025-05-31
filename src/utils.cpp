@@ -100,3 +100,29 @@ std::string getObjectName(CCObject* node){
   }
 #endif
 }
+
+uintptr_t getGeodeLib() {
+#ifdef GEODE_IS_WINDOWS
+  static uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleA("Geode.dll"));
+  return base;
+#elif GEODE_IS_ANDROID
+  static std::uintptr_t basePtr = 0u;
+  if (basePtr == 0u) {
+      auto handle = getLibHandle();
+
+      // JNI_OnLoad is present on all versions of GD
+      auto sym = dlsym(handle, "JNI_OnLoad");
+      assert(sym != nullptr);
+
+      Dl_info p;
+      auto dlAddrRes = dladdr(sym, &p);
+      assert(dlAddrRes != 0);
+
+      basePtr = reinterpret_cast<std::uintptr_t>(p.dli_fbase);
+  }
+
+  return basePtr;
+#else
+  return 0;
+#endif
+}

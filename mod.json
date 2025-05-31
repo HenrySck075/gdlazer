@@ -80,10 +80,6 @@
       "importance": "required",
       "version": "v1.0.4"
     },
-    "mat.max-window": {
-      "importance": "recommended",
-      "version": ">=v1.0.4"
-    },
     "alphalaneous.happy_textures": {
       "importance": "recommended",
       "version": ">=v1.6.1"

@@ -10,24 +10,33 @@ cocos2d::ccColor4B operator+(
     static_cast<GLubyte>(lhs.a + rhs.a)
   };
 }
-
-cocos2d::ccColor4B operator-(
-    cocos2d::ccColor4B lhs, cocos2d::ccColor4B rhs) {
+cocos2d::ccColor4B operator+(
+    gdlazer::frameworks::ccc4BSigned lhs, cocos2d::ccColor4B rhs) {
   return {
-    static_cast<GLubyte>(lhs.r - rhs.r),
-    static_cast<GLubyte>(lhs.g - rhs.g),
-    static_cast<GLubyte>(lhs.b - rhs.b),
-    static_cast<GLubyte>(lhs.a - rhs.a)
+    static_cast<GLubyte>(lhs.r + rhs.r),
+    static_cast<GLubyte>(lhs.g + rhs.g),
+    static_cast<GLubyte>(lhs.b + rhs.b),
+    static_cast<GLubyte>(lhs.a + rhs.a)
   };
 }
 
-cocos2d::ccColor4B operator*(
-    cocos2d::ccColor4B lhs, float rhs) {
+gdlazer::frameworks::ccc4BSigned operator-(
+    cocos2d::ccColor4B lhs, cocos2d::ccColor4B rhs) {
   return {
-    static_cast<GLubyte>(lhs.r * rhs),
-    static_cast<GLubyte>(lhs.g * rhs),
-    static_cast<GLubyte>(lhs.b * rhs),
-    static_cast<GLubyte>(lhs.a * rhs)
+    lhs.r - rhs.r,
+    lhs.g - rhs.g,
+    lhs.b - rhs.b,
+    lhs.a - rhs.a
+  };
+}
+
+gdlazer::frameworks::ccc4BSigned operator*(
+    gdlazer::frameworks::ccc4BSigned lhs, float rhs) {
+  return {
+    (int)std::round(lhs.r * rhs),
+    (int)std::round(lhs.g * rhs),
+    (int)std::round(lhs.b * rhs),
+    (int)std::round(lhs.a * rhs)
   };
 }
 
@@ -124,7 +133,7 @@ void ContainerTintOpacityTo::startWithTarget(cocos2d::CCNode* target) {
   auto node = __checkTarget(target);
   CCActionInterval::startWithTarget(target);
   m_endColor = m_startColor = node->getBackgroundColor();
-  m_endColor.a *= m_opacity/255;
+  m_endColor.a = m_opacity;
   
   m_deltaColor = m_endColor - m_startColor;
 }

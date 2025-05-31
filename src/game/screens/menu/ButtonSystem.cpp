@@ -265,7 +265,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "button-play-select.wav"_spr, 
       OsuIcon::Beatmap, 
       Color4(165, 204, 0, 255), 
-      [this](Container* j) {m_area->show("debug");},
+      [this](Container* j) {/*m_area->show("debug");*/},
       {enumKeyCodes::KEY_B, enumKeyCodes::KEY_D}
     ),
     MainMenuButton::create(

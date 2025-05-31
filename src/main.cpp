@@ -38,6 +38,85 @@ struct e : public Modify<e, MenuLayer> {
   }
 };
 
+bool s_replaceSceneDisabled = false;
+
+#include <Geode/modify/CCDirector.hpp>
+
+class $modify(cocos2d::CCDirector) {
+  static void onModify(auto& self) {
+    if (!self.setHookPriorityPre("cocos2d::CCDirector::replaceScene", Priority::VeryEarlyPre)) {
+      geode::log::warn("stuypd"); 
+    };
+  }
+  bool replaceScene(cocos2d::CCScene* scene) {
+    if (!s_replaceSceneDisabled) return cocos2d::CCDirector::replaceScene(scene);
+    return true;
+  }
+};
+#include <Geode/modify/GameManager.hpp>
+class $modify(GameManager) {
+  void fadeInMenuMusic() {}
+};
+#include <Geode/modify/LevelBrowserLayer.hpp>
+class $modify(LevelBrowserLayer) {
+  void onBack(cocos2d::CCObject*) {
+    cocos2d::CCDirector::get()->replaceScene(gdlazer::game::OsuGame::get());
+  }
+};
+
+#include <Geode/modify/LoadingLayer.hpp>
+class $modify(LoadingLayer) {
+  static void onModify(auto& self) {
+    if (!self.setHookPriorityPre("LoadingLayer::loadAssets", Priority::VeryEarlyPre)) {
+      geode::log::warn("Failed to set hook priority for LoadingLayer::loadAssets.");
+    }
+    if (!self.setHookPriorityAfterPost("LoadingLayer::init", Loader::get()->getLoadedMod("geode.loader"))) {
+      geode::log::warn("Failed to set hook priority for LoadingLayer::init.");
+    }
+  }
+  void loadAssets() {
+    bool lastStep = m_loadStep == 0xe;
+    if (lastStep) {
+      s_replaceSceneDisabled = true;
+    }
+    LoadingLayer::loadAssets();
+    if (lastStep) {
+      s_replaceSceneDisabled = false;
+      auto g = gdlazer::game::OsuGame::get();
+      cocos2d::CCDirector::get()->pushScene(g);
+      if (!g_screenPushed) g->pushScreen(GDL_NS::IntroTriangles::create());
+      g_screenPushed = true;
+    }
+  }
+  bool init(bool p0) {
+    if (!LoadingLayer::init(p0)) return false;
+
+    auto yoffset = CCDirector::get()->getWinSize().height * 2;
+    auto xpos = CCDirector::get()->getWinSize().width - 10;
+
+    auto smallLabel = static_cast<cocos2d::CCLabelBMFont*>(getChildByID("geode-small-label"));
+    auto smallerLabel = static_cast<cocos2d::CCLabelBMFont*>(getChildByID("geode-small-label-2"));
+
+    setVisible(false);
+
+    queueInMainThread([this, smallLabel, smallerLabel, yoffset, xpos]{
+      smallLabel->setPosition({xpos, 10 + yoffset});
+      smallLabel->setAnchorPoint({1,0});
+      smallLabel->setFntFile("Torus-Regular.fnt"_spr);
+      smallLabel->setScale(.3f);
+      
+      smallerLabel->setPosition({xpos, 25 + yoffset});
+      smallerLabel->setFntFile("Torus-Regular.fnt"_spr);
+      smallerLabel->setAnchorPoint({1,0});
+      smallerLabel->setScale(.2f);
+      
+      setPositionY(-yoffset);
+      setVisible(true);
+    });
+    return true;
+  }
+};
+
 
 /// The "nothing useful feature": Replace the mod dev name with any of these hardcoded names.
 
@@ -124,7 +203,9 @@ static const char* c_smug[] = {
   "Yukuri Harumiya",
   "Aurora Konohana",
   "Midori Yamada",
-  "Shion Sasaki"
+  "Shion Sasaki",
+
+  "Henry Spheria" /// congrats
 };
 
 $on_mod(Loaded) {

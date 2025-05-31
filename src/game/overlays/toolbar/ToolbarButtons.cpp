@@ -78,14 +78,19 @@ bool tempForceReplace = false;
 #include <Geode/modify/CCDirector.hpp>
 struct hook51 : Modify<hook51, CCDirector>{
   bool replaceScene(CCScene* scene) {
-    log::debug("geegjgofwejgviewjgvoiewnvfew");
-    if (tempForceReplace && !geode::cast::typeinfo_cast<CCTransitionScene*>(getRunningScene())) {
+    if (tempForceReplace/* && !geode::cast::typeinfo_cast<CCTransitionScene*>(getRunningScene())*/) {
       tempForceReplace = false;
-      return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get()));
+      return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get(false)));
     }
     else return CCDirector::replaceScene(scene);
   }
 };
+
+intptr_t ModsLayer_onBack_ptr = getGeodeLib();
+void ModsLayer_onBack(void* a, CCObject* b) {
+  tempForceReplace = true;
+  ((void(*)(void*, CCObject*))(ModsLayer_onBack_ptr))(a,b);
+}
 
 GDL_NS_START
 bool ToolbarGeodeButton::init() {
@@ -104,7 +109,6 @@ bool ToolbarGeodeButton::init() {
     )->activate();
     return true;
   });
-  tempForceReplace = true;
   return h;
 }
 

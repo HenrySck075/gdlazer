@@ -31,6 +31,7 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
   toggleBg->setBackgroundColor(OsuColor::Carmine.opacity(180));
   toggleBg->setContentSize({92,92}, Unit::Percent);
   toggleBg->setAnchor(Anchor::Center);
+  toggleBg->setAnchorPoint({0.5,0.5});
   toggleBg->setOpacity(0);
   toggleBg->setBorderRadius(4);
   toggleBg->setClippingEnabled(true);
