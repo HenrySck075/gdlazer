@@ -1,4 +1,5 @@
 #include "WaveContainer.hpp"
+#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
 #include "../../../macro.h"
 #include "ccTypes.h"
 #include <cstdlib>
@@ -51,6 +52,10 @@ std::tuple<CCDrawNode*, float> drawWave(CCSize size, ccColor4B color, float angl
 
 GDL_NS_START
 using namespace frameworks;
+static const float c_angle1 = 13;
+static const float c_angle2 = -7;
+static const float c_angle3 = 4;
+static const float c_angle4 = -2;
 CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor4B col) {
   CCDrawNode* wave;
   float offset;
@@ -59,12 +64,11 @@ CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor
   wave->setPosition({w,-offset-2});
   return wave;
 }
-
-WaveContainer* WaveContainer::create(ColorScheme color, CCNode* body) {
+WaveContainer* WaveContainer::create(ColorScheme color, Container* body) {
   $createClass(WaveContainer, init, color, body);
 }
 
-bool WaveContainer::init(ColorScheme color, CCNode* pBody) {
+bool WaveContainer::init(ColorScheme color, Container* pBody) {
   if (!OverlayContainer::init()) return false;
   addListener<MouseEvent>([this](MouseEvent* e){
     if (e->m_eventType == MouseEventType::MouseDown) {
@@ -79,33 +83,22 @@ bool WaveContainer::init(ColorScheme color, CCNode* pBody) {
 
     return true;
   }); 
+  setBackgroundColor({0,0,0,0});
   m_provider = OverlayColorProvider::create(color);
   m_provider->retain();
   return customSetup(pBody);
 }
 
-bool WaveContainer::customSetup(CCNode* pBody) {
-  auto s = CCDirector::sharedDirector()->getWinSize();
-  auto k = CCSize{s.width*0.8f, s.height};
-  m_touchBoundary = CCRect((s.width-k.width)/2,0,k.width,k.height);
-  setContentSize(s);
-  auto w = s.width/2;
+bool WaveContainer::customSetup(Container* pBody) {
+  //m_touchBoundary = CCRect((s.width-k.width)/2,0,k.width,k.height);
+  m_main->setContentSize({80,100}, Unit::Percent);
+  setContentSize({100,100}, Unit::Percent);
+  //auto w = s.width/2;
 
-  wave1 = createWave(w,k, angle1, m_provider->Light4());
-  wave2 = createWave(w,k, angle2, m_provider->Light3());
-  wave3 = createWave(w,k, angle3, m_provider->Dark4());
-  wave4 = createWave(w,k, angle4, m_provider->Dark3());
-
-  addChild(wave1);
-  addChild(wave2);
-  addChild(wave3);
-  addChild(wave4);
-
-  body = pBody; // mb
-  body->setAnchorPoint({0.5,1});
-  body->setPosition({s.width/2, 0});
-  addChild(body);
-  body->setContentSize(k);
+  m_body = pBody; // mb
+  m_body->setAnchorPoint({0.5,1});
+  m_body->setAnchor(Anchor::Bottom);
+  m_main->addChild(m_body);
 
   return true;
 }
@@ -113,23 +106,40 @@ bool WaveContainer::customSetup(CCNode* pBody) {
 
 void WaveContainer::onOpen() {
   m_hiding = false;
-  auto opacity = getOpacity();
-  setOpacity(0);
-  CCDirector::sharedDirector()->getRunningScene()->addChild(this);
-  auto h = getContentHeight();
-  
-#define j(id, dist) \
-  pos##id = wave##id->getPositionY(); \
-  wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(wave##id->getPositionX(),h+(dist/1366*h)))))
-  j(1,930.f);
-  j(2,560.f);
-  j(3,390.f);
-  j(4,220.f);
-  body->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(body->getPositionX(),h))));
-  runAction(CCFadeTo::create(0.1f, opacity));
+  /// As Unit::Percent is dependent on the parent 
+  /// and this still hasn't had the overlay container parent yet,
+  queueInMainThread([this]{
+    auto h = getContentHeight();
+    if (!m_wave1) {
+      auto w = m_main->getContentWidth();
+      auto tw = getContentWidth();
+      CCSize k {w,h};
+      log::debug("[WaveContainer]: {}", k);
 
-  FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
-#undef j
+      m_wave1 = createWave(tw/2,k, c_angle1, m_provider->Light4());
+      m_wave2 = createWave(tw/2,k, c_angle2, m_provider->Light3());
+      m_wave3 = createWave(tw/2,k, c_angle3, m_provider->Dark4());
+      m_wave4 = createWave(tw/2,k, c_angle4, m_provider->Dark3());
+
+      addChild(m_wave1);
+      addChild(m_wave2);
+      addChild(m_wave3);
+      addChild(m_wave4);
+    }
+    
+  #define j(id, dist) \
+    pos##id = m_wave##id->getPositionY(); \
+    m_wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(m_wave##id->getPositionX(),h+(dist/1366*h)))))
+    j(1,930.f);
+    j(2,560.f);
+    j(3,390.f);
+    j(4,220.f);
+    m_body->runAction(CCEaseSineOut::create(ContainerMoveTo::create(appearDuration, ccp(m_body->getPositionX(),h))));
+    runAction(ContainerTintOpacityTo::create(0.1f, 255*.2));
+
+    FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
+  #undef j
+  });
 }
 
 void WaveContainer::onClose() {
@@ -137,14 +147,14 @@ void WaveContainer::onClose() {
   if (m_hiding) return;
   stopAllActions();
 
-#define j(id) wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(wave##id->getPositionX(),pos##id))))
+#define j(id) m_wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_wave##id->getPositionX(),pos##id))))
   j(1);
   j(2);
   j(3);
   j(4);
-  body->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(body->getPositionX(),0))));
+  m_body->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_body->getPositionX(),0))));
   runAction(CCSequence::create( 
-      CCFadeTo::create(0.1f,0),
+      ContainerTintOpacityTo::create(0.1f,0),
       CCDelayTime::create(disappearDuration-0.1f),
       CCRemoveSelf::create(),
       nullptr

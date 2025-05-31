@@ -29,7 +29,7 @@ bool OsuGame::init() {
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar);
 
-  m_screensContainer->setContentSize(m_screensContainer->getContentSize());
+  m_everypence->setContentSize(m_everypence->getContentSize());
 
   return true;
 }
@@ -37,7 +37,7 @@ bool OsuGame::init() {
 bool OsuGame::doDispatchEvent(frameworks::Event* event, std::type_index type) {
   if (!Game::doDispatchEvent(event, type)) return false;
   if (type == typeid(frameworks::NodeLayoutUpdated)) {
-    m_screensContainer->setContentSize({getContentWidth(), getContentHeight()-(m_toolbar->isOpen() ? ToolbarConstants::c_height : 0)});
+    m_everypence->setContentSize({getContentWidth(), getContentHeight()-(m_toolbar->isOpen() ? ToolbarConstants::c_height : 0)});
   }
   return true;
 }
@@ -50,36 +50,36 @@ bool OsuGame::doDEMidhook(frameworks::Event* event, std::type_index type) {
 
 void OsuGame::showToolbar() {
   m_toolbar->show();
-  m_screensContainer->runAction(easingsActions::CCEaseOut::create(
+  m_everypence->runAction(easingsActions::CCEaseOut::create(
     CCCustomTween::create(
       getContentHeight(), 
-      getContentHeight()-m_screensContainer->processUnit(
+      getContentHeight()-m_everypence->processUnit(
         ToolbarConstants::c_height, 
         frameworks::Unit::UIKit, false
       ), 
       0.5, 
-      this, customtween_selector(OsuGame::setScreensContainerHeight)
+      this, customtween_selector(OsuGame::setMainContainerHeight)
     ), 5
   ));
 };
 void OsuGame::hideToolbar() {
   m_toolbar->hide();
-  m_screensContainer->runAction(easingsActions::CCEaseOut::create(
+  m_everypence->runAction(easingsActions::CCEaseOut::create(
     CCCustomTween::create(
-      getContentHeight()-m_screensContainer->processUnit(
+      getContentHeight()-m_everypence->processUnit(
         ToolbarConstants::c_height, 
         frameworks::Unit::UIKit, false
       ), 
       getContentHeight(), 
       0.5, 
-      this, customtween_selector(OsuGame::setScreensContainerHeight)
+      this, customtween_selector(OsuGame::setMainContainerHeight)
     ), 5
   ));
 };
 
-void OsuGame::setScreensContainerHeight(float height) {
-  m_screensContainer->setContentSize({100, height}, frameworks::Unit::Percent, frameworks::Unit::OpenGL);
-  m_screensContainer->dispatchEvent(new frameworks::NodeLayoutUpdated(m_screensContainer)); // why
+void OsuGame::setMainContainerHeight(float height) {
+  m_everypence->setContentSize({100, height}, frameworks::Unit::Percent, frameworks::Unit::OpenGL);
+  m_everypence->dispatchEvent(new frameworks::NodeLayoutUpdated(m_everypence)); // why
 }
 
 GDL_NS_END

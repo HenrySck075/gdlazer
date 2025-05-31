@@ -16,13 +16,17 @@ bool Game::init() {
 
   /*TEST CODE ~ Remove after finished*/
 
+  m_everypence = Container::create();
+  m_everypence->setContentSize({100,100}, Unit::Percent);
+
   m_screensContainer = Container::create();
   m_screensContainer->setContentSize({100,100}, Unit::Percent);
   m_overlaysContainer = Container::create();
   m_overlaysContainer->setContentSize({100,100}, Unit::Percent);
 
-  addChild(m_screensContainer);
-  addChild(m_overlaysContainer);
+  m_everypence->addChild(m_screensContainer);
+  m_everypence->addChild(m_overlaysContainer);
+  addChild(m_everypence);
 
   return true;
 };

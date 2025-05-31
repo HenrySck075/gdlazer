@@ -17,17 +17,12 @@ private:
   CCPoint m_startTouchLocation = {0,0};
   CCRect m_touchBoundary;
 
-  CCDrawNode* wave1;
-  CCDrawNode* wave2;
-  CCDrawNode* wave3;
-  CCDrawNode* wave4;
+  CCDrawNode* m_wave1;
+  CCDrawNode* m_wave2;
+  CCDrawNode* m_wave3;
+  CCDrawNode* m_wave4;
 
-  CCNode* body;
-
-  float angle1 = 13;
-  float angle2 = -7;
-  float angle3 = 4;
-  float angle4 = -2;
+  Container* m_body;
 
   float pos1;
   float pos2;
@@ -41,9 +36,9 @@ private:
   void onClose() override;
   void onOpen() override;
 public:
-  bool init(ColorScheme color, CCNode* body);
+  bool init(ColorScheme color, Container* body);
   // @note RobTop addition
-  bool customSetup(CCNode* body);
-  static WaveContainer* create(ColorScheme color, CCNode* body);
+  bool customSetup(Container* body);
+  static WaveContainer* create(ColorScheme color, Container* body);
 };
 GDL_NS_END

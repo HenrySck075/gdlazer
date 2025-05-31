@@ -13,6 +13,8 @@ class Game : public cocos2d::CCScene, public EventTarget {
 protected:
   bool doDispatchEvent(Event* event, std::type_index type) override;
 
+  geode::Ref<Container> m_everypence;
+
   geode::cocos::CCArrayExt<Screen> m_screenStack;
   // techinically we can do m_screenStack->lastObject() but
   // since we're also spamming MouseEvent every frame doing this is faster

@@ -74,39 +74,26 @@ void ToolbarMusicButton::deselect() {
 
 GDL_NS_END
 
-bool tempForceReplace = false;
-#include <Geode/modify/CCDirector.hpp>
-struct hook51 : Modify<hook51, CCDirector>{
-  bool replaceScene(CCScene* scene) {
-    if (tempForceReplace/* && !geode::cast::typeinfo_cast<CCTransitionScene*>(getRunningScene())*/) {
-      tempForceReplace = false;
-      return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get(false)));
-    }
-    else return CCDirector::replaceScene(scene);
-  }
-};
-
-intptr_t ModsLayer_onBack_ptr = getGeodeLib();
-void ModsLayer_onBack(void* a, CCObject* b) {
-  tempForceReplace = true;
-  ((void(*)(void*, CCObject*))(ModsLayer_onBack_ptr))(a,b);
-}
+#include "../ModsOverlay.hpp"
 
 GDL_NS_START
 bool ToolbarGeodeButton::init() {
   bool h = ToolbarButton::init(
-    OsuIcon::Gear,
-    "geode mod loader",
-    "manages the mods (F12)",
+    OsuIcon::Maintenance,
+    "mods list",
+    "manages geode mods (F12)",
     AxisAlignment::End
   );
   addListener<MouseEvent>([this](MouseEvent* e) {
     if (e->m_eventType != MouseEventType::Click) return true;
+    /*
     static_cast<CCMenuItemSpriteExtra *>(
       GameManager::sharedState()->m_menuLayer->getChildByIDRecursive(
         "geode.loader/geode-button"
       )
     )->activate();
+    */
+    ModsOverlay::create()->show();
     return true;
   });
   return h;

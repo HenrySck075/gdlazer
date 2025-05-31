@@ -134,6 +134,8 @@ void ContainerTintOpacityTo::startWithTarget(cocos2d::CCNode* target) {
   CCActionInterval::startWithTarget(target);
   m_endColor = m_startColor = node->getBackgroundColor();
   m_endColor.a = m_opacity;
+
+  geode::log::debug("[ContainerTintOpacityTo]: {} {}", m_startColor, m_endColor);
   
   m_deltaColor = m_endColor - m_startColor;
 }

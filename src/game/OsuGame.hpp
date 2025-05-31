@@ -16,7 +16,7 @@ public:
   bool doDispatchEvent(frameworks::Event* event, std::type_index type) override;
 private:
   geode::Ref<Toolbar> m_toolbar;
-  void setScreensContainerHeight(float height);
+  void setMainContainerHeight(float height);
   bool doDEMidhook(frameworks::Event* event, std::type_index type) override;
 };
 GDL_NS_END
