@@ -12,8 +12,6 @@ class WaveContainer : public OsuOverlayContainer {
 private:
   bool m_hiding = false;
 
-  OverlayColorProvider* m_provider;
-
   CCPoint m_startTouchLocation = {0,0};
   CCRect m_touchBoundary;
 
@@ -22,7 +20,7 @@ private:
   CCDrawNode* m_wave3;
   CCDrawNode* m_wave4;
 
-  Container* m_body;
+  geode::Ref<Container> m_body; /// TODO: delete this?
 
   float pos1;
   float pos2;
@@ -40,5 +38,8 @@ public:
   // @note RobTop addition
   bool customSetup(Container* body);
   static WaveContainer* create(ColorScheme color, Container* body);
+protected:
+  geode::Ref<OverlayColorProvider> m_provider;
+
 };
 GDL_NS_END

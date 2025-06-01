@@ -24,21 +24,15 @@ enum class OverlayColorScheme {
 };
 class OverlayColorProvider : public CCObject {
 public:
-  OverlayColorScheme ColorScheme; 
+  OverlayColorScheme m_colorScheme; 
 
   static OverlayColorProvider* create(OverlayColorScheme colorScheme)
   {
-    auto ret = new OverlayColorProvider();
-    if (ret && ret->init(colorScheme)) {
-    ret->autorelease();
-    } else {
-    CC_SAFE_DELETE(ret);
-    }
-    return ret;
+    $createClass(OverlayColorProvider, init, colorScheme);
   };
 
   bool init(OverlayColorScheme colorScheme) {
-    ColorScheme = colorScheme;
+    m_colorScheme = colorScheme;
     return true;
   }
 
@@ -80,12 +74,12 @@ public:
   /// <param name="colorScheme">The proposed color scheme.</param>
   void changeColorScheme(OverlayColorScheme colorScheme)
   {
-    ColorScheme = colorScheme;
+    m_colorScheme = colorScheme;
   }
 
   private:
   osuColor4 getColor(float saturation, float lightness) {
-    auto c = hslToRgb(getBaseHue(ColorScheme), saturation, lightness);
+    auto c = hslToRgb(getBaseHue(m_colorScheme), saturation, lightness);
     return {c.r/255.f, c.g/255.f, c.b/255.f, 1.f};
   };
 

@@ -11,8 +11,8 @@ void Container::setMinSize(const cocos2d::CCSize &size) {
 }
 
 void Container::setMaxSize(const cocos2d::CCSize &size) {
-  assert(m_minSize.width > 0 || size.width >= m_minSize.width);
-  assert(m_minSize.height > 0 || size.height >= m_minSize.height);
+  assert(m_minSize.width >= 0 || size.width >= m_minSize.width);
+  assert(m_minSize.height >= 0 || size.height >= m_minSize.height);
   m_maxSize = size;
 }
 

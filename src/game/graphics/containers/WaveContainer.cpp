@@ -96,9 +96,12 @@ bool WaveContainer::customSetup(Container* pBody) {
   //auto w = s.width/2;
 
   m_body = pBody; // mb
-  m_body->setAnchorPoint({0.5,1});
+  m_body->setAnchorPoint({0.5,0});
   m_body->setAnchor(Anchor::Bottom);
+  m_body->setContentSize({100,100},Unit::Percent);
   m_main->addChild(m_body);
+  m_main->setAnchorPoint({0.5,1});
+  m_main->setZOrder(777);
 
   return true;
 }
@@ -128,13 +131,12 @@ void WaveContainer::onOpen() {
     }
     
   #define j(id, dist) \
-    pos##id = m_wave##id->getPositionY(); \
-    m_wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, ccp(m_wave##id->getPositionX(),h+(dist/1366*h)))))
+    m_wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, {m_wave##id->getPositionX(),h+(dist/1366*h)})))
     j(1,930.f);
     j(2,560.f);
     j(3,390.f);
     j(4,220.f);
-    m_body->runAction(CCEaseSineOut::create(ContainerMoveTo::create(appearDuration, ccp(m_body->getPositionX(),h))));
+    m_main->runAction(CCEaseSineOut::create(ContainerMoveTo::create(appearDuration, {0,h})));
     runAction(ContainerTintOpacityTo::create(0.1f, 255*.2));
 
     FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);

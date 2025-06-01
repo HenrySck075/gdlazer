@@ -1,30 +1,23 @@
 #include "FillFlowContainer.hpp"
-#include "FillFlowLayout.hpp"
 
 GDF_NS_START
 
 FillFlowContainer* FillFlowContainer::create(FillDirection direction) {
-    auto ret = new FillFlowContainer();
-    if (ret && ret->init(direction)) {
-        ret->autorelease();
-        return ret;
-    }
-    CC_SAFE_DELETE(ret);
-    return nullptr;
+    $createClass(FillFlowContainer, init, direction);
 }
 bool FillFlowContainer::init(FillDirection direction) {
     if (!Container::init()) return false;
     
-    auto layout = FillFlowLayout::create(direction);
-    layout->setGap(5.0f); // default gap
-    this->setLayout(layout);
+    m_layout = FillFlowLayout::create(direction);
+    m_layout->setGap(5.0f); // default gap
+    this->setLayout(m_layout);
     
     return true;
 }
 void FillFlowContainer::setGap(float gap) {
-    static_cast<FillFlowLayout*>(this->getLayout())->setGap(gap);
+    m_layout->setGap(gap);
 }
 float FillFlowContainer::getGap() {
-    return static_cast<FillFlowLayout*>(getLayout())->getGap();
+    return m_layout->getGap();
 }
 GDF_NS_END

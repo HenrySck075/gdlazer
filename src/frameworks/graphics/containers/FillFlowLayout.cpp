@@ -15,6 +15,9 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
   float currentPos = 0;
   float maxCrossAxisSize = 0;
   auto children = geode::cocos::CCArrayExt<cocos2d::CCNode>(container->getChildren());
+  if (this->getAxisReverse()) {
+    children.inner()->reverseObjects();
+  }
   
   if (m_direction == FillDirection::Horizontal) {
     for (auto child : children) {
@@ -39,7 +42,6 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
     }
     on->cocos2d::CCNode::setContentSize({maxCrossAxisSize, currentPos});
   }
-  // to call updateContainerBox
   container->updateContainerBox();
 }
 GDF_NS_END
