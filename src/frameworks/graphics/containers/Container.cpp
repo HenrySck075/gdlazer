@@ -58,7 +58,7 @@ bool Container::init() {
     return false;
 
   m_backgroundNode = cocos2d::CCLayerColor::create();
-  this->addChild(m_backgroundNode, -998);
+  this->CCNode::addChild(m_backgroundNode, -998);
   
   setStencil(cocos2d::CCDrawNode::create());
 
@@ -253,6 +253,7 @@ void Container::setContentSize(const cocos2d::CCSize &size) {
   setContentSize(size, Unit::OpenGL, Unit::OpenGL);
   m_vfuncCallLoopBlock = false;
 };
+
 void Container::setPosition(cocos2d::CCPoint const& position, Unit hUnit, Unit vUnit) {
   m_position = position;
   m_positionUnit[0] = hUnit;
@@ -265,6 +266,23 @@ void Container::setPosition(cocos2d::CCPoint const& position, Unit unit) {
 void Container::setPosition(cocos2d::CCPoint const& position) {
   setPosition(position, Unit::OpenGL, Unit::OpenGL);
 }
+void Container::setPositionX(float x, Unit unit) {
+  m_position.x = x;
+  m_positionUnit[0] = unit;
+  updatePositionWithUnit();
+}
+void Container::setPositionX(float x) {
+  setPositionX(x, Unit::OpenGL);
+}
+void Container::setPositionY(float y, Unit unit) {
+  m_position.y = y;
+  m_positionUnit[1] = unit;
+  updatePositionWithUnit();
+}
+void Container::setPositionY(float y) {
+  setPositionY(y, Unit::OpenGL);
+}
+
 void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
   dispatchEvent(new NodeLayoutUpdated(parent));
@@ -274,16 +292,16 @@ void Container::updateSizeWithUnit() {
   float width = m_size.width,
   height = m_size.height;
   
-  #define $applyConstraint(edge) \
-  if (m_minSize.edge > 0) { \
-  edge = std::max(edge, m_minSize.edge); \
+  #define $applyConstraint(edge, isWidth) \
+  if (m_minSize.edge >= 0) { \
+  edge = std::max(edge, processUnit(m_minSize.edge, Unit::UIKit, isWidth)); \
   } \
   if (m_maxSize.edge > 0) { \
-  edge = std::min(edge, m_maxSize.edge); \
+  edge = std::min(edge, processUnit(m_maxSize.edge, Unit::UIKit, isWidth)); \
   }
 
-  $applyConstraint(width);
-  $applyConstraint(height);
+  $applyConstraint(width, true);
+  $applyConstraint(height, false);
   #undef $applyConstraint
 
   cocos2d::CCNode::setContentSize(cocos2d::CCSize(

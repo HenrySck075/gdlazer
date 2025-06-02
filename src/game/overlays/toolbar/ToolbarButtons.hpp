@@ -4,6 +4,7 @@
 #include "ToolbarToggleButton.hpp"
 #include "../NowPlayingOverlay.hpp"
 #include "../../graphics/OsuIcon.hpp"
+#include "../ModsOverlay.hpp"
 
 GDL_NS_START
 
@@ -28,13 +29,14 @@ public:
 
 
 /// temporary impl
-class ToolbarGeodeButton : public ToolbarButton {
-  void ModsLayer_onBack(CCObject *);
-  SEL_MenuHandler ModsLayer_onBack_original;
-  CCLayer* m_modsLayer;
+class ToolbarGeodeButton : public ToolbarToggleButton {
+  geode::Ref<ModsOverlay> m_modsLayer;
 public:
   $defaultCreate(ToolbarGeodeButton);
   bool init(); 
+
+  void select() override;
+  void deselect() override;
 };
 /*
 class ToolbarModDisableButton : public ToolbarButton {

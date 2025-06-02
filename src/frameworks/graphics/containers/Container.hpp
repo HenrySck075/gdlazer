@@ -74,6 +74,11 @@ public:
   void setPosition(cocos2d::CCPoint const& position) override;
   void setPosition(cocos2d::CCPoint const& position, Unit unit);
   void setPosition(cocos2d::CCPoint const& position, Unit hUnit, Unit vUnit);
+  // and its single-axis functions
+  void setPositionX(float x) override;
+  void setPositionX(float x, Unit unit);
+  void setPositionY(float y) override;
+  void setPositionY(float y, Unit unit);
 
   // function overrides to mark m_containerBoxDesynced to true
   void setScale(float scale) override;

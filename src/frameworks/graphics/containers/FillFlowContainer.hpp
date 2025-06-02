@@ -8,9 +8,11 @@ GDF_NS_START
 class FillFlowContainer : public Container {
     FillFlowLayout* m_layout;
 public:
-    static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal);
-    bool init(FillDirection direction);
+    static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
+    bool init(FillDirection direction, geode::Anchor anchor);
     void setGap(float gap);
     float getGap();
+    void setAxisReverse(bool axisReverse);
+    void setAutoGrowAxis(bool enable);
 };
 GDF_NS_END

@@ -8,7 +8,7 @@ bool OverlayContainer::init() {
   if (!VisibilityContainer::init()) return false;
   m_main = Container::create();
   m_main->setContentSize({0,0});
-  m_main->setAnchorPoint({0.5,0});
+  m_main->setAnchorPoint({0.5,0.5});
   m_main->setAnchor(geode::Anchor::Bottom);
   addChild(m_main);
   setContentSize({100,100},Unit::Percent,Unit::Percent);

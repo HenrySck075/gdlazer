@@ -71,32 +71,21 @@ void ToolbarMusicButton::deselect() {
 /**
  * ToolbarGeodeButton
  */
-
-GDL_NS_END
-
-#include "../ModsOverlay.hpp"
-
-GDL_NS_START
 bool ToolbarGeodeButton::init() {
-  bool h = ToolbarButton::init(
+  return ToolbarToggleButton::init(
     OsuIcon::Maintenance,
     "mods list",
     "manages geode mods (F12)",
-    AxisAlignment::End
+    AxisAlignment::End,
+    "Geode"
   );
-  addListener<MouseEvent>([this](MouseEvent* e) {
-    if (e->m_eventType != MouseEventType::Click) return true;
-    /*
-    static_cast<CCMenuItemSpriteExtra *>(
-      GameManager::sharedState()->m_menuLayer->getChildByIDRecursive(
-        "geode.loader/geode-button"
-      )
-    )->activate();
-    */
-    ModsOverlay::create()->show();
-    return true;
-  });
-  return h;
+}
+
+void ToolbarGeodeButton::select() {
+  (m_modsLayer = ModsOverlay::create())->show();
+}
+void ToolbarGeodeButton::deselect() {
+  if (m_modsLayer) m_modsLayer->hide();
 }
 
 GDL_NS_END

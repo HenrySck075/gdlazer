@@ -22,10 +22,10 @@ private:
 
   geode::Ref<Container> m_body; /// TODO: delete this?
 
-  float pos1;
-  float pos2;
-  float pos3;
-  float pos4;
+  float m_pos1;
+  float m_pos2;
+  float m_pos3;
+  float m_pos4;
 
   float appearDuration = 0.8f;
   float disappearDuration = 0.5f;

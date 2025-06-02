@@ -13,8 +13,8 @@ public:
 
   bool init(geode::Mod* mod, OverlayColorProvider* provider);
 
-  constexpr static const float WIDTH = 300;
-  constexpr static const float HEIGHT = 60;
+  constexpr static const float WIDTH = 400;
+  constexpr static const float HEIGHT = 80;
 private:
   geode::Mod* m_mod;
 

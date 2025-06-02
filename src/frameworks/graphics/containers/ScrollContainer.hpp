@@ -16,20 +16,11 @@ enum class ScrollDirection {
 class ScrollContainer : public Container {
 public:
   static ScrollContainer* create(Container* content) {
-    auto ret = new ScrollContainer();
-    if (ret && ret->init(content)) {
-      ret->autorelease();
-      return ret;
-    }
-    CC_SAFE_DELETE(ret);
-    return nullptr;
+    $createClass(ScrollContainer, init, content);
   }
 
   bool init(Container* content);
   void setContent(cocos2d::CCNode* child);
-  void addChild(cocos2d::CCNode* child) override;
-  void addChild(cocos2d::CCNode* child, int zOrder) override;
-  void addChild(cocos2d::CCNode* child, int zOrder, int tag) override;
 
   void resizeToChildSize();
 

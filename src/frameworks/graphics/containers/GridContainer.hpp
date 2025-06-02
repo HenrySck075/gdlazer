@@ -18,8 +18,9 @@ struct Dimension {
     AutoSize
   };
 
-  Mode mode = Mode::Distributed;
+  Mode mode = Mode::AutoSize;
   float size = 0;
+  /// TODO: std::numeric_limits<T>::infinity ??????
   float minSize = 0;
   float maxSize = 0;
 };
@@ -42,15 +43,16 @@ public:
   void setGap(float spacing);
 
   void addChildAtCell(int row, int column, Container* child);
+  void reserve(int rows, int columns);
 
   void updateLayout();
 
 private:
   std::vector<float> getCellSizesAlongAxis(Axes axis, float spanLength);
   std::vector<float> distributeAlongAxis(Axes axis, float spanLength, std::vector<float> cellSizes);
-  Container* tryGetCell(int col, int row);
+  Container* tryGetCell(int row, int col);
   std::vector<std::vector<geode::Ref<Container>>> m_gridContent;
-  const DimensionVector m_columnDimensions;
-  const DimensionVector m_rowDimensions;
+  DimensionVector m_columnDimensions;
+  DimensionVector m_rowDimensions;
 };
 GDF_NS_END

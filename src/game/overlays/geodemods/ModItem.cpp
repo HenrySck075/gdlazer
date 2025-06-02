@@ -2,6 +2,7 @@
 #include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 #include <Geode/ui/LazySprite.hpp>
+#include <Geode/ui/GeodeUI.hpp>
 
 GDL_NS_START
 using namespace frameworks;
@@ -17,25 +18,46 @@ std::string getDevelopersString(const std::vector<std::string>& developers) {
 bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   if (!Container::init()) return false;
   setContentSize({WIDTH, HEIGHT}, Unit::UIKit);
-  setBorderRadius(CORNER_RADIUS);
-  setClippingEnabled(true);
+  
 
   /// Mod icon
   float heightUIKit = processUnit(HEIGHT, Unit::UIKit, false);
-  auto logo = geode::LazySprite::create({heightUIKit, heightUIKit},false);
-  logo->loadFromFile(geode::dirs::getModRuntimeDir() / mod->getID() / "logo.png");
-  addChild(logo);
+  auto logo = LazySprite::create({heightUIKit, heightUIKit}, false);
+  logo->setAutoResize(true);
 
+  if (!mod->isInternal()) {
+    logo->setLoadCallback([logo](Result<>){
+      logo->setAnchorPoint({0,0});
+    });
+    logo->loadFromFile(dirs::getModRuntimeDir() / mod->getID() / "logo.png");
+  } else {
+    logo->initWithSpriteFrameName("geode.loader/geode-logo.png");
+  }
+
+
+  auto bg = Container::create();
+  bg->setContentSize({HEIGHT+CORNER_RADIUS*2, HEIGHT},Unit::UIKit);
+  bg->setBorderRadius(CORNER_RADIUS/2);
+  bg->setColor(provider->Background1());
+  bg->setClippingEnabled(true);
+  addChild(bg);
+  
+  logo->setAnchorPoint({0,0});
+  addChild(logo);
   /// Metadata
-  auto metaContainer = $verifyPtr(FillFlowContainer::create(FillDirection::Vertical));
-  metaContainer->setPosition({HEIGHT - CORNER_RADIUS, 0});
+  auto metaContainer = $verifyPtr(FillFlowContainer::create(FillDirection::Vertical, Anchor::TopLeft));
+  metaContainer->setPosition({HEIGHT, 0},Unit::UIKit);
   metaContainer->setBorderRadius(CORNER_RADIUS);
+  metaContainer->setClippingEnabled(true);
   metaContainer->setBackgroundColor(provider->Background2());
-  metaContainer->addChild($verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 16)));
-  metaContainer->addChild($verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 11)));
+  metaContainer->addChild($verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 10)));
+  metaContainer->addChild($verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 7)));
   addChild(metaContainer);
+  metaContainer->setGap(2);
+  metaContainer->setAutoGrowAxis(false);
   metaContainer->updateLayout();
-  metaContainer->setContentSize({WIDTH - HEIGHT + CORNER_RADIUS,HEIGHT}, Unit::UIKit);
+  //metaContainer->setContentSize({WIDTH - HEIGHT + CORNER_RADIUS, metaContainer->getContentHeight()}, Unit::UIKit, Unit::OpenGL);
+  metaContainer->setMinSize({WIDTH - HEIGHT + CORNER_RADIUS,HEIGHT}); /// what happened why dont this work
 
   return true;
 }

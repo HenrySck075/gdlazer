@@ -120,9 +120,13 @@ void WaveContainer::onOpen() {
       log::debug("[WaveContainer]: {}", k);
 
       m_wave1 = createWave(tw/2,k, c_angle1, m_provider->Light4());
+      m_pos1 = m_wave1->getPositionY();
       m_wave2 = createWave(tw/2,k, c_angle2, m_provider->Light3());
+      m_pos2 = m_wave2->getPositionY();
       m_wave3 = createWave(tw/2,k, c_angle3, m_provider->Dark4());
+      m_pos3 = m_wave3->getPositionY();
       m_wave4 = createWave(tw/2,k, c_angle4, m_provider->Dark3());
+      m_pos4 = m_wave4->getPositionY();
 
       addChild(m_wave1);
       addChild(m_wave2);
@@ -149,17 +153,15 @@ void WaveContainer::onClose() {
   if (m_hiding) return;
   stopAllActions();
 
-#define j(id) m_wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_wave##id->getPositionX(),pos##id))))
+#define j(id) m_wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_wave##id->getPositionX(),m_pos##id))))
   j(1);
   j(2);
   j(3);
   j(4);
-  m_body->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_body->getPositionX(),0))));
-  runAction(CCSequence::create( 
+  m_main->runAction(CCEaseSineIn::create(ContainerMoveTo::create(disappearDuration, {0,0})));
+  runAction(CCSequence::createWithTwoActions( 
       ContainerTintOpacityTo::create(0.1f,0),
-      CCDelayTime::create(disappearDuration-0.1f),
-      CCRemoveSelf::create(),
-      nullptr
+      CCDelayTime::create(disappearDuration)
   ));
 
   FMODAudioEngine::sharedEngine()->playEffect("overlay-big-pop-out.wav"_spr);

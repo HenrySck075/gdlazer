@@ -10,7 +10,7 @@ bool ScrollContainer::init(Container* content) {
   setClippingEnabled(false);
   setTouchEnabled(true);
 
-  m_content = content;
+  addChild(m_content = content);
 
   this->addListener<MouseScrollEvent>([this](MouseScrollEvent* event){
     if ((m_scrollDirection == ScrollDirection::Vertical || 
@@ -24,72 +24,56 @@ bool ScrollContainer::init(Container* content) {
     return true;
   });
   this->addListener<MouseDragEvent>([this](MouseDragEvent* event){
+    log::debug("[ScrollContainer]: eid: {}", (int)(event->m_type));
     switch (event->m_type) {
-    case MouseDragEventType::Start: {
-      m_scrollVelocityVec = cocos2d::CCPoint{0,0};
-      m_returningInBounds = false;
-      m_velocityFriction = 0.95f;
-      if ((m_scrollDirection == ScrollDirection::Vertical || 
-           m_scrollDirection == ScrollDirection::Both)) {
-          m_scrollPosition.y += event->getDelta().y * m_scrollVelocity;
-      } 
-      if ((m_scrollDirection == ScrollDirection::Vertical || 
-          m_scrollDirection == ScrollDirection::Both)) {
-          m_scrollPosition.x += event->getDelta().x * m_scrollVelocity;
+      case MouseDragEventType::Start: {
+        m_scrollVelocityVec = cocos2d::CCPoint{0,0};
+        m_returningInBounds = false;
+        m_velocityFriction = 0.95f;
+        if ((m_scrollDirection == ScrollDirection::Vertical || 
+            m_scrollDirection == ScrollDirection::Both)) {
+            m_scrollPosition.y += event->getDelta().y * m_scrollVelocity;
+        } 
+        if ((m_scrollDirection == ScrollDirection::Vertical || 
+            m_scrollDirection == ScrollDirection::Both)) {
+            m_scrollPosition.x += event->getDelta().x * m_scrollVelocity;
+        }
+        updatePosition();
+        break;
       }
-      updatePosition();
-      break;
-    }
-    case MouseDragEventType::Move: {
-      if (!m_content) break;
-      
-      auto delta = event->getDelta();
-      if (m_scrollDirection == ScrollDirection::Vertical || 
-          m_scrollDirection == ScrollDirection::Both)
-          m_scrollPosition.y += delta.y;
-          
-      if (m_scrollDirection == ScrollDirection::Horizontal || 
-          m_scrollDirection == ScrollDirection::Both)
-          m_scrollPosition.x += delta.x;
-          
-      updatePosition();
-      break;
-    }
-    case MouseDragEventType::Stop: {
-      m_scrollVelocityVec = event->getDelta();
+      case MouseDragEventType::Move: {
+        if (!m_content) break;
+        
+        auto delta = event->getDelta();
+        if (m_scrollDirection == ScrollDirection::Vertical || 
+            m_scrollDirection == ScrollDirection::Both)
+            m_scrollPosition.y += delta.y;
+            
+        if (m_scrollDirection == ScrollDirection::Horizontal || 
+            m_scrollDirection == ScrollDirection::Both)
+            m_scrollPosition.x += delta.x;
+            
+        updatePosition();
+        break;
+      }
+      case MouseDragEventType::Stop: {
+        m_scrollVelocityVec = event->getDelta();
 
-      if (m_scrollDirection == ScrollDirection::Vertical || 
-          m_scrollDirection == ScrollDirection::None) {
-        m_scrollVelocityVec.x = 0;
+        if (m_scrollDirection == ScrollDirection::Vertical || 
+            m_scrollDirection == ScrollDirection::None) {
+          m_scrollVelocityVec.x = 0;
+        }
+        if (m_scrollDirection == ScrollDirection::Horizontal || 
+            m_scrollDirection == ScrollDirection::None) {
+          m_scrollVelocityVec.y = 0;
+        }
+        schedule(schedule_selector(ScrollContainer::applyInertia));
+        break;
       }
-      if (m_scrollDirection == ScrollDirection::Horizontal || 
-          m_scrollDirection == ScrollDirection::None) {
-        m_scrollVelocityVec.y = 0;
-      }
-      schedule(schedule_selector(ScrollContainer::applyInertia));
-      break;
-    }
     };
     return true;
   });
   return true;
-}
-
-void ScrollContainer::addChild(cocos2d::CCNode* child) {
-  addChild(child, 0);
-}
-
-void ScrollContainer::addChild(cocos2d::CCNode* child, int zOrder) {
-  addChild(child, zOrder, 0);
-}
-
-void ScrollContainer::addChild(cocos2d::CCNode* child, int zOrder, int tag) {
-  geode::log::warn(
-    "[ScrollContainer]: "
-    "As I only support 1 child in my entire lifetime (excluding the background and scrollbar), "
-    "please use `ScrollContainer::setScrollChild` to not make confusions for anyone reading the code."
-  );
-  setContent(child);
 }
 
 void ScrollContainer::setContent(cocos2d::CCNode* child) {
