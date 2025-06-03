@@ -82,6 +82,8 @@ class $modify(LoadingLayer) {
     LoadingLayer::loadAssets();
     if (lastStep) {
       s_replaceSceneDisabled = false;
+      cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
+
       auto g = gdlazer::game::OsuGame::get();
       cocos2d::CCDirector::get()->pushScene(g);
       if (!g_screenPushed) g->pushScreen(GDL_NS::IntroTriangles::create());

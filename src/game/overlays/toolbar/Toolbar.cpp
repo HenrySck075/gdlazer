@@ -46,6 +46,7 @@ bool Toolbar::init() {
   auto right = FillFlowContainer::create(FillDirection::Horizontal);
   right->setGap(0.5);
   right->addChild(ToolbarMusicButton::create());
+  right->addChild(ToolbarNativeSettingsButton::create());
   right->addChild(ToolbarGeodeButton::create());
   right->setAnchor(Anchor::Right);
   right->setAnchorPoint({1,0.5});

@@ -36,7 +36,6 @@ target_compile_definitions(geode-sdk INTERFACE GEODE_EXPOSE_SECRET_INTERNALS_IN_
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})
 
-#execute_process(COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/src/game/check_commit.py)
-if (0 AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copy_to_framework.py") 
-  execute_process(COMMAND python "${CMAKE_CURRENT_SOURCE_DIR}/copy_to_framework.py")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+  target_compile_definitions(${PROJECT_NAME} PUBLIC GDL_DEBUG)
 endif()

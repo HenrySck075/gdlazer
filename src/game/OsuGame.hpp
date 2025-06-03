@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../frameworks/Game.hpp"
+#include "../frameworks/graphics/sprites/CCResizableSprite.hpp"
 #include "overlays/toolbar/Toolbar.hpp"
 
 GDL_NS_START
@@ -16,6 +17,7 @@ public:
   bool doDispatchEvent(frameworks::Event* event, std::type_index type) override;
 private:
   geode::Ref<Toolbar> m_toolbar;
+  geode::Ref<frameworks::CCResizableSprite> m_cursor;
   void setMainContainerHeight(float height);
   bool doDEMidhook(frameworks::Event* event, std::type_index type) override;
 };

@@ -24,11 +24,12 @@ private:
   bool finishInit();
 public:
   static CCResizableSprite* create(); 
+  static CCResizableSprite* create(const char* spritePath);
   static CCResizableSprite* createWithTexture(CCTexture2D* texture);
   static CCResizableSprite* createWithSpriteFrameName(const char* frameName);
   bool initWithSpriteFrameName(const char* frameName);
   bool initWithTexture(CCTexture2D* texture);
-  bool init();
+  bool init(const char* spritePath);
   void setContentSize(CCSize const& size) override;
   void setWrappedSpriteScale(float scale) {
     m_wsscale = scale;

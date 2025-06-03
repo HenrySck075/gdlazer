@@ -2,7 +2,10 @@
 #include "../../../utils.hpp"
 GDF_NS_START
 CCResizableSprite* CCResizableSprite::create() {
-  $createClass(CCResizableSprite, init);
+  $createClass(CCResizableSprite, init, 0);
+}
+CCResizableSprite* CCResizableSprite::create(const char* pszSpritePath) {
+  $createClass(CCResizableSprite, init, pszSpritePath);
 }
 
 CCResizableSprite* CCResizableSprite::createWithSpriteFrameName(const char *pszSpriteFrameName)
@@ -13,9 +16,9 @@ CCResizableSprite* CCResizableSprite::createWithTexture(CCTexture2D* texture) {
   $createClass(CCResizableSprite, initWithTexture, texture);
 };
 
-bool CCResizableSprite::init() {
+bool CCResizableSprite::init(const char* spriteName) {
   CCNode::init();
-  m_sprite = CCSprite::create();
+  m_sprite = spriteName == 0 ? CCSprite::create() : CCSprite::create(spriteName);
   return finishInit();
 }
 

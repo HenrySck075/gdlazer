@@ -65,14 +65,17 @@
     },
     "files": [
       "resources/*.mp3",
-      "resources/sfx/**/*.wav",
-      "resources/sfx/Gameplay/pause-loop.mp3",
+      "resources/sfx/gameplay/*.wav",
+      "resources/sfx/menu/*.wav",
+      "resources/sfx/ui/*.wav",
+      "resources/sfx/gameplay/pause-loop.mp3",
       "resources/glyphs/*.fnt",
       "resources/glyphs/*.png",
       "resources/fonts/**/*.fnt",
       "resources/fonts/**/*.png",
       "resources/fonts/*.png",
-      "resources/torus/*.ttf"
+      "resources/torus/*.ttf",
+      "resources/textures/cursor/*.png"
     ]
   },
   "dependencies": {

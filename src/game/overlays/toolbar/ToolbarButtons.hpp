@@ -28,6 +28,12 @@ public:
 };
 
 
+class ToolbarNativeSettingsButton : public ToolbarButton {
+public:
+  bool init();
+  $defaultCreate(ToolbarNativeSettingsButton);
+};
+
 /// temporary impl
 class ToolbarGeodeButton : public ToolbarToggleButton {
   geode::Ref<ModsOverlay> m_modsLayer;

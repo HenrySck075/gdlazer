@@ -28,6 +28,10 @@ bool OsuGame::init() {
   if (!Game::init()) return false;
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar);
+  
+  addChild(m_cursor = frameworks::CCResizableSprite::create("menu-cursor.png"_spr), 99999);
+  m_cursor->setContentSize({10,442/(312/10.f)});
+  m_cursor->setAnchorPoint({0,1});
 
   m_everypence->setContentSize(m_everypence->getContentSize());
 
@@ -35,6 +39,24 @@ bool OsuGame::init() {
 }
 
 bool OsuGame::doDispatchEvent(frameworks::Event* event, std::type_index type) {
+  if (
+    type == typeid(frameworks::MouseEvent)
+  ) {
+    auto cure = static_cast<frameworks::MouseEvent*>(event);
+    if (cure->m_eventType == frameworks::MouseEventType::Move) {
+      m_cursor->setPosition({cure->m_position.x, cure->m_position.y});
+    }
+  }
+  /// Relaunch on Ctrl-R
+  #ifdef GDL_DEBUG
+  if (type == typeid(frameworks::KeyEvent)) {
+    auto ke = static_cast<frameworks::KeyEvent*>(event);
+    if (ke->m_pressed && ke->m_key == cocos2d::KEY_R && ke->m_modifiers.ctrl) {
+      geode::utils::game::restart();
+      return true;
+    }
+  }
+  #endif
   if (!Game::doDispatchEvent(event, type)) return false;
   if (type == typeid(frameworks::NodeLayoutUpdated)) {
     m_everypence->setContentSize({getContentWidth(), getContentHeight()-(m_toolbar->isOpen() ? ToolbarConstants::c_height : 0)});

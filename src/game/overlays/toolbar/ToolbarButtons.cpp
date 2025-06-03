@@ -68,6 +68,18 @@ void ToolbarMusicButton::deselect() {
 }
 
 
+bool ToolbarNativeSettingsButton::init() {
+  setID("native-settings");
+  addListener<MouseEvent>([this](MouseEvent* e) {
+    if (e->m_eventType == MouseEventType::Click && isMouseEntered()) {
+      // Open native settings
+      MenuLayer::get()->onOptions(nullptr);
+    }
+    return true;
+  });
+  return ToolbarButton::init(OsuIcon::Settings, "settings", "the", AxisAlignment::End);
+}
+
 /**
  * ToolbarGeodeButton
  */

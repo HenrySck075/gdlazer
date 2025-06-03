@@ -108,10 +108,12 @@ void ToolbarButton::setTooltipAlignment(AxisAlignment align) {
   case AxisAlignment::Start:
     m_tooltipContainer->setChildAnchor(Anchor::BottomLeft);
     m_tooltipContainer->setAnchorPoint({0, 1});
+    m_tooltipContainer->setPositionX(0); // ???
     break;
   case AxisAlignment::End:
     m_tooltipContainer->setChildAnchor(Anchor::BottomRight);
     m_tooltipContainer->setAnchorPoint({1, 1});
+    m_tooltipContainer->setPositionX(100,Unit::Percent); // ???
     break;
   default:
     log::info("[ToolbarButton]: not supported :(");
