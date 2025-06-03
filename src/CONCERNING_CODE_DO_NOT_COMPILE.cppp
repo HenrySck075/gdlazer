@@ -78,7 +78,7 @@ void replaceScene(cocos2d::CCDirector* self, cocos2d::CCScene* scene) {
   self->popScene();
 }
 
-$execute {
+$on_mod(Loaded) {
   auto mod = geode::Mod::get();
 
   hook = mod->hook(

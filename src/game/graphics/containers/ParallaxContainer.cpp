@@ -62,7 +62,7 @@ void ParallaxContainer::updateParallax(const CCPoint& cursorPos) {
 
 GDL_NS_END
 
-$execute{
+$on_mod(Loaded){
   listenForSettingChanges("parallax", +[](bool v){
     gdlazer::game::OsuGame::get()->dispatchEvent(new gdlazer::game::ParallaxStateUpdated(v));
   });
