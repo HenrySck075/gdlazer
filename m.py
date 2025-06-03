@@ -1,3 +1,5 @@
+"Converts a binary version of the BMFont data to the text version (solely for Cocos2d-x)"
+
 import sys, os
 
 fntfilepath = os.path.join(os.path.curdir,sys.argv[1])

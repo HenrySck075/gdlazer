@@ -8,6 +8,7 @@
 #include "../../bindables/Event.hpp"
 #include "../../../macro.h"
 #include "../../utils/homog2d.hpp"
+#include "../Vector4.hpp"
 
 /// Included for free
 #include "../../input/events/MouseEvent.hpp"
@@ -66,11 +67,19 @@ public:
   void setName(const std::string& containerName) { m_name = containerName; }
   const std::string& getName() const { return m_name; }
 
+  // Size setters
   void setContentSize(const cocos2d::CCSize &size, Unit unit);
   void setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit);
   void setContentSize(const cocos2d::CCSize &size) override;
+  // and its single-axis functions
+  void setContentWidth(float width, Unit unit);
+  void setContentWidth(float width); // only works if called directly with the Container type
+  void setContentHeight(float height, Unit unit);
+  void setContentHeight(float height); // only works if called directly with the Container type
+  // padding
+  void setPadding(const Vector4 &padding);
 
-  // Position setters with units
+  // Position setters
   void setPosition(cocos2d::CCPoint const& position) override;
   void setPosition(cocos2d::CCPoint const& position, Unit unit);
   void setPosition(cocos2d::CCPoint const& position, Unit hUnit, Unit vUnit);
@@ -119,8 +128,8 @@ protected:
   void updateClipping();
   void drawBorder();
   void visit() override;
-  virtual void updateSizeWithUnit();
-  void updatePositionWithUnit();
+  virtual void updateSize();
+  void updatePosition();
   void calculatePolygonVertPoints();
   void requestBoxUpdate();
 
@@ -147,6 +156,9 @@ private:
   float m_borderRadius = 0.0f;
   geode::Ref<cocos2d::CCLayerColor> m_backgroundNode;
   cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
+  /// As we have a copy of the size, this should be good enough.
+  /// Paddings are in UIKit size
+  Vector4 m_padding;
   cocos2d::CCSize m_size;
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
   cocos2d::CCPoint m_position;                                      friend class ContainerMoveTo;

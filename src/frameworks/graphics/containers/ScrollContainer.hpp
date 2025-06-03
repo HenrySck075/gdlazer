@@ -50,7 +50,7 @@ public:
   ScrollDirection getScrollDirection() const { return m_scrollDirection; }
     
 protected:
-  void updateSizeWithUnit() override;
+  void updateSize() override;
   void updatePosition();
   void applyInertia(float dt);
 

@@ -14,7 +14,7 @@ struct Dimension {
     /// This element has a size independent of the <see cref="GridContainer"/>.
     Absolute,
 
-    /// This element will be sized to the maximum size along its span.
+    /// This element will be sized to the maximum size (in code it's the node size at the time) along its span.
     AutoSize
   };
 
@@ -34,7 +34,7 @@ using DimensionVector = std::vector<Dimension>;
 
 class GridContainer : public Container {
 public:
-  static GridContainer* create(const DimensionVector& columns = {Dimension{}},
+  static GridContainer* create(const DimensionVector& columns = {},
                  const DimensionVector& rows = {},
                  float spacing = 5.0f);
   bool init(const DimensionVector& columns,
@@ -54,5 +54,6 @@ private:
   std::vector<std::vector<geode::Ref<Container>>> m_gridContent;
   DimensionVector m_columnDimensions;
   DimensionVector m_rowDimensions;
+  float m_gap;
 };
 GDF_NS_END

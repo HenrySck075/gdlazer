@@ -11,8 +11,8 @@ void Container::setMinSize(const cocos2d::CCSize &size) {
 }
 
 void Container::setMaxSize(const cocos2d::CCSize &size) {
-  assert(m_minSize.width >= 0 || size.width >= m_minSize.width);
-  assert(m_minSize.height >= 0 || size.height >= m_minSize.height);
+  assert(m_minSize.width >= 0 && size.width >= m_minSize.width);
+  assert(m_minSize.height >= 0 && size.height >= m_minSize.height);
   m_maxSize = size;
 }
 
@@ -118,7 +118,7 @@ bool Container::init() {
             m_lastDragOffset
           ));
           //mouseEvent->stopPropagation();
-        } else if (mouseEvent->m_clicked && isInBounds) {
+        } else if (m_touchEnabled && m_shouldSendClick && mouseEvent->m_clicked && isInBounds) {
           m_isDragging = true;
           dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
           //mouseEvent->stopPropagation();
@@ -159,8 +159,8 @@ fish:
   });
 
   this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
-    updateSizeWithUnit();
-    updatePositionWithUnit();
+    updateSize();
+    updatePosition();
     m_backgroundNode->setContentSize(getContentSize());
     return true;
   });
@@ -233,11 +233,12 @@ void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundNode->setColor({color.r,color.g,color.b});
   m_backgroundNode->setOpacity(getDisplayedOpacity()/255 * color.a);
 }
+
 void Container::setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit) {
   m_size = size;
   m_sizeUnit[0] = hUnit;
   m_sizeUnit[1] = vUnit;
-  updateSizeWithUnit();
+  updateSize();
 }
 void Container::setContentSize(const cocos2d::CCSize &size, Unit unit) {
   setContentSize(size, unit, unit);
@@ -253,12 +254,34 @@ void Container::setContentSize(const cocos2d::CCSize &size) {
   setContentSize(size, Unit::OpenGL, Unit::OpenGL);
   m_vfuncCallLoopBlock = false;
 };
+void Container::setContentWidth(float width, Unit unit) {
+  m_size.width = width;
+  m_sizeUnit[0] = unit;
+  updateSize();
+}
+void Container::setContentWidth(float width) {
+  setContentWidth(width, Unit::OpenGL);
+}
+void Container::setContentHeight(float height, Unit unit) {
+  m_size.height = height;
+  m_sizeUnit[1] = unit;
+  updateSize();
+}
+void Container::setContentHeight(float height) {
+  setContentHeight(height, Unit::OpenGL);
+}
+
+void Container::setPadding(const Vector4 &padding) {
+  m_padding = padding;
+  updateSize();
+  updatePosition();
+}
 
 void Container::setPosition(cocos2d::CCPoint const& position, Unit hUnit, Unit vUnit) {
   m_position = position;
   m_positionUnit[0] = hUnit;
   m_positionUnit[1] = vUnit;
-  updatePositionWithUnit();
+  updatePosition();
 }
 void Container::setPosition(cocos2d::CCPoint const& position, Unit unit) {
   setPosition(position, unit, unit);
@@ -269,7 +292,7 @@ void Container::setPosition(cocos2d::CCPoint const& position) {
 void Container::setPositionX(float x, Unit unit) {
   m_position.x = x;
   m_positionUnit[0] = unit;
-  updatePositionWithUnit();
+  updatePosition();
 }
 void Container::setPositionX(float x) {
   setPositionX(x, Unit::OpenGL);
@@ -277,7 +300,7 @@ void Container::setPositionX(float x) {
 void Container::setPositionY(float y, Unit unit) {
   m_position.y = y;
   m_positionUnit[1] = unit;
-  updatePositionWithUnit();
+  updatePosition();
 }
 void Container::setPositionY(float y) {
   setPositionY(y, Unit::OpenGL);
@@ -288,9 +311,9 @@ void Container::setParent(cocos2d::CCNode *parent) {
   dispatchEvent(new NodeLayoutUpdated(parent));
 }
 
-void Container::updateSizeWithUnit() {
-  float width = m_size.width,
-  height = m_size.height;
+void Container::updateSize() {
+  float width = m_size.width;
+  float height = m_size.height;
   
   #define $applyConstraint(edge, isWidth) \
   if (m_minSize.edge >= 0) { \
@@ -304,10 +327,10 @@ void Container::updateSizeWithUnit() {
   $applyConstraint(height, false);
   #undef $applyConstraint
 
-  cocos2d::CCNode::setContentSize(cocos2d::CCSize(
-    processUnit(width, m_sizeUnit[0], true),
-    processUnit(height, m_sizeUnit[1], false)
-  ));
+  cocos2d::CCNode::setContentSize({
+    processUnit(width, m_sizeUnit[0], true) - processUnit(m_padding.l + m_padding.r, Unit::UIKit, true),
+    processUnit(height, m_sizeUnit[1], false) - processUnit(m_padding.t + m_padding.d, Unit::UIKit, false)
+  });
   m_containerBoxDesynced = true;
 }
 
@@ -322,7 +345,7 @@ static bool isRightAnchor(geode::Anchor anchor) {
          anchor == geode::Anchor::BottomRight;
 }
 
-void Container::updatePositionWithUnit() {
+void Container::updatePosition() {
   cocos2d::CCPoint unanchoredPos {
     processUnit(m_position.x*(isRightAnchor(m_anchor)?-1:1), m_positionUnit[0], true),
     processUnit(m_position.y*(isTopAnchor(m_anchor)?-1:1), m_positionUnit[1], false)
@@ -546,35 +569,49 @@ void Container::setRotation(float rotation) {
 }
 
 cocos2d::CCPoint Container::calculateAnchoredPosition(
-    const cocos2d::CCPoint &position) {
+  const cocos2d::CCPoint &position) {
   using namespace geode;
   auto size = getParent() ? getParent()->getContentSize() : CCSize{0,0};
+  // Add padding from m_padding
+
+  // As each of the padding size is only used once, we can use a macro
+  // to limit the amount of calculations it has to do to whatever used
+  // (re gamers wont like this)
+  // , although it will still be calculated twice
+  #define padL processUnit(m_padding.l, Unit::UIKit, true)
+  #define padT processUnit(m_padding.t, Unit::UIKit, false)
+  #define padR processUnit(m_padding.r, Unit::UIKit, true)
+  #define padD processUnit(m_padding.d, Unit::UIKit, false)
   switch (m_anchor) {
-  case Anchor::Center:
-    return {position.x + size.width / 2, position.y + size.height / 2};
-  case Anchor::TopLeft:
-    return {position.x, position.y + size.height};
-  case Anchor::Top:
-    return {position.x + size.width / 2, position.y + size.height};
-  case Anchor::TopRight:
-    return {position.x + size.width, position.y + size.height};
-  case Anchor::Right:
-    return {position.x + size.width, position.y + size.height / 2};
-  case Anchor::BottomRight:
-    return {position.x + size.width, position.y};
-  case Anchor::Bottom:
-    return {position.x + size.width / 2, position.y};
-  case Anchor::Left:
-    return {position.x, position.y + size.height / 2};
-  case Anchor::BottomLeft:
-  default:
-    return position;
+    case Anchor::Center:
+      return {position.x + size.width / 2 + (padL - padR) / 2, position.y + size.height / 2 + (padT - padD) / 2};
+    case Anchor::TopLeft:
+      return {position.x + padL, position.y + size.height - padT};
+    case Anchor::Top:
+      return {position.x + size.width / 2 + (padL - padR) / 2, position.y + size.height - padT};
+    case Anchor::TopRight:
+      return {position.x + size.width - padR, position.y + size.height - padT};
+    case Anchor::Right:
+      return {position.x + size.width - padR, position.y + size.height / 2 + (padT - padD) / 2};
+    case Anchor::BottomRight:
+      return {position.x + size.width - padR, position.y + padD};
+    case Anchor::Bottom:
+      return {position.x + size.width / 2 + (padL - padR) / 2, position.y + padD};
+    case Anchor::Left:
+      return {position.x + padL, position.y + size.height / 2 + (padT - padD) / 2};
+    case Anchor::BottomLeft:
+    default:
+      return {position.x + padL, position.y + padD};
   }
+  #undef padL
+  #undef padT
+  #undef padR
+  #undef padD
 }
 void Container::setAnchor(geode::Anchor anchor) {
   m_anchor = anchor;
   setUserObject("gdlazer/devtools/anchor", cocos2d::CCInteger::create((int)anchor));
-  updatePositionWithUnit();
+  updatePosition();
 }
 void Container::updateDisplayedOpacity(GLubyte parentOpacity) {
   CCClippingNodeRGBA::updateDisplayedOpacity(parentOpacity);

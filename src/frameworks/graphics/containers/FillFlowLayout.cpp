@@ -55,7 +55,7 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
         callback(child);
       }
     }
-    if (getAutoGrowAxis().has_value()) on->cocos2d::CCNode::setContentSize({currentPos, maxCrossAxisSize});
+    if (getAutoGrowAxis().has_value()) container->setContentSize({currentPos, maxCrossAxisSize});
   } else {
     auto callback = [&](CCNode* child) {
       child->setAnchorPoint(anchorPoint);
@@ -79,7 +79,7 @@ void FillFlowLayout::apply(cocos2d::CCNode* on) {
         callback(child);
       }
     }
-    if (getAutoGrowAxis().has_value()) on->cocos2d::CCNode::setContentSize({maxCrossAxisSize, currentPos});
+    if (getAutoGrowAxis().has_value()) container->setContentSize({maxCrossAxisSize, currentPos});
   }
   container->updateContainerBox();
 }

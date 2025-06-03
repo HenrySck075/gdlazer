@@ -15,37 +15,39 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
 
   setCascadeOpacityEnabled(false);
 
-  bg = Container::create();
-  bg->setContentSize({92,92}, Unit::Percent);
-  bg->setAnchor(Anchor::Center); bg->setAnchorPoint({0.5,0.5});
-  bg->setBorderRadius(4);
-  bg->setClippingEnabled(true);
+  m_bg = Container::create();
+  m_bg->setContentSize({92,92}, Unit::Percent);
+  m_bg->setAnchor(Anchor::Center); m_bg->setAnchorPoint({0.5,0.5});
+  m_bg->setBorderRadius(4);
+  m_bg->setClippingEnabled(true);
   //bg->updateContainerBox(true);
-  bg->setBackgroundColor(OsuColor::Gray(80).opacity(0));
-  bg->setOpacity(255);
+  m_bg->setBackgroundColor(OsuColor::Gray(80).opacity(0));
+  m_bg->setOpacity(255);
 
-  flashBg = Container::create();
-  flashBg->setContentSize({92,92}, Unit::Percent);
-  flashBg->setAnchor(Anchor::Center); flashBg->setAnchorPoint({0.5,0.5});
-  flashBg->setBorderRadius(4);
-  flashBg->setClippingEnabled(true);
+  m_flashBg = Container::create();
+  m_flashBg->setContentSize({92,92}, Unit::Percent);
+  m_flashBg->setAnchor(Anchor::Center); m_flashBg->setAnchorPoint({0.5,0.5});
+  m_flashBg->setBorderRadius(4);
+  m_flashBg->setClippingEnabled(true);
   //flashBg->updateContainerBox(true);
-  flashBg->setBackgroundColor(Color4::White.opacity(0));
-  flashBg->setOpacity(255);
+  m_flashBg->setBackgroundColor(Color4::White.opacity(0));
+  m_flashBg->setOpacity(255);
 
-  addChild(bg,-7);
-  addChild(flashBg, -6);
+  addChild(m_bg,-7);
+  addChild(m_flashBg, -6);
 
-  tooltipContainer = CCLayerRGBA::create();
-  tooltipContainer->setAnchorPoint({
+  m_tooltipContainer = FillFlowContainer::create(FillDirection::Vertical);
+  m_tooltipContainer->setGap(2);
+  m_tooltipContainer->setAnchorPoint({
     (float)(int)(tooltipAlignment==AxisAlignment::End),
     1 
   });
-  tooltipContainer->setContentHeight(ToolbarConstants::c_tooltipHeight);
-  text = OsuText::create(label.c_str(), FontType::Bold, 10);
-  subtext = OsuText::create(sub.c_str(), FontType::Regular, 10);
-  tooltipContainer->addChild(text);
-  tooltipContainer->addChild(subtext);
+  m_tooltipContainer->setContentHeight(ToolbarConstants::c_tooltipHeight);
+  m_text = OsuText::create(label.c_str(), FontType::Bold, 8);
+  m_subtext = OsuText::create(sub.c_str(), FontType::Regular, 8);
+  m_tooltipContainer->addChild(m_subtext);
+  m_tooltipContainer->addChild(m_text);
+  /*
   tooltipContainer->setLayout(
     ColumnLayout::create()
     ->setGap(2)
@@ -53,16 +55,18 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     ->setAxisReverse(true)
     ->setCrossAxisLineAlignment(tooltipAlignment)
   );
-  tooltipContainer->setCascadeOpacityEnabled(true);
-  tooltipContainer->setOpacity(0);
-  addChild(tooltipContainer);
+  */
+  m_tooltipContainer->setCascadeOpacityEnabled(true);
+  m_tooltipContainer->setOpacity(0);
+  addChild(m_tooltipContainer);
+  m_tooltipContainer->updateLayout();
 
-  iconSprite = icon;
-  iconSprite->setScale(0.3);
+  m_iconSprite = icon;
+  m_iconSprite->setScale(0.3);
   addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
-    iconSprite->setPosition(CCNode::getContentSize()/2);
-    if (static_cast<AxisLayout*>(tooltipContainer->getLayout())->getCrossAxisLineAlignment()==AxisAlignment::End) {
-      tooltipContainer->setPosition({CCNode::getContentSize().width,0});
+    m_iconSprite->setPosition(CCNode::getContentSize()/2);
+    if (static_cast<AxisLayout*>(m_tooltipContainer->getLayout())->getCrossAxisLineAlignment()==AxisAlignment::End) {
+      m_tooltipContainer->setPosition({CCNode::getContentSize().width,0});
     }
     return true;
   });
@@ -71,19 +75,19 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     switch (e->m_eventType) {
       case MouseEventType::Enter:
         log::debug("[ToolbarButton]: event id {}", (int)(e->m_eventType));
-        bg->stopAllActions();
-        bg->runAction(ContainerTintOpacityTo::create(0.2, 180));
-        tooltipContainer->stopAllActions();
-        tooltipContainer->runAction(CCFadeTo::create(0.2, 255));
+        m_bg->stopAllActions();
+        m_bg->runAction(ContainerTintOpacityTo::create(0.2, 180));
+        m_tooltipContainer->stopAllActions();
+        m_tooltipContainer->runAction(CCFadeTo::create(0.2, 255));
         break;
       case MouseEventType::Exit:
-        bg->stopAllActions();
-        bg->runAction(ContainerTintOpacityTo::create(0.2, 0));
-        tooltipContainer->stopAllActions();
-        tooltipContainer->runAction(CCFadeTo::create(0.2, 0));
+        m_bg->stopAllActions();
+        m_bg->runAction(ContainerTintOpacityTo::create(0.2, 0));
+        m_tooltipContainer->stopAllActions();
+        m_tooltipContainer->runAction(CCFadeTo::create(0.2, 0));
         break;
       case MouseEventType::Click:
-        flashBg->runAction(CCSequence::createWithTwoActions(
+        m_flashBg->runAction(CCSequence::createWithTwoActions(
           ContainerTintOpacityTo::create(0.05,100),
           ContainerTintOpacityTo::create(0.8,0)
         ));
@@ -92,9 +96,25 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   });
   
   setContentSize({c_height,c_height},Unit::UIKit,Unit::UIKit);
-  addChild(iconSprite);
+  addChild(m_iconSprite);
 
   return true;
 }
 
+void ToolbarButton::setTooltipAlignment(AxisAlignment align) {
+  // static_cast<RowLayout*>(m_tooltipContainer->getLayout())->setAxisAlignment(align);
+  switch (align) {
+  case AxisAlignment::Start:
+    m_tooltipContainer->setChildAnchor(Anchor::BottomLeft);
+    m_tooltipContainer->setAnchorPoint({0, 1});
+    break;
+  case AxisAlignment::End:
+    m_tooltipContainer->setChildAnchor(Anchor::BottomRight);
+    m_tooltipContainer->setAnchorPoint({1, 1});
+    break;
+  default:
+    log::info("[ToolbarButton]: not supported :(");
+  }
+  m_tooltipContainer->updateLayout();
+}
 GDL_NS_END

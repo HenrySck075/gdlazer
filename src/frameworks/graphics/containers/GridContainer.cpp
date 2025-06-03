@@ -18,6 +18,7 @@ bool GridContainer::init(const DimensionVector& columns,
   return true;
 }
 void GridContainer::setGap(float spacing) {
+  m_gap = spacing;
 }
 
 void GridContainer::addChildAtCell(int row, int column, Container* child) {
@@ -41,7 +42,7 @@ std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLen
     return std::max(one, (int)two.size());
   });
   int cellRows = m_gridContent.size();
-  log::debug("[GridContainer]: querying cell sizes along the {} axis ({} {})", xAxis ? 'x' : 'y', cellColumns, cellRows);
+  log::debug("[GridContainer]: querying cell sizes along the {} axis ({} {} {})", xAxis ? 'x' : 'y', cellColumns, cellRows, sdlen);
   int spanCount = xAxis ? cellColumns : cellRows;
 
   std::vector<float> sizes(spanCount, 0);
@@ -49,6 +50,7 @@ std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLen
     auto dim = dimensions[i];
 #define $unity(val) processUnit(val, Unit::UIKit, xAxis)
     float dimsize = $unity(dim.size);
+    float gapAlloc =  m_gap /* * ((i == 0 || i == sdlen || i == spanCount) ? 1 : 2)*/;
     switch (dim.mode) {
       case Dimension::Mode::Distributed:
         sizes[i] = spanLength / sdlen;
@@ -66,17 +68,15 @@ std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLen
           // Go through each row and get the width of the cell at the indexed column
           for (int r = 0; r < cellRows; r++) {
             auto cell = tryGetCell(r,i);
-            if (!cell) continue;
-
-            size = std::max(size, cell->getContentSize().width);
+            if (cell)
+              size = std::max(size, cell->getContentSize().width);
           }
         } else {
           // Go through each column and get the height of the cell at the indexed row
           for (int c = 0; c < cellColumns; c++) {
             auto cell = tryGetCell(i,c);
-            if (!cell) continue;
-
-            size = std::max(size, cell->getContentSize().height);
+            if (cell)
+              size = std::max(size, cell->getContentSize().height);
           }
         }
 
@@ -96,6 +96,9 @@ std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLen
 /// I'm not sure how does this even work
 std::vector<float> GridContainer::distributeAlongAxis(Axes axis, float spanLength, std::vector<float> cellSizes) {
   return cellSizes;
+
+  /// Everything after this is unused
+
   const DimensionVector& dimensions = axis == Axes::X ? m_columnDimensions : m_rowDimensions;
 
   // Indices of all distributed cells
@@ -184,10 +187,10 @@ void GridContainer::updateLayout() {
 
       float x = 0, y = 0;
       if (row > 0)
-        y = tryGetCell(row - 1, col)->getPositionY() + tryGetCell(row - 1, col)->getContentHeight();
+        y = tryGetCell(row - 1, col)->getPositionY() + tryGetCell(row - 1, col)->getContentHeight() + m_gap;
 
       if (col > 0)
-        x = tryGetCell(row, col - 1)->getPositionX() + tryGetCell(row, col - 1)->getContentWidth();
+        x = tryGetCell(row, col - 1)->getPositionX() + tryGetCell(row, col - 1)->getContentWidth() + m_gap;
       
       cell->setPosition({x,y});
       //cell->setAnchor(Anchor::TopLeft);
@@ -199,8 +202,17 @@ void GridContainer::updateLayout() {
       );
     }
   }
-
   setContentSize(contentSize);
+  
+  /// Loop through them one more time to reanchor the cells
+  for (auto& gridRow : m_gridContent) {
+    for (auto& cell : gridRow) {
+      if (!cell) continue;
+      cell->setAnchor(Anchor::TopLeft);
+      cell->setAnchorPoint({0,1});
+    }
+  }
+
 }
 
 geode::Ref<Container> g_dummyContainer;

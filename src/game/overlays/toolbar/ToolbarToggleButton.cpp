@@ -9,10 +9,12 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
   ToolbarButton::init(icon, text, sub, align);
   // since ToolbarToggleButton is actually ToolbarOverlayToggleButton, why not?
   addListener<OverlayEvent>([this,overlayName](OverlayEvent* ev){
-    if (ev->getEventType() == OverlayEvent::Type::Popin && ev->getOverlay()->getName() == overlayName) {
-      ToolbarToggleButton::select();
-    } else {
-      ToolbarToggleButton::deselect();
+    if (ev->getOverlay()->getName() == overlayName) {
+      if (ev->getEventType() == OverlayEvent::Type::Popin) {
+        ToolbarToggleButton::select();
+      } else {
+        ToolbarToggleButton::deselect();
+      }
     }
     return true;
   });

@@ -38,7 +38,7 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   auto bg = Container::create();
   bg->setContentSize({HEIGHT+CORNER_RADIUS*2, HEIGHT},Unit::UIKit);
   bg->setBorderRadius(CORNER_RADIUS/2);
-  bg->setColor(provider->Background1());
+  bg->setBackgroundColor(provider->Background2());
   bg->setClippingEnabled(true);
   addChild(bg);
   
@@ -49,9 +49,17 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   metaContainer->setPosition({HEIGHT, 0},Unit::UIKit);
   metaContainer->setBorderRadius(CORNER_RADIUS);
   metaContainer->setClippingEnabled(true);
-  metaContainer->setBackgroundColor(provider->Background2());
-  metaContainer->addChild($verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 10)));
-  metaContainer->addChild($verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 7)));
+  metaContainer->setBackgroundColor(provider->Background3());
+  {
+    auto t = $verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 10));
+    t->setPadding({0,0,CORNER_RADIUS,0});
+    metaContainer->addChild(t);
+  }
+  {
+    auto t = $verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 7));
+    t->setPadding({0,0,CORNER_RADIUS,0});
+    metaContainer->addChild(t);
+  }
   addChild(metaContainer);
   metaContainer->setGap(2);
   metaContainer->setAutoGrowAxis(false);

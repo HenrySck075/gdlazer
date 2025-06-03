@@ -10,6 +10,7 @@ class FillFlowContainer : public Container {
 public:
     static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
     bool init(FillDirection direction, geode::Anchor anchor);
+    void setChildAnchor(geode::Anchor anchor);
     void setGap(float gap);
     float getGap();
     void setAxisReverse(bool axisReverse);

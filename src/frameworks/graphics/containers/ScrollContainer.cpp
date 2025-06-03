@@ -24,7 +24,7 @@ bool ScrollContainer::init(Container* content) {
     return true;
   });
   this->addListener<MouseDragEvent>([this](MouseDragEvent* event){
-    log::debug("[ScrollContainer]: eid: {}", (int)(event->m_type));
+    //log::debug("[ScrollContainer]: eid: {}", (int)(event->m_type));
     switch (event->m_type) {
       case MouseDragEventType::Start: {
         m_scrollVelocityVec = cocos2d::CCPoint{0,0};
@@ -93,8 +93,8 @@ void ScrollContainer::resizeToChildSize() {
   }
 };
 
-void ScrollContainer::updateSizeWithUnit() {
-  Container::updateSizeWithUnit();
+void ScrollContainer::updateSize() {
+  Container::updateSize();
   if (m_content) {
     updatePosition();
   }
@@ -144,17 +144,26 @@ void ScrollContainer::applyInertia(float dt) {
     if (m_scrollVelocityVec == cocos2d::CCPoint{0,0}) {
       if (oob) {
         cocos2d::CCPoint dist{0,0};
-        if (contentPos.x < 0) {
-          dist.x = -contentPos.x;
-        } else if (leftBoundsR) {
-          dist.x = -(contentPos.x + contentSize.width - thisContentSize.width);
+        if ((m_scrollDirection == ScrollDirection::Horizontal || 
+            m_scrollDirection == ScrollDirection::Both)) {
+          if (leftBoundsL) {
+            dist.x = -contentPos.x;
+            log::debug("[ScrollContainer]: Scroll OOB on the left side");
+          } else if (leftBoundsR) {
+            dist.x = -(contentPos.x + contentSize.width - thisContentSize.width);
+            log::debug("[ScrollContainer]: Scroll OOB on the right side");
+          }
         }
-        if (contentPos.y < 0) {
-          dist.y = -contentPos.y;
-        } else if (leftBoundsB) {
-          dist.y = -(contentPos.y + contentSize.height - thisContentSize.height);
+        if ((m_scrollDirection == ScrollDirection::Vertical || 
+            m_scrollDirection == ScrollDirection::Both)) {
+          if (leftBoundsT) {
+            dist.y = -(contentPos.y + contentSize.height - thisContentSize.height);
+            log::debug("[ScrollContainer]: Scroll OOB on the top side");
+          } else if (leftBoundsB) {
+            dist.y = -contentPos.y;
+            log::debug("[ScrollContainer]: Scroll OOB on the bottom side");
+          }
         }
-
         scrollBy(dist, true);
         m_returningInBounds = true;
       }

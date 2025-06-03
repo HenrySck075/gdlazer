@@ -27,5 +27,7 @@ void FillFlowContainer::setAxisReverse(bool axisReverse) {
 void FillFlowContainer::setAutoGrowAxis(bool enable) {
     m_layout->setAutoGrowAxis(enable ? std::make_optional(7) : std::nullopt);
 };
-
+void FillFlowContainer::setChildAnchor(geode::Anchor anchor) {
+    m_layout->setAnchor(anchor);
+}
 GDF_NS_END

@@ -127,6 +127,7 @@ void WaveContainer::onOpen() {
       m_pos3 = m_wave3->getPositionY();
       m_wave4 = createWave(tw/2,k, c_angle4, m_provider->Dark3());
       m_pos4 = m_wave4->getPositionY();
+      m_main->setPositionY(m_pos4);
 
       addChild(m_wave1);
       addChild(m_wave2);
@@ -158,7 +159,7 @@ void WaveContainer::onClose() {
   j(2);
   j(3);
   j(4);
-  m_main->runAction(CCEaseSineIn::create(ContainerMoveTo::create(disappearDuration, {0,0})));
+  m_main->runAction(CCEaseSineIn::create(ContainerMoveTo::create(disappearDuration, {0,m_pos4-15})));
   runAction(CCSequence::createWithTwoActions( 
       ContainerTintOpacityTo::create(0.1f,0),
       CCDelayTime::create(disappearDuration)

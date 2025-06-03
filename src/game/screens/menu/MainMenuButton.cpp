@@ -30,9 +30,8 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   m_icon->setScale(0.62);
   m_body->addChild(m_icon);
   
-  m_label = OsuText::create(text.c_str(), FontType::Regular);
+  m_label = OsuText::create(text.c_str(), FontType::Regular, 5);
   if (m_label == nullptr) return false;
-  m_label->setScale(0.4);
   m_body->addChild(m_label);
 
   m_body->updateLayout();
