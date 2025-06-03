@@ -29,7 +29,7 @@ bool Toolbar::init() {
   addChild(gradient);
 
   auto left = FillFlowContainer::create(FillDirection::Horizontal);
-  left->setGap(2);
+  left->setGap(0.5);
   left->addChild($verifyPtr(ToolbarSettingsButton::create()));
   left->addChild($verifyPtr(ToolbarHomeButton::create()));
   left->setAnchor(Anchor::Left);
@@ -44,7 +44,7 @@ bool Toolbar::init() {
   });
 
   auto right = FillFlowContainer::create(FillDirection::Horizontal);
-  right->setGap(1);
+  right->setGap(0.5);
   right->addChild(ToolbarMusicButton::create());
   right->addChild(ToolbarGeodeButton::create());
   right->setAnchor(Anchor::Right);

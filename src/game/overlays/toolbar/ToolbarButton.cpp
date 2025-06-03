@@ -56,6 +56,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     ->setCrossAxisLineAlignment(tooltipAlignment)
   );
   */
+  setTooltipAlignment(tooltipAlignment);
   m_tooltipContainer->setCascadeOpacityEnabled(true);
   m_tooltipContainer->setOpacity(0);
   addChild(m_tooltipContainer);

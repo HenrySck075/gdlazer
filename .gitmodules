@@ -1,0 +1,3 @@
+[submodule "resources/upstream"]
+	path = resources/upstream
+	url = https://github.com/ppy/osu-resources
