@@ -39,19 +39,19 @@ bool SettingsPanel::init() {
 void SettingsPanel::onOpen() {
   stopAllActions();
   m_sidebar->stopAllActions();
-  m_sidebar->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::c_transitionLength,{0,0}),5
+  m_sidebar->runAction(frameworks::ActionEase::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength,{0,0}), Easing::OutQuint
   ));
-  m_mainPanel->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::c_transitionLength,{SettingsSidebar::c_expandedWidth,0}),5
+  m_mainPanel->runAction(frameworks::ActionEase::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength,{SettingsSidebar::c_expandedWidth,0}), Easing::OutQuint
   ));
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   if (s->getActionByTag(7)) s->stopActionByTag(7);
-  s->runAction(easingsActions::CCEaseOut::create(
+  s->runAction(frameworks::ActionEase::create(
     CCMoveTo::create(
       SettingsPanel::c_transitionLength, 
       {(float)SettingsSidebar::c_expandedWidth/4,0}
-    ),5
+    ), Easing::OutQuint
   ))->setTag(7);
 }
 void SettingsPanel::onClose() {
@@ -60,20 +60,20 @@ void SettingsPanel::onClose() {
   runAction(
     CCDelayTime::create(SettingsPanel::c_transitionLength)
   );
-  m_sidebar->runAction(easingsActions::CCEaseOut::create(
+  m_sidebar->runAction(frameworks::ActionEase::create(
     CCMoveTo::create(
       SettingsPanel::c_transitionLength,
       {-SettingsSidebar::c_expandedWidth,0}
-    ),5
+    ), Easing::OutQuint
   ));
-  m_mainPanel->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::c_transitionLength,{-c_panelWidth,0}),5
+  m_mainPanel->runAction(frameworks::ActionEase::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength,{-c_panelWidth,0}), Easing::OutQuint
   ));
 
   auto s = OsuGame::get()->getChildByIDRecursive("screens");
   s->stopActionByTag(7);
-  s->runAction(easingsActions::CCEaseOut::create(
-    CCMoveTo::create(SettingsPanel::c_transitionLength, {0,0}),5
+  s->runAction(frameworks::ActionEase::create(
+    CCMoveTo::create(SettingsPanel::c_transitionLength, {0,0}), Easing::OutQuint
   ))->setTag(7);
 }
 

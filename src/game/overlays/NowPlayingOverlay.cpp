@@ -23,8 +23,8 @@ void NowPlayingOverlay::onOpen() {
   m_main->stopAllActions();
   m_main->runAction(
     CCSpawn::createWithTwoActions(
-      easingsActions::CCEaseElasticOut::create(CCScaleTo::create(c_transitionLength, 1)),
-      easingsActions::CCEaseOut::create(CCFadeTo::create(c_transitionLength, 255),5)
+      frameworks::ActionEase::create(CCScaleTo::create(c_transitionLength, 1), Easing::OutElastic),
+      frameworks::ActionEase::create(CCFadeTo::create(c_transitionLength, 255),Easing::OutQuint)
     )
   );
 };
@@ -33,8 +33,8 @@ void NowPlayingOverlay::onClose() {
   m_main->stopAllActions();
   m_main->runAction(
     CCSpawn::createWithTwoActions(
-      easingsActions::CCEaseElasticOut::create(CCScaleTo::create(c_transitionLength, 0.9)),
-      easingsActions::CCEaseOut::create(CCFadeTo::create(c_transitionLength, 0),5)
+      frameworks::ActionEase::create(CCScaleTo::create(c_transitionLength, 0.9), Easing::OutElastic),
+      frameworks::ActionEase::create(CCFadeTo::create(c_transitionLength, 0), Easing::OutQuint)
     )
   );
   runAction(CCDelayTime::create(c_transitionLength));

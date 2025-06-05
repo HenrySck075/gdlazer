@@ -8,26 +8,96 @@ FillFlowContainer* FillFlowContainer::create(FillDirection direction, geode::Anc
 bool FillFlowContainer::init(FillDirection direction, geode::Anchor anchor) {
     if (!Container::init()) return false;
     
-    m_layout = FillFlowLayout::create(direction, anchor);
-    m_layout->setGap(5.0f); // default gap
-    this->setLayout(m_layout);
-    setAutoGrowAxis(true);
+    m_direction = direction;
+    m_anchor = anchor;
     
     return true;
 }
 void FillFlowContainer::setGap(float gap) {
-    m_layout->setGap(gap);
+    m_gap = gap;
 }
 float FillFlowContainer::getGap() {
-    return m_layout->getGap();
+    return m_gap;
 }
 void FillFlowContainer::setAxisReverse(bool axisReverse) {
-    m_layout->setAxisReverse(axisReverse);
+    m_axisReverse = axisReverse;
 }
-void FillFlowContainer::setAutoGrowAxis(bool enable) {
-    m_layout->setAutoGrowAxis(enable ? std::make_optional(7) : std::nullopt);
+void FillFlowContainer::setAutoResize(bool enable) {
+    m_autoResize = enable;
 };
 void FillFlowContainer::setChildAnchor(geode::Anchor anchor) {
-    m_layout->setAnchor(anchor);
+    m_anchor = anchor;
+}
+
+CCPoint getAnchorPointFromAnchor(geode::Anchor anchor) {
+  switch (anchor) {
+    case geode::Anchor::TopLeft: return {0, 1};
+    case geode::Anchor::Top: return {0.5f, 1};
+    case geode::Anchor::TopRight: return {1, 1};
+    case geode::Anchor::Right: return {1, 0.5f};
+    case geode::Anchor::BottomRight: return {1, 0};
+    case geode::Anchor::Bottom: return {0.5f, 0};
+    case geode::Anchor::BottomLeft: return {0, 0};
+    case geode::Anchor::Left: return {0, 0.5f};
+    default: return {0, 0}; // Anchor::Center
+  }
+}
+void FillFlowContainer::updateLayout() {
+  float currentPos = 0;
+  float maxCrossAxisSize = 0;
+  auto children = geode::cocos::CCArrayExt<cocos2d::CCNode>(this->getChildren());
+
+  auto anchorPoint = getAnchorPointFromAnchor(m_anchor);
+
+  if (m_direction == FillDirection::Horizontal) {
+    auto callback = [&](CCNode* child) {
+      child->setAnchorPoint(anchorPoint);
+      Container* e = geode::cast::typeinfo_cast<Container*>(child);
+      if (!e) return;
+      e->setPositionX(currentPos);
+      e->setAnchor(m_anchor);
+      e->updateContainerBox();
+      currentPos += child->getContentSize().width + getGap();
+      maxCrossAxisSize = std::max(child->getContentSize().height, maxCrossAxisSize);
+    };
+    if (m_axisReverse) {
+      auto iter = children.rbegin();
+      auto end = children.rend();
+      for (;iter != end; iter++) {
+        auto child = *iter;
+        callback(child);
+      }
+    } else {
+      for (auto child : children) {
+        callback(child);
+      }
+    }
+    if (m_autoResize) this->setContentSize({currentPos, maxCrossAxisSize});
+  } else {
+    auto callback = [&](CCNode* child) {
+      child->setAnchorPoint(anchorPoint);
+      Container* e = geode::cast::typeinfo_cast<Container*>(child);
+      if (!e) return;
+      e->setPositionY(currentPos);
+      e->setAnchor(m_anchor);
+      e->updateContainerBox();
+      currentPos += child->getContentSize().height + getGap();
+      maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
+    };
+    if (getAxisReverse()) {
+      auto iter = children.rbegin();
+      auto end = children.rend();
+      for (;iter != end; iter++) {
+        auto child = *iter;
+        callback(child);
+      }
+    } else {
+      for (auto child : children) {
+        callback(child);
+      }
+    }
+    if (m_autoResize) this->setContentSize({maxCrossAxisSize, currentPos});
+  }
+  this->updateContainerBox();
 }
 GDF_NS_END

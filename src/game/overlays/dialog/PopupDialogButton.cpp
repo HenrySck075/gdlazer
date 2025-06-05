@@ -53,7 +53,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   m_grimace = CCNodeRGBA::create();
   m_grimace->setOpacity(0);
   
-  $verifyPtr(ClickableContainer::initWithCallback(clickSfx, clickCb, true));
+  if (!ClickableContainer::initWithCallback(clickSfx, clickCb, true)) return false;
 
   addListener<MouseEvent>([this, dialogBg](MouseEvent* e){
     float height = getContentHeight();
@@ -61,16 +61,16 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
       case MouseEventType::Enter: {
         FMODAudioEngine::sharedEngine()->playEffect("default-hover.wav"_spr);
         dialogBg->runAction(
-          easingsActions::CCEaseOut::create(
+          frameworks::ActionEase::create(
             CCResizeTo::create(
               0.1f,
               m_pParent->getParent()->getContentWidth()*c_hoverWidth, 
               height
             ),
-            5
+            Easing::OutQuint
           )
         );
-        #define gradAct easingsActions::CCEaseOut::create(CCFadeIn::create(0.1f),5)
+        #define gradAct frameworks::ActionEase::create(CCFadeIn::create(0.1f), Easing::OutQuint)
         m_gradLeft->runAction(gradAct);
         m_gradRight->runAction(gradAct);
         m_grimace->runAction(gradAct);
@@ -80,16 +80,16 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
       
       case MouseEventType::Exit: {
         dialogBg->runAction(
-          easingsActions::CCEaseOut::create(
+          frameworks::ActionEase::create(
             CCResizeTo::create(
               0.1f, 
               m_pParent->getParent()->getContentWidth()*c_idleWidth,
               height
             ),
-            5
+            Easing::OutQuint
           )
         );
-        #define gradAct easingsActions::CCEaseOut::create(CCFadeOut::create(0.1f),5)
+        #define gradAct frameworks::ActionEase::create(CCFadeOut::create(0.1f), Easing::OutQuint)
         m_gradLeft->runAction(gradAct);
         m_gradRight->runAction(gradAct);
         m_grimace->runAction(gradAct);
@@ -99,13 +99,13 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
 
       case MouseEventType::MouseDown: {
         dialogBg->runAction(
-          easingsActions::CCEaseOut::create(
+          frameworks::ActionEase::create(
             CCResizeTo::create(
               c_clickDuration*4, 
               m_pParent->getParent()->getContentWidth()*c_hoverWidth*0.98f,
               height
             ),
-            4
+            Easing::OutQuad
           )
         );
         break;
@@ -113,13 +113,13 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
 
       case MouseEventType::MouseUp: {
         dialogBg->runAction(
-          CCEaseIn::create(
+          frameworks::ActionEase::create(
             CCResizeTo::create(
               c_clickDuration, 
               m_pParent->getParent()->getContentWidth()*c_hoverWidth,
               height
             ),
-            1
+            Easing::In
           )
         );
         break;

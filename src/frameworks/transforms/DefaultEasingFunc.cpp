@@ -30,7 +30,8 @@ double DefaultEasingFunction::applyEasing(double time) {
     case Easing::Out:
     case Easing::OutQuad:
       return time * (2 - time);
-
+    
+    case Easing::InOut:
     case Easing::InOutQuad:
       if (time < 0.5) return time * time * 2;
       return --time * time * -2 + 1;

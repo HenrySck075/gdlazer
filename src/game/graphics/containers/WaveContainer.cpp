@@ -86,13 +86,11 @@ bool WaveContainer::init(ColorScheme color, Container* pBody) {
   setBackgroundColor({0,0,0,0});
   m_provider = OverlayColorProvider::create(color);
   m_provider->retain();
-  return customSetup(pBody);
-}
-
-bool WaveContainer::customSetup(Container* pBody) {
+  
   //m_touchBoundary = CCRect((s.width-k.width)/2,0,k.width,k.height);
   m_main->setContentSize({80,100}, Unit::Percent);
   setContentSize({100,100}, Unit::Percent);
+  m_main->setAnchor(Anchor::Bottom);
   //auto w = s.width/2;
 
   m_body = pBody; // mb

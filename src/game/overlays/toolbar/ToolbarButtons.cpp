@@ -77,7 +77,7 @@ bool ToolbarNativeSettingsButton::init() {
     }
     return true;
   });
-  return ToolbarButton::init(OsuIcon::Settings, "settings", "the", AxisAlignment::End);
+  return ToolbarButton::init(OsuIcon::Settings, "settings (gd)", "opens gd settings (temporary)", AxisAlignment::End);
 }
 
 /**

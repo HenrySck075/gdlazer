@@ -88,16 +88,16 @@ bool Toolbar::init() {
     if (e->m_eventType == MouseEventType::Enter) {
       if (!m_shown) return true;
       gradient->stopAllActions();
-      gradient->runAction(easingsActions::CCEaseOut::create(
-        CCFadeTo::create(2.5,255), 5
+      gradient->runAction(frameworks::ActionEase::create(
+        CCFadeTo::create(2.5,255), Easing::OutQuint
       ));
     }
     
     if (e->m_eventType == MouseEventType::Exit) {
       if (!m_shown) return true;
       gradient->stopAllActions();
-      gradient->runAction(easingsActions::CCEaseOut::create(
-        CCFadeTo::create(0.2,0), 5
+      gradient->runAction(frameworks::ActionEase::create(
+        CCFadeTo::create(0.2,0), Easing::OutQuint
       ));
     }
     return true;
@@ -107,15 +107,15 @@ bool Toolbar::init() {
 }
 
 void Toolbar::show() {
-  if (!m_shown) runAction(easingsActions::CCEaseOut::create(
-    ContainerMoveTo::create(0.5,{0,0}), 5
+  if (!m_shown) runAction(frameworks::ActionEase::create(
+    ContainerMoveTo::create(0.5,{0,0}), Easing::OutQuint
   ));
   VisibilityContainer::show();
 }
 
 void Toolbar::hide() {
-  if (m_shown) runAction(easingsActions::CCEaseOut::create(
-    ContainerMoveTo::create(0.5,{0,-c_height}), 5
+  if (m_shown) runAction(frameworks::ActionEase::create(
+    ContainerMoveTo::create(0.5,{0,-c_height}), Easing::OutQuint
   ));
   VisibilityContainer::hide();
 }

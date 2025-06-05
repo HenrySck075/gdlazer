@@ -41,27 +41,27 @@ LoadingSpinner* LoadingSpinner::create(bool boxed, bool invert) {
 void LoadingSpinner::onOpen() {
   stopAllActions();
   runAction(
-    easingsActions::CCEaseOut::create(
+    frameworks::ActionEase::create(
       CCSpawn::createWithTwoActions(
         CCScaleTo::create(TRANSITION_DURATION,1),
         CCFadeIn::create(TRANSITION_DURATION)
-      ), 5
+      ), Easing::OutQuint
     )
   )->setTag(7);
   if (boxed) {
     runAction(CCRepeatForever::create(
       CCSequence::create(
-        easingsActions::CCEaseInOut::create(
-          CCRotateTo::create(spin_duration,90),4
+        frameworks::ActionEase::create(
+          CCRotateTo::create(spin_duration,90), Easing::InOutQuad
         ),
-        easingsActions::CCEaseInOut::create(
-          CCRotateTo::create(spin_duration,180),4
+        frameworks::ActionEase::create(
+          CCRotateTo::create(spin_duration,180), Easing::InOutQuad
         ),
-        easingsActions::CCEaseInOut::create(
-          CCRotateTo::create(spin_duration,270),4
+        frameworks::ActionEase::create(
+          CCRotateTo::create(spin_duration,270), Easing::InOutQuad
         ),
-        easingsActions::CCEaseInOut::create(
-          CCRotateTo::create(spin_duration,360),4
+        frameworks::ActionEase::create(
+          CCRotateTo::create(spin_duration,360), Easing::InOutQuad
         ),
         CCRotateTo::create(0,0),
         nullptr
@@ -81,11 +81,11 @@ void LoadingSpinner::onClose() {
   runAction(
     CCSequence::createWithTwoActions(
       CCSpawn::createWithTwoActions(
-        easingsActions::CCEaseIn::create(
-          CCScaleTo::create(TRANSITION_DURATION,0.8),2
+        frameworks::ActionEase::create(
+          CCScaleTo::create(TRANSITION_DURATION,0.8), Easing::InQuint
         ),
-        easingsActions::CCEaseOut::create(
-          CCFadeOut::create(TRANSITION_DURATION),5
+        frameworks::ActionEase::create(
+          CCFadeOut::create(TRANSITION_DURATION), Easing::OutQuint
         )
       ),
       CCCallFuncL::create([this]{stopAllActions();})

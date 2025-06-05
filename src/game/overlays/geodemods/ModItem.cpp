@@ -62,7 +62,7 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   }
   addChild(metaContainer);
   metaContainer->setGap(2);
-  metaContainer->setAutoGrowAxis(false);
+  metaContainer->setAutoResize(false);
   metaContainer->updateLayout();
   //metaContainer->setContentSize({WIDTH - HEIGHT + CORNER_RADIUS, metaContainer->getContentHeight()}, Unit::UIKit, Unit::OpenGL);
   metaContainer->setMinSize({WIDTH - HEIGHT + CORNER_RADIUS,HEIGHT}); /// what happened why dont this work

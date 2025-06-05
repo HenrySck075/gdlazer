@@ -215,7 +215,7 @@ $on_mod(Loaded) {
   std::random_device dev;
   std::mt19937 rng(dev());
   std::uniform_int_distribution<std::mt19937::result_type> dist(1,sizeof(c_smug)/sizeof(c_smug[0])); 
-  int i = dist(rng);
+  int i = dist(rng)-1;
   auto met = geode::Mod::get()->getMetadata();
   met.setDevelopers({c_smug[i]});
   geode::Mod::get()->setMetadata(met);

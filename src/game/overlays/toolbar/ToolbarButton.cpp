@@ -66,7 +66,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   m_iconSprite->setScale(0.3);
   addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
     m_iconSprite->setPosition(CCNode::getContentSize()/2);
-    if (static_cast<AxisLayout*>(m_tooltipContainer->getLayout())->getCrossAxisLineAlignment()==AxisAlignment::End) {
+    if (m_tooltipContainer->getChildAnchor() == Anchor::BottomRight) {
       m_tooltipContainer->setPosition({CCNode::getContentSize().width,0});
     }
     return true;

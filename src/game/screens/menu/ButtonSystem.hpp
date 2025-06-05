@@ -7,6 +7,7 @@
 using namespace geode::prelude;
 
 GDL_NS_START
+
 class ButtonSystem final : public frameworks::Container
 {
 public:

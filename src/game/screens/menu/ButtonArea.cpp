@@ -138,10 +138,10 @@ void ButtonArea::show(std::string tag) {
       i->stopAllActions();
       auto pos = i->getPosition();
       i->runAction(CCSequence::createWithTwoActions(
-        EasingEffect::create(CCSpawn::createWithTwoActions(
+        frameworks::ActionEase::create(CCSpawn::createWithTwoActions(
           CCMoveFromTo::create(animationSpeed, CCPoint(idx!=0?-15:pos.x+15,i->getPositionY()), pos),
           CCFadeIn::create(animationSpeed)
-        )),
+        ), Easing::OutExpo),
         CCCallFuncL::create([i](){
           auto nugget = i;
           nugget->setTouchEnabled(true);
@@ -158,10 +158,10 @@ void ButtonArea::show(std::string tag) {
       i->stopAllActions();
       auto pos = i->getPosition();
       i->runAction(CCSequence::createWithTwoActions(
-        EasingEffect::create(CCSpawn::createWithTwoActions(
+        frameworks::ActionEase::create(CCSpawn::createWithTwoActions(
           CCResizeTo::create(animationSpeed, BUTTON_WIDTH, c_buttonAreaHeight),
           CCFadeIn::create(animationSpeed)
-        )),
+        ), Easing::OutExpo),
         CCCallFuncL::create([i](){
           auto nugget = i;
           nugget->setTouchEnabled(true);
@@ -176,12 +176,12 @@ void ButtonArea::show(std::string tag) {
     auto btnLayer = buttonsMenus[tag];
     auto btnL1 = btnLayer->getChildByTag(1);
     auto btnL2 = btnLayer->getChildByTag(2);
-    btnL1->runAction(EasingEffect::create(
+    btnL1->runAction(frameworks::ActionEase::create(
       CCMoveTo::create(animationSpeed, anchorPosition-gap)
-    ));
-    btnL2->runAction(EasingEffect::create(
+    , Easing::OutExpo));
+    btnL2->runAction(frameworks::ActionEase::create(
       CCMoveTo::create(animationSpeed, anchorPosition+gap)
-    ));
+    , Easing::OutExpo));
 
     while (tagsStack.back()!=tag) {tagsStack.pop_back();}
   }
@@ -191,7 +191,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
   if (buttonsMenus.contains(tag)) {
     CCArrayExt<MainMenuButton*> j = _buttons[tag].operator->();
     if (close) {
-      colorBg->runAction(easingsActions::CCEaseOut::create(CCScaleTo::create(0.3,1,0), 5));
+      colorBg->runAction(frameworks::ActionEase::create(CCScaleTo::create(0.3,1,0), Easing::OutQuint));
       hidden = true;
     }
     if (collapse) {
@@ -201,12 +201,12 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         i->stopAllActions();
         auto pos = i->getPosition();
         i->runAction(
-          EasingEffect::create(
+          frameworks::ActionEase::create(
             CCSpawn::createWithTwoActions(
               CCMoveTo::create(animationSpeed, {idx!=0?-15:pos.x+15,pos.y}),
               CCFadeOut::create(animationSpeed)
             )
-          )
+          , Easing::OutExpo)
         );
       }
       curZOrder--;
@@ -217,24 +217,24 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
         i->stopAllActions();
         auto pos = i->getPosition();
         i->runAction(
-          EasingEffect::create(
+          frameworks::ActionEase::create(
             CCSpawn::createWithTwoActions(
               CCResizeTo::create(animationSpeed, BUTTON_WIDTH*1.5,c_buttonAreaHeight),
               CCFadeOut::create(animationSpeed)
             )
-          )
+          , Easing::OutExpo)
         );
       };
       auto btnLayer = buttonsMenus[tag];
       auto btnL1 = btnLayer->getChildByTag(1);
       auto btnL2 = btnLayer->getChildByTag(2);
       auto w = CCDirector::sharedDirector()->getWinSize().width;
-      btnL1->runAction(EasingEffect::create(
+      btnL1->runAction(frameworks::ActionEase::create(
         CCMoveTo::create(animationSpeed, ccp(-w/2,btnL1->getPositionY()))
-      ));
-      btnL2->runAction(EasingEffect::create(
+      , Easing::OutExpo));
+      btnL2->runAction(frameworks::ActionEase::create(
         CCMoveTo::create(animationSpeed, ccp(w/2,btnL2->getPositionY()))
-      ));
+      , Easing::OutExpo));
     }
     runAction(
       CCSequence::createWithTwoActions(

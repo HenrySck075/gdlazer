@@ -1,12 +1,17 @@
 #pragma once
 #include "Container.hpp"
 #include "FillDirection.hpp"
-#include "FillFlowLayout.hpp"
 
 GDF_NS_START
 /// A Container that positions its children along an axis
 class FillFlowContainer : public Container {
-    FillFlowLayout* m_layout;
+private:
+    FillDirection m_direction;
+    geode::Anchor m_anchor;
+    float m_gap = 0;
+    bool m_axisReverse = false;
+    bool m_autoResize = true;
+
 public:
     static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
     bool init(FillDirection direction, geode::Anchor anchor);
@@ -14,6 +19,13 @@ public:
     void setGap(float gap);
     float getGap();
     void setAxisReverse(bool axisReverse);
-    void setAutoGrowAxis(bool enable);
+    void setAutoResize(bool enable);
+    bool getAutoResize() const { return m_autoResize; }
+    bool getAxisReverse() const { return m_axisReverse; }
+    FillDirection getDirection() const { return m_direction; }
+    geode::Anchor getChildAnchor() const { return m_anchor; }
+
+
+    void updateLayout();
 };
 GDF_NS_END

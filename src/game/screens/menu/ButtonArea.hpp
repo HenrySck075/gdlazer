@@ -17,7 +17,6 @@ private:
   std::vector<std::string> tagsStack;
   CCPoint anchorPosition = {0,0};
   float animationSpeed = 0.5;
-  using EasingEffect = easingsActions::CCEaseExponentialOut;
   geode::Ref<CCLayerColor> colorBg;
 
   bool hidden = true;

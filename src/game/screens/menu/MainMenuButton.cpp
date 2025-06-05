@@ -80,20 +80,20 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
         ));
         break;
       case MouseEventType::MouseDown:
-        m_hover->runAction(easingsActions::CCEaseOut::create(
-          CCFadeTo::create(1,255*0.1),5
+        m_hover->runAction(frameworks::ActionEase::create(
+          CCFadeTo::create(1,255*0.1), Easing::OutQuint
         ));
         break;
       case MouseEventType::MouseUp:
         //if (!static_cast<CCBool*>(getUserObject("clicking"_spr))) return;
-        m_hover->runAction(easingsActions::CCEaseOut::create(
-          CCFadeTo::create(1,0),5
+        m_hover->runAction(frameworks::ActionEase::create(
+          CCFadeTo::create(1,0), Easing::OutQuint
         ));
       case MouseEventType::Click:
         m_hover->stopAllActions();
         m_hover->setOpacity(255*0.9);
-        m_hover->runAction(easingsActions::CCEaseExponentialOut::create(
-          CCFadeTo::create(0.8,0)
+        m_hover->runAction(frameworks::ActionEase::create(
+          CCFadeTo::create(0.8,0), Easing::OutExpo
         ));
     }
     return true;

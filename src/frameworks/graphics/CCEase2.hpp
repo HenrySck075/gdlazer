@@ -1,78 +1,24 @@
 #pragma once
 #include "Easings.hpp"
-
-#define $easings_create(cls, ...) \
-cls* ret = new cls(); \
-if (ret && ret->initWithAction(__VA_ARGS__)) {} \
-else {CC_SAFE_RELEASE(ret);} \
-return ret
-
-#define $createEasing(easingName, easingFunc) \
-class CCEase##easingName : public cocos2d::CCActionEase { \
-public: \
-  static CCEase##easingName* create(cocos2d::CCActionInterval* action) { \
-    $easings_create(CCEase##easingName, action);\
-  } \
-  void update(float x) override { \
-    m_pInner->update(easings::easingFunc(x)); \
-  } \
-}
-
-#define $createEasingWithRate(easingName, easingFunc) \
-class CCEase##easingName : public cocos2d::CCEaseRateAction { \
-public: \
-  static CCEase##easingName* create(cocos2d::CCActionInterval* action, float fRate) { \
-    $easings_create(CCEase##easingName, action, fRate);\
-  } \
-  void update(float x) override { \
-    m_pInner->update(easings::easingFunc(x,m_fRate)); \
-  } \
-}
+#include "../transforms/DefaultEasingFunc.hpp"
 
 #include <Geode/cocos/actions/CCActionEase.h>
 
-namespace easingsActions {
-$createEasing(SineIn, inSine);
-
-$createEasing(SineOut, outSine);
-
-$createEasing(SineInOut, inOutSine);
-
-
-$createEasingWithRate(In, inRate);
-
-$createEasingWithRate(Out, outRate);
-
-$createEasingWithRate(InOut, inOutRate);
-
-
-$createEasing(ExponentialIn, inExpo);
-
-$createEasing(ExponentialOut, outExpo);
-
-$createEasing(ExponentialInOut, inOutExpo);
-
-
-$createEasing(ElasticIn, inElastic);
-
-$createEasing(ElasticOut, outElastic);
-
-$createEasing(ElasticInOut, inOutElastic);
-
-
-$createEasing(BounceIn, inBounce);
-
-$createEasing(BounceOut, outBounce);
-
-$createEasing(BounceInOut, inOutBounce);
-
-
-$createEasing(BackIn, inBack);
-
-$createEasing(BackOut, outBack);
-
-$createEasing(BackInOut, inOutBack);
-
-}
-
-
+GDF_NS_START
+class ActionEase : public cocos2d::CCActionEase {
+protected:
+  DefaultEasingFunction m_easingFunc;
+  bool initWithEasing(cocos2d::CCActionInterval* action, Easing easing) {
+    if (!initWithAction(action)) return false;
+    m_easingFunc = DefaultEasingFunction(easing);
+    return true;
+  };
+public:
+  static ActionEase* create(cocos2d::CCActionInterval* action, Easing easing) {
+    $createClass(ActionEase, initWithEasing, action, easing);
+  }
+  void update(float x) override {
+    m_pInner->update(m_easingFunc.applyEasing(x));
+  }
+};
+GDF_NS_END

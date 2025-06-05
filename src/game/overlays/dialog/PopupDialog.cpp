@@ -119,7 +119,7 @@ void PopupDialog::onOpen() {
   m_bgSprite->setOpacity(0);
 
   m_main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
-  m_main->runAction(easingsActions::CCEaseOut::create(CCFadeIn::create(0.2), 5));
+  m_main->runAction(frameworks::ActionEase::create(CCFadeIn::create(0.2), Easing::OutQuint));
 
   for (auto* btn : CCArrayExt<PopupDialogButton*>(m_btnLayer->getChildren())) {
     btn->runAction(CCSequence::createWithTwoActions(
@@ -144,11 +144,11 @@ void PopupDialog::onClose() {
     btn->setTouchEnabled(false);
   }
   for (auto* obj : CCArrayExt<CCNode*>(m_main->getChildren())) {
-    obj->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
+    obj->runAction(frameworks::ActionEase::create(CCFadeOut::create(0.4), Easing::OutQuint));
   }
   m_main->runAction(CCEaseOut::create(CCScaleTo::create(0.5, 0.7f), 2));
   /*m_bgSpriteClip->getChildByType<Triangles>(0)*/
-  m_main->runAction(easingsActions::CCEaseOut::create(CCFadeOut::create(0.4), 5));
+  m_main->runAction(frameworks::ActionEase::create(CCFadeOut::create(0.4), Easing::OutQuint));
   
   auto en = FMODAudioEngine::sharedEngine();
   en->playEffect("dialog-pop-out.wav"_spr);

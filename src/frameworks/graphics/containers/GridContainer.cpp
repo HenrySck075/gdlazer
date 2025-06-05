@@ -50,7 +50,7 @@ std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLen
     auto dim = dimensions[i];
 #define $unity(val) processUnit(val, Unit::UIKit, xAxis)
     float dimsize = $unity(dim.size);
-    float gapAlloc =  m_gap /* * ((i == 0 || i == sdlen || i == spanCount) ? 1 : 2)*/;
+    //float gapAlloc =  m_gap /* * ((i == 0 || i == sdlen || i == spanCount) ? 1 : 2)*/;
     switch (dim.mode) {
       case Dimension::Mode::Distributed:
         sizes[i] = spanLength / sdlen;

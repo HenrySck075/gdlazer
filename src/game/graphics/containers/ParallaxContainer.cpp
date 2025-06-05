@@ -24,7 +24,12 @@ bool ParallaxContainer::init(float parallaxAmount, bool scale) {
   addListener<MouseEvent>(m_parallaxMouseListener = std::bind(&ParallaxContainer::onMouseEvent, this, std::placeholders::_1));
   addListener<ParallaxStateUpdated>([this](ParallaxStateUpdated* e){
     m_parallax = e->m_enabled;
-    if (!m_parallax) runAction(easingsActions::CCEaseSineOut::create(CCMoveTo::create(0.2, m_director->getWinSize()/2)));
+    if (!m_parallax) runAction(
+      frameworks::ActionEase::create(
+        CCMoveTo::create(0.2, m_director->getWinSize()/2),
+        Easing::OutSine
+      )
+    );
     return false;
   });
   // cancel the event

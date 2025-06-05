@@ -35,8 +35,6 @@ private:
   void onOpen() override;
 public:
   bool init(ColorScheme color, Container* body);
-  // @note RobTop addition
-  bool customSetup(Container* body);
   static WaveContainer* create(ColorScheme color, Container* body);
 protected:
   geode::Ref<OverlayColorProvider> m_provider;
