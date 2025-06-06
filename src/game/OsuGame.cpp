@@ -32,6 +32,7 @@ bool OsuGame::init() {
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar);
 
+#ifdef GEODE_IS_DESKTOP
   addChild(m_cursorNode = CCNode::create(), 999999);
 
   FMODAudioEngine::get()->m_system->createSound("cursor-tap.wav"_spr, FMOD_DEFAULT, 0, &m_clickSound);
@@ -119,7 +120,7 @@ bool OsuGame::init() {
     }
     return true;
   });
-
+#endif
   m_everypence->setContentSize(m_everypence->getContentSize());
 
   return true;

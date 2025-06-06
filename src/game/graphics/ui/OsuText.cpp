@@ -31,7 +31,7 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
     fontFile.c_str()
     //text.length()*fontSize/2
   ));
-  m_textNode->setScale(fontSize/42/cocos2d::CCDirector::get()->getOpenGLView()->getFrameZoomFactor());
+  m_textNode->setScale(processUnit(fontSize, frameworks::Unit::UIKit, false));
   m_textNode->setAlignment(alignment);
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);

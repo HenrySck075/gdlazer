@@ -38,6 +38,12 @@ struct e : public Modify<e, MenuLayer> {
   }
 };
 
+void showCursor(bool state) {
+#ifdef GEODE_IS_WINDOWS
+  cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
+#endif
+}
+
 bool s_replaceSceneDisabled = false;
 
 #include <Geode/modify/CCDirector.hpp>
@@ -82,7 +88,7 @@ class $modify(LoadingLayer) {
     LoadingLayer::loadAssets();
     if (lastStep) {
       s_replaceSceneDisabled = false;
-      cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
+      showCursor(false);
 
       auto g = gdlazer::game::OsuGame::get();
       cocos2d::CCDirector::get()->pushScene(g);
@@ -207,7 +213,8 @@ static const char* c_smug[] = {
   "Midori Yamada",
   "Shion Sasaki",
 
-  "Henry Spheria" /// congrats
+  "Henry Spheria", /// congrats
+  "SoggyGunner"    /// hello geode
 };
 
 $on_mod(Loaded) {
