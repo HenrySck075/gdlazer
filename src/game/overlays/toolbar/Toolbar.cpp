@@ -72,8 +72,10 @@ bool Toolbar::init() {
   addChild(right);
   setOpacity(255);
 
-  addListener<NodeLayoutUpdated>([this,j,right](NodeLayoutUpdated*e){
+  addListener<NodeLayoutUpdated>([this,j,right,left](NodeLayoutUpdated*e){
     gradient->setContentSize({CCNode::getContentSize().width,j});
+    left->updateLayout();
+    right->updateLayout();
     return true;
   });
 

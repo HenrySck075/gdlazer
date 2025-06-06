@@ -14,7 +14,7 @@ bool tempForceReplace2 = false;
 #include <Geode/modify/CCDirector.hpp>
 struct area51 : Modify<area51, CCDirector>{
   bool replaceScene(CCScene* scene) {
-    if (tempForceReplace2 && !geode::cast::typeinfo_cast<CCTransitionScene*>(getRunningScene())) {
+    if (tempForceReplace2) {
       tempForceReplace2 = false;
       return CCDirector::replaceScene(CCTransitionFade::create(0.5,gdlazer::game::OsuGame::get()));
     }
@@ -95,6 +95,14 @@ bool ButtonSystem::init(OsuLogo* logo) {
       Color4(94, 63, 186, 255), 
       [this](Container*j){m_creatorLayerPtr->onWeeklyLevel(this);},
       {enumKeyCodes::KEY_W}
+    ),
+    MainMenuButton::create(
+      "Event",
+      "button-default-select.wav"_spr, 
+      OsuIcon::Global,
+      Color4(94, 63, 186, 255), 
+      [this](Container*j){m_creatorLayerPtr->onEventLevel(this);},
+      {enumKeyCodes::KEY_E}
     )
   ), "challenges");
   m_area->constructButtons($cca(
@@ -282,7 +290,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
           "nvm the 20-20-20 rule sucks", [this](Container* s) {m_menuLayerPtr->endGame(); }
         )->show();
       },
-      {enumKeyCodes::KEY_Q  }
+      {enumKeyCodes::KEY_Q, enumKeyCodes::KEY_Escape}
     )
   ), "toplevel");
 

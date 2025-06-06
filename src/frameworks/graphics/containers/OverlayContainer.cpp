@@ -45,4 +45,24 @@ bool OverlayContainer::init() {
   });
   return true;
 }
+
+void OverlayContainer::show() {
+  VisibilityContainer::show();
+  m_blockingEvents = m_pActionManager->numberOfRunningActionsInTarget(this) != 0;
+}
+
+void OverlayContainer::hide() {
+  VisibilityContainer::hide();
+  m_blockingEvents = true;
+}
+
+bool OverlayContainer::doDispatchEvent(Event* event, std::type_index type) {
+  if (m_blockingEvents && type != typeid(NodeLayoutUpdated)) return true;
+  return VisibilityContainer::doDispatchEvent(event, type);
+}
+void OverlayContainer::update(float) {
+  if (m_blockingEvents) {
+    m_blockingEvents = m_pActionManager->numberOfRunningActionsInTarget(this) != 0;
+  }
+};
 GDF_NS_END

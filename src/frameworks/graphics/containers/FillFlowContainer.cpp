@@ -57,7 +57,7 @@ void FillFlowContainer::updateLayout() {
       e->setPositionX(currentPos);
       e->setAnchor(m_anchor);
       e->updateContainerBox();
-      currentPos += child->getContentSize().width + getGap();
+      currentPos += child->getContentSize().width + processUnit(getGap(), Unit::UIKit, true);
       maxCrossAxisSize = std::max(child->getContentSize().height, maxCrossAxisSize);
     };
     if (m_axisReverse) {
@@ -81,7 +81,7 @@ void FillFlowContainer::updateLayout() {
       e->setPositionY(currentPos);
       e->setAnchor(m_anchor);
       e->updateContainerBox();
-      currentPos += child->getContentSize().height + getGap();
+      currentPos += child->getContentSize().height + processUnit(getGap(), Unit::UIKit, false);
       maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
     };
     if (getAxisReverse()) {

@@ -34,13 +34,18 @@ void AudioManager::setLowPassStrength(float lps) {
   updateLowPassFilter();
 }
 void AudioManager::updateLowPassFilter() {
-  m_lowpassdsp->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, m_lowPassStrength);
   auto master = FMODAudioEngine::sharedEngine()->m_backgroundMusicChannel;
-  if (m_lowPassStrength <= 0) master->removeDSP(m_lowpassdsp);
-  master->addDSP(7, m_lowpassdsp);
+  if (m_lowPassStrength <= 0) {
+    master->removeDSP(m_lowpassdsp);
+  } else {
+    master->addDSP(7, m_lowpassdsp);
+    m_lowpassdsp->setParameterFloat(FMOD_DSP_LOWPASS_CUTOFF, m_lowPassStrength);
+  }
+  /*
+  */
 }
 
-/** TODO: Some tracks plays "Stereo Madness" but it actually uses a custom song
+/** TODO: Some tracks plays "Stereo Madness" but actually uses a custom song
  (it doesnt play stereo madness)
 */
 void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {

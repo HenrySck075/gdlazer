@@ -121,14 +121,14 @@ void PopupDialog::onOpen() {
   m_main->runAction(CCEaseElasticOut::create(CCScaleTo::create(0.75, 1), 0.5));
   m_main->runAction(frameworks::ActionEase::create(CCFadeIn::create(0.2), Easing::OutQuint));
 
-  for (auto* btn : CCArrayExt<PopupDialogButton*>(m_btnLayer->getChildren())) {
-    btn->runAction(CCSequence::createWithTwoActions(
-      CCDelayTime::create(0.75),
-      CCCallFuncL::create([btn]() {
+  runAction(CCSequence::createWithTwoActions(
+    CCDelayTime::create(0.75),
+    CCCallFuncL::create([this](){
+      for (auto* btn : CCArrayExt<PopupDialogButton*>(m_btnLayer->getChildren())) {
         btn->setTouchEnabled(true);
-      })
-    ));
-  }
+      }
+    })
+  ));
   auto en = FMODAudioEngine::sharedEngine();
   en->playEffect("dialog-pop-in.wav"_spr);
   volume = en->getBackgroundMusicVolume();

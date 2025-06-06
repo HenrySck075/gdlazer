@@ -18,6 +18,7 @@ enum class FontType {
 class OsuText : public frameworks::Container {
   geode::Ref<CCLabelBMFont> m_textNode;
   std::string m_text; // debugging purpose
+  float m_fontSize;
 public:
   static OsuText* create(std::string text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
     $createClass(OsuText, init, text, font, fontSize, alignment);

@@ -173,6 +173,8 @@ void GridContainer::updateLayout() {
   const std::vector<float>& heights = distributeAlongAxis(Axes::Y, getContentHeight()/* - Padding.TotalVertical*/, getCellSizesAlongAxis(Axes::Y, getContentHeight()/* - Padding.TotalVertical*/));
 
   CCSize contentSize {0,0};
+  float hgap = processUnit(m_gap, Unit::UIKit, true);
+  float vgap = processUnit(m_gap, Unit::UIKit, false);
   for (int row = 0; row < m_gridContent.size(); row++) {
     auto& gridCol = m_gridContent[row];
     if (gridCol.empty()) continue;
@@ -187,10 +189,10 @@ void GridContainer::updateLayout() {
 
       float x = 0, y = 0;
       if (row > 0)
-        y = tryGetCell(row - 1, col)->getPositionY() + tryGetCell(row - 1, col)->getContentHeight() + m_gap;
+        y = tryGetCell(row - 1, col)->getPositionY() + tryGetCell(row - 1, col)->getContentHeight() + vgap;
 
       if (col > 0)
-        x = tryGetCell(row, col - 1)->getPositionX() + tryGetCell(row, col - 1)->getContentWidth() + m_gap;
+        x = tryGetCell(row, col - 1)->getPositionX() + tryGetCell(row, col - 1)->getContentWidth() + hgap;
       
       cell->setPosition({x,y});
       //cell->setAnchor(Anchor::TopLeft);

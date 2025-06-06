@@ -20,7 +20,7 @@
         "English",
         "Vietnamese"
       ],
-      "description": "does nothing"
+      "description": "Changes the UI language. Currently does nothing as it hasn't referenced the localization files yet."
     },
     "parallax": {
       "type": "bool", 

@@ -29,13 +29,20 @@ geode::Ref<OsuGame> OsuGame::get(bool create) {
 void OsuGame::setMouseVisibility(bool visible) {
   m_cursorNode->setVisible(visible);
 };
+void OsuGame::addChild(CCNode* child, int zorder) {
+  if (m_cursorNode && m_cursorNode != child && m_cursorNode->getZOrder() <= zorder) {
+    m_cursorNode->setZOrder(child->getZOrder()+1);
+  };
+  CCNode::addChild(child);
+};
+
 bool OsuGame::init() {
   if (!Game::init()) return false;
   m_toolbar = $verifyPtr(Toolbar::create());
-  addChild(m_toolbar);
+  addChild(m_toolbar, 9);
 
 #ifdef GEODE_IS_DESKTOP
-  addChild(m_cursorNode = CCNode::create(), 999999);
+  addChild(m_cursorNode = CCNode::create(), 12);
   m_cursorNode->setVisible(false);
 
   /// No const wchar_t allowed this will guarantee a crash on non-ascii gd install path

@@ -39,7 +39,7 @@ struct e : public Modify<e, MenuLayer> {
 };
 
 void showCursor(bool state) {
-#ifdef GEODE_IS_WINDOWS
+#ifdef GEODE_IS_DESKTOP
   cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
 #endif
 }
@@ -178,30 +178,30 @@ class $modify(LoadingLayer) {
 };
 
 
-/// The "nothing useful feature": Replace the mod dev name with any of these hardcoded names.
+/// The "nothing useful feature": Replace the mod dev name with any of these names.
 
 static const char* c_smug[] = {
   "Honoka Kosaka",
-  "Eli Ayase",
   "Kotori Minami",
-  "Nico Yazawa",
-  "Maki Nishikino",
-  "Hanayo Koizumi",
   "Umi Sonoda",
-  "Nozomi Tojo",
   "Rin Hoshizora",
+  "Hanayo Koizumi",
+  "Maki Nishikino",
+  "Nico Yazawa",
+  "Eli Ayase",
+  "Nozomi Tojo",
   "Tsubasa Kira",
   "Anju Yuki",
   "Erena Todo",
   "Chika Takami",
-  "Riko Sakurauchi",
-  "Dia Kurosawa",
-  "Yoshiko Tsushima",
   "You Watanabe",
-  "Kanan Matsuura",
-  "Hanamaru Kunikida",
+  "Riko Sakurauchi",
   "Ruby Kurosawa",
+  "Hanamaru Kunikida",
+  "Yoshiko Tsushima",
   "Mari Ohara",
+  "Dia Kurosawa",
+  "Kanan Matsuura",
   "Sarah Kazuno",
   "Leah Kazuno",
   "Yu Takasaki",
@@ -214,11 +214,6 @@ static const char* c_smug[] = {
   "Emma Verde",
   "Karin Asaka",
   "Kanata Konoe",
-  "Kanon Shibuya",
-  "Keke Tang",
-  "Chisato Arashi",
-  "Sumire Heanna",
-  "Ren Hazuki",
   "Shioriko Mifune",
   "Mia Taylor",
   "Lanzhu Zhong",
@@ -226,6 +221,11 @@ static const char* c_smug[] = {
   "Mao Hiiragi",
   "Hana Hazuki",
   "Kaoruko Mifune",
+  "Kanon Shibuya",
+  "Keke Tang",
+  "Chisato Arashi",
+  "Sumire Heanna",
+  "Ren Hazuki",
   "Kinako Sakurakoji",
   "Mei Yoneme",
   "Shiki Wakana",
@@ -238,6 +238,7 @@ static const char* c_smug[] = {
   "Rurino Osawa",
   "Megumi Fujishima",
   "Tomari Onitsuka",
+  "Ceras Yanagida Lilienfeld",
   "Sachi Ogami",
   "Ginko Momose",
   "Kosuzu Kachimachi",
@@ -253,7 +254,6 @@ static const char* c_smug[] = {
   "Maya Mikasa",
   "Sayaka Harukaze",
   "Izumi Katsuragi",
-  "Ceras Yanagida Lilienfeld",
   "Polka Takahashi",
   "Mai Azabu",
   "Akira Goto",

@@ -24,6 +24,7 @@ static std::map<FontType, std::string> fontTypeMap = {
 
 bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignment alignment) {
   if (!frameworks::Container::init()) return false;
+  m_fontSize = fontSize;
   auto fontFile = fontTypeMap[font];
   m_text = text;
   m_textNode = $verifyPtr(CCLabelBMFont::create(
@@ -31,7 +32,7 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
     fontFile.c_str()
     //text.length()*fontSize/2
   ));
-  m_textNode->setScale(processUnit(fontSize, frameworks::Unit::UIKit, false));
+  if (text.size() != 0) m_textNode->setScale(fontSize/42/cocos2d::CCDirector::get()->getOpenGLView()->m_fFrameZoomFactor);
   m_textNode->setAlignment(alignment);
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);
@@ -53,8 +54,11 @@ void OsuText::updateDisplayedOpacity(GLubyte parentOpacity) {
   m_textNode->setOpacity(getDisplayedOpacity());
 }
 void OsuText::setString(std::string string) {
+  bool unemptied = string.size() != 0 && m_text.size() == 0;
   m_text = string;
   m_textNode->setString(m_text.c_str());
+  //if (unemptied) m_textNode->setScale(processUnit(m_fontSize, frameworks::Unit::UIKit, false) / m_textNode->getContentHeight());
+  //setContentSize(m_textNode->getScaledContentSize());
 }
 
 GDL_NS_END

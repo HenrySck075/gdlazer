@@ -16,6 +16,8 @@ public:
 
   bool doDispatchEvent(frameworks::Event* event, std::type_index type) override;
 
+  void addChild(CCNode* child, int zorder) override;
+
   void setMouseVisibility(bool visible);
 private:
   geode::Ref<Toolbar> m_toolbar;

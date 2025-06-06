@@ -48,7 +48,7 @@ void Game::update(float dt) {
       screen->removeFromParentAndCleanup(true);
     }
   }
-  for (auto screen : rqRemove) {
+  if (rqRemove.size() != 0) for (auto screen : rqRemove) {
     m_removalQueue.inner()->removeObject(screen);
   }
   decltype(m_overlayRemovalQueue) orqRemove;
@@ -58,7 +58,7 @@ void Game::update(float dt) {
       overlay->removeFromParentAndCleanup(true);
     }
   }
-  for (auto overlay : orqRemove) {
+  if (orqRemove.size() != 0)for (auto overlay : orqRemove) {
     m_overlayRemovalQueue.inner()->removeObject(overlay);
   }
 
