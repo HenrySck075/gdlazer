@@ -38,6 +38,12 @@ struct e : public Modify<e, MenuLayer> {
   }
 };
 
+void showCursor(bool state) {
+#ifdef GEODE_IS_WINDOWS
+  cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
+#endif
+}
+
 bool s_replaceSceneDisabled = false;
 
 
@@ -259,7 +265,8 @@ static const char* c_smug[] = {
   "Midori Yamada",
   "Shion Sasaki",
 
-  "Henry Spheria" /// congrats
+  "Henry Spheria", /// congrats
+  "SoggyGunner"    /// hello geode
 };
 
 $on_mod(Loaded) {

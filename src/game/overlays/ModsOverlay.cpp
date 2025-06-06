@@ -28,7 +28,7 @@ bool ModsOverlay::init() {
       Dimension{/*.mode = Dimension::Mode::Distributed*/},
       Dimension{/*.mode = Dimension::Mode::Distributed*/},
     },
-    std::vector<Dimension>(rows, {})
+    std::vector<Dimension>(rows, Dimension{})
   );
   grid->setGap(2);
   grid->reserve(rows, 2);

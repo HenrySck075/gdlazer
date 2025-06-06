@@ -101,6 +101,7 @@ std::string getObjectName(CCObject* node){
 #endif
 }
 
+/*
 uintptr_t getGeodeLib() {
 #ifdef GEODE_IS_WINDOWS
   static uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleA("Geode.dll"));
@@ -126,3 +127,4 @@ uintptr_t getGeodeLib() {
   return 0;
 #endif
 }
+*/

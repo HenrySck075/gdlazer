@@ -34,6 +34,7 @@ bool OsuGame::init() {
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar);
 
+#ifdef GEODE_IS_DESKTOP
   addChild(m_cursorNode = CCNode::create(), 999999);
   m_cursorNode->setVisible(false);
 
@@ -123,7 +124,7 @@ bool OsuGame::init() {
     }
     return true;
   });
-
+#endif
   m_everypence->setContentSize(m_everypence->getContentSize());
 
   return true;

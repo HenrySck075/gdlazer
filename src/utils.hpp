@@ -57,6 +57,6 @@ T* postconfig(T* node, std::function<void(T*)> func) {
   return node;
 }
 
-uintptr_t getGeodeLib();
+//uintptr_t getGeodeLib();
 
 std::string getObjectName(CCObject* node);
