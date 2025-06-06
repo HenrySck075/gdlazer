@@ -40,16 +40,65 @@ struct e : public Modify<e, MenuLayer> {
 
 bool s_replaceSceneDisabled = false;
 
-#include <Geode/modify/CCDirector.hpp>
 
+geode::Hook* g_showCursorHook = nullptr;
+#ifdef GEODE_IS_DESKTOP
+#include <Geode/modify/CCEGLView.hpp>
+struct showCursorHook : public geode::Modify<showCursorHook, CCEGLView> {
+  static void onModify(auto& self) {
+    auto hook = self.getHook("cocos2d::CCEGLView::showCursor");
+    log::debug("g_showCursorHook retrieved: {}", hook.isOk());
+    g_showCursorHook = hook.unwrapOr(nullptr);
+    if (g_showCursorHook) g_showCursorHook->setAutoEnable(false);
+  }
+  void showCursor(bool state) {
+    if (auto instance = gdlazer::game::OsuGame::get(false)) {
+      instance->setMouseVisibility(state);
+    }
+  }
+};
+#endif
+
+#include <Geode/modify/CCDirector.hpp>
 class $modify(cocos2d::CCDirector) {
   static void onModify(auto& self) {
     if (!self.setHookPriorityPre("cocos2d::CCDirector::replaceScene", Priority::VeryEarlyPre)) {
       geode::log::warn("stuypd"); 
     };
   }
+  bool pushScene(cocos2d::CCScene* scene) {
+    bool isgdlScene = scene == gdlazer::game::OsuGame::get(false);
+    if (g_showCursorHook) {
+      if (isgdlScene) getOpenGLView()->showCursor(false);
+      if ((
+        (isgdlScene) 
+        ? g_showCursorHook->enable() 
+        : g_showCursorHook->disable()
+      ).isErr()) {
+        geode::log::error("Cannot change state of cocos2d::CCEGLView::showCursor hook.");
+      } else {
+        if (!isgdlScene) getOpenGLView()->showCursor(true);
+      }
+    }
+    return cocos2d::CCDirector::pushScene(scene);
+  }
   bool replaceScene(cocos2d::CCScene* scene) {
-    if (!s_replaceSceneDisabled) return cocos2d::CCDirector::replaceScene(scene);
+    if (!s_replaceSceneDisabled) {
+      bool isgdlScene = scene == gdlazer::game::OsuGame::get(false);
+      if (g_showCursorHook) {
+        if (isgdlScene) getOpenGLView()->showCursor(false);
+        if ((
+          (isgdlScene) 
+          ? g_showCursorHook->enable() 
+          : g_showCursorHook->disable()
+        ).isErr()) {
+          geode::log::error("Cannot change state of cocos2d::CCEGLView::showCursor hook.");
+        } else {
+          if (!isgdlScene) getOpenGLView()->showCursor(true);
+        }
+      }
+      return cocos2d::CCDirector::replaceScene(scene);
+    }
     return true;
   }
 };
@@ -82,16 +131,19 @@ class $modify(LoadingLayer) {
     LoadingLayer::loadAssets();
     if (lastStep) {
       s_replaceSceneDisabled = false;
-      cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
 
       auto g = gdlazer::game::OsuGame::get();
       cocos2d::CCDirector::get()->pushScene(g);
       if (!g_screenPushed) g->pushScreen(GDL_NS::IntroTriangles::create());
       g_screenPushed = true;
+      if (g_showCursorHook && g_showCursorHook->enable().isErr()) {
+        geode::log::error("Cannot enable cocos2d::CCEGLView::showCursor hook");
+      };
     }
   }
   bool init(bool p0) {
     if (!LoadingLayer::init(p0)) return false;
+    cocos2d::CCDirector::get()->getOpenGLView()->showCursor(false);
 
     auto yoffset = CCDirector::get()->getWinSize().height * 2;
     auto xpos = CCDirector::get()->getWinSize().width - 10;

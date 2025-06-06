@@ -15,6 +15,8 @@ public:
   void hideToolbar();
 
   bool doDispatchEvent(frameworks::Event* event, std::type_index type) override;
+
+  void setMouseVisibility(bool visible);
 private:
   geode::Ref<Toolbar> m_toolbar;
   frameworks::CCResizableSprite* m_cursor;

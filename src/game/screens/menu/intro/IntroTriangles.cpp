@@ -222,6 +222,8 @@ void IntroTriangles::onScreenExit(frameworks::ScreenTransitionEvent e) {
   setBackgroundColor({255,255,255,255});
   setOpacity(255);
 
+  OsuGame::get()->setMouseVisibility(true);
+
   runAction(
     frameworks::ContainerTintOpacityTo::create(1, 0)
   );

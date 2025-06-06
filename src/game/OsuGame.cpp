@@ -26,15 +26,19 @@ geode::Ref<OsuGame> OsuGame::get(bool create) {
   }
   return static_cast<OsuGame*>(s_instance.operator->());
 };
-
+void OsuGame::setMouseVisibility(bool visible) {
+  m_cursorNode->setVisible(visible);
+};
 bool OsuGame::init() {
   if (!Game::init()) return false;
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar);
 
   addChild(m_cursorNode = CCNode::create(), 999999);
+  m_cursorNode->setVisible(false);
 
-  FMODAudioEngine::get()->m_system->createSound("cursor-tap.wav"_spr, FMOD_DEFAULT, 0, &m_clickSound);
+  /// No const wchar_t allowed this will guarantee a crash on non-ascii gd install path
+  FMODAudioEngine::get()->m_system->createSound((Mod::get()->getResourcesDir() / "cursor-tap.wav").string().c_str(), FMOD_DEFAULT, 0, &m_clickSound);
   
   m_cursorNode->addChild(m_cursor = CCResizableSprite::create("menu-cursor.png"_spr));
   m_cursor->setContentSize({10,442/(312/10.f)});
@@ -187,16 +191,19 @@ static std::mt19937 gen((std::random_device())());
 static std::uniform_real_distribution<float> g_freqDist(0, 0.02f);
 
 void OsuGame::playTapSample(float baseFreq) {
+  if (!m_cursorNode->isVisible()) return;
   auto audio = FMODAudioEngine::get();
-
   FMOD::Channel* channel = nullptr;
-  audio->m_system->playSound(m_clickSound, /*FMODAudioEngine::sharedEngine()->m_globalChannel*/0, false, &channel);
+  audio->m_system->playSound(m_clickSound, audio->m_globalChannel, false, &channel);
   if (channel) {
     channel->setPan(((m_cursorNode->getPositionX() / getContentWidth()) * 2 - 1) * 0.75);
-    channel->setFrequency(baseFreq - (0.02 / 2.f) + g_freqDist(gen));
-    ///channel->setVolume(baseFreq);
-    channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_globalChannel);
+    float freq;
+    m_clickSound->getDefaults(&freq, 0);
+    channel->setFrequency((baseFreq - (0.02 / 2.f) + g_freqDist(gen)) * freq);
+    channel->setVolume(baseFreq*audio->m_sfxVolume);
+    //channel->setChannelGroup(FMODAudioEngine::sharedEngine()->m_globalChannel);
   }
+  //audio->playEffectAdvanced("cursor-tap.wav"_spr, baseFreq - (0.02 / 2.f) + g_freqDist(gen), 0, baseFreq, 1, false, false, 0, 0, 0, 0,false,0,true, );
 }
 
 GDL_NS_END

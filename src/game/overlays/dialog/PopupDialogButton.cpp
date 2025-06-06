@@ -152,9 +152,10 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
 
   setBackgroundColor(Color4::fromHex("150e14"));
 
+  /*
   setMinSize({-1,m_height-1});
   setMaxSize({-1,m_height});
-
+*/
   return true;
 }
 
