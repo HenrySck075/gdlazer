@@ -119,7 +119,7 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
   void *, void *
 ) {
   if (cbType == FMOD_CHANNELCONTROL_CALLBACK_END) {
-    log::debug("[fmodSoundCallback()]: song ended");
+    
     if (type != FMOD_CHANNELCONTROL_CHANNEL) return FMOD_RESULT::FMOD_OK;
     if(instance) instance->onSongEnd();
   }
@@ -128,9 +128,13 @@ FMOD_RESULT F_CALLBACK fmodSoundCallback(
 
 void AudioManager::onSongEnd() {
   m_ended = true;
-  log::debug("[AudioManager]: song ended, dispatching music ended event");
+  
   Game::get()->dispatchEvent(new MusicEnded());
 }
+/// only used by MainMenu
+void AudioManager::dispatchMusicInfoEvent(Container* target) {
+  target->dispatchEvent(new MusicInfoRequest());
+};
 
 void AudioManager::set(gd::string filePath, float fadeTime) {
   unsigned int prevFadePoint = 0;
@@ -160,7 +164,7 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
       m_channel->addFadePoint((unsigned long long)pos, 1);
     }
     m_channel->setPaused(m_paused);
-    Game::get()->dispatchEvent(new MusicStarted());
+    if (auto game = Game::get(false)) game->dispatchEvent(new MusicStarted());
   };
   if (m_sound && fadeTime>0 && !m_ended) {
     runAction(cocos2d::CCSequence::create(

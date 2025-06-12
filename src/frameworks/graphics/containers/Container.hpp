@@ -19,15 +19,33 @@
 GDF_NS_START
 class NodeLayoutUpdated : public Event {
 public:
-    NodeLayoutUpdated(cocos2d::CCNode* target) 
-        : m_target(target) {}
-
-    cocos2d::CCNode* getTarget() const { return m_target; }
-
-private:
-    cocos2d::CCNode* m_target;
+    NodeLayoutUpdated() {}
 };
 
+/// cant figure out a name for this one
+template<std::copyable T>
+struct _ModifiedStateValue {
+private:
+  T m_state;
+  bool m_updated = false;
+public:
+  _ModifiedStateValue() = default;
+  _ModifiedStateValue(T state) : m_state(state) {}
+
+  /// Some will scream, some won't
+  T& operator->() {
+    return m_state;
+  }
+  operator T() {return m_state;}
+  _ModifiedStateValue<T> operator=(const T& state) {
+    m_state = state;
+    m_updated = true;
+    return *this;
+  }
+
+  inline bool isUpdated() const { return m_updated; }
+  inline void resetUpdateState() { m_updated = false; }
+};
 
 enum class Unit {
   Percent,
@@ -55,6 +73,10 @@ public:
   // Mouse events
   inline bool getTouchEnabled() {return m_touchEnabled;};
   inline void setTouchEnabled(bool e) {m_touchEnabled = e;};
+  inline bool getDragEnabled() {return m_dragEnabled;};
+  inline void setDragEnabled(bool e) {m_dragEnabled = e;};
+  inline bool getMouseEnabled() {return m_mouseEnabled;};
+  void setMouseEnabled(bool e);
   inline bool isMouseEntered() {return m_lastInBounds;}
   // General-use unit conversion function
   float processUnit(float value, Unit unit, bool isWidth);
@@ -78,6 +100,7 @@ public:
   void setContentHeight(float height); // only works if called directly with the Container type
   // padding
   void setPadding(const Vector4 &padding);
+  inline const Vector4& getPadding() {return m_padding;}
 
   // Position setters
   void setPosition(cocos2d::CCPoint const& position) override;
@@ -141,10 +164,22 @@ private:
   //int t_vc = 3;
   bool m_vfuncCallLoopBlock = false;
 
+  CCSize m_copyOfTheContentSizeInCaseTheOriginalGetsCalled;
+
   static const int c_segments = 20;
   static const int c_verticesPointsSize = c_segments * 4 + 4;
   std::array<std::array<float,2>, c_verticesPointsSize> m_verticesPoints;
+  geode::Ref<cocos2d::CCDrawNode> m_stencil;
+  geode::Ref<cocos2d::CCDrawNode> m_border;
+  _ModifiedStateValue<float> m_borderThickness = 0;
+  _ModifiedStateValue<float> m_borderRadius = 0.0f;
+  geode::Ref<cocos2d::CCLayerColor> m_backgroundNode;
+  cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
+  cocos2d::ccColor4B m_borderColor = {0, 0, 0, 0};
+
   bool m_touchEnabled = false;
+  bool m_dragEnabled = false;
+  bool m_mouseEnabled = true;
   std::string m_name;
   cocos2d::CCSize m_minSize;
   cocos2d::CCSize m_maxSize;
@@ -153,13 +188,10 @@ private:
   cocos2d::CCPoint m_lastMousePos;
   cocos2d::CCPoint m_lastDragOffset;
   cocos2d::CCPoint m_dragStartPos;
-  float m_borderRadius = 0.0f;
-  geode::Ref<cocos2d::CCLayerColor> m_backgroundNode;
-  cocos2d::ccColor4B m_backgroundColor = {0, 0, 0, 0};
   /// As we have a copy of the size, this should be good enough.
   /// Paddings are in UIKit size
   Vector4 m_padding;
-  cocos2d::CCSize m_size;
+  cocos2d::CCSize m_size;                                      friend class ContainerResizeTo;
   Unit m_sizeUnit[2] {Unit::OpenGL, Unit::OpenGL};
   cocos2d::CCPoint m_position;                                      friend class ContainerMoveTo;
   Unit m_positionUnit[2] {Unit::OpenGL, Unit::OpenGL};

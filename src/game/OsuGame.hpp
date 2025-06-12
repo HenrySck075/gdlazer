@@ -16,10 +16,22 @@ public:
 
   bool doDispatchEvent(frameworks::Event* event, std::type_index type) override;
 
-  void addChild(CCNode* child, int zorder) override;
+  void addChild(CCNode* child) override;
+  void addChild(CCNode* child, int zOrder) override;
+
+  void removeChild(CCNode* child) override;
+
+  void update(float) override;
 
   void setMouseVisibility(bool visible);
+
+  void startMusicSequence();
+  void startNextSong();
+
 private:
+  bool m_containsBlockingUIInFront = false;
+  CCArrayExt<GJGameLevel> m_playlist; friend class IntroTriangles;
+  int m_songIndex = 0;
   geode::Ref<Toolbar> m_toolbar;
   frameworks::CCResizableSprite* m_cursor;
   frameworks::CCResizableSprite* m_cursorAdditive;

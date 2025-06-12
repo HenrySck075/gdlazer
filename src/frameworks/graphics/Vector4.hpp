@@ -7,6 +7,9 @@ struct Vector4 {
   float l = 0;
   float r = 0;
 
+  float totalH() const {return l+r;}
+  float totalV() const {return t+d;}
+
   Vector4() = default;
   Vector4(float padding) : t(padding), d(padding), l(padding), r(padding) {}
   Vector4(float padx, float pady) : t(pady), d(pady), l(padx), r(padx) {}

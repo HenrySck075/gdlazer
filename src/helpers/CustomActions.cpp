@@ -1,4 +1,5 @@
 #include "CustomActions.hpp"
+#include "../frameworks/graphics/containers/Container.hpp"
 
 bool CCCustomTween::initWithACatgirl(float from, float to, float duration, CCObject* target, CallFuncP selector) {
   if (!CCActionInterval::initWithDuration(duration)) {
@@ -10,7 +11,7 @@ bool CCCustomTween::initWithACatgirl(float from, float to, float duration, CCObj
   m_delta = to-from;
   m_target = target;
   m_pCallFunc = selector;
-  geode::log::debug("[CCCustomTween]: {} f: {} t: {}", m_delta, m_from, m_to);
+  
   return true;
 }
 
@@ -100,10 +101,8 @@ CCResizeTo* CCResizeTo::create(float duration, float s)
   return pSizeTo;
 }
 
-bool CCResizeTo::initWithDuration(float duration, float s)
-{
-  if (CCActionInterval::initWithDuration(duration))
-  {
+bool CCResizeTo::initWithDuration(float duration, float s) {
+  if (CCActionInterval::initWithDuration(duration)) {
     m_fEndContentWidth = s;
     m_fEndContentHeight = s;
 
@@ -113,8 +112,7 @@ bool CCResizeTo::initWithDuration(float duration, float s)
   return false;
 }
 
-CCResizeTo* CCResizeTo::create(float duration, float sx, float sy)
-{
+CCResizeTo* CCResizeTo::create(float duration, float sx, float sy) {
   CCResizeTo* pSizeTo = new CCResizeTo();
   pSizeTo->initWithDuration(duration, sx, sy);
   pSizeTo->autorelease();
@@ -122,10 +120,8 @@ CCResizeTo* CCResizeTo::create(float duration, float sx, float sy)
   return pSizeTo;
 }
 
-bool CCResizeTo::initWithDuration(float duration, float sx, float sy)
-{
-  if (CCActionInterval::initWithDuration(duration))
-  {
+bool CCResizeTo::initWithDuration(float duration, float sx, float sy) {
+  if (CCActionInterval::initWithDuration(duration)) {
     m_fEndContentWidth = sx;
     m_fEndContentHeight = sy;
 
@@ -134,31 +130,6 @@ bool CCResizeTo::initWithDuration(float duration, float sx, float sy)
 
   return false;
 }
-/*
-CCObject* CCResizeTo::copyWithZone(CCZone* pZone)
-{
-  CCZone* pNewZone = NULL;
-  CCResizeTo* pCopy = NULL;
-  if (pZone && pZone->m_pCopyObject)
-  {
-    //in case of being called at sub class
-    pCopy = (CCResizeTo*)(pZone->m_pCopyObject);
-  }
-  else
-  {
-    pCopy = new CCResizeTo();
-    pZone = pNewZone = new CCZone(pCopy);
-  }
-
-  CCActionInterval::copyWithZone(pZone);
-
-
-  pCopy->initWithDuration(m_fDuration, m_fEndContentWidth, m_fEndContentHeight);
-
-  CC_SAFE_DELETE(pNewZone);
-  return pCopy;
-}
-*/
 void CCResizeTo::startWithTarget(CCNode* pTarget) {
   CCActionInterval::startWithTarget(pTarget);
   m_fStartContentWidth = pTarget->getContentWidth();
@@ -167,13 +138,13 @@ void CCResizeTo::startWithTarget(CCNode* pTarget) {
   m_fDeltaHeight = m_fEndContentHeight - m_fStartContentHeight;
 }
 
-void CCResizeTo::update(float time)
-{
+void CCResizeTo::update(float time) {
   if (m_pTarget) {
-    m_pTarget->setContentSize({
+    CCSize contentSize {
       m_fStartContentWidth + m_fDeltaWidth * time,
       m_fStartContentHeight + m_fDeltaHeight * time
-    });
+    };
+    m_pTarget->setContentSize(contentSize);
   }
 }
 

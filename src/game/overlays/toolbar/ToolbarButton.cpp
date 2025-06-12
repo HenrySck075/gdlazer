@@ -34,7 +34,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   m_flashBg->setOpacity(255);
 
   addChild(m_bg,-7);
-  addChild(m_flashBg, -6);
+  addChild(m_flashBg, -5);
 
   m_tooltipContainer = FillFlowContainer::create(FillDirection::Vertical);
   m_tooltipContainer->setGap(2);
@@ -56,26 +56,24 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     ->setCrossAxisLineAlignment(tooltipAlignment)
   );
   */
-  setTooltipAlignment(tooltipAlignment);
   m_tooltipContainer->setCascadeOpacityEnabled(true);
   m_tooltipContainer->setOpacity(0);
   addChild(m_tooltipContainer);
   m_tooltipContainer->updateLayout();
+  m_tooltipContainer->setAutoUpdateLayout(false);
+  queueInMainThread([this, tooltipAlignment]{setTooltipAlignment(tooltipAlignment);});
 
   m_iconSprite = icon;
   m_iconSprite->setScale(0.3);
   addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
     m_iconSprite->setPosition(CCNode::getContentSize()/2);
-    if (m_tooltipContainer->getChildAnchor() == Anchor::BottomRight) {
-      m_tooltipContainer->setPosition({CCNode::getContentSize().width,0});
-    }
     return true;
   });
 
   addListener<MouseEvent>([this](MouseEvent* e){
     switch (e->m_eventType) {
       case MouseEventType::Enter:
-        log::debug("[ToolbarButton]: event id {}", (int)(e->m_eventType));
+        
         m_bg->stopAllActions();
         m_bg->runAction(ContainerTintOpacityTo::create(0.2, 180));
         m_tooltipContainer->stopAllActions();
@@ -98,6 +96,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   
   setContentSize({c_height,c_height},Unit::UIKit,Unit::UIKit);
   addChild(m_iconSprite);
+  
 
   return true;
 }
@@ -105,18 +104,17 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
 void ToolbarButton::setTooltipAlignment(AxisAlignment align) {
   // static_cast<RowLayout*>(m_tooltipContainer->getLayout())->setAxisAlignment(align);
   switch (align) {
-  case AxisAlignment::Start:
-    m_tooltipContainer->setChildAnchor(Anchor::BottomLeft);
-    m_tooltipContainer->setAnchorPoint({0, 1});
-    m_tooltipContainer->setPositionX(0); // ???
-    break;
   case AxisAlignment::End:
     m_tooltipContainer->setChildAnchor(Anchor::BottomRight);
     m_tooltipContainer->setAnchorPoint({1, 1});
-    m_tooltipContainer->setPositionX(100,Unit::Percent); // ???
+    m_tooltipContainer->setAnchor(Anchor::BottomRight);
     break;
+  case AxisAlignment::Start:
   default:
-    log::info("[ToolbarButton]: not supported :(");
+    m_tooltipContainer->setChildAnchor(Anchor::BottomLeft);
+    m_tooltipContainer->setAnchorPoint({0, 1});
+    m_tooltipContainer->setAnchor(Anchor::BottomLeft);
+    break;
   }
   m_tooltipContainer->updateLayout();
 }

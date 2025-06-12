@@ -1,7 +1,7 @@
 #include "MainMenuButton.hpp" 
 #include "../../../frameworks/input/events/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
-#include "../../../helpers/CustomActions.hpp"
+#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
 
 GDL_NS_START
@@ -19,43 +19,56 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
     return in;
   });
   activationKeys = activa;
-  m_body = CCNodeRGBA::create();
-  m_body->setContentSize({20,120});
-  m_body->setID("ui");
-  m_body->setLayout(ColumnLayout::create()->setGap(8)->setAutoScale(false)->setAxisReverse(true));
-  m_body->setAnchorPoint({0.5,0.5});
-  m_body->setPosition(m/2);
-  
-  m_icon = symbol;
-  m_icon->setScale(0.62);
-  m_body->addChild(m_icon);
-  
-  m_label = OsuText::create(text.c_str(), FontType::Regular, 5);
-  if (m_label == nullptr) return false;
-  m_body->addChild(m_label);
 
-  m_body->updateLayout();
-  
-  #define bgSetup(var, id, col)                       \
+  #define bgSetup(var, id, col)             \
   var = CCScale9Sprite::createWithSpriteFrameName("square.png"_spr); \
   var->setID(id);                             \
-  var->setColor(col);                           \
+  var->setColor(col);                          \
   var->setSkewX(7);                             \
-  var->setContentSize(m);                         \
-  var->setAnchorPoint(CCPoint(0.5,0.5));                  \
-  var->setPosition(m/2);                          \
+  var->setContentSize(m);                        \
+  var->setAnchorPoint(CCPoint(0.5,0.5));          \
+  var->setPosition(m/2);                           \
 
   bgSetup(m_background, "background", color);
   bgSetup(m_hover, "hover", ccc3(255,255,255));
   setColor(Color4{255,255,255,0});
   addChild(m_background);
   addChild(m_hover);
-  addChild(m_body);
   setCascadeOpacityEnabled(true);
   m_hover->setOpacity(0);
   
-  setAnchorPoint({0.5,0.5});
+  m_icon = symbol;
+  m_icon->setScale(0.62);
 
+  auto iconContainer = Container::create();
+  iconContainer->setAnchor(Anchor::Center);
+  iconContainer->setAnchorPoint({0.5,0.5});
+  iconContainer->addChild(m_icon);
+  addChild(iconContainer);
+  
+  m_label = $verifyPtr(OsuText::create(text.c_str(), FontType::Regular, 5));
+  m_label->setAnchor(Anchor::Bottom);
+  m_label->setAnchorPoint({0.5,0});
+  m_label->setPositionY(4, Unit::UIKit);
+  addChild(m_label);
+  
+  
+  setAnchorPoint({0.5,0.5});
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated*) {
+    
+    auto s = getContentSize();
+    // todo: move to container
+    if (m_background) {
+      m_background->setContentSize(s);
+      m_background->setPosition(s/2);
+    }
+    if (m_hover) {
+      m_hover->setContentSize(s);
+      m_hover->setPosition(s/2);
+    }
+    if (m_askForUpdate) m_pParent->updateLayout();
+    return true;
+  });
   addListener<KeyEvent>([this](KeyEvent* e){
     if (
       e->m_pressed &&
@@ -66,17 +79,17 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
     return true;
   });
   addListener<MouseEvent>([this](MouseEvent* e){
-    //geode::log::debug("[MainMenuButton]: {}", (int)(e->m_eventType));
+    //
     switch (e->m_eventType) {
       case MouseEventType::Enter: 
         runAction(CCEaseElasticOut::create(
-          CCResizeTo::create(0.5,BUTTON_WIDTH*1.5,c_buttonAreaHeight)
+          ContainerResizeTo::create(0.5,BUTTON_WIDTH*1.5,c_buttonAreaHeight)
         ));
         FMODAudioEngine::sharedEngine()->playEffect("button-hover.wav"_spr);
         break;
       case MouseEventType::Exit:
         runAction(CCEaseElasticOut::create(
-          CCResizeTo::create(0.5,BUTTON_WIDTH,c_buttonAreaHeight)
+          ContainerResizeTo::create(0.5,BUTTON_WIDTH,c_buttonAreaHeight)
         ));
         break;
       case MouseEventType::MouseDown:
@@ -101,20 +114,5 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   return true;
 }
 
-void MainMenuButton::setContentSize(const CCSize& size) {
-  ClickableContainer::setContentSize(size);
-  auto s = getContentSize();
-  // todo: move to container
-  if (m_background) {
-    m_background->setContentSize(s);
-    m_background->setPosition(s/2);
-  }
-  if (m_hover) {
-    m_hover->setContentSize(s);
-    m_hover->setPosition(s/2);
-  }
-  if (auto ui = getChildByID("ui")) ui->setPosition(s/2);
-  if (m_askForUpdate) m_pParent->updateLayout();
-}
 
 GDL_NS_END

@@ -10,6 +10,7 @@
 GDF_NS_START
 struct MusicEnded : public Event {};
 struct MusicStarted : public Event {};
+struct MusicInfoRequest : public Event {};
 
 /// FMODAudioEngine 2
 ///
@@ -57,6 +58,8 @@ public:
     m_paused = true;
     m_channel->setPaused(true);
   };
+
+  void dispatchMusicInfoEvent(Container* target);
 
   void setLowPassStrength(float lps);
 

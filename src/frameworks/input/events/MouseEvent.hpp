@@ -23,7 +23,7 @@ public:
 
   MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
     : m_position(pos), m_eventType(event), m_clicked(clicked) {
-      //geode::log::debug("[MouseEvent]: dispatching mouse id {}", (int)m_eventType);
+      //
   };
 };
 class MouseScrollEvent : public Event {
@@ -35,7 +35,7 @@ public:
 
   MouseScrollEvent(CCPoint delta, CCPoint pos, bool clicked)
     : m_position(pos), m_scrollDelta(delta), m_clicked(clicked) {
-      //geode::log::debug("[MouseEvent]: dispatching mouse id {}", (int)m_eventType);
+      //
   };
 };
 GDF_NS_END

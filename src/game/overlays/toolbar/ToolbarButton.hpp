@@ -8,15 +8,15 @@
 
 GDL_NS_START
 class ToolbarButton : public frameworks::ClickableContainer {
-  frameworks::CCResizableSprite* m_iconSprite;
-  frameworks::Container* m_bg;
-  frameworks::Container* m_flashBg;
+protected:
+  geode::Ref<frameworks::CCResizableSprite> m_iconSprite;
+  geode::Ref<frameworks::Container> m_bg;
+  geode::Ref<frameworks::Container> m_flashBg;
 
-  frameworks::FillFlowContainer* m_tooltipContainer; 
+  geode::Ref<frameworks::FillFlowContainer> m_tooltipContainer; 
   OsuText* m_text;
   OsuText* m_subtext;
 
-protected:
 public:
   bool init(frameworks::IconConstructor icon, std::string text, std::string sub, AxisAlignment align = AxisAlignment::Start);
   void setTooltipAlignment(AxisAlignment align);

@@ -8,12 +8,14 @@ void Container::setMinSize(const cocos2d::CCSize &size) {
   assert(m_maxSize.width >= 0 || size.width <= m_maxSize.width);
   assert(m_maxSize.height >= 0 || size.height <= m_maxSize.height);
   m_minSize = size;
+  updateSize();
 }
 
 void Container::setMaxSize(const cocos2d::CCSize &size) {
   assert(m_minSize.width >= 0 && size.width >= m_minSize.width);
   assert(m_minSize.height >= 0 && size.height >= m_minSize.height);
   m_maxSize = size;
+  updateSize();
 }
 
 float Container::processUnit(float value, Unit unit, bool isWidth) {
@@ -47,7 +49,13 @@ float Container::processUnit(float value, Unit unit, bool isWidth) {
     return value;
   }
 }
-
+void Container::setMouseEnabled(bool e) {
+  if (!e) {
+    if (m_isDragging) dispatchEvent(new MouseEvent(MouseEventType::MouseUp, m_lastMousePos, false));
+    if (m_lastInBounds) dispatchEvent(new MouseEvent(MouseEventType::Exit, m_lastMousePos, false));
+  } 
+  m_mouseEnabled = e;
+};
 void Container::requestBoxUpdate() {
   if (m_containerBoxDesynced) updateContainerBox();
   else if (m_containerBoxShapeDesynced) transformContainerBox();
@@ -58,29 +66,23 @@ bool Container::init() {
     return false;
 
   m_backgroundNode = cocos2d::CCLayerColor::create();
-  this->CCNode::addChild(m_backgroundNode, -998);
+  CCNode::addChild(m_backgroundNode, -998);
   
-  setStencil(cocos2d::CCDrawNode::create());
+  setStencil(m_stencil = cocos2d::CCDrawNode::create());
+  // high
+  CCNode::addChild(m_border = cocos2d::CCDrawNode::create(), INT_MAX);
 
   // main handler that processes MouseDown & MouseUp event to others when applicable
-  this->addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
+  addListener<MouseEvent>([this](MouseEvent *mouseEvent) {
+    if (!m_mouseEnabled) return false;
     auto currentPos = convertToNodeSpaceA(this, mouseEvent->m_position);
     // request a box update (if needed)
     requestBoxUpdate();
-    /*
-    geode::log::debug("[{}]: {} {}", getObjectName(this), currentPos, d == nullptr ? h2d::FRectD{
-      h2d::Point2dD{0,0},
-      h2d::Point2dD{2,2}
-    } : d->size() >= 2 ? d->getBB() : h2d::FRectD{
-      h2d::Point2dD{0,0},
-      h2d::Point2dD{1,1}
-    });
-    */
     bool isInBounds = true;
     isInBounds = m_containerBox!=nullptr && h2d::Point2dF(
       currentPos.x, currentPos.y
     ).isInside(*(m_containerBox));
-    //geode::log::debug("[Container]: {} | {} | {}", isInBounds, currentPos, (intptr_t)m_containerBox);
+    //
     if (!isInBounds) {
       //mouseEvent->stopPropagation();
       //if (mouseEvent->m_eventType!=MouseEventType::Move) goto fish;
@@ -97,8 +99,8 @@ bool Container::init() {
           ));
           mouseEvent->stopPropagation();
         }
-        if (m_shouldSendClick) {
-          dispatchEvent(new MouseEvent(MouseEventType::Click, mouseEvent->m_position, mouseEvent->m_clicked));
+        if (m_shouldSendClick && isInBounds) {
+          dispatchEvent(new MouseEvent(MouseEventType::Click, mouseEvent->m_position, /*false*/mouseEvent->m_clicked));
         }
         break;
       case MouseEventType::MouseDown: {
@@ -110,23 +112,26 @@ bool Container::init() {
         break;
       }
       case MouseEventType::Move: {
-        if (m_isDragging) {
-          m_lastDragOffset = currentPos - m_lastMousePos;
-          dispatchEvent(new MouseDragEvent(
-            MouseDragEventType::Move, 
-            m_dragStartPos, currentPos, 
-            m_lastDragOffset
-          ));
-          //mouseEvent->stopPropagation();
-        } else if (m_touchEnabled && m_shouldSendClick && mouseEvent->m_clicked && isInBounds) {
-          m_isDragging = true;
-          dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
-          //mouseEvent->stopPropagation();
+        if (m_dragEnabled) {
+          if (m_isDragging) {
+            m_lastDragOffset = currentPos - m_lastMousePos;
+            dispatchEvent(new MouseDragEvent(
+              MouseDragEventType::Move, 
+              m_dragStartPos, currentPos, 
+              m_lastDragOffset
+            ));
+            mouseEvent->stopImmediatePropagation();
+          } else if (m_touchEnabled && m_shouldSendClick && mouseEvent->m_clicked && isInBounds) {
+            m_isDragging = true;
+            dispatchEvent(new MouseDragEvent(MouseDragEventType::Start, currentPos, currentPos, CCPointZero));
+            mouseEvent->stopImmediatePropagation();
+            m_shouldSendClick = false;
+          }
         }
         if (m_lastInBounds != isInBounds) {
           dispatchEvent(new MouseEvent(isInBounds ? MouseEventType::Enter : MouseEventType::Exit, currentPos, mouseEvent->m_clicked));
           m_lastInBounds = isInBounds;
-          //geode::log::debug("[Container]: Move enter/exit checking for {}: {}", this, isInBounds);
+          //
         }
         m_lastMousePos = currentPos;
         break;
@@ -135,7 +140,7 @@ bool Container::init() {
       case MouseEventType::Click:
         break;
       case MouseEventType::Exit:
-        //log::debug("exit | {}", isInBounds);
+        //
         if (m_isDragging) {
           m_isDragging = false;
           // should we actually do this?
@@ -147,7 +152,7 @@ bool Container::init() {
         return true;
         break;
       case MouseEventType::Enter:
-        //log::debug("enter | {}", isInBounds);
+        //
         mouseEvent->stopPropagation();
         m_lastInBounds = true;
         return true;
@@ -158,7 +163,7 @@ fish:
     return isInBounds;
   });
 
-  this->addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
     updateSize();
     updatePosition();
     m_backgroundNode->setContentSize(getContentSize());
@@ -170,16 +175,28 @@ fish:
 }
 
 void Container::drawBorder() {
-  auto stencil = geode::cast::typeinfo_cast<CCDrawNode*>(getStencil());
-  stencil->clear();
-  
   auto size = getContentSize();
-  auto radius = m_borderRadius;
+
+  bool redrawStencil = (
+    size != m_copyOfTheContentSizeInCaseTheOriginalGetsCalled &&
+    m_borderRadius.isUpdated()
+  );
+  bool redrawBorder = (
+    m_borderRadius.isUpdated() &&
+    m_borderThickness.isUpdated()
+  );
+
+  if (redrawStencil) {
+    m_copyOfTheContentSizeInCaseTheOriginalGetsCalled = size;
+  }
   
-  if (m_clippingEnabled && stencil == nullptr) {
+  float radius = m_borderRadius;
+  float thickness = m_borderThickness;
+
+  if (m_clippingEnabled && m_stencil == nullptr) {
     /// this is wacky but like i have no idea why it crashes
-    stencil = cocos2d::CCDrawNode::create();
-    setStencil(stencil);
+    m_stencil = cocos2d::CCDrawNode::create();
+    setStencil(m_stencil);
   }
   if (radius > 0 && size != CCSizeZero) {
     /*
@@ -190,15 +207,33 @@ void Container::drawBorder() {
     cocos2d::CCPoint* vertices = new cocos2d::CCPoint[t_vc];
     */
     cocos2d::CCPoint vertices[c_verticesPointsSize];
-    requestBoxUpdate();
+    if (redrawStencil) requestBoxUpdate();
     // Draw corners
     for (int i = 0; i < /*t_vc*/c_verticesPointsSize; i++) {            
       vertices[i] = cocos2d::CCPoint{m_verticesPoints[i][0], m_verticesPoints[i][1]};
     }
     
-    if (stencil) stencil->drawPolygon(vertices, c_verticesPointsSize, {1,1,1,1}, 0, {0,0,0,0});
+    if (m_stencil && redrawStencil) {
+      m_stencil->clear();
+      m_stencil->drawPolygon(vertices, c_verticesPointsSize, {1,1,1,1}, 0, {0,0,0,0});
+    }
+    
+    // Draw the border
+    if (redrawBorder) {
+      m_border->clear();
+      // Create a copy of all the vertices and move it towards the center by m_borderThickness/2 unit
+      cocos2d::CCPoint borderVertices[c_verticesPointsSize];
+      for (int i = 0; i < c_verticesPointsSize; i++) {
+        borderVertices[i] = cocos2d::CCPoint{
+          vertices[i].x - (vertices[i].x - size.width / 2) * m_borderThickness/2 / radius,
+          vertices[i].y - (vertices[i].y - size.height / 2) * m_borderThickness/2 / radius
+        };
+      }
+      // actually draw it
+      ccColor4F borderColor = ccc4FFromccc4B(m_borderColor);
+      m_border->drawPolygon(borderVertices, c_verticesPointsSize, {0,0,0,0}, thickness, borderColor);
+    }
 
-    //delete[] vertices;
   } else {
     cocos2d::CCPoint amougis[4] {
       {0,0},
@@ -208,7 +243,12 @@ void Container::drawBorder() {
     };
     // Draw rectangle background for no radius
     ccColor4F bgColor = ccc4FFromccc4B(m_backgroundColor);
-    if (stencil) stencil->drawPolygon(amougis, 4, bgColor, 0.f, bgColor);
+    if (m_stencil) m_stencil->drawPolygon(amougis, 4, bgColor, 0.f, bgColor);
+    if (redrawBorder) {
+      m_border->clear();
+      ccColor4F borderColor = ccc4FFromccc4B(m_borderColor);
+      m_border->drawPolygon(amougis, 4, {0,0,0,0}, thickness, borderColor);
+    }
   }
 }
 
@@ -308,7 +348,7 @@ void Container::setPositionY(float y) {
 
 void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
-  dispatchEvent(new NodeLayoutUpdated(parent));
+  dispatchEvent(new NodeLayoutUpdated());
 }
 
 void Container::updateSize() {
@@ -331,24 +371,14 @@ void Container::updateSize() {
     processUnit(width, m_sizeUnit[0], true) - processUnit(m_padding.l + m_padding.r, Unit::UIKit, true),
     processUnit(height, m_sizeUnit[1], false) - processUnit(m_padding.t + m_padding.d, Unit::UIKit, false)
   });
-  m_containerBoxDesynced = true;
-}
-
-static bool isTopAnchor(geode::Anchor anchor) {
-  return anchor == geode::Anchor::Top ||
-         anchor == geode::Anchor::TopLeft ||
-         anchor == geode::Anchor::TopRight;
-}
-static bool isRightAnchor(geode::Anchor anchor) {
-  return anchor == geode::Anchor::Right ||
-         anchor == geode::Anchor::TopRight ||
-         anchor == geode::Anchor::BottomRight;
+  m_containerBoxShapeDesynced = true;
+  updateContainerBox();
 }
 
 void Container::updatePosition() {
   cocos2d::CCPoint unanchoredPos {
-    processUnit(m_position.x*(isRightAnchor(m_anchor)?-1:1), m_positionUnit[0], true),
-    processUnit(m_position.y*(isTopAnchor(m_anchor)?-1:1), m_positionUnit[1], false)
+    processUnit(m_position.x, m_positionUnit[0], true),
+    processUnit(m_position.y, m_positionUnit[1], false)
   };
   setUserObject("gdlazer/devtools/position", cocos2d::CCArray::create(
     cocos2d::CCInteger::create(unanchoredPos.x),
@@ -492,26 +522,27 @@ void Container::transformContainerBox() {
 }
 //[[clang::optnone]]
 void Container::updateContainerBox(bool force) {
+  float borderRadius = m_borderRadius;
   if (!m_containerBoxShapeDesynced && !force) return;
   if (
     getContentSize() == cocos2d::CCSize{0,0} ||
     // doubt it is this
-    getContentWidth() < m_borderRadius || getContentHeight() < m_borderRadius
+    getContentWidth() < borderRadius || getContentHeight() < borderRadius
   ) {
     //geode::log::warn("Homographies crash check failed for {}, no container box is created.", this);
     return;
   }
-  auto cs2 = getContentSize() - (cocos2d::CCPoint{m_borderRadius, m_borderRadius});
-  auto bl = h2d::Point2dF{m_borderRadius, m_borderRadius},
+  auto cs2 = getContentSize() - (cocos2d::CCPoint{borderRadius, borderRadius});
+  auto bl = h2d::Point2dF{borderRadius, borderRadius},
        tr = h2d::Point2dF{cs2.width, cs2.height};
   
 
-  //geode::log::debug("inner rect of {}: {}", this, innerRect);
+  //
 
-  if (m_borderRadius > 0) {
+  if (borderRadius > 0) {
     std::set<h2d::Point2dF> p;
     auto size = getContentSize();
-    auto radius = m_borderRadius;
+    auto radius = borderRadius;
     std::array<h2d::Point2dF, c_verticesPointsSize> vertices;
 
     calculatePolygonVertPoints();
@@ -541,7 +572,7 @@ void Container::updateContainerBox(bool force) {
   m_containerBoxDesynced = true;
 
   transformContainerBox();
-  //log::debug("{}", p.getPts());
+  //
 };
 void Container::setScale(float scale) {
   CCNode::setScale(scale);
@@ -586,15 +617,15 @@ cocos2d::CCPoint Container::calculateAnchoredPosition(
     case Anchor::Center:
       return {position.x + size.width / 2 + (padL - padR) / 2, position.y + size.height / 2 + (padT - padD) / 2};
     case Anchor::TopLeft:
-      return {position.x + padL, position.y + size.height - padT};
+      return {position.x + padL, size.height - position.y - padT};
     case Anchor::Top:
-      return {position.x + size.width / 2 + (padL - padR) / 2, position.y + size.height - padT};
+      return {position.x + size.width / 2 + (padL - padR) / 2, size.height - position.y - padT};
     case Anchor::TopRight:
-      return {position.x + size.width - padR, position.y + size.height - padT};
+      return {size.width - position.x - padR, size.height - position.y - padT};
     case Anchor::Right:
-      return {position.x + size.width - padR, position.y + size.height / 2 + (padT - padD) / 2};
+      return {size.width - position.x - padR, position.y + size.height / 2 + (padT - padD) / 2};
     case Anchor::BottomRight:
-      return {position.x + size.width - padR, position.y + padD};
+      return {size.width/* - position.x - padR*/, position.y + padD};
     case Anchor::Bottom:
       return {position.x + size.width / 2 + (padL - padR) / 2, position.y + padD};
     case Anchor::Left:

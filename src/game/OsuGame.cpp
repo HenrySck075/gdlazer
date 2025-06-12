@@ -2,12 +2,46 @@
 #include "overlays/toolbar/ToolbarConstants.hpp"
 #include "../frameworks/graphics/CCEase2.hpp"
 #include "../frameworks/graphics/color/Color4.hpp"
+#include "../frameworks/audio/AudioManager.hpp"
 #include "../helpers/CustomActions.hpp"
 #include <random>
 
 namespace {
   std::mutex g_fish;
 };
+
+#include <Geode/modify/LevelTools.hpp>
+struct LevelToolsCustomSong : geode::Modify<LevelToolsCustomSong, LevelTools> {
+  static gd::string getAudioTitle(int trackID) {
+    switch (trackID) {
+      case -7: return "Triangles";
+      case -8: return "circles!";
+      default: return LevelTools::getAudioTitle(trackID);
+    }
+  }
+  static int artistForAudio(int trackID) {
+    switch (trackID) {
+      case -7: return -1;
+      case -8: return -2;
+      default: return LevelTools::artistForAudio(trackID);
+    }
+  }
+  static gd::string getAudioFileName(int trackID) {
+    switch (trackID) {
+      case -7: return "triangles.mp3"_spr;
+      case -8: return "circles.mp3"_spr;
+      default: return LevelTools::getAudioFileName(trackID);
+    }
+  }
+  static gd::string nameForArtist(int artistID) {
+    switch (artistID) {
+      case -1: return "cYsmix";
+      case -2: return "nekodex";
+      default: return LevelTools::nameForArtist(artistID);
+    }
+  }
+};
+
 GDL_NS_START
 using namespace frameworks;
 geode::Ref<OsuGame> OsuGame::get(bool create) {
@@ -29,13 +63,13 @@ geode::Ref<OsuGame> OsuGame::get(bool create) {
 void OsuGame::setMouseVisibility(bool visible) {
   m_cursorNode->setVisible(visible);
 };
-void OsuGame::addChild(CCNode* child, int zorder) {
-  if (m_cursorNode && m_cursorNode != child && m_cursorNode->getZOrder() <= zorder) {
-    m_cursorNode->setZOrder(child->getZOrder()+1);
-  };
-  CCNode::addChild(child);
+void OsuGame::update(float dt) {
+  auto lastChild = static_cast<CCNode*>(getChildren()->lastObject());
+  if (lastChild!=m_cursorNode && lastChild->getZOrder() > m_cursorNode->getZOrder()) {
+    m_cursorNode->setZOrder(lastChild->getZOrder());
+  }
+  Game::update(dt);
 };
-
 bool OsuGame::init() {
   if (!Game::init()) return false;
   m_toolbar = $verifyPtr(Toolbar::create());
@@ -101,7 +135,7 @@ bool OsuGame::init() {
           CCFadeIn::create(0.8), Easing::OutQuint
         )
       );
-      m_dragStartPosition = std::make_optional(cure->m_position);
+      m_dragStartPosition = cure->m_position;
       playTapSample();
     } 
     else if (cure->m_eventType == MouseEventType::MouseUp) {
@@ -134,7 +168,49 @@ bool OsuGame::init() {
 #endif
   m_everypence->setContentSize(m_everypence->getContentSize());
 
+
+
+  auto onlineLevels = GameLevelManager::sharedState()->m_onlineLevels;
+  // 1st: song id
+  std::unordered_map<int, GJGameLevel*> levelsBySongID;
+  for (auto e : CCDictionaryExt<int, GJGameLevel>(onlineLevels)) {
+    auto level = e.second;
+    int songId = level->m_songIDs.size() != 0 ? level->m_songIDs[0] : level->m_songID;
+    auto i = levelsBySongID.find(songId);
+    if (i==levelsBySongID.end()) {
+      levelsBySongID.insert(std::make_pair(songId, level));
+    } else {
+      if (i->second->m_downloads < level->m_downloads) {
+        i->second = level;
+      }
+    }
+  }
+  for (auto e : levelsBySongID) m_playlist.push_back(e.second);
+
   return true;
+}
+
+void OsuGame::startMusicSequence() {
+  m_songIndex = -1;
+  startNextSong();
+}
+void OsuGame::startNextSong() {
+  m_songIndex++;
+  AudioManager::get()->playFromLevel(m_playlist[m_songIndex], 0);
+}
+
+void OsuGame::addChild(CCNode* child) {
+  addChild(child, child->getZOrder());
+}
+void OsuGame::addChild(CCNode* child, int zOrder) {
+  CCScene::addChild(child, zOrder);
+  m_containsBlockingUIInFront = child != m_toolbar && child != m_cursorNode && child != m_screensContainer && child != m_overlaysContainer;
+}
+void OsuGame::removeChild(CCNode* child) {
+  CCScene::removeChild(child);
+  if (child != m_toolbar && child != m_cursorNode && child != m_screensContainer && child != m_overlaysContainer) {
+    m_containsBlockingUIInFront = false;
+  }
 }
 
 bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
@@ -148,6 +224,7 @@ bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
   }
   #endif
   if (!Game::doDispatchEvent(event, type)) return false;
+  if (m_containsBlockingUIInFront && (type == typeid(MouseEvent) || type == typeid(KeyEvent))) return false;
   if (type == typeid(NodeLayoutUpdated)) {
     m_everypence->setContentSize({getContentWidth(), getContentHeight()-(m_toolbar->isOpen() ? m_everypence->processUnit(ToolbarConstants::c_height, Unit::UIKit, false) : 0)});
   }
@@ -191,7 +268,7 @@ void OsuGame::hideToolbar() {
 
 void OsuGame::setMainContainerHeight(float height) {
   m_everypence->setContentSize({100, height}, Unit::Percent, Unit::OpenGL);
-  m_everypence->dispatchEvent(new NodeLayoutUpdated(m_everypence)); // why
+  m_everypence->dispatchEvent(new NodeLayoutUpdated()); // why
 }
 
 /// Store a uniform random distribution out here so we don't have to recreate one on every playTapSample call

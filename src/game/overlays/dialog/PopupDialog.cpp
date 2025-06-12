@@ -12,10 +12,11 @@ using namespace frameworks;
 float PopupDialog::width = 250.f;
 float PopupDialog::height = 230.f;
 
-bool PopupDialog::init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
+bool PopupDialog::init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons, float strength) {
   if (!OsuOverlayContainer::init()) return false;
   CCSize size = CCSize{250,230};
   m_main->setContentSize(size);
+  m_lowPassStrength = strength;
   // sizes the dialog overlay to fullscreen aka not counting the toolbar height
   setContentSize({1,1},Unit::Viewport);
   setUserObject("popupdialog"_spr, CCBool::create(true));
@@ -89,6 +90,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_btnLayer->setPosition(CCPoint{0,40});
   m_btnLayer->setContentSize(size);
   m_btnLayer->setCascadeOpacityEnabled(true);
+  m_btnLayer->setAutoUpdateLayout(false);
   m_main->addChild(m_btnLayer);
 
   for (auto& btn : buttons) { 
@@ -98,10 +100,6 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   }
   m_btnLayer->setID("buttonLayer");
   queueInMainThread([this]{m_btnLayer->updateLayout();});
-  addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated* e) {
-    m_btnLayer->updateLayout();
-    return true;
-  });
 
   m_bodyLayout->updateLayout();
   m_bodyLayout->setCascadeOpacityEnabled(true);
@@ -157,7 +155,7 @@ void PopupDialog::onClose() {
 }
 
 bool PopupDialog::init2(
-  std::string const &title, std::string const &content,
+  std::string const &title, std::string const &content, float strength,
   std::string const &confirmButtonText, std::string const &cancelButtonText,
   frameworks::ButtonCallback confirmCallback) {
   return init(
@@ -178,7 +176,7 @@ bool PopupDialog::init2(
         "dialog-cancel-select.wav"_spr, 
         [this](Container* self) { hide(); }
       )
-    }
+    }, strength
   );
 }
 

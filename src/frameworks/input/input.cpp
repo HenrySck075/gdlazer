@@ -20,7 +20,7 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 	) {}
 	*/
 	void onGLFWMouseMoveCallBack(GLFWwindow * window, double x, double y) {
-		//log::debug("hi chat");
+		//
 		int w; int h;
 		w = m_obScreenSize.width;
 		h = m_obScreenSize.height;
@@ -50,7 +50,10 @@ struct m : public Modify<m, cocos2d::CCEGLView> {
 struct md : public geode::Modify<md, CCMouseDispatcher> {
   bool dispatchScrollMSG(float x, float y) {
     auto g = Game::get(false);
-    if (g!=nullptr && cocos2d::CCScene::get() == g) g->dispatchEvent(new MouseScrollEvent({x,y}, g_mousePos, g_mouseClicked));
+    if (g!=nullptr && cocos2d::CCScene::get() == g) {
+      
+      g->dispatchEvent(new MouseScrollEvent({x,y}, g_mousePos, g_mouseClicked));
+    }
     return CCMouseDispatcher::dispatchScrollMSG(x, y);
   }
 };

@@ -34,6 +34,14 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
     logo->initWithSpriteFrameName("geode.loader/geode-logo.png");
   }
 
+  addListener<MouseEvent>([mod](MouseEvent* e){
+    if (e->m_eventType == MouseEventType::Click) {
+      geode::openInfoPopup(mod);
+      return true;
+    }
+    return false;
+  });
+
 
   auto bg = Container::create();
   bg->setContentSize({HEIGHT+CORNER_RADIUS*2, HEIGHT},Unit::UIKit);
@@ -65,7 +73,7 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   metaContainer->setAutoResize(false);
   metaContainer->updateLayout();
   //metaContainer->setContentSize({WIDTH - HEIGHT + CORNER_RADIUS, metaContainer->getContentHeight()}, Unit::UIKit, Unit::OpenGL);
-  metaContainer->setMinSize({WIDTH - HEIGHT + CORNER_RADIUS,HEIGHT}); /// what happened why dont this work
+  metaContainer->setMinSize({WIDTH - HEIGHT,HEIGHT}); /// what happened why dont this work
 
   return true;
 }

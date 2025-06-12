@@ -26,8 +26,11 @@ public:
   bool init(std::string text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
   void setString(std::string string);
 
+  geode::Ref<CCLabelBMFont> inner() {return m_textNode;}
+
   void setOpacity(GLubyte opacity) override;
   void updateDisplayedOpacity(GLubyte parentOpacity) override;
+  void setKerning(float kerning);
 };
 
 GDL_NS_END

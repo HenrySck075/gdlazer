@@ -5,7 +5,20 @@
 
 GDF_NS_START
 bool OverlayContainer::init() {
+  
+  m_shown.addCallback([this](bool, bool value){
+    auto g = Game::get();
+    if (value) {
+      g->pushOverlay(this);
+      g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popin));
+    }
+    else {
+      g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popout));
+      g->popOverlay(this);
+    }
+  });
   if (!VisibilityContainer::init()) return false;
+  
   m_main = Container::create();
   m_main->setContentSize({0,0});
   m_main->setAnchorPoint({0.5,0.5});
@@ -30,18 +43,6 @@ bool OverlayContainer::init() {
       #endif
     }
     return true;
-  });
-  
-  m_shown.addCallback([this](bool, bool value){
-    auto g = Game::get();
-    if (value) {
-      g->pushOverlay(this);
-      g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popin));
-    }
-    else {
-      g->dispatchEvent(new OverlayEvent(this, OverlayEvent::Type::Popout));
-      g->popOverlay(this);
-    }
   });
   return true;
 }

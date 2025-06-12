@@ -38,7 +38,7 @@ bool ToolbarToggleButton::init(IconConstructor icon, std::string text, std::stri
   toggleBg->setBorderRadius(4);
   toggleBg->setClippingEnabled(true);
 
-  addChild(toggleBg,-4);
+  addChild(toggleBg,-6);
   return true;
 }
 GDL_NS_END

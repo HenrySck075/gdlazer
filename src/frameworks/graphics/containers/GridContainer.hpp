@@ -43,6 +43,7 @@ public:
   void setGap(float spacing);
 
   void addChildAtCell(int row, int column, Container* child);
+  void figureCellPlacementsFromChildrenList(CCArrayExt<Container> children);
   void reserve(int rows, int columns);
 
   void updateLayout();

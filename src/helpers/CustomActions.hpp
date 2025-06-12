@@ -62,8 +62,8 @@ public:
    *  @lua NA
    */
   //virtual CCObject* copyWithZone(CCZone* pZone);
-  virtual void startWithTarget(CCNode* pTarget);
-  virtual void update(float time);
+  void startWithTarget(CCNode* pTarget) override;
+  void update(float time) override;
 
 public:
 
@@ -81,6 +81,8 @@ protected:
   float m_fEndContentHeight;
   float m_fDeltaWidth;
   float m_fDeltaHeight;
+
+  bool m_isContainer;
 };
 
 

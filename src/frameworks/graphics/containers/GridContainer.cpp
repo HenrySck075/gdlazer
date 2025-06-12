@@ -34,7 +34,7 @@ void GridContainer::reserve(int rows, int columns) {
 }
 
 std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLength) {
-  log::debug("[GridContainer]: spanlen: {}", spanLength);
+  
   bool xAxis = axis == Axes::X;
   const std::vector<Dimension>& dimensions = xAxis ? m_columnDimensions : m_rowDimensions;
   int sdlen = dimensions.size();
@@ -42,7 +42,7 @@ std::vector<float> GridContainer::getCellSizesAlongAxis(Axes axis, float spanLen
     return std::max(one, (int)two.size());
   });
   int cellRows = m_gridContent.size();
-  log::debug("[GridContainer]: querying cell sizes along the {} axis ({} {} {})", xAxis ? 'x' : 'y', cellColumns, cellRows, sdlen);
+  
   int spanCount = xAxis ? cellColumns : cellRows;
 
   std::vector<float> sizes(spanCount, 0);
@@ -129,7 +129,7 @@ std::vector<float> GridContainer::distributeAlongAxis(Axes axis, float spanLengt
   // Distribution size for _each_ distributed cell
   float distributionSize = fmax(0, requiredSize) / distributionCount;
 
-  log::debug("[GridContainer]: rs|ds-dc: {}|{}-{}", requiredSize, distributionSize, distributionCount);
+  
 
   // Ordering is important to maximize excess at every step
   std::sort(distributedDimensions.begin(), distributedDimensions.end(), [](DimensionEntry a, DimensionEntry b) {
@@ -169,8 +169,10 @@ void GridContainer::updateLayout() {
 
   /// layoutCell()
   // completely different dimensions from getCellSizesAlongAxis??????
-  const std::vector<float>& widths = distributeAlongAxis(Axes::X, getContentWidth()/* - Padding.TotalHorizontal*/, getCellSizesAlongAxis(Axes::X, getContentWidth()/* - Padding.TotalHorizontal*/));
-  const std::vector<float>& heights = distributeAlongAxis(Axes::Y, getContentHeight()/* - Padding.TotalVertical*/, getCellSizesAlongAxis(Axes::Y, getContentHeight()/* - Padding.TotalVertical*/));
+  const float slWidth = getContentWidth() - processUnit(getPadding().totalH(), Unit::UIKit, true);
+  const float slHeight = getContentHeight() - processUnit(getPadding().totalV(), Unit::UIKit, false);
+  const std::vector<float>& widths = distributeAlongAxis(Axes::X, slWidth, getCellSizesAlongAxis(Axes::X, slWidth));
+  const std::vector<float>& heights = distributeAlongAxis(Axes::Y, slHeight, getCellSizesAlongAxis(Axes::Y, slHeight));
 
   CCSize contentSize {0,0};
   float hgap = processUnit(m_gap, Unit::UIKit, true);
@@ -184,7 +186,6 @@ void GridContainer::updateLayout() {
       if (!cell) continue;
       
       CCSize s{widths[col], heights[row]};
-      log::debug("[GridContainer]: {},{}: {}", col, row, s);
       cell->setContentSize(s);
 
       float x = 0, y = 0;
@@ -193,6 +194,7 @@ void GridContainer::updateLayout() {
 
       if (col > 0)
         x = tryGetCell(row, col - 1)->getPositionX() + tryGetCell(row, col - 1)->getContentWidth() + hgap;
+      
       
       cell->setPosition({x,y});
       //cell->setAnchor(Anchor::TopLeft);
@@ -216,6 +218,45 @@ void GridContainer::updateLayout() {
   }
 
 }
+void GridContainer::figureCellPlacementsFromChildrenList(CCArrayExt<Container> children) {
+  // Determine the maximum number of columns that can fit based on this container's content width and children's preferred widths
+  int childCount = children.size();
+  if (childCount == 0) return;
+
+  float availableWidth = getContentWidth() - processUnit(getPadding().totalH(), Unit::UIKit, true);
+  float gap = processUnit(m_gap, Unit::UIKit, true);
+
+  // Measure each child's preferred width
+  std::vector<float> childWidths(childCount, 0.0f);
+  for (int i = 0; i < childCount; ++i) {
+    childWidths[i] = children[i]->getContentSize().width;
+  }
+  float maxChildWidth = *std::max_element(childWidths.begin(), childWidths.end());
+  if (maxChildWidth <= 0) maxChildWidth = 1.0f; // Avoid division by zero
+
+  // Estimate how many columns can fit
+  int columns = std::max(1, static_cast<int>((availableWidth + gap) / (maxChildWidth + gap)));
+  int rows = std::ceil((float)childCount / columns);
+
+  // Resize dimension vectors to match
+  m_columnDimensions.resize(columns, Dimension(Dimension::Mode::AutoSize));
+  m_rowDimensions.resize(rows, Dimension(Dimension::Mode::AutoSize));
+
+  // Resize grid content
+  m_gridContent.clear();
+  m_gridContent.resize(rows, std::vector<geode::Ref<Container>>(columns, nullptr));
+
+  // Place children into the grid row by row
+  int idx = 0;
+  for (int r = 0; r < rows; ++r) {
+    for (int c = 0; c < columns; ++c) {
+      if (idx < childCount) {
+        m_gridContent[r][c] = children[idx];
+        ++idx;
+      }
+    }
+  }
+};
 
 geode::Ref<Container> g_dummyContainer;
 

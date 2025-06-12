@@ -1,5 +1,6 @@
 #pragma once
 #include "Container.hpp"
+#include "../../bindables/Bindable.hpp"
 #include "FillDirection.hpp"
 
 GDF_NS_START
@@ -11,6 +12,9 @@ private:
     float m_gap = 0;
     bool m_axisReverse = false;
     bool m_autoResize = true;
+
+    EventListener<NodeLayoutUpdated> m_autoUpdateListener;
+    Bindable<bool> m_autoUpdate = true;
 
 public:
     static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
@@ -24,7 +28,8 @@ public:
     bool getAxisReverse() const { return m_axisReverse; }
     FillDirection getDirection() const { return m_direction; }
     geode::Anchor getChildAnchor() const { return m_anchor; }
-
+    /// Let the Container automatically calls `updateLayout` on NodeLayoutUpdated
+    void setAutoUpdateLayout(bool enable);
 
     void updateLayout();
 };

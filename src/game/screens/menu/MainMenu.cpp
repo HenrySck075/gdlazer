@@ -3,6 +3,8 @@
 #include "ButtonConstants.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 
+#include "../../OsuGame.hpp"
+
 GDL_NS_START
 using namespace frameworks;
 static const CCPoint pos {-ButtonSystem::s_wedgeWidth*4,c_buttonAreaHeight/2};
@@ -28,17 +30,16 @@ bool MainMenu::init() {
   m_buttonSysParallax->addChild(m_buttonSys);
   addChild(m_buttonSysParallax);
 
-  m_nowPlayingBox = CCLayerRGBA::create();
+  m_nowPlayingBox = FillFlowContainer::create(FillDirection::Vertical, Anchor::TopRight);
   m_nowPlayingBox->setAnchorPoint({1,1});
-  m_nowPlayingBox->ignoreAnchorPointForPosition(false);
 
-  auto songTitle = OsuText::create("",FontType::Regular,14,kCCTextAlignmentRight);
+  auto songTitle = OsuText::create("",FontType::Regular,14/1.5f,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(songTitle);
-  auto songArtist = OsuText::create("",FontType::Regular,12,kCCTextAlignmentRight);
+  auto songArtist = OsuText::create("",FontType::Regular,12/1.5f,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(songArtist);
-  auto levelInfo = OsuText::create("",FontType::Regular,10,kCCTextAlignmentRight);
+  auto levelInfo = OsuText::create("",FontType::Regular,10/1.5f,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(levelInfo);
-  
+  /*
   m_nowPlayingBox->setLayout(
     ColumnLayout::create()
     ->setAxisReverse(true)
@@ -46,6 +47,7 @@ bool MainMenu::init() {
     ->setAxisAlignment(AxisAlignment::End)
     ->setGap(0)
   );
+  */
   m_nowPlayingBox->setContentSize({300,40});
   m_nowPlayingBox->setCascadeOpacityEnabled(true);
   m_nowPlayingBox->setOpacity(0);
@@ -57,23 +59,19 @@ bool MainMenu::init() {
   });
 
   addListener<MusicStarted>([this,songTitle,songArtist,levelInfo](MusicStarted*) {
-    m_background->switchBackground();
-    auto a = AudioManager::get();
-    songTitle->setString(a->getSongName().c_str());
-    songArtist->setString(a->getSongAuthor().c_str());
-    levelInfo->setString(fmt::format("{} - {}", a->getLevelName(), a->getLevelAuthor()).c_str());
+    showNowPlayingText(songTitle, songArtist, levelInfo);
+    return true;
+  });
+  addListener<MusicInfoRequest>([this,songTitle,songArtist,levelInfo](MusicInfoRequest*) {
+    showNowPlayingText(songTitle, songArtist, levelInfo, false);
+    return true;
+  });
+  queueInMainThread([this]{
+    AudioManager::get()->dispatchMusicInfoEvent(this);
+  });
 
-    m_nowPlayingBox->updateLayout();
-    CCArray* actions = CCArray::create(
-      CCFadeIn::create(0.5),
-      CCDelayTime::create(5),
-      CCFadeOut::create(0.75),
-      nullptr
-    );
-    if (getActionManager()->numberOfRunningActionsInTarget(actions)!=0) {
-      actions->insertObject(CCFadeOut::create(0.25),0);
-    }
-    m_nowPlayingBox->runAction(CCSequence::create(actions));
+  addListener<MusicEnded>([](MusicEnded*){
+    OsuGame::get()->startNextSong();
     return true;
   });
 
@@ -85,7 +83,25 @@ bool MainMenu::init() {
 
   return true;
 }
+void MainMenu::showNowPlayingText(OsuText* songTitle, OsuText* songArtist, OsuText* levelInfo, bool switchBackground) {
+  if (switchBackground) m_background->switchBackground();
+  auto a = AudioManager::get();
+  songTitle->setString(a->getSongName().c_str());
+  songArtist->setString(a->getSongAuthor().c_str());
+  levelInfo->setString(fmt::format("{} - {}", a->getLevelName(), a->getLevelAuthor()).c_str());
 
+  m_nowPlayingBox->updateLayout();
+  CCArray* actions = CCArray::create(
+    CCFadeIn::create(0.5),
+    CCDelayTime::create(5),
+    CCFadeOut::create(0.75),
+    nullptr
+  );
+  if (getActionManager()->numberOfRunningActionsInTarget(actions)!=0) {
+    actions->insertObject(CCFadeOut::create(0.25),0);
+  }
+  m_nowPlayingBox->runAction(CCSequence::create(actions));
+}
 void MainMenu::onLogoClickIdle() {
   auto logo = this->getChildByType<OsuLogo>(0);
   m_logoMoveAction = CCMoveToModifiable::create(0.5, pos);

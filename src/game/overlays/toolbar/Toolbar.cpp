@@ -48,6 +48,8 @@ bool Toolbar::init() {
   right->addChild(ToolbarMusicButton::create());
   right->addChild(ToolbarNativeSettingsButton::create());
   right->addChild(ToolbarGeodeButton::create());
+  /// The last 3 buttons
+  right->addChild(ToolbarUserButton::create());
   right->setAnchor(Anchor::Right);
   right->setAnchorPoint({1,0.5});
   right->setPosition({
@@ -63,19 +65,12 @@ bool Toolbar::init() {
 #ifdef GEODE_IS_ANDROID
   left->setPositionX(10);
 #endif
-  queueInMainThread([left, right]{
-    left->updateLayout();
-    right->updateLayout();
-  });
-
   addChild(left);
   addChild(right);
   setOpacity(255);
 
   addListener<NodeLayoutUpdated>([this,j,right,left](NodeLayoutUpdated*e){
     gradient->setContentSize({CCNode::getContentSize().width,j});
-    left->updateLayout();
-    right->updateLayout();
     return true;
   });
 

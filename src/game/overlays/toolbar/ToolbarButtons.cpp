@@ -1,6 +1,6 @@
 #include "ToolbarButtons.hpp"
+#include "ToolbarConstants.hpp"
 #include "../../OsuGame.hpp"
-#include "Geode/cocos/cocoa/CCObject.h"
 #include "../../../frameworks/input/events/KeyEvent.hpp"
 
 GDL_NS_START
@@ -99,5 +99,75 @@ void ToolbarGeodeButton::select() {
 void ToolbarGeodeButton::deselect() {
   if (m_modsLayer) m_modsLayer->hide();
 }
+int getFrameIcon(IconType type) {
+  auto gManager = GameManager::get();
+  switch(type) {
+    default: return gManager->m_playerFrame;
+    case IconType::Ship: return gManager->m_playerShip;
+    case IconType::Ball: return gManager->m_playerBall;
+    case IconType::Ufo: return gManager->m_playerBird;
+    case IconType::Wave: return gManager->m_playerDart;
+    case IconType::Robot: return gManager->m_playerRobot;
+    case IconType::Spider: return gManager->m_playerSpider;
+    case IconType::Swing: return gManager->m_playerSwing; 
+    case IconType::Jetpack: return gManager->m_playerJetpack;
+  }
+}
+bool ToolbarUserButton::init() {
+  setID("user");
+  if (!ToolbarButton::init(OsuIcon::Music, "",
+      "",
+      AxisAlignment::End)) return false;
+  removeChild(m_iconSprite);
+  setContentSize({ToolbarConstants::c_height*4,ToolbarConstants::c_height},Unit::UIKit,Unit::UIKit);
 
+  auto flowContainer = FillFlowContainer::create();
+  flowContainer->setChildAnchor(Anchor::Left);
+  flowContainer->setGap(2);
+  flowContainer->setAutoResize(true);
+  flowContainer->setAnchor(Anchor::Center);
+  flowContainer->setAnchorPoint({0.5,0.5});
+
+  auto man = GameManager::get();
+  auto username = OsuText::create(man->m_playerName, FontType::Regular, 7);
+  username->setMaxSize({ToolbarConstants::c_height*2.f, ToolbarConstants::c_height});
+  username->setAnchor(Anchor::Left);
+  flowContainer->addChild(username);
+
+  auto icon = SimplePlayer::create(0);
+  icon->updatePlayerFrame(getFrameIcon(man->m_playerIconType), man->m_playerIconType);
+  icon->setColor(man->colorForIdx(man->getPlayerColor()));
+  icon->setSecondColor(man->colorForIdx(man->getPlayerColor2()));
+  icon->setGlowOutline(man->colorForIdx(man->getPlayerGlowColor()));
+  icon->enableCustomGlowColor(man->colorForIdx(man->getPlayerGlowColor()));
+  if(!man->getPlayerGlow()) icon->disableGlowOutline();
+
+  icon->setScale(processUnit(ToolbarConstants::c_height-6, Unit::UIKit, false) / 30.5);
+
+  auto iconWrapper = Container::create();
+  
+  iconWrapper->addChild(icon);
+  iconWrapper->setContentSize({ToolbarConstants::c_height, ToolbarConstants::c_height}, Unit::UIKit);
+  icon->setContentSize(iconWrapper->getContentSize());
+  static_cast<CCNode*>(icon->getChildren()->objectAtIndex(0))->setAnchorPoint({0,0});
+  icon->setAnchorPoint({0,0});
+  iconWrapper->setPadding({2});
+  iconWrapper->setAnchor(Anchor::Left);
+
+  flowContainer->addChild(iconWrapper);
+
+  flowContainer->updateLayout();
+  username->inner()->limitLabelWidth(username->getContentWidth(), 1, 0.02);
+
+  addChild(flowContainer);
+
+  addListener<MouseEvent>([this](MouseEvent* e) {
+    if (e->m_eventType == MouseEventType::Click && isMouseEntered()) {
+      MenuLayer::get()->onMyProfile(this);
+    }
+    return true;
+  });
+
+  return true;
+}
 GDL_NS_END

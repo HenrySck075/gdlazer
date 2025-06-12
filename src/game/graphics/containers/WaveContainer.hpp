@@ -10,15 +10,13 @@ using ColorScheme = OverlayColorScheme;
 
 class WaveContainer : public OsuOverlayContainer {
 private:
-  bool m_hiding = false;
-
   CCPoint m_startTouchLocation = {0,0};
   CCRect m_touchBoundary;
 
-  CCDrawNode* m_wave1;
-  CCDrawNode* m_wave2;
-  CCDrawNode* m_wave3;
-  CCDrawNode* m_wave4;
+  CCDrawNode* m_wave1 = nullptr;
+  CCDrawNode* m_wave2 = nullptr;
+  CCDrawNode* m_wave3 = nullptr;
+  CCDrawNode* m_wave4 = nullptr;
 
   geode::Ref<Container> m_body; /// TODO: delete this?
 
@@ -30,7 +28,6 @@ private:
   float appearDuration = 0.8f;
   float disappearDuration = 0.5f;
 
-  CCDrawNode* createWave(float w, CCSize size, float angle, ccColor4B col);
   void onClose() override;
   void onOpen() override;
 public:

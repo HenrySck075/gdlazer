@@ -34,7 +34,7 @@
     },
     "dont": {
       "name": "Just, don't.",
-      "description": "Does not do anything... Well, nothing useful.",
+      "description": "Does not do anything... Well, nothing useful. Like, you risk being confused with the crashlog, even.",
       "type": "bool",
       "default": false
     },
@@ -64,7 +64,7 @@
       ]
     },
     "files": [
-      "resources/*.mp3",
+      "resources/tracks/*.mp3",
       "resources/sfx/gameplay/*.wav",
       "resources/sfx/menu/*.wav",
       "resources/sfx/ui/*.wav",

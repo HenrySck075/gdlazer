@@ -56,12 +56,12 @@ static const float c_angle1 = 13;
 static const float c_angle2 = -7;
 static const float c_angle3 = 4;
 static const float c_angle4 = -2;
-CCDrawNode* WaveContainer::createWave(float w, CCSize size, float angle, ccColor4B col) {
+CCDrawNode* createWave(float w, CCSize size, float angle, ccColor4B col, std::optional<float> offsety = std::nullopt) {
   CCDrawNode* wave;
   float offset;
   std::tie(wave, offset) = drawWave(size, col, angle); 
   wave->setAnchorPoint({0.5,1}); 
-  wave->setPosition({w,-offset-2});
+  wave->setPosition({w,offsety.value_or(-offset-2)});
   return wave;
 }
 WaveContainer* WaveContainer::create(ColorScheme color, Container* body) {
@@ -83,6 +83,20 @@ bool WaveContainer::init(ColorScheme color, Container* pBody) {
 
     return true;
   }); 
+  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e) {
+    if (!m_shown) return true;
+    if (m_wave1 == nullptr) return true;
+    removeChild(m_wave1);
+    removeChild(m_wave2);
+    removeChild(m_wave3);
+    removeChild(m_wave4);
+    addChild(m_wave1 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle1, m_provider->Light4(), getContentHeight()));
+    addChild(m_wave2 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle2, m_provider->Light3(), getContentHeight()));
+    addChild(m_wave3 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle3, m_provider->Dark4(), getContentHeight()));
+    addChild(m_wave4 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle4, m_provider->Dark3(), getContentHeight()));
+
+    return true;
+  });
   setBackgroundColor({0,0,0,0});
   m_provider = OverlayColorProvider::create(color);
   m_provider->retain();
@@ -100,22 +114,22 @@ bool WaveContainer::init(ColorScheme color, Container* pBody) {
   m_main->addChild(m_body);
   m_main->setAnchorPoint({0.5,1});
   m_main->setZOrder(777);
+  m_main->setPadding({16, 0});
 
   return true;
 }
 
 
 void WaveContainer::onOpen() {
-  m_hiding = false;
   /// As Unit::Percent is dependent on the parent 
   /// and this still hasn't had the overlay container parent yet,
-  queueInMainThread([this]{
+  //queueInMainThread([this]{
     auto h = getContentHeight();
     if (!m_wave1) {
       auto w = m_main->getContentWidth();
       auto tw = getContentWidth();
       CCSize k {w,h};
-      log::debug("[WaveContainer]: {}", k);
+      
 
       m_wave1 = createWave(tw/2,k, c_angle1, m_provider->Light4());
       m_pos1 = m_wave1->getPositionY();
@@ -144,12 +158,11 @@ void WaveContainer::onOpen() {
 
     FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
   #undef j
-  });
+  //});
 }
 
 void WaveContainer::onClose() {
   // nuh uh
-  if (m_hiding) return;
   stopAllActions();
 
 #define j(id) m_wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_wave##id->getPositionX(),m_pos##id))))
@@ -164,7 +177,6 @@ void WaveContainer::onClose() {
   ));
 
   FMODAudioEngine::sharedEngine()->playEffect("overlay-big-pop-out.wav"_spr);
-  m_hiding = true;
 #undef j
 }
 GDL_NS_END

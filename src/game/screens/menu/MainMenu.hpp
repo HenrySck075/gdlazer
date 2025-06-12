@@ -7,9 +7,8 @@
 #include "ButtonSystem.hpp"
 #include "../../../frameworks/screens/Screen.hpp"
 class OsuGame;
-#include "../../OsuGame.hpp"
-#include "../../../utils.hpp"
 #include "../../graphics/containers/ParallaxContainer.hpp"
+#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 using namespace geode::prelude;
 using MenuSideFlashes = CCLayer;
 
@@ -20,7 +19,7 @@ class MainMenu final : public frameworks::Screen {
   Ref<ParallaxContainer> m_buttonSysParallax;
   Ref<CCMoveToModifiable> m_logoMoveAction;
 
-  Ref<CCLayerRGBA> m_nowPlayingBox;
+  Ref<frameworks::FillFlowContainer> m_nowPlayingBox;
 public:
   float FADE_IN_DURATION = 300;
 
@@ -34,6 +33,8 @@ public:
   // open the menu
   void onLogoClickIdle();
 private:
+  void showNowPlayingText(OsuText* songTitle, OsuText* songArtist, OsuText* levelInfo, bool switchBackground = true);
+
   void onScreenExit(frameworks::ScreenTransitionEvent e) override;
   //BeatDetector* detector;
 

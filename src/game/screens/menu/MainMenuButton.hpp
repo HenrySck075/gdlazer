@@ -44,7 +44,6 @@ public:
     $createClass(MainMenuButton, init, text, sampleClick, symbol, color, clickAction, activationKeys);
   };
   bool init(std::string text, std::string sampleClick, frameworks::IconConstructor symbol, Color4 color, frameworks::ButtonCallback clickAction, std::vector<enumKeyCodes> activationKeys);
-  void setContentSize(const CCSize& s) override;
   void setOpacity(GLubyte opacity) override {
     GLubyte old = m_hover->getOpacity();
     Container::setOpacity(opacity);
@@ -64,7 +63,6 @@ private:
   bool m_askForUpdate = false;
 
   geode::Ref<CCScale9Sprite> m_background;
-  geode::Ref<CCNodeRGBA> m_body;
   geode::Ref<frameworks::CCResizableSprite> m_icon;
   geode::Ref<OsuText> m_label;
   geode::Ref<CCScale9Sprite> m_hover;

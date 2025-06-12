@@ -14,6 +14,7 @@ bool ModsOverlay::init() {
     OverlayColorScheme::Purple,
     body
   )) return false;
+  m_main->setPadding({4, 0});
   setName("Geode");
 
   body->setAnchor(Anchor::Bottom);
@@ -22,33 +23,26 @@ bool ModsOverlay::init() {
   auto installedMods = Loader::get()->getAllMods();
   auto iml = installedMods.size();
   int rows = ceil(iml/2.f);
-  auto grid = GridContainer::create(
-    // 2 autosized columns
-    {
-      Dimension{/*.mode = Dimension::Mode::Distributed*/},
-      Dimension{/*.mode = Dimension::Mode::Distributed*/},
-    },
-    std::vector<Dimension>(rows, Dimension{})
-  );
-  grid->setGap(2);
-  grid->reserve(rows, 2);
-  log::debug("[ModsOverlay]: {} {} {}", iml, rows, iml/2.f);
-  for (int i = 0; i < iml; i++) {
-    int r = floor(i/2.f), c = i%2;
-    auto mod = installedMods[i];
-    grid->addChildAtCell(r, c, $verifyPtr(GeodeModItem::create(mod, m_provider)));
+  auto grid = GridContainer::create();
+  grid->setGap(8);
+  
+  CCArrayExt<Container> e;
+  for (auto mod : installedMods) {
+    e.push_back($verifyPtr(GeodeModItem::create(mod, m_provider)));
   }
 
   auto sc = ScrollContainer::create(grid);
   body->addChild(sc);
-  sc->setMaxSize({300, 0});
+  //sc->setMaxSize({300, 0});
   sc->setContentSize({100,100},Unit::Percent);
-  grid->setAnchor(Anchor::Bottom);
+  sc->setAnchor(Anchor::Bottom);
+  sc->setAnchorPoint({0.5,0});
   grid->setContentWidth(100,Unit::Percent);
-  grid->setAnchorPoint({0.5,0});
-  /// delay by 2 frames to ensure grid has a width
-  queueInMainThread([grid, sc]{
+  /// delay by 2 frames to ensure grid has a size
+  queueInMainThread([grid, sc, e]{
+    grid->figureCellPlacementsFromChildrenList(e);
     grid->updateLayout();
+    sc->resizeToChildSize();
   });
 
   return true;

@@ -65,7 +65,7 @@ public:
    *  @lua NA
    */
   virtual ~BMGlyphFontConfig() {
-    geode::log::debug( "[IconConstructor]: deallocing BMGlyphFontConfig" );
+    
     purgeFontDefDictionary();
     purgeKerningDictionary();
     m_sAtlasNames.clear();

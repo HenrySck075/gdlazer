@@ -20,6 +20,8 @@ private:
   geode::Ref<OsuText> m_title;
   geode::cocos::CCArrayExt<PopupDialogButton> m_buttons;
 
+  float m_lowPassStrength = 0;
+
 protected:
   //void onClose(cocos2d::CCObject*) override;
 
@@ -29,16 +31,19 @@ public:
 
   void onOpen() override;
   void onClose() override;
-  bool init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons);
-  bool init2(std::string const &title, std::string const &content,
+  bool init(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons, float strength);
+  bool init2(std::string const &title, std::string const &content, float strength,
              std::string const &confirmButtonText,
              std::string const &cancelButtonText,
              frameworks::ButtonCallback confirmCallback);
-  static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons) {
-    $createClass(PopupDialog, init, title, content, buttons);
+  void setLowPassStrength(float strength) {
+    m_lowPassStrength = strength;
   }
-  static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, std::string const& confirmButtonText, std::string const& cancelButtonText, frameworks::ButtonCallback confirmCallback) {
-    $createClass(PopupDialog, init2, title, content, confirmButtonText, cancelButtonText, confirmCallback);
+  static PopupDialog* create(std::string const& title, std::string const& content, std::initializer_list<PopupDialogButton*> buttons, float strength = 0) {
+    $createClass(PopupDialog, init, title, content, buttons, strength);
+  }
+  static PopupDialog* createSimpleDialog(std::string const& title, std::string const& content, float strength = 0, std::string const& confirmButtonText = "Yes, go ahead", std::string const& cancelButtonText = "sybau", frameworks::ButtonCallback confirmCallback = [](CCNode*){}) {
+    $createClass(PopupDialog, init2, title, content, strength, confirmButtonText, cancelButtonText, confirmCallback);
   }
   void onDismiss() override {}
 };

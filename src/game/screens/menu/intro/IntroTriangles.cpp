@@ -19,7 +19,7 @@ bool IntroTriangles::init() {
   // osu! logo: ji
 
   setOpacity(255);
-  auto label = m_welcomeText = OsuText::create("");
+  auto label = m_welcomeText = OsuText::create("", FontType::Light, 12);
   //label->setFntFile("LazerFont.fnt"_spr);
   label->setID("welcomeText");
 #ifndef GEODE_IS_ANDROID
@@ -74,8 +74,16 @@ bool IntroTriangles::init() {
   // channel 0 got interrupted by menu loop when pushing a screen
   // me in the future here: dont create a new MenuLayer thanks
   
-  e->playMusic("triangles.mp3"_spr,false,0.f,7);
-  //OsuGame::get()->startMusicSequence();
+  {
+    auto triangles = GJGameLevel::create();
+    triangles->m_levelName = "Triangles";
+    triangles->m_creatorName = "gd!lazer";
+    triangles->m_audioTrack = -7;
+    OsuGame::get()->m_playlist.inner()->insertObject(triangles, 0);
+  }
+
+  //e->playMusic("triangles.mp3"_spr,false,0.f,7);
+  queueInMainThread([]{OsuGame::get()->startMusicSequence();});
   runAction(seq);
 
   return true;
@@ -97,13 +105,14 @@ void IntroTriangles::text_3_func() {
 void IntroTriangles::text_4_func() {
   m_welcomeText->setString("welcome to osu!");
 #ifndef GEODE_IS_ANDROID
-  auto a = CCCustomTween::create(0,13,5,this, customtween_selector(IntroTriangles::text_4_set_spacing));
+  auto a = CCCustomTween::create(0,6,5,this, customtween_selector(IntroTriangles::text_4_set_spacing));
   a->setTag(7);
   runAction(a);
 #endif
 }
 void IntroTriangles::text_4_set_spacing(float spacing) {
   auto welcomeTextNode = m_welcomeText;
+  /*
   CCObject* obj;
   int c = 0;
   CCARRAY_FOREACH(welcomeTextNode->getChildren(), obj) {
@@ -111,7 +120,9 @@ void IntroTriangles::text_4_set_spacing(float spacing) {
     o->setPositionX(o->getPositionX() + (spacing * c));
     c++;
   }
-  welcomeTextNode->setContentSize(welcomeTextNode->getContentSize() + CCSize{ (spacing * c) , 0.f });
+    */
+  //welcomeTextNode->setContentSize(welcomeTextNode->getContentSize() + CCSize{ (spacing * c) , 0.f });
+  welcomeTextNode->setKerning(spacing);
 }
 
 void IntroTriangles::renderTriangles() {

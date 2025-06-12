@@ -1,3 +1,4 @@
+#include "game/OsuGame.hpp"
 #include "game/screens/menu/MainMenu.hpp"
 #include "game/screens/menu/intro/IntroTriangles.hpp"
 #include <Geode/Geode.hpp>
@@ -26,7 +27,7 @@ struct e : public Modify<e, MenuLayer> {
 
     auto d = CCDirector::get();
 
-    log::debug("{} {}", d->getWinSize(), cocos2d::CCDirector::get()->getOpenGLView()->getFrameSize());
+    
 
     return true;
   };
@@ -53,7 +54,7 @@ geode::Hook* g_showCursorHook = nullptr;
 struct showCursorHook : public geode::Modify<showCursorHook, CCEGLView> {
   static void onModify(auto& self) {
     auto hook = self.getHook("cocos2d::CCEGLView::showCursor");
-    log::debug("g_showCursorHook retrieved: {}", hook.isOk());
+    
     g_showCursorHook = hook.unwrapOr(nullptr);
     if (g_showCursorHook) g_showCursorHook->setAutoEnable(false);
   }
@@ -108,9 +109,13 @@ class $modify(cocos2d::CCDirector) {
     return true;
   }
 };
+
 #include <Geode/modify/GameManager.hpp>
 class $modify(GameManager) {
-  void fadeInMenuMusic() {}
+  void fadeInMenuMusic() {
+    if (!s_replaceSceneDisabled) {
+    }
+  }
 };
 #include <Geode/modify/LevelBrowserLayer.hpp>
 class $modify(LevelBrowserLayer) {
@@ -122,7 +127,7 @@ class $modify(LevelBrowserLayer) {
 #include <Geode/modify/LoadingLayer.hpp>
 class $modify(LoadingLayer) {
   static void onModify(auto& self) {
-    if (!self.setHookPriorityPre("LoadingLayer::loadAssets", Priority::VeryEarlyPre)) {
+    if (!self.setHookPriorityPre("LoadingLayer::loadAssets", Priority::VeryLatePre)) {
       geode::log::warn("Failed to set hook priority for LoadingLayer::loadAssets.");
     }
     if (!self.setHookPriorityAfterPost("LoadingLayer::init", Loader::get()->getLoadedMod("geode.loader"))) {
@@ -178,9 +183,10 @@ class $modify(LoadingLayer) {
 };
 
 
-/// The "nothing useful feature": Replace the mod dev name with any of these names.
+/// The "nothing useful feature": Replace the mod dev name (chance to hit the actual name is low so good luck).
 
 static const char* c_smug[] = {
+  /// Love Live! School idol project 
   "Honoka Kosaka",
   "Kotori Minami",
   "Umi Sonoda",
@@ -265,8 +271,129 @@ static const char* c_smug[] = {
   "Midori Yamada",
   "Shion Sasaki",
 
-  "Henry Spheria", /// congrats
-  "SoggyGunner"    /// hello geode
+  /// BanG Dream!
+  "Toyama Kasumi",
+  "Hanazono Tae",
+  "Ushigome Rimi",
+  "Yamabuki Saaya",
+  "Ichigaya Arisa",
+  "Mitake Ran",
+  "Aoba Moca",
+  "Uehara Himari",
+  "Udagawa Tomoe",
+  "Hazawa Tsugumi",
+  "Maruyama Aya",
+  "Hikawa Hina",
+  "Shirasagi Chisato",
+  "Yamato Maya",
+  "Wakamiya Eve",
+  "Minato Yukina",
+  "Hikawa Sayo",
+  "Imai Lisa",
+  "Udagawa Ako",
+  "Shirokane Rinko",
+  "Tsurumaki Kokoro",
+  "Seta Kaoru",
+  "Kitazawa Hagumi",
+  "Matsubara Kanon",
+  "Okusawa Misaki",
+  "Michelle",
+  "Kurata Mashiro",
+  "Kirigaya Touko",
+  "Hiromachi Nanami",
+  "Futaba Tsukushi",
+  "Yashio Rui",
+  "Wakana Rei",
+  "Satou Masuki",
+  "Satou Masuki",
+  "Nyubara Reona",
+  "Tamade Chiyu",
+  "Takamatsu Tomori",
+  "Chihaya Anon",
+  "Kaname Raana",
+  "Nagasaki Soyo",
+  "Shiina Taki",
+  "Doloris",
+  "Mortis",
+  "Timoris",
+  "Amoris",
+  "Oblivionis",
+  "Nakamachi Arale",
+  "Miyanaga Nonoka",
+  "Minetsuki Ritsu",
+  "Sengoku Yuno",
+  "Fuji Miyako",
+  "Ushigome Yuri",
+  "Uzawa Rii",
+  "Wanibe Nanana",
+  "Nijikki Hinako",
+  "Umino Natsuki",
+  "Taiko Satomi",
+  "Kawabata Mayu",
+  "Mori Fumika",
+  "Sumita Mana",
+  "Serizawa Mio",
+  "Yamase Serina",
+  "Koganei Shino",
+
+  /// The IDOLM@STER
+  "Aranzena Bassilbera",
+  "Anastasia",
+  "Arisa Mochida",
+  "Chika Yokoyama",
+  "Chinatsu Aikawa",
+  "Clarice",
+  "Erika Akanishi",
+  "Fuka Asano",
+  "Hasumi Nagatomi",
+  "Hijiri Mochizuki",
+  "Haruka Amami",
+  "Mano Sakuragi",
+  "Mai Fukuyama",
+  "Makoto Kikuchi",
+  "Kana Imai",
+  "Chihaya Kisaragi",
+  "Yayoi Takatsuki",
+  "Miki Hoshii",
+  "Yukiho Hagiwara",
+  "Takane Shijou",
+  "Nana Abe",
+  "Azusa Miura",
+  "Hibiki Ganaha",
+  "Uzuki Shimamura",
+  "Hiori Kazano",
+  "Yukimi Sajo",
+  "Mirai Kasuga",
+  "Shizuka Mogami",
+  "Tsubasa Ibuki",
+  "Yuka Nakano",
+  "Yukari Mizumoto",
+  "Aiko Takamori",
+  "Minami Nitta",
+  "Kanako Mimura",
+  "Riamu Yumemi",
+  "Meguru Hachimiya",
+  "Rin Shibuya",
+  "Airi Totoki",
+  "Mika Jougasaki",
+  "Noriko Shiina",
+  "Saori Okuyama",
+  "Misato Manaka",
+  "Miyuki Yanase",
+  "Tsubaki Egami",
+  "Nagisa Aino",
+  "Yumi Aiba",
+  "Miria Akagi",
+  "Rika Jougasaki",
+  "Nanami Asari",
+  "Izumi Ohishi",
+  "Toko Hattori",
+  "Yukino Aihara",
+  "Yusuke Aoi",
+  "Kyosuke Aoi",
+  "Suzaku Akai",
+
+  "Henry Spheria" /// congrats
 };
 
 $on_mod(Loaded) {

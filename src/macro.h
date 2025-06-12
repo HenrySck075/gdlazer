@@ -21,24 +21,24 @@
 
 #define $createClass(classname, initfunc, ...) \
   classname* ret = new classname();      \
-  if (ret && ret->initfunc(__VA_ARGS__)) {   \
-    ret->autorelease();            \
-  } else {                   \
-    delete ret;        \
-    return nullptr; \
-  };                     \
+  if (ret && ret->initfunc(__VA_ARGS__)) {\
+    ret->autorelease();                    \
+  } else {                                  \
+    delete ret;                              \
+    return nullptr;                           \
+  };                                           \
   return ret
 
-#define $defaultCreate(classname) \
+#define $defaultCreate(classname)       \
   static noinline classname* create() {  \
-  $createClass(classname, init);\
+    $createClass(classname, init);        \
   }
 
 #if defined(__GNUC__) || defined(__clang__)
   #define $verifyPtr(...) \
   ({ \
     auto GEODE_CONCAT(res,__LINE__) = __VA_ARGS__; \
-    if (!GEODE_CONCAT(res,__LINE__)) return false; \
+    if (!GEODE_CONCAT(res,__LINE__)) return false;  \
     GEODE_CONCAT(res,__LINE__); \
   })
   

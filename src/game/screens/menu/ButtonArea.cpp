@@ -7,6 +7,7 @@
 #include "ButtonConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
 
 GDL_NS_START
 using namespace frameworks;
@@ -144,7 +145,7 @@ void ButtonArea::show(std::string tag) {
         ), Easing::OutExpo),
         CCCallFuncL::create([i](){
           auto nugget = i;
-          nugget->setTouchEnabled(true);
+          nugget->setMouseEnabled(true);
           nugget->askForUpdate(true);
         })
       ));
@@ -159,12 +160,12 @@ void ButtonArea::show(std::string tag) {
       auto pos = i->getPosition();
       i->runAction(CCSequence::createWithTwoActions(
         frameworks::ActionEase::create(CCSpawn::createWithTwoActions(
-          CCResizeTo::create(animationSpeed, BUTTON_WIDTH, c_buttonAreaHeight),
+          ContainerResizeTo::create(animationSpeed, BUTTON_WIDTH, c_buttonAreaHeight),
           CCFadeIn::create(animationSpeed)
         ), Easing::OutExpo),
         CCCallFuncL::create([i](){
           auto nugget = i;
-          nugget->setTouchEnabled(true);
+          nugget->setMouseEnabled(true);
           nugget->askForUpdate(true);
         })
       ));
@@ -197,7 +198,7 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
     if (collapse) {
       for (int idx = 0; idx<j.size(); idx++) {
         auto i = j[idx];
-        i->setTouchEnabled(false);
+        i->setMouseEnabled(false);
         i->stopAllActions();
         auto pos = i->getPosition();
         i->runAction(
@@ -213,13 +214,13 @@ void ButtonArea::hide(std::string tag, bool collapse, bool close) {
     } else {
       for (int idx = 0; idx<j.size(); idx++) {
         auto i = j[idx];
-        i->setTouchEnabled(false);
+        i->setMouseEnabled(false);
         i->stopAllActions();
         auto pos = i->getPosition();
         i->runAction(
           frameworks::ActionEase::create(
             CCSpawn::createWithTwoActions(
-              CCResizeTo::create(animationSpeed, BUTTON_WIDTH*1.5,c_buttonAreaHeight),
+              ContainerResizeTo::create(animationSpeed, BUTTON_WIDTH*1.5,c_buttonAreaHeight),
               CCFadeOut::create(animationSpeed)
             )
           , Easing::OutExpo)

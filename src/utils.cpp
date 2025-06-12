@@ -35,7 +35,7 @@ CCRect boundingBoxFromContentSize(CCNode* node) {
   auto parent = node->getParent();
   while (parent != nullptr) {
     pos += getPositionAnchorAware(parent);
-    //log::debug("[boundingBoxFromContentSize]:n pos: {} | parent: {}", pos, parent);
+    //
     parent = parent->getParent();
   }
 
@@ -44,7 +44,7 @@ CCRect boundingBoxFromContentSize(CCNode* node) {
 
 CCPoint convertToNodeSpaceA(CCNode* node, CCPoint point) {
   auto box = boundingBoxFromContentSize(node);
-  //geode::log::debug("[ctnsa]: {} | {}", box.origin, point);
+  //
   return point - box.origin;
 };
 

@@ -269,7 +269,7 @@ BMGlyphManager* BMGlyphManager::getForFontName(std::string fntFile) {
 }
 
 bool BMGlyphManager::init(std::string fntFile, CCPoint imageOffset) {
-  log::debug("[BMGlyphManager]: {}", fntFile);
+  
   //assert( ("Invalid params for CCLabelBMFont", fntFile==nullptr));
   
   // idk what else
@@ -278,7 +278,7 @@ bool BMGlyphManager::init(std::string fntFile, CCPoint imageOffset) {
     BMGlyphFontConfig *newConf = FNTConfigLoadFile2(fntFile);
     if (!newConf)
     {
-      log::debug("[BMGlyphManager]: Cannot create font '{}'", fntFile);
+      
       release();
       return false;
     }

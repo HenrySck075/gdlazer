@@ -72,4 +72,14 @@ public:
   void deselect() override;
 };
 
+/// TODO: convert to a toggle button when the dedicated overlay is made
+class ToolbarUserButton : public ToolbarButton {
+public:
+  $defaultCreate(ToolbarUserButton);
+  bool init();
+  /*
+  void select() override;
+  void deselect() override;
+  */
+};
 GDL_NS_END

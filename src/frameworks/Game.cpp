@@ -69,7 +69,7 @@ void Game::update(float dt) {
   if (s_lastWinSize != winSize) {
     if (s_lastWinSize != CCSize{0,0}) {
       setContentSize(winSize);
-      dispatchEvent(new NodeLayoutUpdated(this));
+      dispatchEvent(new NodeLayoutUpdated());
     }
     s_lastWinSize = winSize;
   }
@@ -175,7 +175,7 @@ bool Game::doDispatchEvent(Event* event, std::type_index type) {
     return true;
   }
   if (m_currentOverlay) m_currentOverlay->doDispatchEvent(event, type);
-  else m_currentScreen->doDispatchEvent(event, type);
+  else if (m_currentScreen) m_currentScreen->doDispatchEvent(event, type);
   return true;
 };
 GDF_NS_END 

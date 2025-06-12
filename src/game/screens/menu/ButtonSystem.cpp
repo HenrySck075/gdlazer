@@ -54,6 +54,14 @@ void ButtonSystem::setOsuLogo(OsuLogo* logo) {
   */
 }
 
+void unimplementedDialog() {
+  PopupDialog::createSimpleDialog(
+    "Not implemented yet!", "Check back later! (on a new update)", 0,
+    ":sphere_thumbsup:", "alr", 
+    [](CCNode*wfhuio){}
+  )->show();
+}
+
 bool ButtonSystem::init(OsuLogo* logo) {
   if (!Container::init()) return false;
   setOsuLogo(logo);
@@ -68,12 +76,12 @@ bool ButtonSystem::init(OsuLogo* logo) {
 
   // because cocos2d-x does not allows a node to be in multiple parent (everyone knows that)
   #define backBtnCreate MainMenuButton::create( \
-    "Back",                   \
-    "back-to-top.wav"_spr,          \
-    OsuIcon::PrevCircle,            \
-    Color4(51, 58, 94, 255),          \
-    [this](Container*j){m_area->pop();},       \
-    {enumKeyCodes::KEY_Escape}        \
+    "Back",                          \
+    "back-to-top.wav"_spr,            \
+    OsuIcon::PrevCircle,               \
+    {51, 58, 94, 255},                  \
+    [this](Container*j){m_area->pop();}, \
+    {enumKeyCodes::KEY_Escape}            \
   )
   
   #define $cca(...) CCArray::create(__VA_ARGS__, nullptr)
@@ -84,7 +92,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Daily", 
       "button-default-select.wav"_spr, 
       OsuIcon::ModRelax, 
-      Color4(102, 68, 204, 255),
+      {102, 68, 204, 255},
       [this](Container*j){m_creatorLayerPtr->onDailyLevel(this);},
       {enumKeyCodes::KEY_D}
     ),
@@ -92,7 +100,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Weekly",
       "button-default-select.wav"_spr, 
       OsuIcon::ModSuddenDeath,
-      Color4(94, 63, 186, 255), 
+      {94, 63, 186, 255}, 
       [this](Container*j){m_creatorLayerPtr->onWeeklyLevel(this);},
       {enumKeyCodes::KEY_W}
     ),
@@ -100,7 +108,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Event",
       "button-default-select.wav"_spr, 
       OsuIcon::Global,
-      Color4(94, 63, 186, 255), 
+      {94, 63, 186, 255}, 
       [this](Container*j){m_creatorLayerPtr->onEventLevel(this);},
       {enumKeyCodes::KEY_E}
     )
@@ -111,7 +119,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Main levels", 
       "button-default-select.wav"_spr, 
       OsuIcon::Player, 
-      Color4(102, 68, 204, 255),
+      {102, 68, 204, 255},
       [this](Container*j){
         //m_menuLayerPtr->onPlay(m_menuLayerPtr);
         if (Mod::get()->getSettingValue<bool>("devmode")) {
@@ -126,7 +134,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Saved levels", 
       "button-default-select.wav"_spr, 
       OsuIcon::Online, 
-      Color4(94, 63, 186, 255), 
+      {94, 63, 186, 255}, 
       [this](Container*j){m_creatorLayerPtr->onSavedLevels(this);},
       {enumKeyCodes::KEY_P}
     )
@@ -138,26 +146,22 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Local", 
       "button-play-select.wav"_spr, 
       OsuIcon::Player, 
-      Color4(102, 68, 204, 255),
+      {102, 68, 204, 255},
       [this](Container*j){m_area->show("play_local");},
-      {enumKeyCodes::KEY_P}
+      {enumKeyCodes::KEY_L}
     ),
     MainMenuButton::create(
       "Multiplayer", 
       "button-default-select.wav"_spr, 
       OsuIcon::Online, 
-      Color4(94, 63, 186, 255), 
+      {94, 63, 186, 255}, 
       [this](Container*j){
         auto p = m_menuLayerPtr->getChildByID("bottom-menu")->getChildByID("dankmeme.globed2/main-menu-button");
         if (p) {
           typeinfo_cast<CCMenuItemSpriteExtra*>(p)->activate();
           return;
         }
-        PopupDialog::createSimpleDialog(
-          "Not implemented yet!", "mrow", 
-          ":sphere_thumbsup:", "alr", 
-          [](CCNode*wfhuio){CCApplication::sharedApplication()->openURL("https://www.pixiv.net/en/artworks/112989297");}
-        )->show();
+        unimplementedDialog();
       },
       {enumKeyCodes::KEY_M}
     ),
@@ -165,19 +169,15 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Playlists", // this is lists
       "button-default-select.wav"_spr, 
       OsuIcon::Tournament, 
-      Color4(94, 63, 186, 255), 
-      [](CCNode*j){PopupDialog::createSimpleDialog(
-        "hey guys robtopgames here", "geometry dash pdb in bio", 
-        "yipee", "nuh uh", 
-        [](CCNode*wfhuio){CCApplication::sharedApplication()->openURL("https://www.pixiv.net/en/artworks/120777141");}
-      )->show();},
-      {enumKeyCodes::KEY_L}
+      {94, 63, 186, 255}, 
+      [](CCNode*j){unimplementedDialog();},
+      {enumKeyCodes::KEY_P}
     ),
     MainMenuButton::create(
       "Challenges", // daily/weekly levels
       "button-play-select.wav"_spr, 
       OsuIcon::DailyChallenge,
-      Color4(94, 63, 186, 255), 
+      {94, 63, 186, 255}, 
       [this](Container*j) {m_area->show("challenges");},
       {enumKeyCodes::KEY_C}
     )
@@ -190,7 +190,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "New", 
       "button-default-select.wav"_spr, 
       OsuIcon::ChangelogA, 
-      Color4(238, 170, 0, 255), 
+      {238, 170, 0, 255}, 
       [](CCNode*fowehui) {
         LevelBrowserLayer::create(GJSearchObject::create(SearchType::MyLevels))->onNew(fowehui);        
       },
@@ -200,7 +200,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Created levels", 
       "button-default-select.wav"_spr, 
       OsuIcon::Collections, 
-      Color4(220, 160, 0, 255), 
+      {220, 160, 0, 255}, 
       [this](Container*j){m_creatorLayerPtr->onMyLevels(this);},
       {enumKeyCodes::KEY_S}
     )
@@ -213,7 +213,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Open toolbar", 
       "button-default-select.wav"_spr, 
       OsuIcon::Beatmap, 
-      Color4(165, 204, 0, 255), 
+      {165, 204, 0, 255}, 
       [](CCNode* j) {
         OsuGame::get()->showToolbar();
         //->setUserObject("osugame.show-toolbar"_spr, CCBool::create(true));
@@ -223,7 +223,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Close toolbar", 
       "button-default-select.wav"_spr, 
       OsuIcon::Beatmap, 
-      Color4(154, 198, 0, 255), 
+      {154, 198, 0, 255}, 
       [](CCNode* j) {
         OsuGame::get()->hideToolbar();
         //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
@@ -233,7 +233,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Playground", 
       "button-default-select.wav"_spr, 
       OsuIcon::Debug, 
-      Color4(154, 198, 0, 255), 
+      {154, 198, 0, 255}, 
       [](CCNode* j) {
         OsuGame::get()->pushScreen(PlaygroundScreen::create());
         //CCDirector::sharedDirector()->getRunningScene()->setUserObject("osugame.show-toolbar"_spr, CCBool::create(false));
@@ -247,7 +247,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Settings", 
       "osu-logo-downbeat.wav"_spr, 
       OsuIcon::Settings, 
-      Color4(85, 85, 85, 255), 
+      {85, 85, 85, 255}, 
       [this](Container*j){
         static_cast<ToolbarToggleButton*>(OsuGame::get()->getChildByIDRecursive("settings"))->select();
       }
@@ -256,7 +256,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Play", 
       "button-play-select.wav"_spr, 
       OsuIcon::Logo, 
-      Color4(102, 68, 204, 255), 
+      {102, 68, 204, 255}, 
       [this](Container* j) {m_area->show("play");},
       {enumKeyCodes::KEY_P, enumKeyCodes::KEY_M, enumKeyCodes::KEY_L}
     ),
@@ -264,7 +264,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Edit", 
       "button-play-select.wav"_spr, 
       OsuIcon::EditCircle, 
-      Color4(238, 170, 0, 255), 
+      {238, 170, 0, 255}, 
       [this](Container* j) {m_area->show("edit");},
       {enumKeyCodes::KEY_E}
     ),
@@ -272,7 +272,7 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Browse", 
       "button-play-select.wav"_spr, 
       OsuIcon::Beatmap, 
-      Color4(165, 204, 0, 255), 
+      {165, 204, 0, 255}, 
       [this](Container* j) {/*m_area->show("debug");*/},
       {enumKeyCodes::KEY_B, enumKeyCodes::KEY_D}
     ),
@@ -280,12 +280,12 @@ bool ButtonSystem::init(OsuLogo* logo) {
       "Exit", 
       "", 
       OsuIcon::CrossCircle, 
-      Color4(238, 51, 153, 255), 
+      {238, 51, 153, 255}, 
       [this](Container* j) {
         PopupDialog::createSimpleDialog(
           "Are you sure you want to exit GD?",
           "Last chance to turn back",
-
+          2,
           "lemme out i need to take a bath",
           "nvm the 20-20-20 rule sucks", [this](Container* s) {m_menuLayerPtr->endGame(); }
         )->show();

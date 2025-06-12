@@ -49,6 +49,66 @@ Container* __checkTarget(cocos2d::CCNode* target) {
   return node;
 }
 
+#pragma region ContainerResizeTo
+
+ContainerResizeTo* ContainerResizeTo::create(float duration, float s) {
+  ContainerResizeTo* pSizeTo = new ContainerResizeTo();
+  pSizeTo->initWithDuration(duration, s);
+  pSizeTo->autorelease();
+
+  return pSizeTo;
+}
+
+bool ContainerResizeTo::initWithDuration(float duration, float s) {
+  if (CCActionInterval::initWithDuration(duration)) {
+    m_fEndContentWidth = s;
+    m_fEndContentHeight = s;
+
+    return true;
+  }
+
+  return false;
+}
+
+ContainerResizeTo* ContainerResizeTo::create(float duration, float sx, float sy) {
+  ContainerResizeTo* pSizeTo = new ContainerResizeTo();
+  pSizeTo->initWithDuration(duration, sx, sy);
+  pSizeTo->autorelease();
+
+  return pSizeTo;
+}
+
+bool ContainerResizeTo::initWithDuration(float duration, float sx, float sy) {
+  if (CCActionInterval::initWithDuration(duration)) {
+    m_fEndContentWidth = sx;
+    m_fEndContentHeight = sy;
+
+    return true;
+  }
+
+  return false;
+}
+void ContainerResizeTo::startWithTarget(CCNode* pTarget) {
+  auto target = __checkTarget(pTarget);
+  CCActionInterval::startWithTarget(target);
+  m_fStartContentWidth = target->getContentWidth();
+  m_fStartContentHeight = target->getContentHeight();
+  m_fDeltaWidth = m_fEndContentWidth - m_fStartContentWidth;
+  m_fDeltaHeight = m_fEndContentHeight - m_fStartContentHeight;
+}
+
+void ContainerResizeTo::update(float time) {
+  auto mata = static_cast<Container*>(m_pTarget);
+  mata->setContentSize({
+    m_fStartContentWidth + m_fDeltaWidth * time,
+    m_fStartContentHeight + m_fDeltaHeight * time
+  }, Unit::OpenGL);
+  mata->dispatchEvent(new NodeLayoutUpdated());
+}
+
+#pragma endregion
+
+
 #pragma region ContainerMoveTo
 //////////////////////////
 /// ContainerMoveTo
@@ -135,7 +195,7 @@ void ContainerTintOpacityTo::startWithTarget(cocos2d::CCNode* target) {
   m_endColor = m_startColor = node->getBackgroundColor();
   m_endColor.a = m_opacity;
 
-  geode::log::debug("[ContainerTintOpacityTo]: {} {}", m_startColor, m_endColor);
+  
   
   m_deltaColor = m_endColor - m_startColor;
 }
