@@ -39,6 +39,9 @@ public:
   Bindable<T>& operator=(const Bindable<T>& other) {
     return this->operator=(other.m_value);
   }
+  void silentSet(const T& other) {
+    m_value = other;
+  }
   void addCallback(Callback listener) {
     m_listeners.push_back(listener);
   }

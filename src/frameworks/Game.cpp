@@ -9,6 +9,59 @@ GDF_NS_START
 
 static geode::Ref<Game> s_instance;
 
+#ifdef GDL_DEBUG
+
+class DebugDrawNode : public CCDrawNode {
+public:
+  static DebugDrawNode* create() {
+    $createClass(DebugDrawNode, init);
+  }
+
+  virtual void draw() override {
+    clear();
+    Container* currentContainer = s_instance->m_currentOverlay;
+    if (!currentContainer) currentContainer = s_instance->m_currentScreen;
+    if (!currentContainer) return;
+
+    // traverse through the currentContainer tree, get each child's m_verticesPoints and draw it on screen
+
+    drawContainer(currentContainer);
+  }
+private: 
+  void drawContainer(Container* container) {
+    // Draw this container's vertices if available
+    const auto& vertices = container->m_verticesPoints;
+    
+    if (!vertices.empty()) {
+      // converts the vertices array to a CCPoint array
+      const int vps = Container::c_verticesPointsSize;
+      cocos2d::CCPoint verticesPoints[vps];
+      for (int i = 0; i < vps; i++) {
+        verticesPoints[i] = cocos2d::CCPoint{vertices[i][0], vertices[i][1]};
+      }
+      //ccDrawColor4B(255, 0, 0, 128);
+      drawPolygon(
+        verticesPoints,
+        vps, 
+        {0,0,0,0.2f}, 
+        10, 
+        {1.f,0.f,0.f,1.f}
+      );
+    };
+    /*
+    // Recursively draw children
+    for (auto child : geode::cocos::CCArrayExt<CCNode*>(container->getChildren())) {
+      if (auto childContainer = typeinfo_cast<Container*>(child)) {
+        drawContainer(childContainer);
+      }
+    }
+      */
+  }
+};
+
+#endif
+
+
 bool Game::init() {
   if (!CCScene::init()) return false;
 
@@ -26,6 +79,7 @@ bool Game::init() {
 
   m_everypence->addChild(m_screensContainer);
   m_everypence->addChild(m_overlaysContainer);
+  m_everypence->addChild(DebugDrawNode::create());
   addChild(m_everypence);
 
   return true;
@@ -86,6 +140,8 @@ void Game::pushScreen(Screen* screen) {
   }
   m_screenStack.push_back(screen);
   m_currentScreen = screen;
+
+  setWindowTitle(m_currentScreen->getTitle());
 }
 
 void Game::replaceScreen(Screen* screen) {
@@ -113,8 +169,10 @@ Screen* Game::popScreen() {
   }
   if (m_screenStack.size() > 0) {
     m_currentScreen = static_cast<Screen*>(m_screenStack.inner()->lastObject());
+    setWindowTitle(m_currentScreen->getTitle());
   } else {
     m_currentScreen = nullptr;
+    setWindowTitle("Geometry Dash");
   }
   return screen;
 }
@@ -124,6 +182,8 @@ void Game::pushOverlay(OverlayContainer* overlay) {
   m_overlaysContainer->addChild(overlay);
   m_currentOverlay = overlay;
   m_overlayStack.push_back(overlay);
+
+  setWindowTitle(m_currentOverlay->getTitle());
 };
 void Game::popOverlay(OverlayContainer* overlay) {
   if (overlay->m_shown) return overlay->hide();
@@ -132,8 +192,10 @@ void Game::popOverlay(OverlayContainer* overlay) {
     m_overlayStack.inner()->removeObject(overlay);
     if (m_overlayStack.size() > 0) {
       m_currentOverlay = static_cast<OverlayContainer*>(m_overlayStack.inner()->lastObject());
+      setWindowTitle(m_currentOverlay->getTitle());
     } else {
       m_currentOverlay = nullptr;
+      setWindowTitle("Geometry Dash");
     }
   }
 };

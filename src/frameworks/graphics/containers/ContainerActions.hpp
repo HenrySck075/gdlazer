@@ -1,5 +1,5 @@
 /// A collection of CCActionInterval reimplementations to support Container due to polymorphism
-
+#pragma once
 #include <Geode/cocos/actions/CCActionInterval.h>
 
 #include "../../../macro.h"

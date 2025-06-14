@@ -167,12 +167,26 @@ bool ContainerTintTo::init(
 
   return true;
 }
+template<>
+struct fmt::formatter<ccc4BSigned> {
+  constexpr auto parse(fmt::format_parse_context& ctx) {
+    return ctx.begin();
+  }
+
+  auto format(const ccc4BSigned& c, fmt::format_context& ctx) const {
+    return fmt::format_to(ctx.out(), "({}, {}, {}, {})", c.r, c.g, c.b, c.a);
+  }
+};
 void ContainerTintTo::startWithTarget(cocos2d::CCNode* target) {
   auto node = __checkTarget(target);
   CCActionInterval::startWithTarget(target);
   m_startColor = node->getBackgroundColor();
   
   m_deltaColor = m_endColor - m_startColor;
+
+  log::debug("[ContainerTintTo]: startColor: {}, endColor: {}, deltaColor: {}",
+    m_startColor, m_endColor, m_deltaColor
+  );
 }
 void ContainerTintTo::update(float dt) {
   static_cast<Container*>(getTarget())->setBackgroundColor(

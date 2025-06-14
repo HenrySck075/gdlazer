@@ -45,6 +45,9 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
   });
   return true;
 };
+void OsuText::setFontType(FontType type) {
+  m_textNode->setFntFile(fontTypeMap[type].c_str());
+};
 
 void OsuText::setKerning(float kerning) {
   m_textNode->setExtraKerning(kerning);

@@ -1,5 +1,6 @@
 #include "ModItem.hpp"
 #include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
+#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 #include <Geode/ui/LazySprite.hpp>
 #include <Geode/ui/GeodeUI.hpp>
@@ -18,7 +19,7 @@ std::string getDevelopersString(const std::vector<std::string>& developers) {
 bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   if (!Container::init()) return false;
   setContentSize({WIDTH, HEIGHT}, Unit::UIKit);
-  
+  setTouchEnabled(true);
 
   /// Mod icon
   float heightUIKit = processUnit(HEIGHT, Unit::UIKit, false);
@@ -34,19 +35,12 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
     logo->initWithSpriteFrameName("geode.loader/geode-logo.png");
   }
 
-  addListener<MouseEvent>([mod](MouseEvent* e){
-    if (e->m_eventType == MouseEventType::Click) {
-      geode::openInfoPopup(mod);
-      return true;
-    }
-    return false;
-  });
-
 
   auto bg = Container::create();
   bg->setContentSize({HEIGHT+CORNER_RADIUS*2, HEIGHT},Unit::UIKit);
   bg->setBorderRadius(CORNER_RADIUS/2);
   bg->setBackgroundColor(provider->Background2());
+
   bg->setClippingEnabled(true);
   addChild(bg);
   
@@ -68,6 +62,25 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }
+
+  const ccColor4B bgNormal = provider->Background3();
+  const ccColor4B bgHover = provider->Background3().lighten(120);
+  log::debug("[]: {} {}", bgNormal, bgHover);
+
+  this->addListener<MouseEvent>([metaContainer, bgNormal, bgHover, mod](MouseEvent* e){
+    if (e->m_eventType == MouseEventType::Click) {
+      geode::openInfoPopup(mod);
+    }
+    else if (e->m_eventType == MouseEventType::Enter) {
+      metaContainer->stopAllActions();
+      metaContainer->runAction(ContainerTintTo::create(0.25, bgHover));
+    }
+    else if (e->m_eventType == MouseEventType::Exit) {
+      metaContainer->stopAllActions();
+      metaContainer->runAction(ContainerTintTo::create(0.25, bgNormal));
+    }
+    return true;
+  });
   addChild(metaContainer);
   metaContainer->setGap(2);
   metaContainer->setAutoResize(false);

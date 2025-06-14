@@ -1,9 +1,9 @@
 #include "Event.hpp"
+#include "../../utils.hpp"
 
 GDF_NS_START
 
 void Event::stopPropagation() {
-  //
   m_propagateStopped = true;
 };
 void Event::stopImmediatePropagation() {

@@ -77,7 +77,7 @@ public:
   inline void setDragEnabled(bool e) {m_dragEnabled = e;};
   inline bool getMouseEnabled() {return m_mouseEnabled;};
   void setMouseEnabled(bool e);
-  inline bool isMouseEntered() {return m_lastInBounds;}
+  inline bool isMouseEntered() {return m_isInBounds;}
   // General-use unit conversion function
   float processUnit(float value, Unit unit, bool isWidth);
 
@@ -168,7 +168,7 @@ private:
 
   static const int c_segments = 20;
   static const int c_verticesPointsSize = c_segments * 4 + 4;
-  std::array<std::array<float,2>, c_verticesPointsSize> m_verticesPoints;
+  std::array<std::array<float,2>, c_verticesPointsSize> m_verticesPoints; friend class DebugDrawNode;
   geode::Ref<cocos2d::CCDrawNode> m_stencil;
   geode::Ref<cocos2d::CCDrawNode> m_border;
   _ModifiedStateValue<float> m_borderThickness = 0;
@@ -197,7 +197,7 @@ private:
   Unit m_positionUnit[2] {Unit::OpenGL, Unit::OpenGL};
   bool m_clippingEnabled = false;
   /// whether or not the mouse was in bounds prior to the current mouse event
-  bool m_lastInBounds = false;
+  bool m_isInBounds = false;
 
   /// the untransformed box to later apply the transformation
   std::unique_ptr<h2d::CPolylineF> m_containerBoxO = nullptr;

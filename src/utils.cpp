@@ -101,6 +101,12 @@ std::string getObjectName(CCObject* node){
 #endif
 }
 
+void setWindowTitle(std::string title) {
+#ifdef GEODE_IS_WINDOWS
+  SetWindowTextA(WindowFromDC(wglGetCurrentDC()), title.c_str());
+#endif
+};
+
 /*
 uintptr_t getGeodeLib() {
 #ifdef GEODE_IS_WINDOWS

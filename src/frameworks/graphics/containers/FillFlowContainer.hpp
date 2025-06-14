@@ -13,12 +13,11 @@ private:
     bool m_axisReverse = false;
     bool m_autoResize = true;
 
-    EventListener<NodeLayoutUpdated> m_autoUpdateListener;
-    Bindable<bool> m_autoUpdate = true;
+    bool m_autoUpdate = true;
 
 public:
     static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
-    bool init(FillDirection direction, geode::Anchor anchor);
+    bool init(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
     void setChildAnchor(geode::Anchor anchor);
     void setGap(float gap);
     float getGap();

@@ -204,17 +204,28 @@ void OsuGame::addChild(CCNode* child) {
 }
 void OsuGame::addChild(CCNode* child, int zOrder) {
   CCScene::addChild(child, zOrder);
-  m_containsBlockingUIInFront = child != m_toolbar && child != m_cursorNode && child != m_screensContainer && child != m_overlaysContainer;
+  m_containsBlockingUIInFront = m_containsBlockingUIInFront || (child != m_toolbar && child != m_cursorNode && child != m_screensContainer && child != m_overlaysContainer);
 }
 void OsuGame::removeChild(CCNode* child) {
   CCScene::removeChild(child);
-  if (child != m_toolbar && child != m_cursorNode && child != m_screensContainer && child != m_overlaysContainer) {
-    m_containsBlockingUIInFront = false;
+  // traverse children in reverse direction to check if there's still a ui-blocking elements
+  // its cocos2d-x do the job right
+  m_containsBlockingUIInFront = false;
+  if (auto children = getChildren()) {
+    int length = children->count();
+    for (int i = length-1; i >= 0; --i) {
+      auto c = static_cast<CCNode*>(children->objectAtIndex(i));
+      if (c != m_toolbar && c != m_screensContainer && c != m_overlaysContainer) {
+        m_containsBlockingUIInFront = true;
+        break;
+      }
+    }
   }
+
 }
 
 bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
-  /// Relaunch on Ctrl-R
+  // Relaunch on Ctrl-R
   #ifdef GDL_DEBUG
   if (type == typeid(KeyEvent)) {
     auto ke = static_cast<KeyEvent*>(event);

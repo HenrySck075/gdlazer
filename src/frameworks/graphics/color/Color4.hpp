@@ -16,15 +16,15 @@ struct Color4 {
     return {c(r),c(g),c(b),c(a)};
 #undef c
   }
-  Color4 lighten(int amount) {
-    int scalar = std::max(255,255+amount)/255;
+  Color4 lighten(double amount) {
+    double scalar = std::max(255.0,255+amount)/255;
     return Color4{r*scalar,g*scalar,b*scalar,a}.clamp();
   }
-  Color4 darken(int amount) {
-    int scalar = std::max(255,255+amount)/255;
+  Color4 darken(double amount) {
+    double scalar = std::max(255.0,255+amount)/255;
     return Color4{r/scalar,g/scalar,b/scalar,a}.clamp();
   }
-  Color4 opacity(int opacity) {
+  Color4 opacity(double opacity) {
     return Color4(r,g,b,opacity/255.f).clamp();
   }
 

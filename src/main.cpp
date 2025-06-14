@@ -1,5 +1,4 @@
 #include "game/OsuGame.hpp"
-#include "game/screens/menu/MainMenu.hpp"
 #include "game/screens/menu/intro/IntroTriangles.hpp"
 #include <Geode/Geode.hpp>
 #include <random>
@@ -183,6 +182,19 @@ class $modify(LoadingLayer) {
 };
 
 
+bool g_devToolsShowCursor = false;
+#include <Geode/modify/CCKeyboardDispatcher.hpp>
+class $modify(CCKeyboardDispatcher) {
+  bool dispatchKeyboardMSG(enumKeyCodes key, bool down, bool arr) {
+    if (down && (key == KEY_F11 GEODE_MACOS(|| key == KEY_F10))) {
+      g_showCursorHook->disable();
+      CCEGLView::get()->showCursor(g_devToolsShowCursor = !g_devToolsShowCursor);
+      g_showCursorHook->enable();
+    }
+    return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, arr);
+  }
+};
+
 /// The "nothing useful feature": Replace the mod dev name (chance to hit the actual name is low so good luck).
 
 static const char* c_smug[] = {
@@ -336,7 +348,7 @@ static const char* c_smug[] = {
   "Yamase Serina",
   "Koganei Shino",
 
-  /// The IDOLM@STER
+  /// The iDOLM@STER
   "Aranzena Bassilbera",
   "Anastasia",
   "Arisa Mochida",

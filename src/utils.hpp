@@ -60,3 +60,5 @@ T* postconfig(T* node, std::function<void(T*)> func) {
 //uintptr_t getGeodeLib();
 
 std::string getObjectName(CCObject* node);
+
+void setWindowTitle(std::string title);
