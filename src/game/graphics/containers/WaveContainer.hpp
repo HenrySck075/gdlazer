@@ -18,8 +18,6 @@ private:
   CCDrawNode* m_wave3 = nullptr;
   CCDrawNode* m_wave4 = nullptr;
 
-  geode::Ref<Container> m_body; /// TODO: delete this?
-
   float m_pos1;
   float m_pos2;
   float m_pos3;
@@ -31,8 +29,8 @@ private:
   void onClose() override;
   void onOpen() override;
 public:
-  bool init(ColorScheme color, Container* body);
-  static WaveContainer* create(ColorScheme color, Container* body);
+  bool init(ColorScheme color);
+  static WaveContainer* create(ColorScheme color);
 protected:
   geode::Ref<OverlayColorProvider> m_provider;
 

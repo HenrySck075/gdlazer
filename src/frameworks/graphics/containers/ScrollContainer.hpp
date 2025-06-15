@@ -15,17 +15,11 @@ enum class ScrollDirection {
 
 class ScrollContainer : public Container {
 public:
-    static ScrollContainer* create(Container* content) {
-        auto ret = new ScrollContainer();
-        if (ret && ret->init(content)) {
-            ret->autorelease();
-            return ret;
-        }
-        CC_SAFE_DELETE(ret);
-        return nullptr;
+    static ScrollContainer* create(Container* content, ScrollDirection direction = ScrollDirection::Vertical, AxisAlignment crossAxisAlignment = AxisAlignment::Start) {
+        $createClass(ScrollContainer, init, content, direction, crossAxisAlignment);
     }
 
-    bool init(Container* content);
+    bool init(Container* content, ScrollDirection direction = ScrollDirection::Vertical, AxisAlignment crossAxisAlignment = AxisAlignment::Start);
     void setContent(Container* child);
 
     void resizeToChildSize();
@@ -47,8 +41,10 @@ public:
         return ret;
     }
 
-    void setScrollDirection(ScrollDirection direction) { m_scrollDirection = direction; }
+    void setScrollDirection(ScrollDirection direction);
     ScrollDirection getScrollDirection() const { return m_scrollDirection; }
+    void setCrossAxisAlignment(AxisAlignment alignment);
+    AxisAlignment getCrossAxisAlignment() const { return m_crossAxisAlignment; }
 
 protected:
     void updateSize() override;
@@ -64,6 +60,7 @@ private:
     float m_velocityFriction = 0.95f;
     bool m_returningInBounds = false;
     ScrollDirection m_scrollDirection = ScrollDirection::Vertical;
+    AxisAlignment m_crossAxisAlignment = AxisAlignment::Start;
 };
 
 GDF_NS_END

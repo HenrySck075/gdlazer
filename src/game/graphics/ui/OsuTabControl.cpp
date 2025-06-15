@@ -51,9 +51,21 @@ void OsuTabItem::fadeOut() {
   m_bar->runAction(
       $outQuinting(frameworks::ContainerTintOpacityTo::create(0.5, 0)));
   m_textNode->inner()->runAction(
-      $outQuinting(CCTintTo::create(0.5, 255, 255, 255)));
-  m_textNode->inner()->runAction($outQuinting(CCFadeTo::create(0.5, 255)));
+      $outQuinting(CCTintTo::create(0.5, m_accent.r, m_accent.g, m_accent.b)));
+  m_textNode->inner()->runAction($outQuinting(CCFadeTo::create(0.5, m_accent.a)));
 }
 #undef $outQuinting
 
+bool OsuTabControl::init(std::vector<OsuTabItem *> items) {
+  if (!frameworks::TabControl::init({items.begin(), items.end()}))
+    return false;
+  m_container->setMinSize({0, OsuTabItem::HEIGHT});
+  setSpacing(5);
+  m_selectedTab.addCallback(
+  [](frameworks::TabItem *old, frameworks::TabItem *new_) {
+    static_cast<OsuTabItem *>(old)->fadeOut();
+    static_cast<OsuTabItem *>(new_)->fadeIn();
+  });
+  return true;
+}
 GDL_NS_END

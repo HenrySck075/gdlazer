@@ -64,11 +64,11 @@ CCDrawNode* createWave(float w, CCSize size, float angle, ccColor4B col, std::op
   wave->setPosition({w,offsety.value_or(-offset-2)});
   return wave;
 }
-WaveContainer* WaveContainer::create(ColorScheme color, Container* body) {
-  $createClass(WaveContainer, init, color, body);
+WaveContainer* WaveContainer::create(ColorScheme color) {
+  $createClass(WaveContainer, init, color);
 }
 
-bool WaveContainer::init(ColorScheme color, Container* pBody) {
+bool WaveContainer::init(ColorScheme color) {
   if (!OverlayContainer::init()) return false;
   addListener<MouseEvent>([this](MouseEvent* e){
     if (e->m_eventType == MouseEventType::MouseDown) {
@@ -107,11 +107,6 @@ bool WaveContainer::init(ColorScheme color, Container* pBody) {
   m_main->setAnchor(Anchor::Bottom);
   //auto w = s.width/2;
 
-  m_body = pBody; // mb
-  m_body->setAnchorPoint({0.5,0});
-  m_body->setAnchor(Anchor::Bottom);
-  m_body->setContentSize({100,100},Unit::Percent);
-  m_main->addChild(m_body);
   m_main->setAnchorPoint({0.5,1});
   m_main->setZOrder(777);
   m_main->setPadding({16, 0});

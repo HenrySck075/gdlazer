@@ -405,7 +405,8 @@ static const char* c_smug[] = {
   "Kyosuke Aoi",
   "Suzaku Akai",
 
-  "Henry Spheria" /// congrats
+  "Henry Spheria", /// congrats
+  "SoggyGunner"
 };
 
 $on_mod(Loaded) {

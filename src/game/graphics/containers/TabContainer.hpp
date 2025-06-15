@@ -7,11 +7,11 @@ GDL_NS_START
 
 class TabContainer : public frameworks::FillFlowContainer {
 public:
-  static TabContainer* create(std::vector<frameworks::Container*> items) {
-    $createClass(TabContainer, init, items);
+  static TabContainer* create(std::vector<frameworks::Container*> items, Color4 accent) {
+    $createClass(TabContainer, init, items, accent);
   }
 
-  bool init(std::vector<frameworks::Container *> items);
+  bool init(std::vector<frameworks::Container *> items, Color4 accent);
 
 private:
   OsuTabControl* m_control;

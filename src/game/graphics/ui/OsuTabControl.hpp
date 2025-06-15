@@ -18,6 +18,7 @@ public:
   void fadeOut();
 
   constexpr static const float MIN_WIDTH = 150;
+  constexpr static const float HEIGHT = 50;
 private:
   std::string m_text;
   Container* m_bar;
@@ -32,15 +33,7 @@ public: friend class TabContainer;
     $createClass(OsuTabControl, init, items);
   }
 
-  bool init(std::vector<OsuTabItem*> items) {
-    if (!frameworks::TabControl::init({items.begin(), items.end()})) return false;
-    setSpacing(5);
-    m_selectedTab.addCallback([](frameworks::TabItem* old, frameworks::TabItem* new_){
-      static_cast<OsuTabItem*>(old)->fadeOut();
-      static_cast<OsuTabItem*>(new_)->fadeIn();
-    });
-    return false;
-  }
+  bool init(std::vector<OsuTabItem *> items);
 };
 
 GDL_NS_END
