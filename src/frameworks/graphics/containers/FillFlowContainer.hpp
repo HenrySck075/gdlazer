@@ -27,7 +27,7 @@ public:
     bool getAxisReverse() const { return m_axisReverse; }
     FillDirection getDirection() const { return m_direction; }
     geode::Anchor getChildAnchor() const { return m_anchor; }
-    /// Let the Container automatically calls `updateLayout` on NodeLayoutUpdated
+    /// Let the Container automatically calls `updateLayout` on NodeSizeUpdated
     void setAutoUpdateLayout(bool enable);
 
     void updateLayout();

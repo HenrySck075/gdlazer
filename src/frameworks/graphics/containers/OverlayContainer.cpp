@@ -58,7 +58,7 @@ void OverlayContainer::hide() {
 }
 
 bool OverlayContainer::doDispatchEvent(Event* event, std::type_index type) {
-  if (m_blockingEvents && type != typeid(NodeLayoutUpdated)) return true;
+  if (m_blockingEvents && type != typeid(NodeSizeUpdated)) return true;
   return VisibilityContainer::doDispatchEvent(event, type);
 }
 void OverlayContainer::update(float) {

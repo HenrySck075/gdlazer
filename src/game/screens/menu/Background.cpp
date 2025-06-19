@@ -109,7 +109,7 @@ bool Background::init() {
   setOpacity(255);
   setBackgroundColor({0,0,0,0});
   setContentSize({100,100},Unit::Percent);
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* ev){
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* ev){
     //auto e = static_cast<NodeLayoutUpdate*>(ev);
     if (m_background) {
       auto s = this->CCLayer::getContentSize();

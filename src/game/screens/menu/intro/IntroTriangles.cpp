@@ -19,7 +19,7 @@ bool IntroTriangles::init() {
   // osu! logo: ji
 
   setOpacity(255);
-  auto label = m_welcomeText = OsuText::create("", FontType::Light, 12);
+  auto label = m_welcomeText = OsuText::create("", FontType::Light, 20);
   //label->setFntFile("LazerFont.fnt"_spr);
   label->setID("welcomeText");
 #ifndef GEODE_IS_ANDROID
@@ -83,7 +83,7 @@ bool IntroTriangles::init() {
   }
 
   //e->playMusic("triangles.mp3"_spr,false,0.f,7);
-  queueInMainThread([]{OsuGame::get()->startMusicSequence();});
+  OsuGame::get()->startMusicSequence();
   runAction(seq);
 
   return true;

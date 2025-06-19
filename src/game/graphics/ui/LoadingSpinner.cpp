@@ -24,7 +24,7 @@ bool LoadingSpinner::init(bool boxedP, bool invert) {
   spinner = FontAwesome::Solid::CircleNotch;
   if (boxed) spinner->setScale(0.6);
   spinner->setColor({spinnerColor,spinnerColor,spinnerColor});
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated*){
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated*){
     spinner->setContentSize(CCNode::getContentSize());
     spinner->setPosition(CCNode::getContentSize()/2);
     return true;

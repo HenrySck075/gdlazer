@@ -33,6 +33,8 @@ protected:
   static void setInstance(geode::Ref<Game> instance);
   // lame
   virtual bool doDEMidhook(Event* event, std::type_index type) {};
+
+  virtual void setWindowTitle(std::string title);
 public:
   virtual bool init() override;
   void yeah(cocos2d::CCObject*) {

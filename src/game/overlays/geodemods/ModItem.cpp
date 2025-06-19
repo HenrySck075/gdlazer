@@ -37,8 +37,8 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
 
 
   auto bg = Container::create();
-  bg->setContentSize({HEIGHT+CORNER_RADIUS*2, HEIGHT},Unit::UIKit);
-  bg->setBorderRadius(CORNER_RADIUS/2);
+  bg->setContentSize({HEIGHT+CORNER_RADIUS*2+30, HEIGHT},Unit::UIKit);
+  bg->setBorderRadius(CORNER_RADIUS);
   bg->setBackgroundColor(provider->Background2());
 
   bg->setClippingEnabled(true);
@@ -53,12 +53,12 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   metaContainer->setClippingEnabled(true);
   metaContainer->setBackgroundColor(provider->Background3());
   {
-    auto t = $verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 10));
+    auto t = $verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 20));
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }
   {
-    auto t = $verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 7));
+    auto t = $verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 14));
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }

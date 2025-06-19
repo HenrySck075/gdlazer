@@ -128,7 +128,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
     return true;
   });
 
-  addListener<NodeLayoutUpdated>([this, j, dialogBg](NodeLayoutUpdated* e){
+  addListener<NodeSizeUpdated>([this, j, dialogBg](NodeSizeUpdated* e){
     auto size = getContentSize();
     j->setPosition(size/2);
     if (dialogBg!=nullptr) {

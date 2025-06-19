@@ -24,7 +24,7 @@ bool ButtonArea::init(const CCPoint& anchorPos) {
   colorBg->setOpacity(255);
   colorBg->setZOrder(-77);
   addChild(colorBg);
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* e){
     auto the = CCNode::getContentSize();
     colorBg->setContentSize(the);
     colorBg->setPosition(the/2);

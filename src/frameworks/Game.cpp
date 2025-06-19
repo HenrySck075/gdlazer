@@ -123,7 +123,7 @@ void Game::update(float dt) {
   if (s_lastWinSize != winSize) {
     if (s_lastWinSize != CCSize{0,0}) {
       setContentSize(winSize);
-      dispatchEvent(new NodeLayoutUpdated());
+      dispatchEvent(new NodeSizeUpdated());
     }
     s_lastWinSize = winSize;
   }
@@ -175,6 +175,10 @@ Screen* Game::popScreen() {
     setWindowTitle("Geometry Dash");
   }
   return screen;
+}
+
+void Game::setWindowTitle(std::string title) {
+  setWindowTitleReal(title);
 }
 
 void Game::pushOverlay(OverlayContainer* overlay) {
@@ -231,7 +235,7 @@ bool Game::doDispatchEvent(Event* event, std::type_index type) {
     return true;
   }
   if (!doDEMidhook(event, type)) return false;
-  if (type == typeid(NodeLayoutUpdated)) {
+  if (type == typeid(NodeSizeUpdated)) {
     m_screensContainer->doDispatchEvent(event, type);
     m_overlaysContainer->doDispatchEvent(event, type);
     return true;

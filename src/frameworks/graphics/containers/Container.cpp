@@ -166,7 +166,7 @@ fish:
     return isInBounds;
   });
 
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* event) {
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* event) {
     updateSize();
     updatePosition();
     m_backgroundNode->setContentSize(getContentSize());
@@ -351,7 +351,7 @@ void Container::setPositionY(float y) {
 
 void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
-  dispatchEvent(new NodeLayoutUpdated());
+  dispatchEvent(new NodeSizeUpdated());
 }
 
 void Container::updateSize() {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../graphics/containers/WaveContainer.hpp"
+#include "geodemods/SwelvyBG.hpp"
 
 GDL_NS_START
 
@@ -9,6 +10,14 @@ public:
   $defaultCreate(ModsOverlay);
 
   bool init() override;
+
+  void onOpen() override;
+  void onClose() override;
+
+private:
+  Container* createInstalledTab();
+
+  geode::Ref<SwelvyBG> m_bg;
 };
 
 GDL_NS_END

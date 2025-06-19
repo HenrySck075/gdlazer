@@ -43,8 +43,8 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     1 
   });
   m_tooltipContainer->setContentHeight(ToolbarConstants::c_tooltipHeight);
-  m_text = OsuText::create(label.c_str(), FontType::Bold, 8);
-  m_subtext = OsuText::create(sub.c_str(), FontType::Regular, 8);
+  m_text = OsuText::create(label.c_str(), FontType::Bold, 18);
+  m_subtext = OsuText::create(sub.c_str(), FontType::Regular, 18);
   m_tooltipContainer->addChild(m_subtext);
   m_tooltipContainer->addChild(m_text);
   /*
@@ -64,9 +64,9 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   queueInMainThread([this, tooltipAlignment]{setTooltipAlignment(tooltipAlignment);});
 
   m_iconSprite = icon;
-  m_iconSprite->setScale(0.3);
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* e){
     m_iconSprite->setPosition(CCNode::getContentSize()/2);
+    m_iconSprite->setContentSize(getContentSize()*0.5);
     return true;
   });
 

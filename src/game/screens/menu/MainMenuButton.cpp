@@ -46,7 +46,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   iconContainer->addChild(m_icon);
   addChild(iconContainer);
   
-  m_label = $verifyPtr(OsuText::create(text.c_str(), FontType::Regular, 5));
+  m_label = $verifyPtr(OsuText::create(text.c_str(), FontType::Regular, 15));
   m_label->setAnchor(Anchor::Bottom);
   m_label->setAnchorPoint({0.5,0});
   m_label->setPositionY(4, Unit::UIKit);
@@ -54,7 +54,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   
   
   setAnchorPoint({0.5,0.5});
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated*) {
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated*) {
     
     auto s = getContentSize();
     // todo: move to container

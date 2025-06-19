@@ -103,7 +103,7 @@ void ContainerResizeTo::update(float time) {
     m_fStartContentWidth + m_fDeltaWidth * time,
     m_fStartContentHeight + m_fDeltaHeight * time
   }, Unit::OpenGL);
-  mata->dispatchEvent(new NodeLayoutUpdated());
+  mata->dispatchEvent(new NodeSizeUpdated());
 }
 
 #pragma endregion
@@ -184,9 +184,11 @@ void ContainerTintTo::startWithTarget(cocos2d::CCNode* target) {
   
   m_deltaColor = m_endColor - m_startColor;
 
+  /*
   log::debug("[ContainerTintTo]: startColor: {}, endColor: {}, deltaColor: {}",
     m_startColor, m_endColor, m_deltaColor
   );
+  */
 }
 void ContainerTintTo::update(float dt) {
   static_cast<Container*>(getTarget())->setBackgroundColor(

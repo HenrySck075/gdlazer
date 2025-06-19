@@ -81,7 +81,7 @@ bool LogoVisualization::init() {
   if (!Container::init()) return false;
   //bar_length = processUnit(600, Unit::UIKit, true);
   drawNode = CCDrawNode::create();
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e){
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* e){
     drawNode->setContentSize(CCNode::getContentSize());
     drawNode->setPosition(CCNode::getContentSize()/2);
     return true;

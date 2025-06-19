@@ -33,18 +33,24 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
     //text.length()*fontSize/2
   ));
   if (text.size() != 0) {
-    m_textNode->setScale(fontSize/42/cocos2d::CCDirector::get()->getOpenGLView()->getFrameZoomFactor());
+    resizeTextNode();
     setContentSize(m_textNode->getScaledContentSize());
   }
   m_textNode->setAlignment(alignment);
   m_textNode->setAnchorPoint({0.5,0.5});
   addChild(m_textNode);
-  addListener<frameworks::NodeLayoutUpdated>([this](frameworks::NodeLayoutUpdated*){
+  addListener<frameworks::NodeSizeUpdated>([this](frameworks::NodeSizeUpdated*){
     m_textNode->setPosition(getContentSize()/2);
     return true;
   });
   return true;
 };
+void OsuText::resizeTextNode() {
+  m_textNode->setScale(
+    /// i dont know any of this
+      processUnit(m_fontSize, frameworks::Unit::UIKit, false) / m_textNode->getContentHeight()
+  );
+}
 void OsuText::setFontType(FontType type) {
   m_textNode->setFntFile(fontTypeMap[type].c_str());
 };
@@ -67,10 +73,7 @@ void OsuText::setString(std::string string) {
   m_text = string;
   m_textNode->setString(m_text.c_str());
   if (unemptied) {
-    m_textNode->setScale(
-      m_fontSize/42/cocos2d::CCDirector::get()->getOpenGLView()->getFrameZoomFactor()
-      /*processUnit(m_fontSize, frameworks::Unit::UIKit, false) / m_textNode->getContentHeight()*/
-    );
+    resizeTextNode();
     setContentSize(m_textNode->getScaledContentSize());
   }
   //setContentSize(m_textNode->getScaledContentSize());

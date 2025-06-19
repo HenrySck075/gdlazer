@@ -11,7 +11,7 @@ bool FillFlowContainer::init(FillDirection direction, geode::Anchor anchor) {
     m_direction = direction;
     m_anchor = anchor;
 
-    addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated*){
+    addListener<NodeSizeUpdated>([this](NodeSizeUpdated*){
       if (m_autoUpdate) updateLayout();
       return true;
     });

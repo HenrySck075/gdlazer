@@ -99,7 +99,13 @@ void ScrollContainer::setContent(Container* content) {
     m_crossAxisAlignment == AxisAlignment::End ? (m_scrollDirection == ScrollDirection::Horizontal ? Anchor::BottomLeft : Anchor::TopRight) :
     Anchor::TopLeft // Default to TopLeft if not specified
   );
-  m_content->setAnchorPoint({0,1});
+  /// Set the actual anchor point
+  m_content->setAnchorPoint(
+    m_crossAxisAlignment == AxisAlignment::Start ? cocos2d::CCPoint{0,1} :
+    m_crossAxisAlignment == AxisAlignment::Center ? (m_scrollDirection == ScrollDirection::Horizontal ? cocos2d::CCPoint{0,0.5} : cocos2d::CCPoint{0.5,1}) :
+    m_crossAxisAlignment == AxisAlignment::End ? (m_scrollDirection == ScrollDirection::Horizontal ? cocos2d::CCPoint{0,0} : cocos2d::CCPoint{1,1}) :
+    cocos2d::CCPoint{0,1} // Default to TopLeft if not specified
+  );
   updatePosition();
 }
 

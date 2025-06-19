@@ -129,7 +129,7 @@ bool ToolbarUserButton::init() {
   flowContainer->setAnchorPoint({0.5,0.5});
 
   auto man = GameManager::get();
-  auto username = OsuText::create(man->m_playerName, FontType::Regular, 7);
+  auto username = OsuText::create(man->m_playerName, FontType::Regular, 15);
   username->setMaxSize({ToolbarConstants::c_height*2.f, ToolbarConstants::c_height});
   username->setAnchor(Anchor::Left);
   flowContainer->addChild(username);
@@ -142,16 +142,20 @@ bool ToolbarUserButton::init() {
   icon->enableCustomGlowColor(man->colorForIdx(man->getPlayerGlowColor()));
   if(!man->getPlayerGlow()) icon->disableGlowOutline();
 
-  icon->setScale(processUnit(ToolbarConstants::c_height-6, Unit::UIKit, false) / 30.5);
-
+  
   auto iconWrapper = Container::create();
   
   iconWrapper->addChild(icon);
+  float deadass = static_cast<CCNode*>(icon->getChildren()->objectAtIndex(0))->getContentHeight();
+  iconWrapper->addListener<NodeSizeUpdated>([icon, iconWrapper, deadass, this](NodeSizeUpdated* e) {
+    icon->setScale(processUnit(ToolbarConstants::c_height-6, Unit::UIKit, false) / deadass);
+    icon->setPositionY(getContentHeight()/2);
+    return true;
+  });
   iconWrapper->setContentSize({ToolbarConstants::c_height, ToolbarConstants::c_height}, Unit::UIKit);
-  icon->setContentSize(iconWrapper->getContentSize());
-  static_cast<CCNode*>(icon->getChildren()->objectAtIndex(0))->setAnchorPoint({0,0});
-  icon->setAnchorPoint({0,0});
-  iconWrapper->setPadding({2});
+  static_cast<CCNode*>(icon->getChildren()->objectAtIndex(0))->setAnchorPoint({0,0.5});
+  icon->setAnchorPoint({0,0.5});
+  //iconWrapper->setPadding({2});
   iconWrapper->setAnchor(Anchor::Left);
 
   flowContainer->addChild(iconWrapper);

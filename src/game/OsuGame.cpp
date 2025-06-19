@@ -72,6 +72,9 @@ void OsuGame::update(float dt) {
 };
 bool OsuGame::init() {
   if (!Game::init()) return false;
+
+  m_setupComplete = false;
+
   m_toolbar = $verifyPtr(Toolbar::create());
   addChild(m_toolbar, 9);
 
@@ -163,7 +166,7 @@ bool OsuGame::init() {
       m_dragRotating = false;
       playTapSample(0.8);
     }
-    return true;
+    return !m_containsBlockingUIInFront;
   });
 #endif
   m_everypence->setContentSize(m_everypence->getContentSize());
@@ -187,6 +190,8 @@ bool OsuGame::init() {
   }
   for (auto e : levelsBySongID) m_playlist.push_back(e.second);
 
+  m_setupComplete = true;
+
   return true;
 }
 
@@ -204,7 +209,10 @@ void OsuGame::addChild(CCNode* child) {
 }
 void OsuGame::addChild(CCNode* child, int zOrder) {
   CCScene::addChild(child, zOrder);
-  m_containsBlockingUIInFront = m_containsBlockingUIInFront || (child != m_toolbar && child != m_cursorNode && child != m_screensContainer && child != m_overlaysContainer);
+  if (m_setupComplete) {
+    m_containsBlockingUIInFront = true;
+    log::debug("im jom {}", m_containsBlockingUIInFront);
+  }
 }
 void OsuGame::removeChild(CCNode* child) {
   CCScene::removeChild(child);
@@ -213,15 +221,20 @@ void OsuGame::removeChild(CCNode* child) {
   m_containsBlockingUIInFront = false;
   if (auto children = getChildren()) {
     int length = children->count();
-    for (int i = length-1; i >= 0; --i) {
+    int mainContainerIndex = children->indexOfObject(m_screensContainer->getParent());
+    for (int i = length-1; i > mainContainerIndex; --i) {
       auto c = static_cast<CCNode*>(children->objectAtIndex(i));
-      if (c != m_toolbar && c != m_screensContainer && c != m_overlaysContainer) {
+      if (c != m_toolbar && c != m_cursorNode) {
         m_containsBlockingUIInFront = true;
         break;
       }
     }
   }
+  log::debug("im n jom {}", m_containsBlockingUIInFront);
+}
 
+void OsuGame::setWindowTitle(std::string title) {
+  setWindowTitleReal(title.size() != 0 ? title+" | gd!lazer" : "gd!lazer");
 }
 
 bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
@@ -234,9 +247,16 @@ bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
     }
   }
   #endif
+  /*
+  if (
+    m_containsBlockingUIInFront && 
+    ((
+      type == typeid(MouseEvent) && static_cast<MouseEvent*>(event)->m_eventType != frameworks::MouseEventType::Move
+    ) || type == typeid(KeyEvent))
+  ) return false;
+   */
   if (!Game::doDispatchEvent(event, type)) return false;
-  if (m_containsBlockingUIInFront && (type == typeid(MouseEvent) || type == typeid(KeyEvent))) return false;
-  if (type == typeid(NodeLayoutUpdated)) {
+  if (type == typeid(NodeSizeUpdated)) {
     m_everypence->setContentSize({getContentWidth(), getContentHeight()-(m_toolbar->isOpen() ? m_everypence->processUnit(ToolbarConstants::c_height, Unit::UIKit, false) : 0)});
   }
   return true;
@@ -245,7 +265,7 @@ bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
 bool OsuGame::doDEMidhook(Event* event, std::type_index type) {
   bool ret = m_toolbar->doDispatchEvent(event, type);
 
-  return type == typeid(NodeLayoutUpdated) || ret;
+  return type == typeid(NodeSizeUpdated) || ret;
 }
 
 void OsuGame::showToolbar() {
@@ -279,7 +299,7 @@ void OsuGame::hideToolbar() {
 
 void OsuGame::setMainContainerHeight(float height) {
   m_everypence->setContentSize({100, height}, Unit::Percent, Unit::OpenGL);
-  m_everypence->dispatchEvent(new NodeLayoutUpdated()); // why
+  m_everypence->dispatchEvent(new NodeSizeUpdated()); // why
 }
 
 /// Store a uniform random distribution out here so we don't have to recreate one on every playTapSample call

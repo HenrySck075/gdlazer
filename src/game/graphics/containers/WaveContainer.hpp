@@ -9,6 +9,22 @@ GDL_NS_START
 using ColorScheme = OverlayColorScheme;
 
 class WaveContainer : public OsuOverlayContainer {
+public:
+  bool init(ColorScheme color);
+  static WaveContainer* create(ColorScheme color);
+
+protected:
+  void onClose() override;
+  void onOpen() override;
+  geode::Ref<OverlayColorProvider> m_provider;
+  bool m_useContainerSizeForWaves = false;
+
+  float m_pos1;
+  float m_pos2;
+  float m_pos3;
+  float m_pos4;
+
+
 private:
   CCPoint m_startTouchLocation = {0,0};
   CCRect m_touchBoundary;
@@ -18,21 +34,8 @@ private:
   CCDrawNode* m_wave3 = nullptr;
   CCDrawNode* m_wave4 = nullptr;
 
-  float m_pos1;
-  float m_pos2;
-  float m_pos3;
-  float m_pos4;
-
-  float appearDuration = 0.8f;
-  float disappearDuration = 0.5f;
-
-  void onClose() override;
-  void onOpen() override;
-public:
-  bool init(ColorScheme color);
-  static WaveContainer* create(ColorScheme color);
-protected:
-  geode::Ref<OverlayColorProvider> m_provider;
+  float m_appearDuration = 0.8f;
+  float m_disappearDuration = 0.5f;
 
 };
 GDL_NS_END

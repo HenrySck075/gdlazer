@@ -83,17 +83,18 @@ bool WaveContainer::init(ColorScheme color) {
 
     return true;
   }); 
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* e) {
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* e) {
     if (!m_shown) return true;
     if (m_wave1 == nullptr) return true;
     removeChild(m_wave1);
     removeChild(m_wave2);
     removeChild(m_wave3);
     removeChild(m_wave4);
-    addChild(m_wave1 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle1, m_provider->Light4(), getContentHeight()));
-    addChild(m_wave2 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle2, m_provider->Light3(), getContentHeight()));
-    addChild(m_wave3 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle3, m_provider->Dark4(), getContentHeight()));
-    addChild(m_wave4 = createWave(getContentWidth() / 2, m_main->getContentSize(), c_angle4, m_provider->Dark3(), getContentHeight()));
+    CCSize waveSize = m_useContainerSizeForWaves ? getContentSize() : m_main->getContentSize();
+    addChild(m_wave1 = createWave(getContentWidth() / 2, waveSize, c_angle1, m_provider->Light4(), getContentHeight()));
+    addChild(m_wave2 = createWave(getContentWidth() / 2, waveSize, c_angle2, m_provider->Light3(), getContentHeight()));
+    addChild(m_wave3 = createWave(getContentWidth() / 2, waveSize, c_angle3, m_provider->Dark4(), getContentHeight()));
+    addChild(m_wave4 = createWave(getContentWidth() / 2, waveSize, c_angle4, m_provider->Dark3(), getContentHeight()));
 
     return true;
   });
@@ -110,6 +111,7 @@ bool WaveContainer::init(ColorScheme color) {
   m_main->setAnchorPoint({0.5,1});
   m_main->setZOrder(777);
   m_main->setPadding({16, 0});
+  m_main->setBackgroundColor(m_provider->Dark3());
 
   return true;
 }
@@ -121,7 +123,7 @@ void WaveContainer::onOpen() {
   //queueInMainThread([this]{
     auto h = getContentHeight();
     if (!m_wave1) {
-      auto w = m_main->getContentWidth();
+      auto w = m_useContainerSizeForWaves ? getContentWidth() : m_main->getContentWidth();
       auto tw = getContentWidth();
       CCSize k {w,h};
       
@@ -134,7 +136,7 @@ void WaveContainer::onOpen() {
       m_pos3 = m_wave3->getPositionY();
       m_wave4 = createWave(tw/2,k, c_angle4, m_provider->Dark3());
       m_pos4 = m_wave4->getPositionY();
-      m_main->setPositionY(m_pos4);
+      m_main->setPositionY(m_pos4-15);
 
       addChild(m_wave1);
       addChild(m_wave2);
@@ -143,12 +145,12 @@ void WaveContainer::onOpen() {
     }
     
   #define j(id, dist) \
-    m_wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(appearDuration, {m_wave##id->getPositionX(),h+(dist/1366*h)})))
+    m_wave##id->runAction(CCEaseSineOut::create(CCMoveTo::create(m_appearDuration, {m_wave##id->getPositionX(),h+(dist/1366*h)})))
     j(1,930.f);
     j(2,560.f);
     j(3,390.f);
     j(4,220.f);
-    m_main->runAction(CCEaseSineOut::create(ContainerMoveTo::create(appearDuration, {0,h})));
+    m_main->runAction(CCEaseSineOut::create(ContainerMoveTo::create(m_appearDuration, {0,h})));
     runAction(ContainerTintOpacityTo::create(0.1f, 255*.2));
 
     FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
@@ -160,15 +162,15 @@ void WaveContainer::onClose() {
   // nuh uh
   stopAllActions();
 
-#define j(id) m_wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(disappearDuration, ccp(m_wave##id->getPositionX(),m_pos##id))))
+#define j(id) m_wave##id->runAction(CCEaseSineIn::create(CCMoveTo::create(m_disappearDuration, ccp(m_wave##id->getPositionX(),m_pos##id))))
   j(1);
   j(2);
   j(3);
   j(4);
-  m_main->runAction(CCEaseSineIn::create(ContainerMoveTo::create(disappearDuration, {0,m_pos4-15})));
+  m_main->runAction(CCEaseSineIn::create(ContainerMoveTo::create(m_disappearDuration, {0,m_pos4-15})));
   runAction(CCSequence::createWithTwoActions( 
       ContainerTintOpacityTo::create(0.1f,0),
-      CCDelayTime::create(disappearDuration)
+      CCDelayTime::create(m_disappearDuration)
   ));
 
   FMODAudioEngine::sharedEngine()->playEffect("overlay-big-pop-out.wav"_spr);

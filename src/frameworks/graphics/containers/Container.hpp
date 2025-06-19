@@ -17,9 +17,9 @@
 
 
 GDF_NS_START
-class NodeLayoutUpdated : public Event {
+class NodeSizeUpdated : public Event {
 public:
-    NodeLayoutUpdated() {}
+    NodeSizeUpdated() {}
 };
 
 /// cant figure out a name for this one

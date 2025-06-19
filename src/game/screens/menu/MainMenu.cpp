@@ -33,11 +33,11 @@ bool MainMenu::init() {
   m_nowPlayingBox = FillFlowContainer::create(FillDirection::Vertical, Anchor::TopRight);
   m_nowPlayingBox->setAnchorPoint({1,1});
 
-  auto songTitle = OsuText::create("",FontType::Regular,14/1.5f,kCCTextAlignmentRight);
+  auto songTitle = OsuText::create("",FontType::Regular,14*1.5f,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(songTitle);
-  auto songArtist = OsuText::create("",FontType::Regular,12/1.5f,kCCTextAlignmentRight);
+  auto songArtist = OsuText::create("",FontType::Regular,12*1.5f,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(songArtist);
-  auto levelInfo = OsuText::create("",FontType::Regular,10/1.5f,kCCTextAlignmentRight);
+  auto levelInfo = OsuText::create("",FontType::Regular,10*1.5f,kCCTextAlignmentRight);
   m_nowPlayingBox->addChild(levelInfo);
   /*
   m_nowPlayingBox->setLayout(
@@ -53,7 +53,7 @@ bool MainMenu::init() {
   m_nowPlayingBox->setOpacity(0);
   addChild(m_nowPlayingBox);
   
-  addListener<NodeLayoutUpdated>([this](NodeLayoutUpdated* ){
+  addListener<NodeSizeUpdated>([this](NodeSizeUpdated* ){
     m_nowPlayingBox->setPosition(CCNode::getContentSize()-CCSize{5,5});
     return true;
   });

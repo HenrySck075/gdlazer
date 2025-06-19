@@ -27,9 +27,12 @@ public:
 
   void startMusicSequence();
   void startNextSong();
+protected:
+  void setWindowTitle(std::string title) override;
 
 private:
   bool m_containsBlockingUIInFront = false;
+  bool m_setupComplete = false;
   CCArrayExt<GJGameLevel> m_playlist; friend class IntroTriangles;
   int m_songIndex = 0;
   geode::Ref<Toolbar> m_toolbar;

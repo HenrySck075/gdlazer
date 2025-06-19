@@ -4,7 +4,7 @@
 GDF_NS_START
 /// yeah thats it
 /// @note Cascade opacity has been disabled
-/// @note If you wanted to use an infinite-looping action on show, PLEASE place it on a child node, otherwise your container will NEVER receives any events except for NodeLayoutUpdated (until you stop it),
+/// @note If you wanted to use an infinite-looping action on show, PLEASE place it on a child node, otherwise your container will NEVER receives any events except for NodeSizeUpdated (until you stop it),
 /// as the actions for the OverlayContainer is used to determine whether the enter animations finished.
 class OverlayContainer : public VisibilityContainer {
 public:
