@@ -53,12 +53,12 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   metaContainer->setClippingEnabled(true);
   metaContainer->setBackgroundColor(provider->Background3());
   {
-    auto t = $verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 20));
+    auto t = $verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 25));
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }
   {
-    auto t = $verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 14));
+    auto t = $verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 17));
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }

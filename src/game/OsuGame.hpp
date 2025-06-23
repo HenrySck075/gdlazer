@@ -19,7 +19,7 @@ public:
   void addChild(CCNode* child) override;
   void addChild(CCNode* child, int zOrder) override;
 
-  void removeChild(CCNode* child) override;
+  void removeChild(CCNode* child, bool cleanup) override;
 
   void update(float) override;
 

@@ -14,8 +14,11 @@ public:
   bool init(std::string text, ccColor4B accent);
 
   void fadeIn();
-
   void fadeOut();
+
+  /// TODO: move this to frameworks
+  void focus();
+  void unfocus();
 
   constexpr static const float MIN_WIDTH = 150;
   constexpr static const float HEIGHT = 50;
@@ -24,6 +27,7 @@ private:
   Container* m_bar;
   OsuText* m_textNode;
   ccColor4B m_accent;
+  bool m_focused = false;
 };
 
 

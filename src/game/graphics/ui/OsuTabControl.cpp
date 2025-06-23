@@ -46,13 +46,21 @@ void OsuTabItem::fadeIn() {
   m_textNode->inner()->runAction($outQuinting(CCFadeTo::create(0.5, 255)));
 }
 void OsuTabItem::fadeOut() {
-  if (isMouseEntered())
+  if (isMouseEntered() || m_focused)
     return;
   m_bar->runAction(
       $outQuinting(frameworks::ContainerTintOpacityTo::create(0.5, 0)));
   m_textNode->inner()->runAction(
       $outQuinting(CCTintTo::create(0.5, m_accent.r, m_accent.g, m_accent.b)));
   m_textNode->inner()->runAction($outQuinting(CCFadeTo::create(0.5, m_accent.a)));
+}
+void OsuTabItem::focus() {
+  m_focused = true;
+  fadeIn();
+}
+void OsuTabItem::unfocus() {
+  m_focused = false;
+  fadeOut();
 }
 #undef $outQuinting
 
@@ -63,9 +71,10 @@ bool OsuTabControl::init(std::vector<OsuTabItem *> items) {
   setSpacing(5);
   m_selectedTab.addCallback(
   [](frameworks::TabItem *old, frameworks::TabItem *new_) {
-    static_cast<OsuTabItem *>(old)->fadeOut();
-    static_cast<OsuTabItem *>(new_)->fadeIn();
+    static_cast<OsuTabItem*>(old)->unfocus();
+    static_cast<OsuTabItem*>(new_)->focus();
   });
+  static_cast<OsuTabItem*>(m_selectedTab.operator->())->focus();
   return true;
 }
 GDL_NS_END

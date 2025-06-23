@@ -16,7 +16,7 @@ public:
 
 private:
   friend class TabControl;
-  std::vector<TabItem*> m_items;
+  CCArrayExt<TabItem*> m_items;
 };
 
 class TabControl : public Container {
@@ -29,7 +29,7 @@ public:
 
   void setSpacing(float spacing) {m_container->setGap(spacing);}
 
-  std::vector<TabItem*> getAllTabs() {return m_container->m_items;};
+  CCArrayExt<TabItem*> getAllTabs() {return m_container->m_items;};
   Bindable<TabItem*> m_selectedTab;
 protected:
   TabFillFlowContainer* m_container;

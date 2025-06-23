@@ -71,40 +71,18 @@ void OsuGame::update(float dt) {
   Game::update(dt);
 };
 bool OsuGame::init() {
-  if (!Game::init()) return false;
 
-  m_setupComplete = false;
-
-  m_toolbar = $verifyPtr(Toolbar::create());
-  addChild(m_toolbar, 9);
-
-#ifdef GEODE_IS_DESKTOP
-  addChild(m_cursorNode = CCNode::create(), 12);
-  m_cursorNode->setVisible(false);
-
-  /// No const wchar_t allowed this will guarantee a crash on non-ascii gd install path
-  FMODAudioEngine::get()->m_system->createSound((Mod::get()->getResourcesDir() / "cursor-tap.wav").string().c_str(), FMOD_DEFAULT, 0, &m_clickSound);
-  
-  m_cursorNode->addChild(m_cursor = CCResizableSprite::create("menu-cursor.png"_spr));
-  m_cursor->setContentSize({10,442/(312/10.f)});
-  m_cursor->setAnchorPoint({0,1});
-  
-  m_cursorNode->addChild(m_cursorAdditive = CCResizableSprite::create("menu-cursor-additive.png"_spr));
-  m_cursorAdditive->setContentSize({10,442/(312/10.f)});
-  m_cursorAdditive->setAnchorPoint({0,1});
-  m_cursorAdditive->setOpacity(0);
-  m_cursorAdditive->setCascadeColorEnabled(true);
-  m_cursorAdditive->setColor(Color4::Pink);
-
-  const float dragMinDistUI = m_everypence->processUnit(80, Unit::UIKit, true);
-
-  addListener<MouseEvent>([this, dragMinDistUI](MouseEvent* cure) {
+  addListener<MouseEvent>([this](MouseEvent* cure) {
     if (cure->m_eventType == MouseEventType::Move) {
       m_cursorNode->setPosition(cure->m_position);
       if (
         cure->m_clicked && 
         m_dragStartPosition.has_value() && 
-        m_dragStartPosition->getDistance(cure->m_position) > dragMinDistUI
+        m_dragStartPosition->getDistance(cure->m_position) > sqrtf(
+          powf(m_everypence->processUnit(80, Unit::UIKit, true), 2) 
+          +
+          powf(m_everypence->processUnit(80, Unit::UIKit, false), 2) 
+        )
       ) {
         // save the result to not recalculate again
         m_dragRotating = true;
@@ -166,12 +144,39 @@ bool OsuGame::init() {
       m_dragRotating = false;
       playTapSample(0.8);
     }
+    if (m_containsBlockingUIInFront) {
+      cure->stopImmediatePropagation();
+    }
     return !m_containsBlockingUIInFront;
   });
+
+  if (!Game::init()) return false;
+
+  m_setupComplete = false;
+
+  m_toolbar = $verifyPtr(Toolbar::create());
+  addChild(m_toolbar, 9);
+
+#ifdef GEODE_IS_DESKTOP
+  addChild(m_cursorNode = CCNode::create(), 12);
+  m_cursorNode->setVisible(false);
+
+  /// No const wchar_t allowed this will guarantee a crash on non-ascii gd install path
+  FMODAudioEngine::get()->m_system->createSound((Mod::get()->getResourcesDir() / "cursor-tap.wav").string().c_str(), FMOD_DEFAULT, 0, &m_clickSound);
+  
+  m_cursorNode->addChild(m_cursor = CCResizableSprite::create("menu-cursor.png"_spr));
+  m_cursor->setContentSize({10,442/(312/10.f)});
+  m_cursor->setAnchorPoint({0,1});
+  
+  m_cursorNode->addChild(m_cursorAdditive = CCResizableSprite::create("menu-cursor-additive.png"_spr));
+  m_cursorAdditive->setContentSize({10,442/(312/10.f)});
+  m_cursorAdditive->setAnchorPoint({0,1});
+  m_cursorAdditive->setOpacity(0);
+  m_cursorAdditive->setCascadeColorEnabled(true);
+  m_cursorAdditive->setColor(Color4::Pink);
+
 #endif
   m_everypence->setContentSize(m_everypence->getContentSize());
-
-
 
   auto onlineLevels = GameLevelManager::sharedState()->m_onlineLevels;
   // 1st: song id
@@ -211,11 +216,10 @@ void OsuGame::addChild(CCNode* child, int zOrder) {
   CCScene::addChild(child, zOrder);
   if (m_setupComplete) {
     m_containsBlockingUIInFront = true;
-    log::debug("im jom {}", m_containsBlockingUIInFront);
   }
 }
-void OsuGame::removeChild(CCNode* child) {
-  CCScene::removeChild(child);
+void OsuGame::removeChild(CCNode* child, bool cleanup) {
+  CCScene::removeChild(child, cleanup);
   // traverse children in reverse direction to check if there's still a ui-blocking elements
   // its cocos2d-x do the job right
   m_containsBlockingUIInFront = false;

@@ -8,6 +8,9 @@ bool TabFillFlowContainer::initWithItems(std::vector <TabItem *> items) {
   for (auto i : items) {
     addChild(i);
   }
+  for (auto i : items) {
+    m_items.push_back(i);
+  }
   return true;
 }
 bool TabControl::init(std::vector<TabItem *> items) {

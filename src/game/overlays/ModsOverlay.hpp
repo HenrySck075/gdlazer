@@ -16,6 +16,7 @@ public:
 
 private:
   Container* createInstalledTab();
+  Container* createPopularTab();
 
   geode::Ref<SwelvyBG> m_bg;
 };

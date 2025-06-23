@@ -14,7 +14,8 @@ bool ModsOverlay::init() {
   )) return false;
   
   auto tabContainer = $verifyPtr(TabContainer::create({
-    createInstalledTab()
+    createInstalledTab(),
+    createPopularTab()
   }, m_provider->Color0()));
   
   m_main->addChild(tabContainer);
@@ -64,8 +65,13 @@ Container* ModsOverlay::createInstalledTab() {
     //sc->resizeToChildSize();
   });
 
-
   return sc;
+}
+
+Container* ModsOverlay::createPopularTab() {
+  auto ret = Container::create();
+  ret->setName("Popular");
+  return ret;
 }
 
 void ModsOverlay::onOpen() {

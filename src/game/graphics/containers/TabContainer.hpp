@@ -15,7 +15,7 @@ public:
 
 private:
   OsuTabControl* m_control;
-  std::map<frameworks::TabItem*, frameworks::Container*> m_items;
+  std::map<frameworks::TabItem*, geode::Ref<frameworks::Container>> m_items;
 };
 
 GDL_NS_END

@@ -37,7 +37,6 @@ bool SwelvyBG::init() {
 
         auto sprite = CCSprite::create(layer.second);
         auto rect = sprite->getTextureRect();
-        sprite->setUserObject("width", CCFloat::create(rect.size.width));
         rect.size = CCSize{winSize.width, std::min(rect.size.height, y)};
 
         //std::string layerID = fmt::format("layer-{}", idx);
@@ -63,10 +62,10 @@ bool SwelvyBG::init() {
 
 void SwelvyBG::updateSpritePosition(float dt) {
     auto speed = static_cast<CCFloat*>(this->getUserObject("speed"))->getValue();
-    auto width = static_cast<CCFloat*>(this->getUserObject("width"))->getValue();
-
+    
     auto sprite = typeinfo_cast<CCSprite*>(this);
     auto rect = sprite->getTextureRect();
+    auto width = rect.size.width;
 
     float dX = rect.origin.x - speed * dt;
     if(dX >= std::abs(width)) {
