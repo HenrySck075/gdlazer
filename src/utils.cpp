@@ -134,3 +134,19 @@ uintptr_t getGeodeLib() {
 #endif
 }
 */
+cocos2d::CCNode*
+getChildByIdTree(CCNode *node,
+                 std::initializer_list<std::variant<std::string, int>> path) {
+  if (!node)
+    return nullptr;
+
+  CCNode *current = node;
+  for (auto &id : path) {
+    if (std::holds_alternative<std::string>(id)) {
+      current = current->getChildByID(std::get<std::string>(id));
+    } else {
+      current = current->getChildByType(std::get<int>(id));
+    }
+  }
+  return current;
+}

@@ -62,3 +62,7 @@ T* postconfig(T* node, std::function<void(T*)> func) {
 std::string getObjectName(CCObject* node);
 
 void setWindowTitleReal(std::string title);
+
+CCNode* getChildByIdTree(
+  CCNode *node, std::initializer_list<std::variant<std::string, int>> path
+);

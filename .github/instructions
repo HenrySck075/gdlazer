@@ -1,0 +1,2 @@
+- Use `geode::cast::typeinfo_cast` instead of `dynamic_cast`. 
+- Access `Fields` members using either `m_fields` member or `auto fields = m_fields.self()` if used multiple times in one function

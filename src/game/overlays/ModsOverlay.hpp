@@ -18,6 +18,8 @@ private:
   Container* createInstalledTab();
   Container* createPopularTab();
 
+  void onGoogooGaga(CCObject* sender);
+
   geode::Ref<SwelvyBG> m_bg;
 };
 

@@ -36,6 +36,9 @@ protected:
 
   virtual void setWindowTitle(std::string title);
 public:
+  inline float processUnit(float value, Unit unit, bool isWidth) {
+    return m_everypence->processUnit(value, unit, isWidth);
+  }
   virtual bool init() override;
   void yeah(cocos2d::CCObject*) {
     cocos2d::CCDirector::get()->popScene();
