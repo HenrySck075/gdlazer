@@ -78,7 +78,7 @@ void AudioManager::playFromLevel(GJGameLevel* level, float fadeTime) {
     track = std::stoi(out[0]);
     customSongInfo = MusicDownloadManager::sharedState()->getSongInfoObject(track);
   } else {
-    if (level->m_isUploaded) track = level->m_songID;
+    if (level->m_isUploaded) customSongInfo = MusicDownloadManager::sharedState()->getSongInfoObject(level->m_songID);
     else track = level->m_audioTrack;
   }
 
@@ -186,5 +186,25 @@ void AudioManager::set(gd::string filePath, float fadeTime) {
       nullptr
     ));
   } else {playNewSound();}
+}
+float AudioManager::getSongDuration() {
+  if (!m_sound) {
+    geode::log::warn("Sound is null");
+    return 0;
+  }
+  unsigned int ret;
+  m_sound->getLength(&ret, FMOD_TIMEUNIT_MS);
+  return (float)ret / 1000;
+}
+float AudioManager::getElapsed() {
+  if (!m_sound)
+    return 0;
+  unsigned int ret;
+  m_channel->getPosition(&ret, FMOD_TIMEUNIT_MS);
+  return ret / 1000.f;
+}
+void AudioManager::seek(float position) {
+  if (m_channel)
+    m_channel->setPosition((unsigned int)(position * 1000), FMOD_TIMEUNIT_MS);
 }
 GDF_NS_END

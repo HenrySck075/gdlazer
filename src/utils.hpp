@@ -66,3 +66,27 @@ void setWindowTitleReal(std::string title);
 CCNode* getChildByIdTree(
   CCNode *node, std::initializer_list<std::variant<std::string, int>> path
 );
+
+template<typename T>
+class CCDataHolder : public CCObject {
+public:
+  static CCDataHolder<T>* create(T data) {
+    CCDataHolder<T>* ret = new CCDataHolder<T>();
+    if (ret && ret->init(data)) {
+      ret->autorelease();
+      return ret;
+    } else {
+      delete ret;
+      return nullptr;
+    }
+  }
+
+  bool init(T data) {
+    m_data = data;
+    return true;
+  }
+
+  T getData() const { return m_data; }
+private:
+  T m_data;
+};

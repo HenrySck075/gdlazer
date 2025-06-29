@@ -1,7 +1,5 @@
 #include "Game.hpp"
-#include "Geode/cocos/robtop/keyboard_dispatcher/CCKeyboardDelegate.h"
 #include "audio/AudioManager.hpp"
-#include "input/events/KeyEvent.hpp"
 #include <mutex>
 #include "graphics/containers/Container.hpp"
 
@@ -74,8 +72,10 @@ bool Game::init() {
 
   m_screensContainer = Container::create();
   m_screensContainer->setContentSize({100,100}, Unit::Percent);
+  m_screensContainer->setID("screens");
   m_overlaysContainer = Container::create();
   m_overlaysContainer->setContentSize({100,100}, Unit::Percent);
+  m_overlaysContainer->setID("overlays");
 
   m_everypence->addChild(m_screensContainer);
   m_everypence->addChild(m_overlaysContainer);
@@ -172,7 +172,7 @@ Screen* Game::popScreen() {
     setWindowTitle(m_currentScreen->getTitle());
   } else {
     m_currentScreen = nullptr;
-    setWindowTitle("Geometry Dash");
+    setWindowTitle("");
   }
   return screen;
 }
@@ -182,15 +182,26 @@ void Game::setWindowTitle(std::string title) {
 }
 
 void Game::pushOverlay(OverlayContainer* overlay) {
-  if (!overlay->m_shown) return overlay->show();
-  m_overlaysContainer->addChild(overlay);
+  if (!overlay->m_shown) {
+    overlay->show();
+    
+    return;
+  }
+  if (m_overlayRemovalQueue.inner()->containsObject(overlay)) {
+    m_overlayRemovalQueue.inner()->removeObject(overlay);
+  } else {
+    m_overlaysContainer->addChild(overlay);
+  }
   m_currentOverlay = overlay;
   m_overlayStack.push_back(overlay);
 
   setWindowTitle(m_currentOverlay->getTitle());
 };
 void Game::popOverlay(OverlayContainer* overlay) {
-  if (overlay->m_shown) return overlay->hide();
+  if (overlay->m_shown) {
+    overlay->hide();
+    return;
+  }
   if (m_overlayStack.size() > 0) {
     m_overlayRemovalQueue.push_back(overlay);
     m_overlayStack.inner()->removeObject(overlay);
@@ -199,7 +210,7 @@ void Game::popOverlay(OverlayContainer* overlay) {
       setWindowTitle(m_currentOverlay->getTitle());
     } else {
       m_currentOverlay = nullptr;
-      setWindowTitle("Geometry Dash");
+      setWindowTitle(m_currentScreen ? m_currentScreen->getTitle() : "");
     }
   }
 };

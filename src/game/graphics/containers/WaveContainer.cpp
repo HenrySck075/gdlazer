@@ -98,7 +98,7 @@ bool WaveContainer::init(ColorScheme color) {
 
     return true;
   });
-  setBackgroundColor({0,0,0,0});
+  setBackgroundColor({0,0,0,static_cast<GLubyte>(255*0.2)});
   m_provider = OverlayColorProvider::create(color);
   m_provider->retain();
   
@@ -151,7 +151,6 @@ void WaveContainer::onOpen() {
     j(3,390.f);
     j(4,220.f);
     m_main->runAction(CCEaseSineOut::create(ContainerMoveTo::create(m_appearDuration, {0,h})));
-    runAction(ContainerTintOpacityTo::create(0.1f, 255*.2));
 
     FMODAudioEngine::sharedEngine()->playEffect("wave-pop-in.wav"_spr);
   #undef j
@@ -168,10 +167,7 @@ void WaveContainer::onClose() {
   j(3);
   j(4);
   m_main->runAction(CCEaseSineIn::create(ContainerMoveTo::create(m_disappearDuration, {0,m_pos4-15})));
-  runAction(CCSequence::createWithTwoActions( 
-      ContainerTintOpacityTo::create(0.1f,0),
-      CCDelayTime::create(m_disappearDuration)
-  ));
+  runAction(CCDelayTime::create(m_disappearDuration));
 
   FMODAudioEngine::sharedEngine()->playEffect("overlay-big-pop-out.wav"_spr);
 #undef j

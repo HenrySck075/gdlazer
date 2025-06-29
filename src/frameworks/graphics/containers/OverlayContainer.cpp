@@ -2,6 +2,7 @@
 #include "../../Game.hpp"
 #include "../../input/events/KeyEvent.hpp"
 #include "../../input/events/MouseEvent.hpp"
+#include "ContainerActions.hpp"
 
 GDF_NS_START
 bool OverlayContainer::init() {
@@ -50,10 +51,27 @@ bool OverlayContainer::init() {
 void OverlayContainer::show() {
   VisibilityContainer::show();
   m_blockingEvents = m_pActionManager->numberOfRunningActionsInTarget(this) != 0;
+  ccColor4B bgColor;
+  if (auto bgColorSaved = typeinfo_cast<CCDataHolder<ccColor4B>*>(this->getUserObject("gdlazer/overlay/bgColor"))) {
+    bgColor = bgColorSaved->getData();
+  } else {
+    bgColor = this->getBackgroundColor();
+    this->setUserObject(
+      "gdlazer/overlay/bgColor", 
+      CCDataHolder<ccColor4B>::create(bgColor)
+    );
+  }
+  this->setBackgroundColor({bgColor.r, bgColor.g, bgColor.b, 0});
+  this->runAction(
+    ContainerTintOpacityTo::create(0.1f, bgColor.a)
+  );
 }
 
 void OverlayContainer::hide() {
   VisibilityContainer::hide();
+  runAction(
+    ContainerTintOpacityTo::create(0.1f, 0)
+  );
   m_blockingEvents = true;
 }
 

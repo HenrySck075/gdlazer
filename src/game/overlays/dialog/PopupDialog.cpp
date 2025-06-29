@@ -63,12 +63,11 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bgSpriteClip->setCascadeOpacityEnabled(true);
   //m_title->limitLabelWidth(size.width - 2.f, 1.f, .1f);
   
-  m_title = $verifyPtr(OsuText::create(title.c_str(),FontType::Bold, 18, kCCTextAlignmentCenter));
+  m_title = $verifyPtr(OsuText::create(title.c_str(),FontType::Bold, 18*2, kCCTextAlignmentCenter));
   m_title->setPosition({size.width / 2, size.height - 71});
 
-  auto label = $verifyPtr(OsuText::create(content.c_str()));
+  auto label = $verifyPtr(OsuText::create(content.c_str(), FontType::Bold, 18*0.4*2));
   label->setPosition(m_title->getPosition()-CCPoint{0,12});
-  label->setScale(0.4);
   label->setZOrder(0);
   m_title->setZOrder(-1);
   m_title->setScale(0.6);

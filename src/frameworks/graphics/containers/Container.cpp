@@ -351,7 +351,7 @@ void Container::setPositionY(float y) {
 
 void Container::setParent(cocos2d::CCNode *parent) {
   cocos2d::CCNode::setParent(parent);
-  dispatchEvent(new NodeSizeUpdated());
+  if (parent) dispatchEvent(new NodeSizeUpdated());
 }
 
 void Container::updateSize() {

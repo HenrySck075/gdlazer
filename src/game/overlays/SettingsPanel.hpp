@@ -12,22 +12,22 @@ protected:
   SettingsSidebar* m_sidebar;
   Container* m_mainPanel;
 public:
-  const float c_contentMargins = 20;
+  static constexpr float c_contentMargins = 20;
 
-  static const float c_transitionLength;
+  static constexpr float c_transitionLength = 0.6;
 
-  private: static const float c_sidebarWidth;
+  private: static constexpr float c_sidebarWidth = 400;
 
 public: 
   /// <summary>
   /// The width of the settings panel content, excluding the sidebar.
   /// </summary>
-  static const float c_panelWidth;
+  static constexpr float c_panelWidth = SettingsSidebar::c_expandedWidth;
 
   /// <summary>
   /// The full width of the settings panel, including the sidebar.
   /// </summary>
-  static const float c_width;
+  static constexpr float c_width = SettingsPanel::c_sidebarWidth + SettingsPanel::c_panelWidth;
 
   bool init();
   static SettingsPanel* create() {

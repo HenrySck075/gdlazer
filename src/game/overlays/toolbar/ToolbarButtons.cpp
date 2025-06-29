@@ -11,16 +11,9 @@ using namespace frameworks;
  * ToolbarSettingsButton
  */
 
-void ToolbarSettingsButton::select() {
-  //OsuGame::get()->showSettings();
-}
-
-void ToolbarSettingsButton::deselect() {
-  //OsuGame::get()->hideSettings();
-}
-
 bool ToolbarSettingsButton::init() {
   setID("settings");
+  m_settingsOverlay = SettingsPanel::create();
   addListener<KeyEvent>([this](KeyEvent *e) {
     if (e->m_modifiers.ctrl && e->m_key == enumKeyCodes::KEY_O)
       select();
@@ -29,6 +22,19 @@ bool ToolbarSettingsButton::init() {
   });
   return ToolbarToggleButton::init(OsuIcon::Settings, "settings", "the", AxisAlignment::Start, "SettingsPanel");
 }
+
+void ToolbarSettingsButton::select() {
+  //OsuGame::get()->showSettings();
+  ToolbarToggleButton::select();
+  OsuGame::get()->pushOverlay(m_settingsOverlay);
+}
+
+void ToolbarSettingsButton::deselect() {
+  //OsuGame::get()->hideSettings();
+  ToolbarToggleButton::deselect();
+  OsuGame::get()->popOverlay(m_settingsOverlay);
+}
+
 
 /**
  * ToolbarModDisableButton
@@ -56,6 +62,19 @@ bool ToolbarModDisableButton::init() {
 /**
  * ToolbarMusicButton
  */
+
+bool ToolbarMusicButton::init() {
+  setID("music");
+  o = NowPlayingOverlay::create();
+  o->retain();
+  return ToolbarToggleButton::init(
+    OsuIcon::Music, 
+    "now playing", 
+    "manage the currently playing track (F6)", 
+    AxisAlignment::End,
+    "NowPlayingOverlay"
+  );
+}
 
 void ToolbarMusicButton::select() {
   ToolbarToggleButton::select();

@@ -37,12 +37,8 @@ bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignm
     setContentSize(m_textNode->getScaledContentSize());
   }
   m_textNode->setAlignment(alignment);
-  m_textNode->setAnchorPoint({0.5,0.5});
+  m_textNode->setAnchorPoint({0,0});
   addChild(m_textNode);
-  addListener<frameworks::NodeSizeUpdated>([this](frameworks::NodeSizeUpdated*){
-    m_textNode->setPosition(getContentSize()/2);
-    return true;
-  });
   return true;
 };
 void OsuText::resizeTextNode() {

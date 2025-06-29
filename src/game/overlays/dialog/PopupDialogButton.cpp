@@ -27,7 +27,7 @@ bool PopupDialogButton::init(std::string label, ccColor3B color, std::string cli
   clipNode->setID("dialogbutton-clipnode");
   clipNode->addChild(Triangles::create(4,color));
 
-  auto j = $verifyPtr(OsuText::create(label, FontType::Bold));
+  auto j = $verifyPtr(OsuText::create(label, FontType::Bold, 18*2));
   j->setID("dialogbutton-label");
   j->setAnchorPoint({0.5, 0.5});
   j->setScale(0.4);

@@ -68,21 +68,9 @@ public:
   inline gd::string getLevelName() {return m_levelName;}
   inline gd::string getLevelAuthor() {return m_levelAuthor;}
 
-  float getSongDuration() {
-    if (!m_sound) return 0;
-    unsigned int ret;
-    m_sound->getLength(&ret, FMOD_TIMEUNIT_MS);
-    return (float)ret/1000;
-  }
-  float getElapsed() {
-    if (!m_sound) return 0;
-    unsigned int ret;
-    m_channel->getPosition(&ret, FMOD_TIMEUNIT_MS);
-    return ret/1000.f;
-  }
-  void seek(float position) {
-    if (m_channel) m_channel->setPosition((unsigned int)(position*1000), FMOD_TIMEUNIT_MS);
-  }
+  float getSongDuration();
+  float getElapsed();
+  void seek(float position);
 
   friend FMOD_RESULT fmodSoundCallback(
     FMOD_CHANNELCONTROL*,

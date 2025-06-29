@@ -2,13 +2,15 @@
 
 #include "ToolbarButton.hpp"
 #include "ToolbarToggleButton.hpp"
-#include "../NowPlayingOverlay.hpp"
 #include "../../graphics/OsuIcon.hpp"
 #include "../ModsOverlay.hpp"
+#include "../NowPlayingOverlay.hpp"
+#include "../SettingsPanel.hpp"
 
 GDL_NS_START
 
 class ToolbarSettingsButton : public ToolbarToggleButton {
+  geode::Ref<SettingsPanel> m_settingsOverlay;
 public:
   bool init();
   $defaultCreate(ToolbarSettingsButton);
@@ -56,18 +58,7 @@ class ToolbarMusicButton : public ToolbarToggleButton {
   geode::Ref<NowPlayingOverlay> o;
 public:
   $defaultCreate(ToolbarMusicButton);
-  bool init() {
-    setID("music");
-    o = NowPlayingOverlay::create();
-    o->retain();
-    return ToolbarToggleButton::init(
-      OsuIcon::Music, 
-      "now playing", 
-      "manage the currently playing track (F6)", 
-      AxisAlignment::End,
-      "NowPlayingOverlay"
-    );
-  }
+  bool init();
   void select() override;
   void deselect() override;
 };

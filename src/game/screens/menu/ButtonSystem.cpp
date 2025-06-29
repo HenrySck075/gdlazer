@@ -270,10 +270,12 @@ bool ButtonSystem::init(OsuLogo* logo) {
     ),
     MainMenuButton::create(
       "Browse", 
-      "button-play-select.wav"_spr, 
+      "button-default-select.wav"_spr, 
       OsuIcon::Beatmap, 
       {165, 204, 0, 255}, 
-      [this](Container* j) {/*m_area->show("debug");*/},
+      [this](Container* j) {
+        m_creatorLayerPtr->onOnlineLevels(0);
+      },
       {enumKeyCodes::KEY_B, enumKeyCodes::KEY_D}
     ),
     MainMenuButton::create(
