@@ -1,6 +1,5 @@
 #include "SettingsPanel.hpp"
 #include "../OsuGame.hpp"
-#include "../overlays/toolbar/ToolbarToggleButton.hpp"
 #include "../../frameworks/graphics/CCEase2.hpp"
 #include "../../frameworks/graphics/containers/ContainerActions.hpp"
 #include "OverlayColorProvider.hpp"
@@ -16,10 +15,9 @@ bool SettingsPanel::init() {
   setTitle("Settings");
 
   m_mainPanel = Container::create();
-  m_mainPanel->setColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
+  m_mainPanel->setBackgroundColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
   m_mainPanel->setContentSize({c_panelWidth,100},Unit::UIKit,Unit::Percent);
   m_mainPanel->setPosition({-c_panelWidth,0},Unit::UIKit,Unit::OpenGL);
-  m_mainPanel->setOpacity(255);
   m_main->addChild(m_mainPanel);
   
   m_sidebar = SettingsSidebar::create();

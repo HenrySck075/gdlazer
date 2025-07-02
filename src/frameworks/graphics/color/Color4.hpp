@@ -112,6 +112,8 @@ struct Color4 {
   Color4(double red, double green, double blue, double alpha) : r(red), g(green), b(blue), a(alpha) {};
   Color4(ccColor3B const& c) : r(c.r/255.f), g(c.g/255.f), b(c.b/255.f), a(1) {};
   Color4(ccColor4B const& c) : r(c.r/255.f), g(c.g/255.f), b(c.b/255.f), a(c.a/255.f) {};
+  /// default ctor
+  Color4() : r(0), g(0), b(0), a(1) {};
 
   // @note my addition
   // currently doing additive

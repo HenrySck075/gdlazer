@@ -27,6 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Apply diffs
+        run: git apply index_friendly_diffs.diff
+
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
