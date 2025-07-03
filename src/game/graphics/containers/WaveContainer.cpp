@@ -1,5 +1,5 @@
 #include "WaveContainer.hpp"
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
 #include "../../../macro.h"
 #include "ccTypes.h"
 #include <cstdlib>

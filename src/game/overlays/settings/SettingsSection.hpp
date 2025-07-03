@@ -16,6 +16,9 @@ public:
   void focus();
   void unfocus();
 
+  std::string const& getHeader() {return m_header;};
+  frameworks::CCResizableSprite* getIcon() {return m_icon;};
+
 protected:
   void addSettingsContainer(frameworks::Container* settingsView);
   

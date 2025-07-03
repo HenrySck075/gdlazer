@@ -267,100 +267,100 @@ public:
     return Gray(brightness > 0.5f ? 0.2f : 0.9f);
   }
 
-  static Color4 TeamColorRed;
-  static Color4 TeamColorBlue;
+  static const Color4 TeamColorRed;
+  static const Color4 TeamColorBlue;
 
   // See https://github.com/ppy/osu-web/blob/master/resources/assets/less/colors.less
-  static Color4 PurpleLighter;
-  static Color4 PurpleLight;
-  static Color4 PurpleLightAlternative;
-  static Color4 Purple;
-  static Color4 PurpleDark;
-  static Color4 PurpleDarkAlternative;
-  static Color4 PurpleDarker;
+  static const Color4 PurpleLighter;
+  static const Color4 PurpleLight;
+  static const Color4 PurpleLightAlternative;
+  static const Color4 Purple;
+  static const Color4 PurpleDark;
+  static const Color4 PurpleDarkAlternative;
+  static const Color4 PurpleDarker;
 
-  static Color4 PinkLighter;
-  static Color4 PinkLight;
-  static Color4 Pink;
-  static Color4 PinkDark;
-  static Color4 PinkDarker;
+  static const Color4 PinkLighter;
+  static const Color4 PinkLight;
+  static const Color4 Pink;
+  static const Color4 PinkDark;
+  static const Color4 PinkDarker;
 
-  static Color4 BlueLighter;
-  static Color4 BlueLight;
-  static Color4 Blue;
-  static Color4 BlueDark;
-  static Color4 BlueDarker;
+  static const Color4 BlueLighter;
+  static const Color4 BlueLight;
+  static const Color4 Blue;
+  static const Color4 BlueDark;
+  static const Color4 BlueDarker;
 
-  static Color4 YellowLighter;
-  static Color4 YellowLight;
-  static Color4 Yellow;
-  static Color4 YellowDark;
-  static Color4 YellowDarker;
+  static const Color4 YellowLighter;
+  static const Color4 YellowLight;
+  static const Color4 Yellow;
+  static const Color4 YellowDark;
+  static const Color4 YellowDarker;
 
-  static Color4 GreenLighter;
-  static Color4 GreenLight;
-  static Color4 Green;
-  static Color4 GreenDark;
-  static Color4 GreenDarker;
+  static const Color4 GreenLighter;
+  static const Color4 GreenLight;
+  static const Color4 Green;
+  static const Color4 GreenDark;
+  static const Color4 GreenDarker;
 
-  static Color4 Sky;
-  static Color4 GreySkyLighter;
-  static Color4 GreySkyLight;
-  static Color4 GreySky;
-  static Color4 GreySkyDark;
-  static Color4 GreySkyDarker;
+  static const Color4 Sky;
+  static const Color4 GreySkyLighter;
+  static const Color4 GreySkyLight;
+  static const Color4 GreySky;
+  static const Color4 GreySkyDark;
+  static const Color4 GreySkyDarker;
 
-  static Color4 SeaFoam;
-  static Color4 GreySeaFoamLighter;
-  static Color4 GreySeaFoamLight;
-  static Color4 GreySeaFoam;
-  static Color4 GreySeaFoamDark;
-  static Color4 GreySeaFoamDarker;
+  static const Color4 SeaFoam;
+  static const Color4 GreySeaFoamLighter;
+  static const Color4 GreySeaFoamLight;
+  static const Color4 GreySeaFoam;
+  static const Color4 GreySeaFoamDark;
+  static const Color4 GreySeaFoamDarker;
 
-  static Color4 Cyan;
-  static Color4 GreyCyanLighter;
-  static Color4 GreyCyanLight;
-  static Color4 GreyCyan;
-  static Color4 GreyCyanDark;
-  static Color4 GreyCyanDarker;
+  static const Color4 Cyan;
+  static const Color4 GreyCyanLighter;
+  static const Color4 GreyCyanLight;
+  static const Color4 GreyCyan;
+  static const Color4 GreyCyanDark;
+  static const Color4 GreyCyanDarker;
 
-  static Color4 Lime;
-  static Color4 GreyLimeLighter;
-  static Color4 GreyLimeLight;
-  static Color4 GreyLime;
-  static Color4 GreyLimeDark;
-  static Color4 GreyLimeDarker;
+  static const Color4 Lime;
+  static const Color4 GreyLimeLighter;
+  static const Color4 GreyLimeLight;
+  static const Color4 GreyLime;
+  static const Color4 GreyLimeDark;
+  static const Color4 GreyLimeDarker;
 
-  static Color4 Violet;
-  static Color4 GreyVioletLighter;
-  static Color4 GreyVioletLight;
-  static Color4 GreyViolet;
-  static Color4 GreyVioletDark;
-  static Color4 GreyVioletDarker;
+  static const Color4 Violet;
+  static const Color4 GreyVioletLighter;
+  static const Color4 GreyVioletLight;
+  static const Color4 GreyViolet;
+  static const Color4 GreyVioletDark;
+  static const Color4 GreyVioletDarker;
 
-  static Color4 Carmine;
-  static Color4 GreyCarmineLighter;
-  static Color4 GreyCarmineLight;
-  static Color4 GreyCarmine;
-  static Color4 GreyCarmineDark;
-  static Color4 GreyCarmineDarker;
+  static const Color4 Carmine;
+  static const Color4 GreyCarmineLighter;
+  static const Color4 GreyCarmineLight;
+  static const Color4 GreyCarmine;
+  static const Color4 GreyCarmineDark;
+  static const Color4 GreyCarmineDarker;
 
-  static Color4 Gray0;
-  static Color4 Gray1;
-  static Color4 Gray2;
-  static Color4 Gray3;
-  static Color4 Gray4;
-  static Color4 Gray5;
-  static Color4 Gray6;
-  static Color4 Gray7;
-  static Color4 Gray8;
-  static Color4 Gray9;
-  static Color4 GrayA;
-  static Color4 GrayB;
-  static Color4 GrayC;
-  static Color4 GrayD;
-  static Color4 GrayE;
-  static Color4 GrayF;
+  static const Color4 Gray0;
+  static const Color4 Gray1;
+  static const Color4 Gray2;
+  static const Color4 Gray3;
+  static const Color4 Gray4;
+  static const Color4 Gray5;
+  static const Color4 Gray6;
+  static const Color4 Gray7;
+  static const Color4 Gray8;
+  static const Color4 Gray9;
+  static const Color4 GrayA;
+  static const Color4 GrayB;
+  static const Color4 GrayC;
+  static const Color4 GrayD;
+  static const Color4 GrayE;
+  static const Color4 GrayF;
 
 
   // Reference: https://www.figma.com/file/VIkXMYNPMtQem2RJg9k2iQ/Asset%2Fcolors?node-id=1838%3A3
@@ -370,64 +370,64 @@ public:
   // If the color in question is supposed to always match the view in which it is displayed theme-wise, use `OverlaycolorProvider`.
   // If the color usage is special and in general differs from the surrounding view in choice of hue, use the `Osucolor` constants.
 
-  static Color4 Pink0;
-  static Color4 Pink1;
-  static Color4 Pink2;
-  static Color4 Pink3;
-  static Color4 Pink4;
+  static const Color4 Pink0;
+  static const Color4 Pink1;
+  static const Color4 Pink2;
+  static const Color4 Pink3;
+  static const Color4 Pink4;
 
-  static Color4 Purple0;
-  static Color4 Purple1;
-  static Color4 Purple2;
-  static Color4 Purple3;
-  static Color4 Purple4;
+  static const Color4 Purple0;
+  static const Color4 Purple1;
+  static const Color4 Purple2;
+  static const Color4 Purple3;
+  static const Color4 Purple4;
 
-  static Color4 Blue0;
-  static Color4 Blue1;
-  static Color4 Blue2;
-  static Color4 Blue3;
-  static Color4 Blue4;
+  static const Color4 Blue0;
+  static const Color4 Blue1;
+  static const Color4 Blue2;
+  static const Color4 Blue3;
+  static const Color4 Blue4;
 
-  static Color4 Green0;
-  static Color4 Green1;
-  static Color4 Green2;
-  static Color4 Green3;
-  static Color4 Green4;
+  static const Color4 Green0;
+  static const Color4 Green1;
+  static const Color4 Green2;
+  static const Color4 Green3;
+  static const Color4 Green4;
 
-  static Color4 Lime0;
-  static Color4 Lime1;
-  static Color4 Lime2;
-  static Color4 Lime3;
-  static Color4 Lime4;
+  static const Color4 Lime0;
+  static const Color4 Lime1;
+  static const Color4 Lime2;
+  static const Color4 Lime3;
+  static const Color4 Lime4;
 
-  static Color4 Orange0;
-  static Color4 Orange1;
-  static Color4 Orange2;
-  static Color4 Orange3;
-  static Color4 Orange4;
+  static const Color4 Orange0;
+  static const Color4 Orange1;
+  static const Color4 Orange2;
+  static const Color4 Orange3;
+  static const Color4 Orange4;
 
-  static Color4 Red0;
-  static Color4 Red1;
-  static Color4 Red2;
-  static Color4 Red3;
-  static Color4 Red4;
+  static const Color4 Red0;
+  static const Color4 Red1;
+  static const Color4 Red2;
+  static const Color4 Red3;
+  static const Color4 Red4;
 
   // Content Background
-  static Color4 B5;
+  static const Color4 B5;
 
-  static Color4 RedLighter;
-  static Color4 RedLight;
-  static Color4 Red;
-  static Color4 RedDark;
-  static Color4 RedDarker;
+  static const Color4 RedLighter;
+  static const Color4 RedLight;
+  static const Color4 Red;
+  static const Color4 RedDark;
+  static const Color4 RedDarker;
 
-  static Color4 ChatBlue;
+  static const Color4 ChatBlue;
 
-  static Color4 ContextMenuGray;
+  static const Color4 ContextMenuGray;
 
-  static Color4 SpotlightColor;
-  static Color4 FeaturedArtistColor;
+  static const Color4 SpotlightColor;
+  static const Color4 FeaturedArtistColor;
 
-  static Color4 DangerousButtonColor;
+  static const Color4 DangerousButtonColor;
 };
 GDL_NS_END

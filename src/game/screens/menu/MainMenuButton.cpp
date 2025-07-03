@@ -1,8 +1,8 @@
 #include "MainMenuButton.hpp" 
 #include "../../../frameworks/input/events/KeyEvent.hpp"
 #include "ButtonConstants.hpp"
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
 
 GDL_NS_START
 using namespace frameworks;
@@ -46,7 +46,7 @@ bool MainMenuButton::init(std::string text, std::string sampleClick, IconConstru
   iconContainer->addChild(m_icon);
   addChild(iconContainer);
   
-  m_label = $verifyPtr(OsuText::create(text.c_str(), FontType::Regular, 15));
+  m_label = $verifyPtr(OsuText::create({.text = text.c_str(), .fontSize = 15}));
   m_label->setAnchor(Anchor::Bottom);
   m_label->setAnchorPoint({0.5,0});
   m_label->setPositionY(4, Unit::UIKit);

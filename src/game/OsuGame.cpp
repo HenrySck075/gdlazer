@@ -1,6 +1,6 @@
 #include "OsuGame.hpp"
 #include "overlays/toolbar/ToolbarConstants.hpp"
-#include "../frameworks/graphics/CCEase2.hpp"
+#include "../frameworks/graphics/animations/ActionEase.hpp"
 #include "../frameworks/graphics/color/Color4.hpp"
 #include "../frameworks/audio/AudioManager.hpp"
 #include "../helpers/CustomActions.hpp"

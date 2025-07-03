@@ -148,7 +148,7 @@ bool ToolbarUserButton::init() {
   flowContainer->setAnchorPoint({0.5,0.5});
 
   auto man = GameManager::get();
-  auto username = OsuText::create(man->m_playerName, FontType::Regular, 15);
+  auto username = OsuText::create({.text = man->m_playerName, .fontSize = 15});
   username->setMaxSize({ToolbarConstants::c_height*2.f, ToolbarConstants::c_height});
   username->setAnchor(Anchor::Left);
   flowContainer->addChild(username);

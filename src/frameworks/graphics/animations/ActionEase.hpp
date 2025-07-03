@@ -1,6 +1,6 @@
 #pragma once
-#include "Easings.hpp"
-#include "../transforms/DefaultEasingFunc.hpp"
+#include "../Easings.hpp"
+#include "../../transforms/DefaultEasingFunc.hpp"
 
 #include <Geode/cocos/actions/CCActionEase.h>
 

@@ -12,4 +12,10 @@ bool SettingsSidebar::init() {
   return true;
 }
 
+void SettingsSidebar::addSidebarItem(SidebarButton* item) {
+  item->m_currentItemPtr = &m_selectedButton;
+  m_sidebarItems.push_back(item);
+  addChild(item);
+}
+
 GDL_NS_END

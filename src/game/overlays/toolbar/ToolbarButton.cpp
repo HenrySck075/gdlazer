@@ -1,7 +1,7 @@
 #include "ToolbarButton.hpp"
 #include "ToolbarConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
 #include "../../graphics/OsuIcon.hpp"
 
 using namespace ToolbarConstants;
@@ -43,8 +43,8 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
     1 
   });
   m_tooltipContainer->setContentHeight(ToolbarConstants::c_tooltipHeight);
-  m_text = OsuText::create(label.c_str(), FontType::Bold, 18);
-  m_subtext = OsuText::create(sub.c_str(), FontType::Regular, 18);
+  m_text = OsuText::create({label.c_str(), FontType::Bold});
+  m_subtext = OsuText::create({sub.c_str()});
   m_tooltipContainer->addChild(m_subtext);
   m_tooltipContainer->addChild(m_text);
   /*

@@ -24,14 +24,14 @@ protected:
   geode::Ref<SettingsSections> m_sectionsContainer;
 
   geode::cocos::CCArrayExt<SettingsSection> m_sections;
-public:
+
+public: 
   static constexpr float c_contentMargins = 20;
 
   static constexpr float c_transitionLength = 0.6;
 
   private: static constexpr float c_sidebarWidth = SettingsSidebar::c_expandedWidth;
 
-public: 
   /// The width of the settings panel content, excluding the sidebar.
   static constexpr float c_panelWidth = 400;
 
@@ -42,7 +42,9 @@ public:
   static SettingsPanel* create() {
     $createClass(SettingsPanel, init);
   }
-  virtual CCArrayExt<Container*> createSections() {return CCArray::create();};
+  /// Returns a list of settings sections
+  virtual CCArrayExt<SettingsSection> createSections() {return CCArray::create();};
+  CCArrayExt<SidebarButton> createSidebarButtons();
   void onOpen() override;
   void onClose() override;
 };

@@ -1,7 +1,7 @@
 #include "ParallaxContainer.hpp"
 #include <Geode/loader/Setting.hpp>
 #include "../../OsuGame.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
 
 GDL_NS_START
 class ParallaxStateUpdated : public frameworks::Event {

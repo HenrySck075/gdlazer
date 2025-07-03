@@ -22,21 +22,21 @@ static std::map<FontType, std::string> fontTypeMap = {
   {FontType::Light, torusLight }
 };
 
-bool OsuText::init(std::string text, FontType font, float fontSize, CCTextAlignment alignment) {
+bool OsuText::init(GDF_KWARGS) {
   if (!frameworks::Container::init()) return false;
-  m_fontSize = fontSize;
-  auto fontFile = fontTypeMap[font];
-  m_text = text;
+  m_fontSize = args.fontSize;
+  auto fontFile = fontTypeMap[args.font];
+  m_text = args.text;
   m_textNode = $verifyPtr(CCLabelBMFont::create(
     m_text.c_str(), 
     fontFile.c_str()
     //text.length()*fontSize/2
   ));
-  if (text.size() != 0) {
+  if (m_text.size() != 0) {
     resizeTextNode();
     setContentSize(m_textNode->getScaledContentSize());
   }
-  m_textNode->setAlignment(alignment);
+  m_textNode->setAlignment(args.alignment);
   m_textNode->setAnchorPoint({0,0});
   addChild(m_textNode);
   return true;

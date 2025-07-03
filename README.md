@@ -20,6 +20,26 @@ Add more diffs that will make the mod index-compliant if you ever add any goofy 
 <br/>
 In specific, this diff will be applied on the build action to remove or add changes to the repo.
 
+## Styling guidelines
+In any other cases not listed below, the Geode [styling guidelines](https://docs.geode-sdk.org/source/styling) should be followed.
+
+Some keywords are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119) (as a joke)
+
+### Statements
+- If, while and for statements should be on the same line, the scope should start in the same line. One line if, while and for statements may not use braces, as clang-format will push them to the next line anyway.
+### Macros
+- Syntatical macros should always be prefixed with `$` (or also with a `_$` idk man), however you are **NOT** required to use only 1 word in the macro name
+- Other macros (especially macros without any arguments) should always capitalize every characters and should be prefixed with `GDF_` (for frameworks macros) or `GDL_` (for main game macros)
+```cpp
+/// Correct
+#define $createClass(className, initfunc) // syntatical macro
+#define GDF_MODIFY_DEVELOPER_NAME // others
+
+/// Wrong
+#define GOOGOOGAGA
+#define DontDoItLikeThisYouWillGetNuked(...)
+```
+
 # Resources
 * [Geode SDK Documentation](https://docs.geode-sdk.org/)
 * [Geode SDK Source Code](https://github.com/geode-sdk/geode/)

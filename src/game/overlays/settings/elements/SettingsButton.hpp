@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../../frameworks/graphics/containers/ClickableContainer.hpp"
-#include "../../../frameworks/graphics/containers/CircularContainer.hpp"
+#include "../../../../frameworks/graphics/containers/ClickableContainer.hpp"
 
 GDL_NS_START
 

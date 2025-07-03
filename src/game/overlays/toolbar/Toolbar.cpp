@@ -1,8 +1,8 @@
 #include "Toolbar.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "ToolbarButtons.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
 #include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 #include "../../../helpers/CustomActions.hpp"
 

@@ -16,11 +16,17 @@ enum class FontType {
 
 /// Wrapper around CCLabelBMFont to provide a text node with Container features
 class OsuText : public frameworks::Container {
+  struct ConstructorKwargs {
+    std::string text;
+    FontType font = FontType::Regular;
+    float fontSize = 18;
+    CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft;
+  };
 public:
-  static OsuText* create(std::string text, FontType font = FontType::Regular, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft) {
-    $createClass(OsuText, init, text, font, fontSize, alignment);
+  static OsuText* create(GDF_KWARGS) {
+    $createClass(OsuText, init, args);
   }
-  bool init(std::string text, FontType font, float fontSize = 18, CCTextAlignment alignment = CCTextAlignment::kCCTextAlignmentLeft);
+  bool init(GDF_KWARGS);
   void setString(std::string string);
   void setFontType(FontType type);
 

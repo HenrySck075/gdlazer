@@ -5,7 +5,7 @@
 #include "../../../helpers/CustomActions.hpp"
 #include "../../../frameworks/graphics/containers/Container.hpp"
 #include "MainMenuButton.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
 
 using namespace cocos2d;
 

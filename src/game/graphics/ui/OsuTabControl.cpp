@@ -1,7 +1,7 @@
 #include "OsuTabControl.hpp"
 
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
 
 GDL_NS_START
 
@@ -11,7 +11,7 @@ bool OsuTabItem::init(std::string text, ccColor4B accent) {
   setContentHeight(100, frameworks::Unit::Percent);
   m_text = text;
   m_accent = accent;
-  m_textNode = OsuText::create(m_text);
+  m_textNode = OsuText::create({m_text});
   m_textNode->setAnchor(Anchor::Center);
   m_textNode->setAnchorPoint({0.5, 0.5});
   m_textNode->inner()->setColor({accent.r, accent.g, accent.b});

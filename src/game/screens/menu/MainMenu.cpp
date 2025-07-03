@@ -33,11 +33,11 @@ bool MainMenu::init() {
   m_nowPlayingBox = FillFlowContainer::create(FillDirection::Vertical, Anchor::TopRight);
   m_nowPlayingBox->setAnchorPoint({1,1});
 
-  auto songTitle = OsuText::create("",FontType::Regular,14*1.5f,kCCTextAlignmentRight);
+  auto songTitle = OsuText::create({.text = "", .fontSize = 14*1.5f, .alignment = kCCTextAlignmentRight});
   m_nowPlayingBox->addChild(songTitle);
-  auto songArtist = OsuText::create("",FontType::Regular,12*1.5f,kCCTextAlignmentRight);
+  auto songArtist = OsuText::create({.text = "", .fontSize = 12*1.5f, .alignment = kCCTextAlignmentRight});
   m_nowPlayingBox->addChild(songArtist);
-  auto levelInfo = OsuText::create("",FontType::Regular,10*1.5f,kCCTextAlignmentRight);
+  auto levelInfo = OsuText::create({.text = "", .fontSize = 10*1.5f, .alignment = kCCTextAlignmentRight});
   m_nowPlayingBox->addChild(levelInfo);
   /*
   m_nowPlayingBox->setLayout(

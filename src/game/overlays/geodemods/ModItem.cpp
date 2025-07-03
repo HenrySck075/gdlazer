@@ -1,6 +1,6 @@
 #include "ModItem.hpp"
 #include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
 #include "../../graphics/ui/OsuText.hpp"
 #include <Geode/ui/LazySprite.hpp>
 #include <Geode/ui/GeodeUI.hpp>
@@ -53,12 +53,12 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   metaContainer->setClippingEnabled(true);
   metaContainer->setBackgroundColor(provider->Background3());
   {
-    auto t = $verifyPtr(OsuText::create(mod->getName(), FontType::Regular, 25));
+    auto t = $verifyPtr(OsuText::create({.text = mod->getName(), .fontSize = 25}));
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }
   {
-    auto t = $verifyPtr(OsuText::create("by " + getDevelopersString(mod->getDevelopers()), FontType::Regular, 17));
+    auto t = $verifyPtr(OsuText::create({.text = "by " + getDevelopersString(mod->getDevelopers()), .fontSize = 17}));
     t->setPadding({0,0,CORNER_RADIUS,0});
     metaContainer->addChild(t);
   }

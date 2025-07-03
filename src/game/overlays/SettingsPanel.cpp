@@ -1,7 +1,8 @@
 #include "SettingsPanel.hpp"
+#include "settings/SidebarIconButton.hpp"
 #include "../OsuGame.hpp"
-#include "../../frameworks/graphics/CCEase2.hpp"
-#include "../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../frameworks/graphics/animations/ActionEase.hpp"
+#include "../../frameworks/graphics/animations/ContainerActions.hpp"
 #include "OverlayColorProvider.hpp"
 
 GDL_NS_START
@@ -28,9 +29,33 @@ bool SettingsPanel::init() {
   m_main->setAnchor(Anchor::Left);
   m_main->setAnchorPoint({0,0.5});
 
+  m_sections = createSections().inner();
+  for (auto sidebarButton : createSidebarButtons()) {
+    m_sidebar->addSidebarItem(sidebarButton);
+  }
+
   setContentSize({100,100}, Unit::Percent);
 
   return true;
+}
+
+CCArrayExt<SidebarButton> SettingsPanel::createSidebarButtons() {
+  CCArrayExt<SidebarButton> buttons;
+  auto provider = OverlayColorProvider::create(OverlayColorScheme::Purple);
+  for (auto section : m_sections) {
+    auto button = SidebarIconButton::create({
+      section->getHeader(), 
+      section->getIcon(),
+      provider
+    });
+    /*
+    button->setOnClickCallback([this, &section](SidebarButton*){
+      m_sectionsContainer->selectSection(section);
+    });
+    */
+    buttons.push_back(button);
+  }
+  return buttons;
 }
 
 void SettingsPanel::onOpen() {

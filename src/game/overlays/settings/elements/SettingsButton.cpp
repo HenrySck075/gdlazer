@@ -1,6 +1,6 @@
 #include "SettingsButton.hpp"
-#include "../../graphics/backgrounds/Triangles.hpp"
-#include "../../graphics/ui/OsuText.hpp"
+#include "../../../graphics/backgrounds/Triangles.hpp"
+#include "../../../graphics/ui/OsuText.hpp"
 
 GDL_NS_START
 using namespace frameworks;
@@ -20,7 +20,7 @@ bool SettingsButton::setup(std::string label, ccColor3B color) {
   setContentSize({80,40}, Unit::Percent, Unit::UIKit);
   setPosition({20,10});
   addChild(Triangles::create(10,color));
-  auto yap = OsuText::create(label.c_str(),FontType::Regular,12,kCCTextAlignmentCenter);
+  auto yap = OsuText::create({.text = label.c_str(), .fontSize = 12, .alignment = kCCTextAlignmentCenter});
   yap->setAnchorPoint({0.5,0.5});
   addChild(yap);
   return true;

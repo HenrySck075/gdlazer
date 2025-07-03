@@ -1,6 +1,6 @@
 #include "LoadingSpinner.hpp"
 #include "../../../frameworks/graphics/sprites/FontAwesome.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
 #include "../../../helpers/CustomActions.hpp"
 
 GDL_NS_START

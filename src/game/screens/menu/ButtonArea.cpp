@@ -6,8 +6,8 @@
 #include <Geode/utils/ranges.hpp>
 #include "ButtonConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
-#include "../../../frameworks/graphics/CCEase2.hpp"
-#include "../../../frameworks/graphics/containers/ContainerActions.hpp"
+#include "../../../frameworks/graphics/animations/ActionEase.hpp"
+#include "../../../frameworks/graphics/animations/ContainerActions.hpp"
 
 GDL_NS_START
 using namespace frameworks;
