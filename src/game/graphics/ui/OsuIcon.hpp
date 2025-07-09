@@ -1,10 +1,10 @@
 #pragma once
-#include "../../frameworks/graphics/sprites/IconConstructor.hpp"
+#include "../../../frameworks/graphics/sprites/IconConstructor.hpp"
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
 
-#define iconFont(name, charid, fontname) static frameworks::IconConstructor name = {charid,fontname}
+#define iconFont(name, charid, fontname) static const frameworks::IconConstructor name {charid,fontname}
 #define iconOsuFont(name, charid) iconFont(name,charid,"osuFont.fnt"_spr)
 #define iconOsuIcon(name, charid) iconFont(name,charid,"osuIcon.fnt"_spr)
 #define iconOsuEditor(name, charid) iconFont(name,charid,"osuEditor.fnt"_spr)

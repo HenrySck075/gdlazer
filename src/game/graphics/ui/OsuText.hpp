@@ -29,6 +29,7 @@ public:
   bool init(GDF_KWARGS);
   void setString(std::string string);
   void setFontType(FontType type);
+  void setFontSize(float fontSize);
 
   geode::Ref<CCLabelBMFont> inner() {return m_textNode;}
 

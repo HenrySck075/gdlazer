@@ -170,7 +170,7 @@ fish:
     updateSize();
     updatePosition();
     m_backgroundNode->setContentSize(getContentSize());
-    return true;
+    return m_copyOfTheContentSizeInCaseTheOriginalGetsCalled != getContentSize();
   });
 
   scheduleUpdate();

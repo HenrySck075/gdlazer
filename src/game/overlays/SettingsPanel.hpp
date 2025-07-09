@@ -19,18 +19,17 @@ public:
 class SettingsPanel : public OsuOverlayContainer {
 protected:
   geode::Ref<SettingsSidebar> m_sidebar;
-  geode::Ref<Container> m_mainPanel;
+  geode::Ref<frameworks::Container> m_mainPanel;
 
   geode::Ref<SettingsSections> m_sectionsContainer;
 
   geode::cocos::CCArrayExt<SettingsSection> m_sections;
 
+private: static constexpr float c_sidebarWidth = SettingsSidebar::c_expandedWidth;
 public: 
   static constexpr float c_contentMargins = 20;
 
   static constexpr float c_transitionLength = 0.6;
-
-  private: static constexpr float c_sidebarWidth = SettingsSidebar::c_expandedWidth;
 
   /// The width of the settings panel content, excluding the sidebar.
   static constexpr float c_panelWidth = 400;
@@ -43,7 +42,7 @@ public:
     $createClass(SettingsPanel, init);
   }
   /// Returns a list of settings sections
-  virtual CCArrayExt<SettingsSection> createSections() {return CCArray::create();};
+  virtual CCArrayExt<SettingsSection> createSections();
   CCArrayExt<SidebarButton> createSidebarButtons();
   void onOpen() override;
   void onClose() override;

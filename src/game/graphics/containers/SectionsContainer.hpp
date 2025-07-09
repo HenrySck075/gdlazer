@@ -7,16 +7,20 @@
 #include "../../../frameworks/bindables/Bindable.hpp"
 
 GDF_NS_START
+
 class SectionsContainer : public ScrollContainer {
 private:
   FillFlowContainer* m_contentsContainer;
-protected:
+  protected:
   Bindable<Container*> m_currentSection;
+  bool sectionClickingShenanigans(MouseEvent* event);
 public:
   bool init();
   $defaultCreate(SectionsContainer);
 
-  void addChild(CCNode* node);
+  void addSection(Container* section);
   virtual void onSectionSelect(Container* new_);
+
+  void updateLayout();
 };
 GDF_NS_END

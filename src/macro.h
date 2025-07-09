@@ -8,6 +8,9 @@
 #define GDL_NS_START namespace gdlazer { namespace game {
 #define GDL_NS_END }}
 #define GDL_NS gdlazer::game
+#define GDI_NS_START namespace gdlazer { namespace detail {
+#define GDI_NS_END }}
+#define GDI_NS gdlazer::game
 
 #define breakpoint()
 

@@ -29,7 +29,13 @@ bool SettingsPanel::init() {
   m_main->setAnchor(Anchor::Left);
   m_main->setAnchorPoint({0,0.5});
 
-  m_sections = createSections().inner();
+  m_sections.inner()->addObjectsFromArray(createSections().inner()); 
+  m_sectionsContainer = SettingsSections::create();
+  for (auto section : m_sections) {
+    m_sectionsContainer->addSection(section);
+  }
+  m_main->addChild(m_sectionsContainer);
+
   for (auto sidebarButton : createSidebarButtons()) {
     m_sidebar->addSidebarItem(sidebarButton);
   }
@@ -102,6 +108,15 @@ void SettingsPanel::onClose() {
     ContainerMoveTo::create(SettingsPanel::c_transitionLength, {0,0}), Easing::OutQuint
   ))->setTag(7);
 }
+GDL_NS_END
+#include "settings/sections/AudioSection.hpp"
+GDL_NS_START
+CCArrayExt<SettingsSection> SettingsPanel::createSections() {
+  return CCArray::create(
+    AudioSection::create(),
+    nullptr
+  );
+}
 
 /**
  * SettingsSections
@@ -109,8 +124,8 @@ void SettingsPanel::onClose() {
 
 void SettingsSections::onSectionSelect(Container* new_) {
   SectionsContainer::onSectionSelect(new_);
-  m_currentSection.get()->setOpacity(200);
-  new_->setOpacity(255);
+  static_cast<SettingsSection*>(m_currentSection.get())->unfocus();
+  static_cast<SettingsSection*>(new_)->focus();
 };
 
 GDL_NS_END

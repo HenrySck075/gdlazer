@@ -1,5 +1,5 @@
 #include "ButtonSystem.hpp"
-#include "../../graphics/OsuIcon.hpp"
+#include "../../graphics/ui/OsuIcon.hpp"
 #include "../../overlays/dialog/PopupDialog.hpp"
 #include "../../overlays/toolbar/ToolbarToggleButton.hpp"
 #include "../PlaygroundScreen.hpp"

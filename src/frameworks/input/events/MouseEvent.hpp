@@ -17,9 +17,9 @@ enum class MouseEventType {
 // mouse event 2
 class MouseEvent : public Event {
 public:
-  CCPoint m_position {0,0};
-  MouseEventType m_eventType;
-  bool m_clicked;
+  const CCPoint m_position {0,0};
+  const MouseEventType m_eventType;
+  const bool m_clicked;
 
   MouseEvent(MouseEventType event, CCPoint pos, bool clicked)
     : m_position(pos), m_eventType(event), m_clicked(clicked) {

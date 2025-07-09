@@ -56,7 +56,6 @@ enum class Unit {
 /// HOLY SHIT
 class Container : public CCClippingNodeRGBA, public EventTarget {
 public:
-
   static Container* create() {
     Container* ret = new Container();
     if (ret && ret->init()) {
@@ -67,7 +66,7 @@ public:
       return nullptr;
     }
   }
-
+  
   bool init() override;
 
   // Mouse events

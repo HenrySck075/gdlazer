@@ -41,6 +41,11 @@ bool OsuText::init(GDF_KWARGS) {
   addChild(m_textNode);
   return true;
 };
+void OsuText::setFontSize(float fontSize) {
+  m_fontSize = fontSize;
+  resizeTextNode();
+  setContentSize(m_textNode->getScaledContentSize());
+}
 void OsuText::resizeTextNode() {
   m_textNode->setScale(
     /// i dont know any of this

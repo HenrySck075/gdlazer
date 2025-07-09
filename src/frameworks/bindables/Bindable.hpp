@@ -46,6 +46,7 @@ public:
     m_listeners.push_back(listener);
   }
   T& operator->() {return m_value;}
+  const T& operator->() const {return m_value;}
   T& get() {return m_value;}
   void removeCallback(Callback listener) {
     m_listeners.erase(std::remove_if(m_listeners.begin(), m_listeners.end(), [listener](auto& l) {

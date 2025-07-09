@@ -2,7 +2,7 @@
 
 #include "ToolbarButton.hpp"
 #include "ToolbarToggleButton.hpp"
-#include "../../graphics/OsuIcon.hpp"
+#include "../../graphics/ui/OsuIcon.hpp"
 #include "../ModsOverlay.hpp"
 #include "../NowPlayingOverlay.hpp"
 #include "../SettingsPanel.hpp"

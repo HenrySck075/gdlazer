@@ -2,7 +2,7 @@
 #include "ToolbarConstants.hpp"
 #include "../../graphics/OsuColor.hpp"
 #include "../../../frameworks/graphics/animations/ContainerActions.hpp"
-#include "../../graphics/OsuIcon.hpp"
+#include "../../graphics/ui/OsuIcon.hpp"
 
 using namespace ToolbarConstants;
 GDL_NS_START
