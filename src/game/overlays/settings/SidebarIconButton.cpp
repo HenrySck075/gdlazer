@@ -10,7 +10,7 @@ bool SidebarIconButton::init(GDF_KWARGS) {
   //m_icon->setAnchor();
   addChild(m_icon);
 
-  setContentSize({100, 100}, Unit::Percent);
+  setContentWidth(100, Unit::Percent);
 
   return true;
 }

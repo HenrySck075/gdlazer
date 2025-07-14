@@ -89,7 +89,6 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_btnLayer->setPosition(CCPoint{0,40});
   m_btnLayer->setContentSize(size);
   m_btnLayer->setCascadeOpacityEnabled(true);
-  m_btnLayer->setAutoUpdateLayout(false);
   m_main->addChild(m_btnLayer);
 
   for (auto& btn : buttons) { 

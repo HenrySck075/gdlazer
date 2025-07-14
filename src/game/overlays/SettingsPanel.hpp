@@ -10,7 +10,8 @@ GDL_NS_START
 // SectionsContainer with the fade stuff idk
 class SettingsSections : public frameworks::SectionsContainer {
 public:
-  void onSectionSelect(Container* new_) override;
+  bool init();
+  void onSectionSelect(Container* old, Container* new_) override;
   $defaultCreate(SettingsSections);
 };
 

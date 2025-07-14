@@ -19,13 +19,14 @@ bool SettingsSection::init(std::string header, IconConstructor icon) {
 
   m_header = header; 
   m_icon = icon;
+  this->addChild(m_content = FillFlowContainer::create(FillDirection::Vertical));
+  this->setContentWidth(100, Unit::Percent);
+  m_content->setContentWidth(100, Unit::Percent);
 
-  this->addChild(m_headerText = OsuText::create({
+  m_content->addChild(m_headerText = OsuText::create({
     .text = header,
     .fontSize = 18
   }));
-  this->addChild(m_content = FillFlowContainer::create(FillDirection::Vertical));
-  m_content->setPositionY(12, Unit::UIKit);
 
   this->addChild(m_unfocusedOverlay = CCLayerColor::create(
     provider->Background5().opacity(128)
@@ -35,11 +36,7 @@ bool SettingsSection::init(std::string header, IconConstructor icon) {
     return true;
   });
   m_content->addListener<NodeSizeUpdated>([this](NodeSizeUpdated*){
-    m_content->updateLayout();
-    this->setContentHeight(
-      m_content->getContentHeight() + m_headerText->getContentHeight() + 24,
-      Unit::UIKit
-    );
+    setContentHeight(m_content->getContentHeight());
     return true;
   });
 
@@ -48,16 +45,17 @@ bool SettingsSection::init(std::string header, IconConstructor icon) {
 
 void SettingsSection::addSettings(Container* settingsView) {
   m_content->addChild(settingsView);
+  m_content->updateLayout();
 }
 
 void SettingsSection::focus() {
   m_unfocusedOverlay->runAction(
-    ContainerTintOpacityTo::create(0.5,0)
+    CCFadeTo::create(0.5,0)
   );
 }
 void SettingsSection::unfocus() {
   m_unfocusedOverlay->runAction(
-    ContainerTintOpacityTo::create(0.5,100)
+    CCFadeTo::create(0.5,100)
   );
 }
 

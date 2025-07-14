@@ -5,6 +5,7 @@
 #include "../../../frameworks/graphics/containers/VisibilityContainer.hpp"
 #include "../../graphics/CCLayerGradient2.hpp"
 #include "ToolbarConstants.hpp"
+#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
 
 using namespace geode::prelude;
 
@@ -13,7 +14,9 @@ GDL_NS_START
 class Toolbar : public frameworks::VisibilityContainer {
 private:
   double const transition_time = 0.5;
-  CCLayerGradient2* gradient;
+  CCLayerGradient2* m_gradient;
+  frameworks::FillFlowContainer* m_leftSide;
+  frameworks::FillFlowContainer* m_rightSide;
 public:
   
   static Toolbar* create() {

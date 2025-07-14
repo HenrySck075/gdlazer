@@ -30,6 +30,7 @@ Some keywords are to be interpreted as described in [RFC 2119](https://datatrack
 ### Macros
 - Syntatical macros should always be prefixed with `$` (or also with a `_$` idk man), however you are **NOT** required to use only 1 word in the macro name
 - Other macros (especially macros without any arguments) should always capitalize every characters and should be prefixed with `GDF_` (for frameworks macros) or `GDL_` (for main game macros)
+
 ```cpp
 /// Correct
 #define $createClass(className, initfunc) // syntatical macro
@@ -39,6 +40,10 @@ Some keywords are to be interpreted as described in [RFC 2119](https://datatrack
 #define GOOGOOGAGA
 #define DontDoItLikeThisYouWillGetNuked(...)
 ```
+
+## [the.cpp](src/the.cpp) file
+dont touch that file
+
 
 # Resources
 * [Geode SDK Documentation](https://docs.geode-sdk.org/)

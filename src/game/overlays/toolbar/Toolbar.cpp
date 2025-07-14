@@ -3,8 +3,6 @@
 #include "ToolbarButtons.hpp"
 #include "../../../frameworks/graphics/animations/ActionEase.hpp"
 #include "../../../frameworks/graphics/animations/ContainerActions.hpp"
-#include "../../../frameworks/graphics/containers/FillFlowContainer.hpp"
-#include "../../../helpers/CustomActions.hpp"
 
 using namespace ToolbarConstants;
 GDL_NS_START
@@ -21,20 +19,20 @@ bool Toolbar::init() {
 
   //auto j = processUnit(TOOLTIP_c_height,Unit::UIKit,false);
   auto j = c_tooltipHeight;
-  gradient = $verifyPtr(CCLayerGradient2::create({0,0,0,0},{0,0,0,0},{0,1},CCLG2Target::Start));
-  gradient->setAnchorPoint({0,1});// keeping it at the bottom
-  gradient->ignoreAnchorPointForPosition(false);
-  gradient->setPosition({0,-j});
-  gradient->setScaleY(-1);
-  addChild(gradient);
+  m_gradient = $verifyPtr(CCLayerGradient2::create({0,0,0,0},{0,0,0,0},{0,1},CCLG2Target::Start));
+  m_gradient->setAnchorPoint({0,1});// keeping it at the bottom
+  m_gradient->ignoreAnchorPointForPosition(false);
+  m_gradient->setPosition({0,-j});
+  m_gradient->setScaleY(-1);
+  addChild(m_gradient);
 
-  auto left = FillFlowContainer::create(FillDirection::Horizontal);
-  left->setGap(0.5);
-  left->addChild($verifyPtr(ToolbarSettingsButton::create()));
-  left->addChild($verifyPtr(ToolbarHomeButton::create()));
-  left->setAnchor(Anchor::Left);
-  left->setAnchorPoint({0,0.5});
-  left->setPosition({
+  m_leftSide = FillFlowContainer::create(FillDirection::Horizontal);
+  m_leftSide->setGap(0.5);
+  m_leftSide->addChild($verifyPtr(ToolbarSettingsButton::create()));
+  m_leftSide->addChild($verifyPtr(ToolbarHomeButton::create()));
+  m_leftSide->setAnchor(Anchor::Left);
+  m_leftSide->setAnchorPoint({0,0.5});
+  m_leftSide->setPosition({
     #ifdef GEODE_IS_ANDROID
     10
     #else
@@ -43,16 +41,16 @@ bool Toolbar::init() {
     ,0
   });
 
-  auto right = FillFlowContainer::create(FillDirection::Horizontal);
-  right->setGap(0.5);
-  right->addChild(ToolbarMusicButton::create());
-  right->addChild(ToolbarNativeSettingsButton::create());
-  right->addChild(ToolbarGeodeButton::create());
+  m_rightSide = FillFlowContainer::create(FillDirection::Horizontal);
+  m_rightSide->setGap(0.5);
+  m_rightSide->addChild(ToolbarMusicButton::create());
+  m_rightSide->addChild(ToolbarNativeSettingsButton::create());
+  m_rightSide->addChild(ToolbarGeodeButton::create());
   /// The last 3 buttons
-  right->addChild(ToolbarUserButton::create());
-  right->setAnchor(Anchor::Right);
-  right->setAnchorPoint({1,0.5});
-  right->setPosition({
+  m_rightSide->addChild(ToolbarUserButton::create());
+  m_rightSide->setAnchor(Anchor::Right);
+  m_rightSide->setAnchorPoint({1,0.5});
+  m_rightSide->setPosition({
     #ifdef GEODE_IS_ANDROID
     10
     #else
@@ -65,12 +63,12 @@ bool Toolbar::init() {
 #ifdef GEODE_IS_ANDROID
   left->setPositionX(10);
 #endif
-  addChild(left);
-  addChild(right);
+  addChild(m_leftSide);
+  addChild(m_rightSide);
   setOpacity(255);
 
-  addListener<NodeSizeUpdated>([this,j,right,left](NodeSizeUpdated*e){
-    gradient->setContentSize({CCNode::getContentSize().width,j});
+  addListener<NodeSizeUpdated>([this,j](NodeSizeUpdated*e){
+    m_gradient->setContentSize({CCNode::getContentSize().width,j});
     return true;
   });
 
@@ -84,16 +82,16 @@ bool Toolbar::init() {
      */
     if (e->m_eventType == MouseEventType::Enter) {
       if (!m_shown) return true;
-      gradient->stopAllActions();
-      gradient->runAction(frameworks::ActionEase::create(
+      m_gradient->stopAllActions();
+      m_gradient->runAction(frameworks::ActionEase::create(
         CCFadeTo::create(2.5,255), Easing::OutQuint
       ));
     }
     
     if (e->m_eventType == MouseEventType::Exit) {
       if (!m_shown) return true;
-      gradient->stopAllActions();
-      gradient->runAction(frameworks::ActionEase::create(
+      m_gradient->stopAllActions();
+      m_gradient->runAction(frameworks::ActionEase::create(
         CCFadeTo::create(0.2,0), Easing::OutQuint
       ));
     }
@@ -104,16 +102,24 @@ bool Toolbar::init() {
 }
 
 void Toolbar::show() {
-  if (!m_shown) runAction(frameworks::ActionEase::create(
-    ContainerMoveTo::create(0.5,{0,0}), Easing::OutQuint
-  ));
+  if (!m_shown) {
+    runAction(frameworks::ActionEase::create(
+      ContainerMoveTo::create(0.5,{0,0}), Easing::OutQuint
+    ));
+    m_leftSide->updateLayout();    
+    m_rightSide->updateLayout();    
+  }
   VisibilityContainer::show();
 }
 
 void Toolbar::hide() {
-  if (m_shown) runAction(frameworks::ActionEase::create(
-    ContainerMoveTo::create(0.5,{0,-c_height}), Easing::OutQuint
-  ));
+  if (m_shown) {
+    runAction(frameworks::ActionEase::create(
+      ContainerMoveTo::create(0.5,{0,-c_height}), Easing::OutQuint
+    ));
+    m_leftSide->updateLayout();    
+    m_rightSide->updateLayout();
+  }
   VisibilityContainer::hide();
 }
 

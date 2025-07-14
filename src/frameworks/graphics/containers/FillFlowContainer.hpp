@@ -13,8 +13,6 @@ private:
     bool m_axisReverse = false;
     bool m_autoResize = true;
 
-    bool m_autoUpdate = true;
-
 public:
     static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
     bool init(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
@@ -27,9 +25,6 @@ public:
     bool getAxisReverse() const { return m_axisReverse; }
     FillDirection getDirection() const { return m_direction; }
     geode::Anchor getChildAnchor() const { return m_anchor; }
-    /// Let the Container automatically calls `updateLayout` on NodeSizeUpdated
-    void setAutoUpdateLayout(bool enable);
-
     void updateLayout();
 };
 GDF_NS_END

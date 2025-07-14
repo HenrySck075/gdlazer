@@ -60,7 +60,6 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   m_tooltipContainer->setOpacity(0);
   addChild(m_tooltipContainer);
   m_tooltipContainer->updateLayout();
-  m_tooltipContainer->setAutoUpdateLayout(false);
   queueInMainThread([this, tooltipAlignment]{setTooltipAlignment(tooltipAlignment);});
 
   m_iconSprite = icon;

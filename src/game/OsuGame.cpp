@@ -152,10 +152,14 @@ bool OsuGame::init() {
 
   if (!Game::init()) return false;
 
-  m_setupComplete = false;
-
   m_toolbar = $verifyPtr(Toolbar::create());
-  addChild(m_toolbar, 9);
+  m_setupComplete = false;
+  
+  queueInMainThread([this]{
+    m_setupComplete = false;
+    addChild(m_toolbar, 9);
+    m_setupComplete = true;
+  });
 
 #ifdef GEODE_IS_DESKTOP
   addChild(m_cursorNode = CCNode::create(), 12);
@@ -174,8 +178,8 @@ bool OsuGame::init() {
   m_cursorAdditive->setOpacity(0);
   m_cursorAdditive->setCascadeColorEnabled(true);
   m_cursorAdditive->setColor(Color4::Pink);
-
 #endif
+
   m_everypence->setContentSize(m_everypence->getContentSize());
 
   auto onlineLevels = GameLevelManager::sharedState()->m_onlineLevels;

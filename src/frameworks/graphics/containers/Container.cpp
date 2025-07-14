@@ -170,7 +170,9 @@ fish:
     updateSize();
     updatePosition();
     m_backgroundNode->setContentSize(getContentSize());
-    return m_copyOfTheContentSizeInCaseTheOriginalGetsCalled != getContentSize();
+    bool bal = m_copyOfTheContentSizeInCaseTheOriginalGetsCalled != getContentSize();
+    //log::debug("[Container]: NodeSizeUpdated blocking state: {}", bal);
+    return bal;
   });
 
   scheduleUpdate();

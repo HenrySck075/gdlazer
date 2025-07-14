@@ -167,11 +167,18 @@ void ScrollContainer::applyInertia(float dt) {
   auto contentPos = m_content->getPosition();
   auto contentSize = m_content->getContentSize();
   auto thisContentSize = getContentSize();
-
+  
+  bool leftBoundsT = contentPos.y + contentSize.height > thisContentSize.height;
+  bool leftBoundsB = contentPos.y < 0;
   bool leftBoundsL = contentPos.x < 0;
-  bool leftBoundsT = contentPos.y < 0;
-  bool leftBoundsR = contentPos.x + contentSize.width < thisContentSize.width;
-  bool leftBoundsB = contentPos.y + contentSize.height < thisContentSize.height;
+  bool leftBoundsR = contentPos.x + contentSize.width > thisContentSize.width;
+
+  log::debug("[ScrollContainer]: Bounds check: T: {} ({}), B: {} ({}), L: {} ({}), R: {} ({})",
+    leftBoundsT, fmt::format("{} + {} > {}", contentPos.y, contentSize.height, thisContentSize.height), 
+    leftBoundsB, fmt::format("{} < 0", contentPos.y), 
+    leftBoundsL, fmt::format("{} < 0", contentPos.x),
+    leftBoundsR, fmt::format("{} + {} > {}", contentPos.x, contentSize.width, thisContentSize.width)
+  );
 
   bool oob = !m_returningInBounds && (
     leftBoundsL || leftBoundsT || leftBoundsR || leftBoundsB

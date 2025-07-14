@@ -34,11 +34,15 @@ bool SettingsPanel::init() {
   for (auto section : m_sections) {
     m_sectionsContainer->addSection(section);
   }
-  m_main->addChild(m_sectionsContainer);
-
+  m_sectionsContainer->onSectionSelect(0, m_sections[0]);
+  m_mainPanel->addChild(m_sectionsContainer);
   for (auto sidebarButton : createSidebarButtons()) {
     m_sidebar->addSidebarItem(sidebarButton);
   }
+  queueInMainThread([this]{
+    m_sidebar->updateLayout();
+    m_sectionsContainer->updateLayout();
+  });
 
   setContentSize({100,100}, Unit::Percent);
 
@@ -122,10 +126,16 @@ CCArrayExt<SettingsSection> SettingsPanel::createSections() {
  * SettingsSections
  */
 
-void SettingsSections::onSectionSelect(Container* new_) {
-  SectionsContainer::onSectionSelect(new_);
-  static_cast<SettingsSection*>(m_currentSection.get())->unfocus();
-  static_cast<SettingsSection*>(new_)->focus();
+void SettingsSections::onSectionSelect(Container* old, Container* new_) {
+  SectionsContainer::onSectionSelect(old, new_);
+  if (old) static_cast<SettingsSection*>(old)->unfocus();
+  if (new_) static_cast<SettingsSection*>(new_)->focus();
 };
+bool SettingsSections::init() {
+  if (!SectionsContainer::init())
+    return false;
+  setContentWidth(100, Unit::Percent);
+  return true;
+}
 
 GDL_NS_END

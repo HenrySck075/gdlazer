@@ -22,13 +22,13 @@ public:
 
 protected:
   void addSettings(frameworks::Container* settingsView);
-  OsuText* m_headerText;
+  geode::Ref<OsuText> m_headerText;
   
 private:
-  frameworks::FillFlowContainer* m_content;
+  geode::Ref<frameworks::FillFlowContainer> m_content;
   std::string m_header;
-  frameworks::CCResizableSprite* m_icon;
-  CCLayerColor* m_unfocusedOverlay;
+  geode::Ref<frameworks::CCResizableSprite> m_icon;
+  geode::Ref<CCLayerColor> m_unfocusedOverlay;
 };
 
 class SettingsSubsection : public SettingsSection {

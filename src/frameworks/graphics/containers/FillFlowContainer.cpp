@@ -12,7 +12,6 @@ bool FillFlowContainer::init(FillDirection direction, geode::Anchor anchor) {
     m_anchor = anchor;
 
     addListener<NodeSizeUpdated>([this](NodeSizeUpdated*){
-      if (m_autoUpdate) updateLayout();
       return true;
     });
     
@@ -104,8 +103,5 @@ void FillFlowContainer::updateLayout() {
     if (m_autoResize) this->setContentSize({maxCrossAxisSize, currentPos});
   }
   this->updateContainerBox();
-}
-void FillFlowContainer::setAutoUpdateLayout(bool enable) {
-  m_autoUpdate = enable;
 }
 GDF_NS_END

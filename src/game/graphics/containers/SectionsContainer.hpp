@@ -14,12 +14,13 @@ private:
   protected:
   Bindable<Container*> m_currentSection;
   bool sectionClickingShenanigans(MouseEvent* event);
+  EventListener<MouseEvent> m_questionableCode;
 public:
   bool init();
   $defaultCreate(SectionsContainer);
 
   void addSection(Container* section);
-  virtual void onSectionSelect(Container* new_);
+  virtual void onSectionSelect(Container* old, Container* new_);
 
   void updateLayout();
 };

@@ -12,25 +12,3 @@ index 8dcceb4..b17ea28 100755
  # include("${CMAKE_CURRENT_SOURCE_DIR}/src/devtools/CMakeLists.txt")
  # setupCustomDevtools()
  # Set up dependencies, resources, and link Geode.
-diff --git a/src/main.cpp b/src/main.cpp
-index cfc7c54..44bed34 100644
---- a/src/main.cpp
-+++ b/src/main.cpp
-@@ -407,15 +407,4 @@ static const char* c_smug[] = {
- 
-   "Henry Spheria", /// congrats
-   "SoggyGunner"
--};
--
--$on_mod(Loaded) {
--  if (!geode::Mod::get()->getSettingValue<bool>("dont")) return;
--  std::random_device dev;
--  std::mt19937 rng(dev());
--  std::uniform_int_distribution<std::mt19937::result_type> dist(1,sizeof(c_smug)/sizeof(c_smug[0])); 
--  int i = dist(rng)-1;
--  auto met = geode::Mod::get()->getMetadata();
--  met.setDevelopers({c_smug[i]});
--  geode::Mod::get()->setMetadata(met);
--}
-+};
-\ No newline at end of file
