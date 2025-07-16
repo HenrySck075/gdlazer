@@ -2,8 +2,9 @@
 
 GDL_NS_START
 bool TabContainer::init(std::vector<frameworks::Container *> items, Color4 accent) {
-  if (!frameworks::FillFlowContainer::init(frameworks::FillDirection::Vertical,
-                                           Anchor::TopLeft))
+  if (!frameworks::FillFlowContainer::init({
+    frameworks::FillDirection::Vertical, Anchor::TopLeft
+  }))
     return false;
   std::vector<OsuTabItem *> tabs;
   for (auto container : items) {

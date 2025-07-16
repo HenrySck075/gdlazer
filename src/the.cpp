@@ -339,6 +339,38 @@ static const char* c_smug[] = {
   "Suzune Miyama",
   "Uta Koizumi",
 
+  /// Wake Up, Girls!
+  "Airi Hayashida",
+  "Kaya Kikuma",
+  "Mai Kondo",
+  //"Makina X",
+  "Mayu Shimada",
+  "Megumi Yoshikawa",
+  "Minami Katayama",
+  "Miyu Okamoto",
+  "Moka Suzuki",
+  "Nanami Hisami",
+  "Nanoka Aizawa",
+  "Rena Suzuki",
+  "Rika Takashina",
+  "Shiho Iwasaki",
+  "Tina Kobayakawa",
+  "Yoshino Nanase",
+
+  /// Girls Band Cry
+  "Nina Iseri",
+  "Tomo Ebizuka",
+  "Momoka Kawaragi",
+  "Subaru Awa",
+  
+  /// Jellyfish Can't Swim in the Night
+  "Kano Yamanouchi",
+  "Kiui Watase",
+  "Mahiru Kozuki",
+  "Mei Takanashi",
+  "Mero Seto",
+  "Shizue Baba",
+
 
   /// congrats
   "Henry Spheria", 

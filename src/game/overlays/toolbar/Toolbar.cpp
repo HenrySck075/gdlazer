@@ -26,8 +26,10 @@ bool Toolbar::init() {
   m_gradient->setScaleY(-1);
   addChild(m_gradient);
 
-  m_leftSide = FillFlowContainer::create(FillDirection::Horizontal);
-  m_leftSide->setGap(0.5);
+  m_leftSide = FillFlowContainer::create({
+    .direction=FillDirection::Horizontal,
+    .gap=0.5f
+  });
   m_leftSide->addChild($verifyPtr(ToolbarSettingsButton::create()));
   m_leftSide->addChild($verifyPtr(ToolbarHomeButton::create()));
   m_leftSide->setAnchor(Anchor::Left);
@@ -41,8 +43,10 @@ bool Toolbar::init() {
     ,0
   });
 
-  m_rightSide = FillFlowContainer::create(FillDirection::Horizontal);
-  m_rightSide->setGap(0.5);
+  m_rightSide = FillFlowContainer::create({
+    .direction=FillDirection::Horizontal,
+    .gap=0.5f
+  });
   m_rightSide->addChild(ToolbarMusicButton::create());
   m_rightSide->addChild(ToolbarNativeSettingsButton::create());
   m_rightSide->addChild(ToolbarGeodeButton::create());
@@ -61,18 +65,18 @@ bool Toolbar::init() {
   //right->addChild(ToolbarModDisableButton::create());
 
 #ifdef GEODE_IS_ANDROID
-  left->setPositionX(10);
+  m_leftSide->setPositionX(10);
 #endif
-  addChild(m_leftSide);
-  addChild(m_rightSide);
-  setOpacity(255);
+  this->addChild(m_leftSide);
+  this->addChild(m_rightSide);
+  this->setOpacity(255);
 
-  addListener<NodeSizeUpdated>([this,j](NodeSizeUpdated*e){
+  this->addListener<NodeSizeUpdated>([this,j](NodeSizeUpdated*e){
     m_gradient->setContentSize({CCNode::getContentSize().width,j});
     return true;
   });
 
-  addListener<MouseEvent>([this](MouseEvent* e){
+  this->addListener<MouseEvent>([this](MouseEvent* e){
     /*
     if (
       // the one that sends as click is a different event
@@ -103,7 +107,7 @@ bool Toolbar::init() {
 
 void Toolbar::show() {
   if (!m_shown) {
-    runAction(frameworks::ActionEase::create(
+    this->runAction(frameworks::ActionEase::create(
       ContainerMoveTo::create(0.5,{0,0}), Easing::OutQuint
     ));
     m_leftSide->updateLayout();    
@@ -114,7 +118,7 @@ void Toolbar::show() {
 
 void Toolbar::hide() {
   if (m_shown) {
-    runAction(frameworks::ActionEase::create(
+    this->runAction(frameworks::ActionEase::create(
       ContainerMoveTo::create(0.5,{0,-c_height}), Easing::OutQuint
     ));
     m_leftSide->updateLayout();    

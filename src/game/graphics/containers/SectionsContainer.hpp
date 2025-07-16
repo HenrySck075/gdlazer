@@ -10,8 +10,8 @@ GDF_NS_START
 
 class SectionsContainer : public ScrollContainer {
 private:
-  FillFlowContainer* m_contentsContainer;
-  protected:
+  geode::Ref<FillFlowContainer> m_contentsContainer;
+protected:
   Bindable<Container*> m_currentSection;
   bool sectionClickingShenanigans(MouseEvent* event);
   EventListener<MouseEvent> m_questionableCode;
@@ -21,6 +21,8 @@ public:
 
   void addSection(Container* section);
   virtual void onSectionSelect(Container* old, Container* new_);
+
+  void onEnter() override;
 
   void updateLayout();
 };

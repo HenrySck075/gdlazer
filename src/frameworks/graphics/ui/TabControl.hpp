@@ -2,6 +2,7 @@
 
 #include "../containers/Container.hpp"
 #include "../containers/FillFlowContainer.hpp"
+#include "../../bindables/Bindable.hpp"
 #include "TabItem.hpp"
 
 GDF_NS_START

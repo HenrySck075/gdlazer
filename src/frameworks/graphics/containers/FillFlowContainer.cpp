@@ -2,18 +2,13 @@
 
 GDF_NS_START
 
-FillFlowContainer* FillFlowContainer::create(FillDirection direction, geode::Anchor anchor) {
-    $createClass(FillFlowContainer, init, direction, anchor);
+FillFlowContainer* FillFlowContainer::create(GDF_KWARGS) {
+    $createClass2(FillFlowContainer, init);
 }
-bool FillFlowContainer::init(FillDirection direction, geode::Anchor anchor) {
+bool FillFlowContainer::init(GDF_KWARGS) {
     if (!Container::init()) return false;
     
-    m_direction = direction;
-    m_anchor = anchor;
-
-    addListener<NodeSizeUpdated>([this](NodeSizeUpdated*){
-      return true;
-    });
+    ctorInitArgs(args);
     
     return true;
 }
@@ -61,7 +56,8 @@ void FillFlowContainer::updateLayout() {
       e->setPositionX(currentPos);
       e->setAnchor(m_anchor);
       e->updateContainerBox();
-      currentPos += child->getContentSize().width + processUnit(getGap(), Unit::UIKit, true);
+      // as for why this instead of just adding directly, negative size exists.
+      currentPos = std::max(currentPos, currentPos + child->getContentSize().width + processUnit(getGap(), Unit::UIKit, true));
       maxCrossAxisSize = std::max(child->getContentSize().height, maxCrossAxisSize);
     };
     if (m_axisReverse) {
@@ -85,7 +81,7 @@ void FillFlowContainer::updateLayout() {
       e->setPositionY(currentPos);
       e->setAnchor(m_anchor);
       e->updateContainerBox();
-      currentPos += child->getContentSize().height + processUnit(getGap(), Unit::UIKit, false);
+      currentPos = std::max(currentPos, currentPos + child->getContentSize().height + processUnit(getGap(), Unit::UIKit, false));
       maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
     };
     if (getAxisReverse()) {

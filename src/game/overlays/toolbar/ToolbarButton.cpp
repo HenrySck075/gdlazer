@@ -36,8 +36,7 @@ bool ToolbarButton::init(IconConstructor icon, std::string label, std::string su
   addChild(m_bg,-7);
   addChild(m_flashBg, -5);
 
-  m_tooltipContainer = FillFlowContainer::create(FillDirection::Vertical);
-  m_tooltipContainer->setGap(2);
+  m_tooltipContainer = FillFlowContainer::create({.direction=FillDirection::Vertical, .gap=2.f});
   m_tooltipContainer->setAnchorPoint({
     (float)(int)(tooltipAlignment==AxisAlignment::End),
     1 

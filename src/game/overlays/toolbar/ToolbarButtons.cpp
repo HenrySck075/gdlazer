@@ -13,7 +13,6 @@ using namespace frameworks;
 
 bool ToolbarSettingsButton::init() {
   setID("settings");
-  m_settingsOverlay = SettingsPanel::create();
   addListener<KeyEvent>([this](KeyEvent *e) {
     if (e->m_modifiers.ctrl && e->m_key == enumKeyCodes::KEY_O)
       select();
@@ -26,6 +25,7 @@ bool ToolbarSettingsButton::init() {
 void ToolbarSettingsButton::select() {
   //OsuGame::get()->showSettings();
   ToolbarToggleButton::select();
+  if (!m_settingsOverlay) m_settingsOverlay = SettingsPanel::create();
   OsuGame::get()->pushOverlay(m_settingsOverlay);
 }
 
@@ -65,8 +65,6 @@ bool ToolbarModDisableButton::init() {
 
 bool ToolbarMusicButton::init() {
   setID("music");
-  o = NowPlayingOverlay::create();
-  o->retain();
   return ToolbarToggleButton::init(
     OsuIcon::Music, 
     "now playing", 
@@ -78,12 +76,13 @@ bool ToolbarMusicButton::init() {
 
 void ToolbarMusicButton::select() {
   ToolbarToggleButton::select();
-  OsuGame::get()->pushOverlay(o);
+  if (!m_overlay) m_overlay = NowPlayingOverlay::create();
+  OsuGame::get()->pushOverlay(m_overlay);
 }
 
 void ToolbarMusicButton::deselect() {
   ToolbarToggleButton::deselect();
-  OsuGame::get()->popOverlay(o);
+  OsuGame::get()->popOverlay(m_overlay);
 }
 
 
@@ -140,9 +139,10 @@ bool ToolbarUserButton::init() {
   removeChild(m_iconSprite);
   setContentSize({ToolbarConstants::c_height*4,ToolbarConstants::c_height},Unit::UIKit,Unit::UIKit);
 
-  auto flowContainer = FillFlowContainer::create();
-  flowContainer->setChildAnchor(Anchor::Left);
-  flowContainer->setGap(2);
+  auto flowContainer = FillFlowContainer::create({
+    .anchor=Anchor::Left,
+    .gap=2.f
+  });
   flowContainer->setAutoResize(true);
   flowContainer->setAnchor(Anchor::Center);
   flowContainer->setAnchorPoint({0.5,0.5});

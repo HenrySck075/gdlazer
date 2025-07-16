@@ -1,21 +1,21 @@
 #pragma once
 #include "Container.hpp"
-#include "../../bindables/Bindable.hpp"
 #include "FillDirection.hpp"
 
 GDF_NS_START
 /// A Container that positions its children along an axis
 class FillFlowContainer : public Container {
 private:
-    FillDirection m_direction;
-    geode::Anchor m_anchor;
-    float m_gap = 0;
-    bool m_axisReverse = false;
-    bool m_autoResize = true;
-
+    $kwargsStruct(
+        FillDirection, direction, FillDirection::Horizontal,
+        geode::Anchor, anchor, Anchor::BottomLeft,
+        float, gap, 0,
+        bool, axisReverse, false,
+        bool, autoResize, true
+    )
 public:
-    static FillFlowContainer* create(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
-    bool init(FillDirection direction = FillDirection::Horizontal, geode::Anchor anchor = Anchor::BottomLeft);
+    static FillFlowContainer* create(GDF_KWARGS);
+    bool init(GDF_KWARGS);
     void setChildAnchor(geode::Anchor anchor);
     void setGap(float gap);
     float getGap();

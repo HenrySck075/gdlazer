@@ -41,6 +41,9 @@ Some keywords are to be interpreted as described in [RFC 2119](https://datatrack
 #define DontDoItLikeThisYouWillGetNuked(...)
 ```
 
+## Modding guidelines
+- Same as above, the Geode [modding guidelines](https://docs.geode-sdk.org/mods/guidelines) should be followed.
+
 ## [the.cpp](src/the.cpp) file
 dont touch that file
 

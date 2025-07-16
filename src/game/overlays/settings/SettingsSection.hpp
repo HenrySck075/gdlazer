@@ -20,6 +20,8 @@ public:
   std::string const& getHeader() {return m_header;};
   frameworks::CCResizableSprite* getIcon() {return m_icon;};
 
+  void onEnter() override;
+
 protected:
   void addSettings(frameworks::Container* settingsView);
   geode::Ref<OsuText> m_headerText;

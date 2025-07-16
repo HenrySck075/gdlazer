@@ -47,7 +47,7 @@ bool GeodeModItem::init(geode::Mod* mod, OverlayColorProvider* provider) {
   logo->setAnchorPoint({0,0});
   addChild(logo);
   /// Metadata
-  auto metaContainer = $verifyPtr(FillFlowContainer::create(FillDirection::Vertical, Anchor::TopLeft));
+  auto metaContainer = FillFlowContainer::create({FillDirection::Vertical, Anchor::TopLeft});
   metaContainer->setPosition({HEIGHT, 0},Unit::UIKit);
   metaContainer->setBorderRadius(CORNER_RADIUS);
   metaContainer->setClippingEnabled(true);

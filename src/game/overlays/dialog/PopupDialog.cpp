@@ -3,7 +3,6 @@
 #include "../../../frameworks/graphics/animations/ActionEase.hpp"
 
 #include "../../../helpers/colors.hpp"
-#include "../../../utils.hpp"
 #include "../../../frameworks/bindables/EventTarget.hpp"
 
 GDL_NS_START
@@ -76,7 +75,7 @@ bool PopupDialog::init(std::string const& title, std::string const& content, std
   m_bodyLayout->addChild(label);
   m_bodyLayout->setCascadeOpacityEnabled(true);
 
-  m_btnLayer = FillFlowContainer::create(FillDirection::Vertical);
+  m_btnLayer = FillFlowContainer::create({FillDirection::Vertical});
   /*
   btnLayer->setLayout(
     ColumnLayout::create()

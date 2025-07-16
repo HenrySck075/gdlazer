@@ -10,8 +10,7 @@ bool SettingsSidebar::init() {
   setBackgroundColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background5());
   setOpacity(255);
 
-  addChild(m_content = FillFlowContainer::create(FillDirection::Vertical,Anchor::Top));
-  m_content->setGap(2);
+  addChild(m_content = FillFlowContainer::create({FillDirection::Vertical,Anchor::Top,2.f}));
   m_content->setContentSize({100,100}, Unit::Percent);
   m_content->setAnchor(Anchor::TopLeft);
   m_content->setAnchorPoint({0,1});

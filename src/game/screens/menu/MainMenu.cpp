@@ -30,7 +30,7 @@ bool MainMenu::init() {
   m_buttonSysParallax->addChild(m_buttonSys);
   addChild(m_buttonSysParallax);
 
-  m_nowPlayingBox = FillFlowContainer::create(FillDirection::Vertical, Anchor::TopRight);
+  m_nowPlayingBox = FillFlowContainer::create({FillDirection::Vertical, Anchor::TopRight});
   m_nowPlayingBox->setAnchorPoint({1,1});
 
   auto songTitle = OsuText::create({.text = "", .fontSize = 14*1.5f, .alignment = kCCTextAlignmentRight});

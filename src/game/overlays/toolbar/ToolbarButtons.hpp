@@ -55,7 +55,7 @@ public:
 */
 
 class ToolbarMusicButton : public ToolbarToggleButton {
-  geode::Ref<NowPlayingOverlay> o;
+  geode::Ref<NowPlayingOverlay> m_overlay;
 public:
   $defaultCreate(ToolbarMusicButton);
   bool init();

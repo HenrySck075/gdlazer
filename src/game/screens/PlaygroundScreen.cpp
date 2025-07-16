@@ -15,7 +15,7 @@ bool PlaygroundScreen::init() {
   if (!Screen::init())
     return false;
 
-  auto flowContainer = FillFlowContainer::create(FillDirection::Horizontal);
+  auto flowContainer = FillFlowContainer::create({FillDirection::Horizontal});
   for (int i = 0; i < 5; i++) {
     auto us = Container::create();
     us->setContentSize({120, 50});
