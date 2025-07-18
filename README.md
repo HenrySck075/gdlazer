@@ -11,7 +11,7 @@ geode build
 
 ## Minimum requirements
 - A copy of Geometry Dash on latest version (yeah thanks captain obvious) with Geode installed (yeah yeah)
-- Clang that supports C++20 at minimum (due to the use of `__VA_OPT__` in some macros)
+- Clang that supports C++20 at minimum (due to the use of `__VA_OPT__` in some macros and a Clang-specific syntax in the `$verifyPtr` macro)
 
 # Contributing
 ## `index_friendly_diffs.diff`
