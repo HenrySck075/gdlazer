@@ -7,7 +7,7 @@ GDF_NS_START
 
 static geode::Ref<Game> s_instance;
 
-#ifdef GDL_DEBUG
+#ifdef GDF_DEBUG
 
 class DebugDrawNode : public CCDrawNode {
 public:
@@ -65,8 +65,6 @@ bool Game::init() {
 
   scheduleUpdate();
 
-  /*TEST CODE ~ Remove after finished*/
-
   m_everypence = Container::create();
   m_everypence->setContentSize({100,100}, Unit::Percent);
 
@@ -79,7 +77,7 @@ bool Game::init() {
 
   m_everypence->addChild(m_screensContainer);
   m_everypence->addChild(m_overlaysContainer);
-  m_everypence->addChild(DebugDrawNode::create());
+  //m_everypence->addChild(DebugDrawNode::create());
   addChild(m_everypence);
 
   return true;

@@ -6,7 +6,9 @@ FillFlowContainer* FillFlowContainer::create(GDF_KWARGS) {
     $createClass2(FillFlowContainer, init);
 }
 bool FillFlowContainer::init(GDF_KWARGS) {
-    if (!Container::init()) return false;
+    if (!Container::init({
+      .name = "FillFlowContainer"
+    })) return false;
     
     ctorInitArgs(args);
     
@@ -47,7 +49,12 @@ void FillFlowContainer::updateLayout() {
   auto children = geode::cocos::CCArrayExt<cocos2d::CCNode>(this->getChildren());
 
   auto anchorPoint = getAnchorPointFromAnchor(m_anchor);
-
+  m_logger.debug("Layouting start");
+  // as a safety measure we'll reset the children size unit to opengl
+  for (auto child : children) {
+    if (auto container = geode::cast::typeinfo_cast<Container*>(child))
+      container->setContentSize({child->getContentWidth(), child->getContentHeight()}, frameworks::Unit::OpenGL);
+  }
   if (m_direction == FillDirection::Horizontal) {
     auto callback = [&](CCNode* child) {
       child->setAnchorPoint(anchorPoint);
@@ -57,8 +64,11 @@ void FillFlowContainer::updateLayout() {
       e->setAnchor(m_anchor);
       e->updateContainerBox();
       // as for why this instead of just adding directly, negative size exists.
-      currentPos = std::max(currentPos, currentPos + child->getContentSize().width + processUnit(getGap(), Unit::UIKit, true));
       maxCrossAxisSize = std::max(child->getContentSize().height, maxCrossAxisSize);
+      auto possiblePos = currentPos + child->getContentSize().width + processUnit(getGap(), Unit::UIKit, true);
+      m_logger.debug("  c: {}, m: {} | p: {}", currentPos, maxCrossAxisSize, possiblePos);
+
+      currentPos = std::max(currentPos, possiblePos);
     };
     if (m_axisReverse) {
       auto iter = children.rbegin();
@@ -72,6 +82,7 @@ void FillFlowContainer::updateLayout() {
         callback(child);
       }
     }
+    m_logger.debug("Calculated size: {}", CCSize{currentPos, maxCrossAxisSize});
     if (m_autoResize) this->setContentSize({currentPos, maxCrossAxisSize});
   } else {
     auto callback = [&](CCNode* child) {
@@ -81,8 +92,10 @@ void FillFlowContainer::updateLayout() {
       e->setPositionY(currentPos);
       e->setAnchor(m_anchor);
       e->updateContainerBox();
-      currentPos = std::max(currentPos, currentPos + child->getContentSize().height + processUnit(getGap(), Unit::UIKit, false));
       maxCrossAxisSize = std::max(child->getContentSize().width, maxCrossAxisSize);
+      auto possiblePos = currentPos + child->getContentSize().height + processUnit(getGap(), Unit::UIKit, false);
+      m_logger.debug("  m: {}, c: {} | p: {}", maxCrossAxisSize,currentPos,possiblePos);
+      currentPos = std::max(currentPos, possiblePos);
     };
     if (getAxisReverse()) {
       auto iter = children.rbegin();
@@ -96,6 +109,7 @@ void FillFlowContainer::updateLayout() {
         callback(child);
       }
     }
+    m_logger.debug("Calculated size: {}", CCSize{maxCrossAxisSize,currentPos});
     if (m_autoResize) this->setContentSize({maxCrossAxisSize, currentPos});
   }
   this->updateContainerBox();

@@ -61,9 +61,11 @@ void Container::requestBoxUpdate() {
   else if (m_containerBoxShapeDesynced) transformContainerBox();
 }
 
-bool Container::init() {
+bool Container::init(LoggerKwargs loggerArgs) {
   if (!CCClippingNode::init())
     return false;
+
+  m_logger = Logger(loggerArgs.name, loggerArgs.severity);
 
   m_backgroundNode = cocos2d::CCLayerColor::create();
   CCNode::addChild(m_backgroundNode, -998);
@@ -277,6 +279,10 @@ void Container::setBackgroundColor(const ccColor4B& color) {
   m_backgroundColor = color;
   m_backgroundNode->setColor({color.r,color.g,color.b});
   m_backgroundNode->setOpacity(getDisplayedOpacity()/255 * color.a);
+  /*
+  if (color.a == 0) m_backgroundNode->removeFromParent();
+  else addChild(m_backgroundNode);
+  */
 }
 
 void Container::setContentSize(const cocos2d::CCSize &size, Unit hUnit, Unit vUnit) {

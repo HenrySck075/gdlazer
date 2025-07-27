@@ -247,7 +247,7 @@ void OsuGame::setWindowTitle(std::string title) {
 
 bool OsuGame::doDispatchEvent(Event* event, std::type_index type) {
   // Relaunch on Ctrl-R
-  #ifdef GDL_DEBUG
+  #ifdef GDF_DEBUG
   if (type == typeid(KeyEvent)) {
     auto ke = static_cast<KeyEvent*>(event);
     if (ke->m_pressed && ke->m_key == cocos2d::KEY_R && ke->m_modifiers.ctrl) {

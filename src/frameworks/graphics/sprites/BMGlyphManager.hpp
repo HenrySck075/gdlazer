@@ -6,10 +6,6 @@
 #include <Geode/cocos/sprite_nodes/CCSpriteBatchNode.h>
 #include <Geode/cocos/support/data_support/uthash.h>
 #include <map>
-#include <sstream>
-#include <iostream>
-#include <vector>
-#include "../../../utils.hpp"
 #include "CCResizableSprite.hpp"
 
 /**
@@ -173,7 +169,7 @@ public:
 	BMGlyphFontConfig* getConfiguration() const {return m_pConfiguration;};
   
   /// this will saves some iterations :3
-  CCDictionaryExt<int, CCTexture2D*> m_dTextures;
+  geode::cocos::CCDictionaryExt<int, CCTexture2D*> m_dTextures;
 protected:  
   // name of fntFile
   std::string m_sFntFile;

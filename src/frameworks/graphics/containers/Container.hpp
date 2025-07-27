@@ -9,6 +9,7 @@
 #include "../../../macro.h"
 #include "../../utils/homog2d.hpp"
 #include "../Vector4.hpp"
+#include "../../utils/Logger.hpp"
 
 /// Included for free
 #include "../../input/events/MouseEvent.hpp"
@@ -17,12 +18,11 @@
 
 
 GDF_NS_START
-class NodeSizeUpdated : public Event {
-public:
-    NodeSizeUpdated() {}
-};
+class NodeSizeUpdated : public Event {};
 
 /// cant figure out a name for this one
+///
+/// Lightweight version of Bindable
 template<std::copyable T>
 struct _ModifiedStateValue {
 private:
@@ -54,7 +54,12 @@ enum class Unit {
   UIKit
 };
 /// HOLY SHIT
+struct LoggerKwargs {
+  std::string name = "Container";
+  geode::Severity severity = geode::Severity::Debug;
+};
 class Container : public CCClippingNodeRGBA, public EventTarget {
+private:
 public:
   static Container* create() {
     Container* ret = new Container();
@@ -67,7 +72,7 @@ public:
     }
   }
   
-  bool init() override;
+  bool init(LoggerKwargs loggerArgs = {});
 
   // Mouse events
   inline bool getTouchEnabled() {return m_touchEnabled;};
@@ -141,10 +146,17 @@ public:
   cocos2d::CCPoint calculateAnchoredPosition(const cocos2d::CCPoint &position);
   geode::Anchor getAnchor() const { return m_anchor; }
 
+  // opacity horror
   void updateDisplayedOpacity(GLubyte parentOpacity) override;
-
-  void removeAllChildrenWithCleanup(bool cleanup) override;
   void setOpacity(GLubyte opacity) override;
+
+  // override to not remove the internal nodes
+  void removeAllChildrenWithCleanup(bool cleanup) override;
+
+  // logging
+  inline void setLogLevel(geode::Severity level) {
+    m_logger.setSeverity(level);
+  }
 
 protected:
   void updateClipping();
@@ -154,6 +166,7 @@ protected:
   void updatePosition();
   void calculatePolygonVertPoints();
   void requestBoxUpdate();
+  Logger m_logger {"Container", geode::Severity::Info};
 
 private:
   geode::Anchor m_anchor = geode::Anchor::BottomLeft;

@@ -53,7 +53,7 @@ protected:
 
 private:
     bool m_vfuncCallLoopBlock = false;
-    Container* m_content = nullptr;
+    geode::Ref<Container> m_content;
     cocos2d::CCPoint m_scrollPosition = {0,0};
     cocos2d::CCPoint m_scrollVelocityVec = {0,0};
     float m_scrollVelocity = 1.0f;

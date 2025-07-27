@@ -17,20 +17,23 @@ public:
   void focus();
   void unfocus();
 
+  void onEnter() override;
+
   std::string const& getHeader() {return m_header;};
   frameworks::CCResizableSprite* getIcon() {return m_icon;};
-
-  void onEnter() override;
 
 protected:
   void addSettings(frameworks::Container* settingsView);
   geode::Ref<OsuText> m_headerText;
+  geode::Ref<CCLayerColor> m_unfocusedOverlay;
   
 private:
   geode::Ref<frameworks::FillFlowContainer> m_content;
   std::string m_header;
   geode::Ref<frameworks::CCResizableSprite> m_icon;
-  geode::Ref<CCLayerColor> m_unfocusedOverlay;
+  bool m_layoutLockedIn = false;
+
+  void balls(float);
 };
 
 class SettingsSubsection : public SettingsSection {

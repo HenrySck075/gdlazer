@@ -11,9 +11,9 @@ using namespace frameworks;
 
 bool SettingsPanel::init() {
   if (!OsuOverlayContainer::init()) return false;
-  setBackgroundColor({0,0,0,155});
-  setName("SettingsPanel");
-  setTitle("Settings");
+  this->setBackgroundColor({0,0,0,155});
+  this->setName("SettingsPanel");
+  this->setTitle("Settings");
 
   m_mainPanel = Container::create();
   m_mainPanel->setBackgroundColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
@@ -31,6 +31,8 @@ bool SettingsPanel::init() {
 
   m_sections.inner()->addObjectsFromArray(createSections().inner()); 
   m_sectionsContainer = SettingsSections::create();
+  // ???
+  m_sectionsContainer->setContentSize({100,100}, Unit::Percent);
   for (auto section : m_sections) {
     m_sectionsContainer->addSection(section);
   }
@@ -41,7 +43,6 @@ bool SettingsPanel::init() {
   }
   queueInMainThread([this]{
     m_sidebar->updateLayout();
-    m_sectionsContainer->updateLayout();
   });
 
   setContentSize({100,100}, Unit::Percent);
@@ -134,7 +135,7 @@ void SettingsSections::onSectionSelect(Container* old, Container* new_) {
 bool SettingsSections::init() {
   if (!SectionsContainer::init())
     return false;
-  setContentWidth(100, Unit::Percent);
+  setContentSize({100,100}, Unit::Percent);
   return true;
 }
 

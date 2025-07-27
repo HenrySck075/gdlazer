@@ -1,5 +1,7 @@
 #include "BMGlyphManager.hpp"
 
+using namespace geode::prelude;
+
 static CCDictionaryExt<std::string, BMGlyphFontConfig*> s_dConfigurations;
 
 BMGlyphFontConfig* FNTConfigLoadFile2( std::string fntFile) {

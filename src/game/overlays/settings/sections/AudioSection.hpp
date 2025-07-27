@@ -25,7 +25,7 @@ public:
   bool init() {
     if (!SettingsSection::init("Audio", OsuIcon::Audio)) return false;
 
-    addSettings(VolumeSettings::create());
+    addSettings(SettingsSlider::create({})/*VolumeSettings::create()*/);
     
     return true;
   }

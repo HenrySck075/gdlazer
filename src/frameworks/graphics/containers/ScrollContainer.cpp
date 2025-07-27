@@ -5,7 +5,9 @@
 GDF_NS_START
 
 bool ScrollContainer::init(Container* content, ScrollDirection direction, AxisAlignment crossAxisAlignment) {
-  if (!Container::init()) return false;
+  if (!Container::init({
+    .name="ScrollContainer"
+  })) return false;
   
   setClippingEnabled(true);
   setTouchEnabled(true);
@@ -74,7 +76,7 @@ bool ScrollContainer::init(Container* content, ScrollDirection direction, AxisAl
           m_scrollVelocityVec.y = 0;
         }
         m_scrollVelocityVec.y = -m_scrollVelocityVec.y;
-
+        m_logger.debug("haiiiiiiiiiii");
         schedule(schedule_selector(ScrollContainer::applyInertia));
         return true;
       }
@@ -173,7 +175,7 @@ void ScrollContainer::applyInertia(float dt) {
   bool leftBoundsL = contentPos.x < 0;
   bool leftBoundsR = contentPos.x + contentSize.width > thisContentSize.width;
 
-  log::debug("[ScrollContainer]: Bounds check: T: {} ({}), B: {} ({}), L: {} ({}), R: {} ({})",
+  m_logger.debug("Bounds check: T: {} ({}), B: {} ({}), L: {} ({}), R: {} ({})",
     leftBoundsT, fmt::format("{} + {} > {}", contentPos.y, contentSize.height, thisContentSize.height), 
     leftBoundsB, fmt::format("{} < 0", contentPos.y), 
     leftBoundsL, fmt::format("{} < 0", contentPos.x),
