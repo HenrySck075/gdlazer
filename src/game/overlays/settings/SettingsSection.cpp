@@ -10,7 +10,11 @@ using namespace frameworks;
 ///////////////////////////////
 
 bool SettingsSection::init(std::string header, IconConstructor icon) {
-  if (!Container::init()) {
+  if (!FillFlowContainer::init({
+    FillDirection::Vertical,
+    geode::Anchor::TopLeft,
+    2.f
+  })) {
     return false;
   }
   //this->setPadding(8);
@@ -19,40 +23,27 @@ bool SettingsSection::init(std::string header, IconConstructor icon) {
 
   m_header = header; 
   m_icon = icon;
-  this->addChild(m_content = FillFlowContainer::create({
-    FillDirection::Vertical,
-    geode::Anchor::TopLeft,
-    2.f
-  }));
-  this->setContentSize({50,100}, Unit::Percent);
-  m_content->setContentSize({100,100}, Unit::Percent);
-
-  m_content->addChild(m_headerText = OsuText::create({
+  this->setContentSize({100,100}, Unit::Percent);
+  this->addChild(m_headerText = OsuText::create({
     .text = header,
     .fontSize = 18*2
   }));
-  m_content->setAnchorPoint({0,1});
-  m_content->setAnchor(Anchor::TopLeft);
-  m_content->setLogLevel(geode::Severity::Debug);
+  this->setAnchorPoint({0,1});
+  this->setAnchor(Anchor::TopLeft);
+  this->setLogLevel(geode::Severity::Debug);
 
   this->addChild(m_unfocusedOverlay = CCLayerColor::create(
     provider->Background5().opacity(128)
-  ));
+  ), 999999);
   this->addListener<NodeSizeUpdated>([this](NodeSizeUpdated*) {
     m_unfocusedOverlay->setContentSize(this->getContentSize());
     return true;
   });
-  m_content->addListener<NodeSizeUpdated>([this](NodeSizeUpdated*){
-    //log::debug("{}: galls {}", this, m_content->getContentSize());
-    setContentHeight(m_content->getContentHeight());
-    return true;
-  });
-
   return true;
 }
 
 void SettingsSection::balls(float) {
-  m_content->updateLayout();
+  this->updateLayout();
 }
 
 void SettingsSection::onEnter() {
@@ -61,8 +52,10 @@ void SettingsSection::onEnter() {
 }
 
 void SettingsSection::addSettings(Container* settingsView) {
-  m_content->addChild(settingsView);
-  if (m_bRunning) m_content->updateLayout();
+  this->addChild(settingsView);
+  if (m_bRunning) {
+    scheduleOnce(schedule_selector(SettingsSection::balls),0);
+  }
 }
 
 void SettingsSection::focus() {

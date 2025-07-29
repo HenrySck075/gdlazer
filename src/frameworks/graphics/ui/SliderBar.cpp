@@ -3,19 +3,22 @@
 GDF_NS_START
 
 bool SliderBar::init(GDF_KWARGS) {
-  if (!Container::init()) return false;
+  if (!Container::init({.name="SliderBar"})) return false;
 
   ctorInitArgs(args);
+  setTouchEnabled(true);
+  setMouseEnabled(true);
 
   /// Use a mouse listener to set the value based on where the mouse clicks in the x axis
   this->addListener<MouseEvent>([this](MouseEvent* event) {
+    log::debug("balls");
     if (event->m_eventType == MouseEventType::MouseDown) {
       auto pos = event->m_position;
       float newValue = (pos.x / this->getContentWidth()) * (m_maxValue - m_minValue) + m_minValue;
       setValue(newValue);
-      return true;
+      //return true;
     }
-    return false;
+    return true;
   });
   
   return true;

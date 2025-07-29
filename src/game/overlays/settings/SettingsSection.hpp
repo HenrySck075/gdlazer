@@ -7,7 +7,7 @@
 
 GDL_NS_START
 
-class SettingsSection : public frameworks::Container {
+class SettingsSection : public frameworks::FillFlowContainer {
 public:
   bool init(std::string header, frameworks::IconConstructor icon);
   static SettingsSection* create(std::string header, frameworks::IconConstructor icon) {
@@ -28,7 +28,6 @@ protected:
   geode::Ref<CCLayerColor> m_unfocusedOverlay;
   
 private:
-  geode::Ref<frameworks::FillFlowContainer> m_content;
   std::string m_header;
   geode::Ref<frameworks::CCResizableSprite> m_icon;
   bool m_layoutLockedIn = false;

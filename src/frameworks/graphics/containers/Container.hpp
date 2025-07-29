@@ -157,6 +157,9 @@ public:
   inline void setLogLevel(geode::Severity level) {
     m_logger.setSeverity(level);
   }
+  inline void setLogName(const char* name) {
+    m_logger.setName(name);
+  }
 
 protected:
   void updateClipping();

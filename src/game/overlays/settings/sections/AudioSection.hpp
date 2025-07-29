@@ -25,7 +25,11 @@ public:
   bool init() {
     if (!SettingsSection::init("Audio", OsuIcon::Audio)) return false;
 
-    addSettings(SettingsSlider::create({})/*VolumeSettings::create()*/);
+    addSettings(({
+      auto s = SettingsSlider::create({}); 
+      s->setContentWidth(100, frameworks::Unit::Percent);
+      s;
+    })/*VolumeSettings::create()*/);
     
     return true;
   }

@@ -14,9 +14,10 @@ bool SettingsPanel::init() {
   this->setBackgroundColor({0,0,0,155});
   this->setName("SettingsPanel");
   this->setTitle("Settings");
+  auto provider = OverlayColorProvider::to(this, OverlayColorScheme::Purple);
 
   m_mainPanel = Container::create();
-  m_mainPanel->setBackgroundColor(OverlayColorProvider::create(OverlayColorScheme::Purple)->Background4());
+  m_mainPanel->setBackgroundColor(provider->Background4());
   m_mainPanel->setContentSize({c_panelWidth,100},Unit::UIKit,Unit::Percent);
   m_mainPanel->setPosition({-c_panelWidth,0},Unit::UIKit,Unit::OpenGL);
   m_main->addChild(m_mainPanel);
@@ -45,6 +46,7 @@ bool SettingsPanel::init() {
     m_sidebar->updateLayout();
   });
 
+
   setContentSize({100,100}, Unit::Percent);
 
   return true;
@@ -52,7 +54,7 @@ bool SettingsPanel::init() {
 
 CCArrayExt<SidebarButton> SettingsPanel::createSidebarButtons() {
   CCArrayExt<SidebarButton> buttons;
-  auto provider = OverlayColorProvider::create(OverlayColorScheme::Purple);
+  auto provider = OverlayColorProvider::of(this);
   for (auto section : m_sections) {
     auto button = SidebarIconButton::create({
       section->getHeader(), 

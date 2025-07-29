@@ -170,14 +170,14 @@ void ScrollContainer::applyInertia(float dt) {
   auto contentSize = m_content->getContentSize();
   auto thisContentSize = getContentSize();
   
-  bool leftBoundsT = contentPos.y + contentSize.height > thisContentSize.height;
-  bool leftBoundsB = contentPos.y < 0;
+  bool leftBoundsT = contentPos.y > thisContentSize.height;
+  bool leftBoundsB = contentPos.y - contentSize.height  < 0;
   bool leftBoundsL = contentPos.x < 0;
   bool leftBoundsR = contentPos.x + contentSize.width > thisContentSize.width;
 
   m_logger.debug("Bounds check: T: {} ({}), B: {} ({}), L: {} ({}), R: {} ({})",
-    leftBoundsT, fmt::format("{} + {} > {}", contentPos.y, contentSize.height, thisContentSize.height), 
-    leftBoundsB, fmt::format("{} < 0", contentPos.y), 
+    leftBoundsT, fmt::format("{} > {}", contentPos.y, thisContentSize.height), 
+    leftBoundsB, fmt::format("{} - {} < 0", contentPos.y,contentSize.height), 
     leftBoundsL, fmt::format("{} < 0", contentPos.x),
     leftBoundsR, fmt::format("{} + {} > {}", contentPos.x, contentSize.width, thisContentSize.width)
   );
@@ -202,9 +202,10 @@ void ScrollContainer::applyInertia(float dt) {
       if ((m_scrollDirection == ScrollDirection::Vertical || 
         m_scrollDirection == ScrollDirection::Both)) {
         if (leftBoundsT) {
-          dist.y = -(contentPos.y + contentSize.height - thisContentSize.height);
+          //dist.y = contentPos.y;
+          dist.y = (contentPos.y - thisContentSize.height);
         } else if (leftBoundsB) {
-          dist.y = -contentPos.y;
+          dist.y = (contentPos.y - contentSize.height);
         }
       }
       scrollBy(dist, true);

@@ -1,7 +1,7 @@
 #include "Container.hpp"
 
 #include "../../../utils.hpp"
-//#include "../../utils/h2dFormatter.hpp"
+#include "../../utils/h2dFormatter.hpp"
 
 GDF_NS_START
 void Container::setMinSize(const cocos2d::CCSize &size) {
@@ -109,6 +109,7 @@ bool Container::init(LoggerKwargs loggerArgs) {
         break;
       }
       case MouseEventType::MouseDown: {
+        //m_logger.debug("touchEnabled: {}, inBounds (old): {}, inBounds: {}", m_touchEnabled, m_isInBounds, isInBounds);
         if (!m_touchEnabled) return false;
         m_shouldSendClick = true;
         m_lastMousePos = currentPos;
@@ -135,7 +136,7 @@ bool Container::init(LoggerKwargs loggerArgs) {
         }
         if (m_isInBounds != isInBounds) {
           m_isInBounds = isInBounds;
-          dispatchEvent(new MouseEvent(isInBounds ? MouseEventType::Enter : MouseEventType::Exit, currentPos, mouseEvent->m_clicked));
+          dispatchEvent(new MouseEvent(isInBounds ? MouseEventType::Enter : MouseEventType::Exit, mouseEvent->m_position, mouseEvent->m_clicked));
           //
         }
         m_lastMousePos = currentPos;
@@ -184,9 +185,15 @@ fish:
 void Container::drawBorder() {
   auto size = getContentSize();
 
+  bool sizeMismatch = false;
+  if (m_containerBox && m_containerBox->size() >= 2) {
+    auto crack = m_containerBox->getBB();
+    sizeMismatch = (size != CCSize{static_cast<float>(crack.width()), static_cast<float>(crack.height())});
+    //m_logger.debug("container bb: {}", crack);
+  } 
+
   bool redrawStencil = (
-    size != m_copyOfTheContentSizeInCaseTheOriginalGetsCalled &&
-    m_borderRadius.isUpdated()
+    sizeMismatch && m_borderRadius.isUpdated()
   );
   bool redrawBorder = (
     m_borderRadius.isUpdated() &&
@@ -260,11 +267,9 @@ void Container::drawBorder() {
 }
 
 void Container::visit() {
-  //t_vc++;
-  //if (t_vc%24 == 0) t_fc++;
   if (m_clippingEnabled) {
     cocos2d::CCClippingNode::visit();
-    drawBorder();
+    //drawBorder();
   } else {
     cocos2d::CCNode::visit();
   }
@@ -273,6 +278,7 @@ void Container::visit() {
 void Container::setBorderRadius(float radius) {
   m_borderRadius = radius;
   m_containerBoxShapeDesynced = true;
+  drawBorder();
 }
 
 void Container::setBackgroundColor(const ccColor4B& color) {
@@ -384,6 +390,7 @@ void Container::updateSize() {
   });
   m_containerBoxShapeDesynced = true;
   updateContainerBox();
+  drawBorder();
 }
 
 void Container::updatePosition() {

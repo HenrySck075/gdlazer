@@ -41,6 +41,8 @@ target_compile_definitions(geode-sdk INTERFACE GEODE_EXPOSE_SECRET_INTERNALS_IN_
 # Set up dependencies, resources, and link Geode.
 setup_geode_mod(${PROJECT_NAME})
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE HOMOG2D_ENABLE_VRTP)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
   target_compile_definitions(${PROJECT_NAME} PUBLIC GDF_DEBUG)
 endif()

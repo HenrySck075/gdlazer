@@ -2,15 +2,16 @@
 
 GDF_NS_START
 bool SectionsContainer::init() {
-  m_contentsContainer = FillFlowContainer::create({.direction=FillDirection::Vertical, .gap=4.f});
+  m_contentsContainer = FillFlowContainer::create({.direction=FillDirection::Vertical, .gap=4.f, .anchor=Anchor::TopLeft});
   m_contentsContainer->setContentSize({100,100},Unit::Percent);
   if (!ScrollContainer::init(m_contentsContainer)) return false;
-  setLogLevel(Severity::Info);
+  //setLogLevel(Severity::Info);
   m_currentSection.addCallback(std::bind(&SectionsContainer::onSectionSelect, this, std::placeholders::_1, std::placeholders::_2));
 
   m_questionableCode = std::bind(&SectionsContainer::sectionClickingShenanigans, this, std::placeholders::_1);
 
   m_contentsContainer->setAnchorPoint({0,1});
+  m_contentsContainer->setAnchor(Anchor::TopLeft);
 
   this->setContentSize({100,100}, Unit::Percent);
 

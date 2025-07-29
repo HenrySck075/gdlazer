@@ -18,6 +18,15 @@ public:
   inline void setSeverity(geode::Severity severity) {
     m_severity = severity;
   }
+  inline geode::Severity getSeverity() const {
+    return m_severity;
+  }
+  inline void setName(std::string name) {
+    m_name = std::move(name);
+  }
+  inline std::string getName() const {
+    return m_name;
+  }
 
   template<typename ...Args>
   inline void logImpl(geode::Severity severity, geode::log::impl::FmtStr<Args...> str, Args&& ...args) {

@@ -21,10 +21,6 @@
 See https://github.com/skramm/homog2d
 */
 
-#undef rad1
-#undef min
-#undef max
-
 #ifndef HG_HOMOG2D_HPP
 #define HG_HOMOG2D_HPP
 
@@ -232,7 +228,7 @@ See https://github.com/skramm/homog2d
 	#define HOMOG2D_MAXITER_PIP 5
 #endif
 
-#define HOMOG2D_VERSION "2.12.2"
+#define HOMOG2D_VERSION "2.13.1"
 
 // some MS environments seem to lack Pi definition, even if _USE_MATH_DEFINES is defined
 #ifndef M_PI
@@ -2842,10 +2838,9 @@ public:
 	template<typename T1>
 	void moveTo( const Point2d_<T1>& pt )
 	{
-		auto x = _ptR2.getX() - _ptR1.getX();
-		auto y = _ptR2.getY() - _ptR1.getY();
+		auto s = size();
 		_ptR1 = pt;
-		_ptR2.set(_ptR1.getX() + x, _ptR1.getY() + y);
+		_ptR2.set( _ptR1.getX() + s.first, _ptR1.getY() + s.second );
 	}
 
 	template<typename FPT2>
@@ -5470,6 +5465,7 @@ SegVec<SV,FPT>::getParallelSegs( T dist ) const
 	);
 }
 
+#undef rad1
 
 //------------------------------------------------------------------
 /// Returns a segment with same support line but tripled length.
@@ -13120,4 +13116,3 @@ getImgSize( const tinyxml2::XMLDocument& doc )
 } // namespace h2d
 
 #endif // HG_HOMOG2D_HPP
-

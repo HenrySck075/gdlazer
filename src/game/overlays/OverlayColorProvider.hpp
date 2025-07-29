@@ -26,10 +26,24 @@ class OverlayColorProvider : public CCObject {
 public:
   OverlayColorScheme m_colorScheme; 
 
-  static OverlayColorProvider* create(OverlayColorScheme colorScheme)
-  {
+  static OverlayColorProvider* create(OverlayColorScheme colorScheme) {
     $createClass(OverlayColorProvider, init, colorScheme);
   };
+  static OverlayColorProvider* to(CCNode* context, OverlayColorScheme colorScheme) {
+    auto ret = create(colorScheme);
+    context->setUserObject("gdlazer/overlay/provider", ret);
+    return ret;
+  }
+  static OverlayColorProvider* of(CCNode* context) {
+    CCNode* cur = context;
+    OverlayColorProvider* ret = nullptr;
+    while (!ret && cur) {
+      ret = static_cast<OverlayColorProvider*>(cur->getUserObject("gdlazer/overlay/provider"));
+      log::debug("[OverlayColorProvider::of]: {} {} {}", cur, ret, cur->getParent());
+      cur = cur->getParent();
+    }
+    return ret;
+  }
 
   bool init(OverlayColorScheme colorScheme) {
     m_colorScheme = colorScheme;

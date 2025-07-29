@@ -83,7 +83,11 @@ void FillFlowContainer::updateLayout() {
       }
     }
     m_logger.debug("Calculated size: {}", CCSize{currentPos, maxCrossAxisSize});
-    if (m_autoResize) this->setContentSize({currentPos, maxCrossAxisSize});
+    if (m_autoResize) {
+      this->setContentSize({currentPos, maxCrossAxisSize});
+      // ?????
+      this->dispatchEvent(new NodeSizeUpdated());
+    }
   } else {
     auto callback = [&](CCNode* child) {
       child->setAnchorPoint(anchorPoint);
@@ -110,7 +114,10 @@ void FillFlowContainer::updateLayout() {
       }
     }
     m_logger.debug("Calculated size: {}", CCSize{maxCrossAxisSize,currentPos});
-    if (m_autoResize) this->setContentSize({maxCrossAxisSize, currentPos});
+    if (m_autoResize) {
+      this->setContentSize({maxCrossAxisSize, currentPos});
+      this->dispatchEvent(new NodeSizeUpdated());
+    }
   }
   this->updateContainerBox();
 }
