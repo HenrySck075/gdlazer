@@ -1,0 +1,11 @@
+# Geode-related instructions (applies everywhere related to Geode)
+- Use `geode::cast::typeinfo_cast` instead of `dynamic_cast`. 
+- Access `Fields` members using either `m_fields` member or `auto fields = m_fields.self()` if used multiple times in one function.
+
+# gdlazer-related instructions (applies only to this project)
+- If trying to cast `gdlazer::frameworks::IconConstructor` into `gdlazer::frameworks::CCResizableSprite*` to assign it to a variable of the latter type, just simply assign it.
+- `gdlazer::frameworks::Container::addListener` calls takes in a template parameter of type `gdlazer::frameworks::Event` and its listener function returns a bool.
+- If a function has an `IconConstructor` as a parameter, most of the time an object of that type can be acquired from the `OsuIcon` namespace
+- If a `create` function are expected to take no parameters and also use the `init` function to setup, use the `$defaultCreate` macro instead.
+- Containers in `frameworks/graphics/ui` should have minimal required design features.
+- If doing mouse event work and the instruction ever mentions something along the line of "based on where the mouse position is", it is implicitly assumed that the mouse position is local to the processing node, and the `m_position` of the event pointer already has that info.
