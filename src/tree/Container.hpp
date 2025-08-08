@@ -1,13 +1,14 @@
 #pragma once
 #include "RectangleF.hpp"
 #include "col/Color4.hpp"
-#include "tree/shared_ptr_2.hpp"
+#include "shared_ptr_2.hpp"
+#include "types/Vector2.hpp"
 
 struct Container;
 using ContainerPtr = shared_ptr_ctor<Container>;
 
 struct Container {
-    RectangleF rect;
+    Vector2 size;
     RectangleF padding;
     Color4 backgroundColor;
     std::vector<ContainerPtr> children;
@@ -16,4 +17,14 @@ struct Container {
 };
 
 template<class T>
-struct DrawHandler {};
+struct Element {
+    Container widget; // bro why dont templating makes this visible
+    Element<T>(T& elem) : widget(std::move(elem)) {};
+    cocos2d::CCNode* build();
+    bool amogus;
+};
+
+template<>
+struct Element<Container> {
+    cocos2d::CCNode* build();
+};
