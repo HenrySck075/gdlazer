@@ -16,15 +16,17 @@ struct Container {
     std::string classes;
 };
 
-template<class T>
-struct Element {
-    Container widget; // bro why dont templating makes this visible
-    Element<T>(T& elem) : widget(std::move(elem)) {};
-    cocos2d::CCNode* build();
-    bool amogus;
-};
 
-template<>
-struct Element<Container> {
-    cocos2d::CCNode* build();
-};
+class ElementBase {
+  virtual cocos2d::CCNode* build();
+}; 
+
+
+/// implement the following methods:
+/// - cocos2d::CCNode* build();
+template<class T>
+class Element;
+
+#define $defineElement(cls) \
+template<> \
+class Element<cls> : public ElementBase
