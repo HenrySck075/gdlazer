@@ -371,6 +371,20 @@ static const char* c_smug[] = {
   "Mero Seto",
   "Shizue Baba",
 
+  /// Ongaku Shoujo
+  "Hanako Yamadagi",
+  "Sasame Mitsukuri",
+  "Miku Nishio",
+  "Hiyo Yukino",
+  "Shupe Gushiken",
+  "Roro Morooka",
+  "Kotoko Kintoki",
+  "Uori Mukae",
+  "Kiri Mukae",
+  "Haru Chitose",
+  "Eri Kumagai",
+  "Sarasa Ryuoh",
+
 
   /// congrats
   "Henry Spheria", 
