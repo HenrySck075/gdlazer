@@ -5,6 +5,7 @@
 
 static const char* c_smug[] = {
   /// Love Live! School idol project 
+  // Muse
   "Honoka Kosaka",
   "Kotori Minami",
   "Umi Sonoda",
@@ -14,9 +15,11 @@ static const char* c_smug[] = {
   "Nico Yazawa",
   "Eli Ayase",
   "Nozomi Tojo",
+  // A-RISE
   "Tsubasa Kira",
   "Anju Yuki",
   "Erena Todo",
+  // Aqours
   "Chika Takami",
   "You Watanabe",
   "Riko Sakurauchi",
@@ -26,8 +29,10 @@ static const char* c_smug[] = {
   "Mari Ohara",
   "Dia Kurosawa",
   "Kanan Matsuura",
+  // Saint Snow
   "Sarah Kazuno",
   "Leah Kazuno",
+  // Nijigasaki High School Idol Club
   "Yu Takasaki",
   "Ayumu Uehara",
   "Setsuna Yuki",
@@ -41,10 +46,12 @@ static const char* c_smug[] = {
   "Shioriko Mifune",
   "Mia Taylor",
   "Lanzhu Zhong",
+  "Kaoruko Mifune",
+  //"Hana Hazuki",
+  // Sunny Passion
   "Yuna Hijirisawa",
   "Mao Hiiragi",
-  "Hana Hazuki",
-  "Kaoruko Mifune",
+  // Liella!
   "Kanon Shibuya",
   "Keke Tang",
   "Chisato Arashi",
@@ -55,18 +62,20 @@ static const char* c_smug[] = {
   "Shiki Wakana",
   "Natsumi Onitsuka",
   "Wien Margarete",
+  "Tomari Onitsuka",
+  // Hasunosora High School Idol Club
   "Kaho Hinoshita",
   "Kozue Otomune",
   "Sayaka Murano",
   "Tsuzuri Yugiri",
   "Rurino Osawa",
   "Megumi Fujishima",
-  "Tomari Onitsuka",
   "Ceras Yanagida Lilienfeld",
   "Sachi Ogami",
   "Ginko Momose",
   "Kosuzu Kachimachi",
   "Hime Anyoji",
+  // the name was too long  for my malfunctioning keyboard
   "Rurika Tsubaki",
   "Anzu Takizawa",
   "Yuzuha Sumeragi",
@@ -78,6 +87,7 @@ static const char* c_smug[] = {
   "Maya Mikasa",
   "Sayaka Harukaze",
   "Izumi Katsuragi",
+  // Izikurai-Bu!
   "Polka Takahashi",
   "Mai Azabu",
   "Akira Goto",
@@ -622,13 +632,37 @@ static const char* c_smug[] = {
   "SoggyGunner"
 };
 
+#include <Geode/ui/GeodeUI.hpp>
+
+using namespace geode::prelude;
+
 $on_mod(Loaded) {
   if (!geode::Mod::get()->getSettingValue<bool>("dont")) return;
   std::random_device dev;
   std::mt19937 rng(dev());
   std::uniform_int_distribution<std::mt19937::result_type> dist(1,sizeof(c_smug)/sizeof(c_smug[0])); 
   int i = dist(rng)-1;
+  /*
   auto met = geode::Mod::get()->getMetadata();
   met.setDevelopers({c_smug[i]});
   geode::Mod::get()->setMetadata(met);
+  */
+  const auto thisModId = Mod::get()->getID();
+  new EventListener<EventFilter<ModPopupUIEvent>>([thisModId](ModPopupUIEvent* event) {
+    if (event->getModID() == thisModId) {
+      // Find the Geode nodes you want to access first
+      auto label = static_cast<CCLabelBMFont*>(
+        event->getPopup()->querySelector("mod-developer-label")
+      );
+
+      // Only then do stuff with them
+      if (label) {
+        auto btn = CCMenuItemExt::createSprite(label, label, [](CCMenuItemSprite*){
+
+        });
+        //menu->addChild(Tooltip::create("hello"));
+      }
+    }
+    return ListenerResult::Propagate;
+  });
 }
