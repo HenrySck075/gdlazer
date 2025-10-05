@@ -625,6 +625,36 @@ static const char* c_smug[] = {
   "Chie Furumi",
   "Shiho Futaba",
 
+  /// World Dai Star
+  // Sirius
+  "Otori Kokona",
+  "Shizuka",
+  "Kathrina Griebel",
+  "Niizuma Yae",
+  "Yanagiba Panda",
+  "Sasuga Chisa",
+
+  // Gingaza
+  "Senju Koyomi",
+  "Ramona Wolf",
+  "Wang Xue",
+  "Lilja Kurtbay",
+  "Yonaguni Hikari",
+
+  // Gekidan Denki
+  "Senju Iroha",
+  "Shiromaru Mito",
+  "Akiru Kamira",
+  "Nekoashi Tsubomi",
+  "Motosu Towa",
+
+  // Eden
+  "Renjakuno Hatsumi",
+  "Karasumori Daikoku",
+  "Toneri Nikako",
+  "Yorozu Iruru",
+  "Fudeshima Shigure",
+
   
 
   /// congrats
