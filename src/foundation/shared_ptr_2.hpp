@@ -15,6 +15,9 @@ public:
     operator std::shared_ptr<T>() const {
         return m_ptr;
     }
+    operator std::shared_ptr<T>() {
+      return m_ptr;
+    }
 
     T* operator->() {
         return m_ptr.get();
