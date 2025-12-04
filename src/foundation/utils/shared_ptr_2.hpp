@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 template<typename T>
 struct shared_ptr_ctor {
 private:
@@ -11,6 +12,7 @@ public:
     shared_ptr_ctor(Args&&... args) : m_ptr(std::make_shared<T>(std::forward<Args>(args)...)) {}
 
     shared_ptr_ctor(T* ptr) : m_ptr(std::shared_ptr<T>(ptr)) {}
+    shared_ptr_ctor(shared_ptr_ctor<T>& me) : m_ptr(me.m_ptr) {};
 
     operator std::shared_ptr<T>() const {
         return m_ptr;
@@ -39,5 +41,12 @@ public:
 
     T* get() const {
         return m_ptr;
+    }
+
+    bool operator==(std::nullptr_t) {
+      return m_ptr == nullptr;
+    }
+    bool operator==(std::shared_ptr<T>& m) {
+      return m.get() == m_ptr.get();
     }
 };
