@@ -8,11 +8,10 @@ private:
 public:
     shared_ptr_ctor() : m_ptr(std::make_shared<T>()) {}
 
-    template<typename... Args>
-    shared_ptr_ctor(Args&&... args) : m_ptr(std::make_shared<T>(std::forward<Args>(args)...)) {}
-
     shared_ptr_ctor(T* ptr) : m_ptr(std::shared_ptr<T>(ptr)) {}
+    shared_ptr_ctor(nullptr_t) : m_ptr(nullptr) {};
     shared_ptr_ctor(shared_ptr_ctor<T>& me) : m_ptr(me.m_ptr) {};
+    shared_ptr_ctor(std::shared_ptr<T>& me) : m_ptr(me) {};
 
     operator std::shared_ptr<T>() const {
         return m_ptr;

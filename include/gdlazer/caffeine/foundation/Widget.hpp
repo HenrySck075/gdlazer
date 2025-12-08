@@ -1,7 +1,7 @@
 #pragma once
 
-#include "foundation/Key.hpp"
-#include "foundation/utils/readonly.hpp"
+#include "Key.hpp"
+#include "utils/readonly.hpp"
 #include "utils/shared_ptr_2.hpp"
 #include <memory>
 class Element;

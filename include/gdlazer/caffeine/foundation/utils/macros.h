@@ -25,3 +25,6 @@
 #define GDF_EXC_EXCEPT(...) } catch (__VA_ARGS__) {
 #define GDF_EXC_FINALLY } finally {
 #endif
+
+
+#define finally catch(std::exception&)

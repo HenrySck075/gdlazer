@@ -4,15 +4,15 @@
 #include <functional>
 #include <memory>
 #include <Geode/cocos/include/cocos2d.h>
-#include "foundation/Key.hpp"
-#include "utils/shared_ptr_2.hpp"
+#include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
+#include <gdlazer/caffeine/foundation/Key.hpp>
 
 // Element
 class BuildContext {};
 
 class Widget;
 class Element;
-class ElementTree;
+class BuildOwner;
 class BuildScope;
 using ElementVisitor = std::function<void(shared_ptr_ctor<Element>)>;
 enum class _ElementLifecycle {
@@ -78,7 +78,7 @@ class Element : public BuildContext {
   friend class _InactiveElements;
   std::shared_ptr<BuildScope> m_parentBuildScope;
 protected:
-  std::shared_ptr<ElementTree> m_owner;
+  std::shared_ptr<BuildOwner> m_owner;
   std::shared_ptr<Element> m_parent; friend class RenderObjectElement;
   std::shared_ptr<Widget> m_widget;
   /// idk what do they mean by this their usage is confusing
@@ -106,7 +106,7 @@ public:
   /// Get the render object (aka cocos node) at current (or below) element
   virtual cocos2d::CCNode *getRenderObject();
 
-  void mount(shared_ptr_ctor<Element> parent);
+  void mount(shared_ptr_ctor<Element> parent, void* slot);
   /*
    *Transition from the "inactive" to the "defunct" lifecycle state.
 
@@ -121,6 +121,23 @@ Implementations of this method should end with a call to the inherited method.
   void rebuild();
   virtual void performRebuild();
 
+  void update(shared_ptr_ctor<Widget> newWidget);
+  std::shared_ptr<Element> updateChild(
+    shared_ptr_ctor<Element> child,
+    shared_ptr_ctor<Widget> newWidget,
+    void* newSlot
+  );
+  void updateSlotForChild(
+    shared_ptr_ctor<Element> child,
+    void* slot
+  );
+  void updateSlot(void* slot);
+
+  std::shared_ptr<Element> inflateWidget(
+    std::shared_ptr<Widget> widget,
+    void* slot
+  );
+
   /* Transition from the "inactive" to the "active" lifecycle state.
   
   The framework calls this method when a previously deactivated element has
@@ -134,24 +151,26 @@ Implementations of this method should end with a call to the inherited method.
   method.
   */
   void activate();
-
 private:
-  void _activateWithParent(std::shared_ptr<Element> parent, void* slot);
+  void _activateWithParent(shared_ptr_ctor<Element> parent, void* slot);
   void _activateRecusively();
 public:
 
 
-  std::shared_ptr<Element> updateChild(
-    std::shared_ptr<Element> child,
-    std::shared_ptr<Widget> newWidget,
-    void* newSlot
-  );
-  std::shared_ptr<Element> inflateWidget(
-    std::shared_ptr<Widget> widget,
-    void* slot
-  );
+  void deactivateChild(shared_ptr_ctor<Element> child);
+  /*
+Transition from the "active" to the "inactive" lifecycle state.
 
-  void deactivateChild(std::shared_ptr<Element> child);
+The framework calls this method when a previously active element is moved to the list of inactive elements. While in the inactive state, the element will not appear on screen. The element can remain in the inactive state only until the end of the current animation frame. At the end of the animation frame, if the element has not be reactivated, the framework will unmount the element.
+
+In case of an uncaught exception when rebuild a widget subtree, the framework also calls this method on the failing subtree to make sure the widget tree is in a relatively consistent state. The deactivation of such subtrees are performed only on a best-effort basis, and the errors thrown during deactivation will not be rethrown.
+
+This is indirectly called by deactivateChild.
+
+See the lifecycle documentation for Element for additional information.
+
+Implementations of this method should end with a call to the inherited method.
+  */
   void deactivate() {
     // TODO: InheritedElement when it exists
     m_lifecycleState = _ElementLifecycle::inactive;
@@ -162,20 +181,12 @@ public:
   
 
   /// The default implementation of this function calls attachRenderObject recursively on each child, because, of course, the one in getRenderObject is not its own, nor do it guarantee the parent is a RenderObjectElement. 
-  virtual void attachRenderObject() {
-    visitChildren([](shared_ptr_ctor<Element> child) {
-      child->attachRenderObject();
-    });
-  }
-  virtual void detachRenderObject() {
-    visitChildren([](shared_ptr_ctor<Element> child) {
-      child->detachRenderObject();
-    });
-  }
+  virtual void attachRenderObject(); 
+  virtual void detachRenderObject(); 
 
 
   /// given that there's only one child
-  std::shared_ptr<Element> getAttachingRenderObjectChild();
+  virtual std::shared_ptr<Element> getAttachingRenderObjectChild();
 
   /// Calls the argument for each child. Must be overridden by subclasses that
   /// support having children.
@@ -187,7 +198,7 @@ public:
   /// being updated at that point, so the children might not be constructed yet,
   /// or might be old children that are going to be replaced. This method should
   /// only be called if it is provable that the children are available. 
-  virtual void visitChildren(ElementVisitor visitor) {}
+  virtual void visitChildren(const std::function<void(shared_ptr_ctor<Element>)>& visitor) {}
 };
 
 

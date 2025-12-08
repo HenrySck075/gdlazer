@@ -1,5 +1,5 @@
-#include "BuildScope.hpp"
-#include "massert.h"
+#include <gdlazer/caffeine/foundation/BuildScope.hpp>
+#include <gdlazer/caffeine/foundation/utils/massert.h>
 
 void BuildScope::tryRebuild(std::shared_ptr<Element> element) {
   element->rebuild();

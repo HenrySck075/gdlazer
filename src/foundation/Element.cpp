@@ -1,6 +1,8 @@
-#include "Element.hpp"
-#include "ElementTree.hpp"
-#include "massert.h"
+#include "gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp"
+#include <functional>
+#include <gdlazer/caffeine/foundation/BuildOwner.hpp>
+#include <gdlazer/caffeine/foundation/utils/massert.h>
+#include <gdlazer/caffeine/foundation/Element.hpp>
 
 cocos2d::CCNode *Element::getRenderObject() {
   auto child = getAttachingRenderObjectChild();
@@ -17,8 +19,19 @@ std::shared_ptr<Element> Element::getAttachingRenderObjectChild() {
   });
   return next;
 }
+void Element::attachRenderObject() {
+  auto crack = [](shared_ptr_ctor<Element> child) {
+    child->attachRenderObject();
+  };
+  visitChildren(crack);
+}
+void Element::detachRenderObject() {
+  visitChildren([](shared_ptr_ctor<Element> child) {
+    child->detachRenderObject();
+  });
+}
 
-void Element::mount(shared_ptr_ctor<Element> parent) {
+void Element::mount(shared_ptr_ctor<Element> parent, void* slot) {
   massert(m_lifecycleState == _ElementLifecycle::initial, "This element is no longer in its initial state.");
   massert(
     m_parent == nullptr,
@@ -30,6 +43,18 @@ void Element::mount(shared_ptr_ctor<Element> parent) {
   );
   m_parent = parent;
   m_lifecycleState = _ElementLifecycle::active;
+  m_slot = slot;
+  if (auto key = dynamic_cast<GlobalKeyU*>(m_widget->m_key->get())) {
+    m_owner->_registerGlobalKey(key, this);
+  }
+}
+void Element::unmount() {
+  assert(m_lifecycleState == _ElementLifecycle::active);
+  assert(m_widget);
+  assert(m_owner);
+  if (auto k = dynamic_cast<GlobalKeyU*>(m_widget->m_key->get())) {
+    m_owner->_unregisterGlobalKey(k, this);
+  }
 }
 
 std::shared_ptr<BuildScope>& Element::getBuildScope() {
@@ -54,7 +79,7 @@ std::shared_ptr<Element> Element::_retakeInactiveElement(
   if (!Widget::canUpdate(widget, ce->m_widget.get())) return nullptr;
   auto parent = ce->m_parent;
   if (parent) {
-    parent->deactivateChild(ce);
+    parent->deactivateChild(ce.get());
   }
   assert(ce->m_parent == nullptr);
   m_owner->m_inactiveElements.remove(ce);
@@ -68,16 +93,25 @@ std::shared_ptr<Element> Element::inflateWidget(
   const auto key = newWidget->m_key;
   auto maybeGlobalKey = dynamic_cast<GlobalKeyU*>(key->get());
   auto inactiveElement = maybeGlobalKey ? _retakeInactiveElement(maybeGlobalKey, newWidget.get()) : nullptr;
-  if (inactiveElement) {}
+  if (inactiveElement) {
+    assert(inactiveElement->m_parent == nullptr);
+    inactiveElement->_activateWithParent(this, newSlot);
+    auto up = updateChild(inactiveElement, newWidget, newSlot);
+    assert(up == inactiveElement);
+    return up;
+  }
   else {
     auto newElement = newWidget->createElement();
+    newElement->mount(this, newSlot);
+    assert(newElement->m_lifecycleState == _ElementLifecycle::active);
+    return newElement;
   }
 }
 
 
 std::shared_ptr<Element> Element::updateChild(
-  std::shared_ptr<Element> child,
-  std::shared_ptr<Widget> newWidget,
+  shared_ptr_ctor<Element> child,
+  shared_ptr_ctor<Widget> newWidget,
   void* newSlot
 ) {
   if (child == nullptr) {
@@ -91,23 +125,39 @@ std::shared_ptr<Element> Element::updateChild(
     deactivateChild(child);
     return nullptr;
   } else if (Widget::canUpdate(newWidget, child->m_widget)) {
-    child->m_widget = newWidget;
-    child->m_slot = newSlot;
-    child->markNeedsBuild();
+    if (child->m_slot != newSlot) updateSlotForChild(child, newSlot);
+    child->update(newWidget);
+    assert(child->m_widget == newWidget);
     return child;
   } else {
     deactivateChild(child);
-    auto newChild = newWidget->createElement();
-    newChild->m_slot = newSlot;
-    newChild->mount(shared_from_this());
-    newChild->attachRenderObject();
-    newChild->markNeedsBuild();
+    auto newChild = inflateWidget(newWidget, newSlot);
     return newChild;
   }
 
 }
+void Element::updateSlot(void* slot) {
+  assert(m_lifecycleState == _ElementLifecycle::active);
+  assert(m_parent);
+  assert(m_parent->m_lifecycleState == _ElementLifecycle::active);
+  m_slot = slot;
+}
+void Element::updateSlotForChild(
+  shared_ptr_ctor<Element> child,
+  void* slot
+) {
+  assert(m_lifecycleState == _ElementLifecycle::active);
+  assert(child->m_parent.get() == this);
+  const std::function<void(std::shared_ptr<Element>)> visit = [&slot, &visit](std::shared_ptr<Element> e){
+    e->updateSlot(slot);
+    if (auto descendant = e->getAttachingRenderObjectChild()) {
+      visit(descendant);
+    }
+  };
+  visit(child);
+};
 
-void Element::deactivateChild(std::shared_ptr<Element> child) {
+void Element::deactivateChild(shared_ptr_ctor<Element> child) {
   child->detachRenderObject();
 }
 

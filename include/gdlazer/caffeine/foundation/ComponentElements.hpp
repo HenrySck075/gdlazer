@@ -1,8 +1,8 @@
 #pragma once
 
-#include "foundation/Element.hpp"
-#include "foundation/Widget.hpp"
-#include "foundation/shared_ptr_2.hpp"
+#include "Element.hpp"
+#include "Widget.hpp"
+#include "utils/shared_ptr_2.hpp"
 
 /* An Element that composes other Elements.
 
@@ -18,6 +18,7 @@ public:
   ComponentElement(shared_ptr_ctor<Widget> widget) : Element(widget) {};
   void performRebuild() override;
   virtual std::shared_ptr<Widget> build() = 0;
+  std::shared_ptr<Element> getAttachingRenderObjectChild() override;
 }; 
 
 

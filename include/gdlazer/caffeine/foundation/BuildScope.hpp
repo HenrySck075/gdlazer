@@ -1,10 +1,12 @@
 #pragma once
 #include "Element.hpp"
 #include <cstdint>
+#include <optional>
+#include "types.hpp"
 
 class BuildScope final {
 protected:
-  friend class ElementTree;
+  friend class BuildOwner;
   std::list<std::shared_ptr<Element>> m_dirtyElements;
   using DirtyElementsIter = decltype(m_dirtyElements)::iterator;
   // in bits
@@ -13,6 +15,8 @@ protected:
   // 11: true
   // why not lmao
   uint8_t m_dirtyElementsNeedsResorting = 0;
+  bool m_building = false; friend class BuildOwner;
+  std::optional<VoidCallback> m_scheduleRebuildCallback;
 
   void tryRebuild(std::shared_ptr<Element> element);
   void scheduleBuildFor(shared_ptr_ctor<Element> element);
@@ -35,4 +39,6 @@ protected:
       iter--;
     }
   }
+public:
+  BuildScope(decltype(m_scheduleRebuildCallback) scheduleRebuild = std::nullopt) : m_scheduleRebuildCallback(scheduleRebuild) {};
 };
