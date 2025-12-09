@@ -14,4 +14,15 @@ public:
   const T& get() const { return value; }
   // Allow Owner class to modify the value
   friend Owner;
+
+  // Comparisons
+  inline bool operator==(const T& other) const { return value == other; }
+  inline bool operator<(const T& other) const { return value < other; }
+  
+  // (with other readonly object)
+  inline bool operator==(const readonly<T, Owner>& other) const { return value == other.value; }
+  inline bool operator<(const readonly<T, Owner>& other) const { return value < other.value; }
+
+  
+
 };

@@ -1,8 +1,11 @@
-#include "gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp"
+#include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
 #include <functional>
 #include <gdlazer/caffeine/foundation/BuildOwner.hpp>
 #include <gdlazer/caffeine/foundation/utils/massert.h>
 #include <gdlazer/caffeine/foundation/Element.hpp>
+#include <gdlazer/caffeine/foundation/Widget.hpp>
+
+Element::Element(Widget* widget) : m_widget(std::shared_ptr<Widget>(widget)) {}
 
 cocos2d::CCNode *Element::getRenderObject() {
   auto child = getAttachingRenderObjectChild();
@@ -13,25 +16,25 @@ cocos2d::CCNode *Element::getRenderObject() {
 };
 std::shared_ptr<Element> Element::getAttachingRenderObjectChild() {
   std::shared_ptr<Element> next;
-  visitChildren([&next](shared_ptr_ctor<Element> node) {
+  visitChildren([&next](std::shared_ptr<Element> node) {
     assert(!next);
     next = node;
   });
   return next;
 }
 void Element::attachRenderObject() {
-  auto crack = [](shared_ptr_ctor<Element> child) {
+  auto crack = [](std::shared_ptr<Element> child) {
     child->attachRenderObject();
   };
   visitChildren(crack);
 }
 void Element::detachRenderObject() {
-  visitChildren([](shared_ptr_ctor<Element> child) {
+  visitChildren([](std::shared_ptr<Element> child) {
     child->detachRenderObject();
   });
 }
 
-void Element::mount(shared_ptr_ctor<Element> parent, void* slot) {
+void Element::mount(std::shared_ptr<Element> parent, void* slot) {
   massert(m_lifecycleState == _ElementLifecycle::initial, "This element is no longer in its initial state.");
   massert(
     m_parent == nullptr,
@@ -79,7 +82,7 @@ std::shared_ptr<Element> Element::_retakeInactiveElement(
   if (!Widget::canUpdate(widget, ce->m_widget.get())) return nullptr;
   auto parent = ce->m_parent;
   if (parent) {
-    parent->deactivateChild(ce.get());
+    parent->deactivateChild(ce);
   }
   assert(ce->m_parent == nullptr);
   m_owner->m_inactiveElements.remove(ce);
@@ -87,12 +90,12 @@ std::shared_ptr<Element> Element::_retakeInactiveElement(
 }
 
 std::shared_ptr<Element> Element::inflateWidget(
-  std::shared_ptr<Widget> newWidget,
+  Widget* newWidget,
   void* newSlot
 ) {
   const auto key = newWidget->m_key;
   auto maybeGlobalKey = dynamic_cast<GlobalKeyU*>(key->get());
-  auto inactiveElement = maybeGlobalKey ? _retakeInactiveElement(maybeGlobalKey, newWidget.get()) : nullptr;
+  auto inactiveElement = maybeGlobalKey ? _retakeInactiveElement(maybeGlobalKey, newWidget) : nullptr;
   if (inactiveElement) {
     assert(inactiveElement->m_parent == nullptr);
     inactiveElement->_activateWithParent(this, newSlot);
@@ -102,7 +105,7 @@ std::shared_ptr<Element> Element::inflateWidget(
   }
   else {
     auto newElement = newWidget->createElement();
-    newElement->mount(this, newSlot);
+    newElement->mount(std::static_pointer_cast<Element>(newElement), newSlot);
     assert(newElement->m_lifecycleState == _ElementLifecycle::active);
     return newElement;
   }
@@ -110,8 +113,8 @@ std::shared_ptr<Element> Element::inflateWidget(
 
 
 std::shared_ptr<Element> Element::updateChild(
-  shared_ptr_ctor<Element> child,
-  shared_ptr_ctor<Widget> newWidget,
+  std::shared_ptr<Element> child,
+  Widget* newWidget,
   void* newSlot
 ) {
   if (child == nullptr) {
@@ -124,10 +127,10 @@ std::shared_ptr<Element> Element::updateChild(
   } else if (newWidget == nullptr) {
     deactivateChild(child);
     return nullptr;
-  } else if (Widget::canUpdate(newWidget, child->m_widget)) {
+  } else if (Widget::canUpdate(newWidget, child->m_widget.get())) {
     if (child->m_slot != newSlot) updateSlotForChild(child, newSlot);
     child->update(newWidget);
-    assert(child->m_widget == newWidget);
+    assert(child->m_widget.get() == newWidget);
     return child;
   } else {
     deactivateChild(child);
@@ -143,7 +146,7 @@ void Element::updateSlot(void* slot) {
   m_slot = slot;
 }
 void Element::updateSlotForChild(
-  shared_ptr_ctor<Element> child,
+  std::shared_ptr<Element> child,
   void* slot
 ) {
   assert(m_lifecycleState == _ElementLifecycle::active);
@@ -157,7 +160,7 @@ void Element::updateSlotForChild(
   visit(child);
 };
 
-void Element::deactivateChild(shared_ptr_ctor<Element> child) {
+void Element::deactivateChild(std::shared_ptr<Element> child) {
   child->detachRenderObject();
 }
 
@@ -177,7 +180,7 @@ std::shared_ptr<RenderObjectElement> RenderObjectElement::findAncestorRenderObje
   while (current) {
     auto c = dynamic_cast<RenderObjectElement*>(current.get());
     if (c && c->getRenderObject() != m_renderObject) {
-      return std::shared_ptr<RenderObjectElement>(c);
+      return std::static_pointer_cast<RenderObjectElement>(current);
     }
     current = current->m_parent;
   }
@@ -200,7 +203,7 @@ void RenderObjectElement::detachRenderObject() {
 }
 
 
-void _InactiveElements::_deactivateRecursively(shared_ptr_ctor<Element> element) {
+void _InactiveElements::_deactivateRecursively(std::shared_ptr<Element> element) {
   assert(element->m_lifecycleState == _ElementLifecycle::active);
   element->deactivate();
   element->visitChildren(
@@ -218,7 +221,7 @@ void _InactiveElements::add(std::shared_ptr<Element> element) {
 
   switch (element->m_lifecycleState) {
     case _ElementLifecycle::active:
-      _deactivateRecursively(element.get());
+      _deactivateRecursively(element);
     case _ElementLifecycle::inactive:
       m_elements.push_back(element);
       break;
@@ -238,7 +241,7 @@ void _InactiveElements::remove(std::shared_ptr<Element> element) {
 
 void _InactiveElements::_unmount(std::shared_ptr<Element> element) {
   assert(element->m_lifecycleState == _ElementLifecycle::inactive);
-  element->visitChildren([](shared_ptr_ctor<Element> e){
+  element->visitChildren([](std::shared_ptr<Element> e){
     assert(e->m_parent == e);
     _unmount(e);
   });
@@ -254,3 +257,18 @@ void _InactiveElements::_unmountAll() {
   m_elements.clear();
   m_locked = false;
 };
+
+void Element::_activateWithParent(Element* parent, void* slot) {
+  m_parent = parent->shared_from_this();
+  m_slot = slot;
+  m_lifecycleState = _ElementLifecycle::active;
+  _activateRecusively();
+}
+
+void Element::_activateRecusively() {
+  // Mark this element as active and recursively activate children
+  m_lifecycleState = _ElementLifecycle::active;
+  visitChildren([](std::shared_ptr<Element> child) {
+    child->_activateRecusively();
+  });
+}

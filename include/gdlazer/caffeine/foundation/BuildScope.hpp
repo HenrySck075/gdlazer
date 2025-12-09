@@ -19,7 +19,7 @@ protected:
   std::optional<VoidCallback> m_scheduleRebuildCallback;
 
   void tryRebuild(std::shared_ptr<Element> element);
-  void scheduleBuildFor(shared_ptr_ctor<Element> element);
+  void scheduleBuildFor(Element* element);
   void flushDirtyElements();
   inline void _seekDirtyElementAfterIter(DirtyElementsIter iter) {
     if (m_dirtyElementsNeedsResorting != 3) {

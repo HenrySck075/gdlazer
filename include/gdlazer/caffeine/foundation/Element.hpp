@@ -14,7 +14,7 @@ class Widget;
 class Element;
 class BuildOwner;
 class BuildScope;
-using ElementVisitor = std::function<void(shared_ptr_ctor<Element>)>;
+using ElementVisitor = std::function<void(std::shared_ptr<Element>)>;
 enum class _ElementLifecycle {
   /// The [Element] is created but has not yet been incorporated into the element
   /// tree.
@@ -67,14 +67,14 @@ class _InactiveElements {
   static void _unmount(std::shared_ptr<Element> element);
   void _unmountAll();
 
-  void _deactivateRecursively(shared_ptr_ctor<Element> element);
+  void _deactivateRecursively(std::shared_ptr<Element> element);
 
 public:
   void add(std::shared_ptr<Element> element);
   void remove(std::shared_ptr<Element> element);
 };
 
-class Element : public BuildContext {
+class Element : public BuildContext, public std::enable_shared_from_this<Element> {
   friend class _InactiveElements;
   std::shared_ptr<BuildScope> m_parentBuildScope;
 protected:
@@ -101,12 +101,12 @@ public:
   }
 
 
-  Element(shared_ptr_ctor<Widget> widget) : m_widget(widget) {}
+  Element(Widget* widget);
 
   /// Get the render object (aka cocos node) at current (or below) element
   virtual cocos2d::CCNode *getRenderObject();
 
-  void mount(shared_ptr_ctor<Element> parent, void* slot);
+  void mount(std::shared_ptr<Element> parent, void* slot);
   /*
    *Transition from the "inactive" to the "defunct" lifecycle state.
 
@@ -121,20 +121,20 @@ Implementations of this method should end with a call to the inherited method.
   void rebuild();
   virtual void performRebuild();
 
-  void update(shared_ptr_ctor<Widget> newWidget);
+  virtual void update(Widget* newWidget) = 0;
   std::shared_ptr<Element> updateChild(
-    shared_ptr_ctor<Element> child,
-    shared_ptr_ctor<Widget> newWidget,
+    std::shared_ptr<Element> child,
+    Widget* newWidget,
     void* newSlot
   );
   void updateSlotForChild(
-    shared_ptr_ctor<Element> child,
+    std::shared_ptr<Element> child,
     void* slot
   );
   void updateSlot(void* slot);
 
   std::shared_ptr<Element> inflateWidget(
-    std::shared_ptr<Widget> widget,
+    Widget* widget,
     void* slot
   );
 
@@ -152,12 +152,12 @@ Implementations of this method should end with a call to the inherited method.
   */
   void activate();
 private:
-  void _activateWithParent(shared_ptr_ctor<Element> parent, void* slot);
+  void _activateWithParent(Element* parent, void* slot);
   void _activateRecusively();
 public:
 
 
-  void deactivateChild(shared_ptr_ctor<Element> child);
+  void deactivateChild(std::shared_ptr<Element> child);
   /*
 Transition from the "active" to the "inactive" lifecycle state.
 
@@ -198,10 +198,11 @@ Implementations of this method should end with a call to the inherited method.
   /// being updated at that point, so the children might not be constructed yet,
   /// or might be old children that are going to be replaced. This method should
   /// only be called if it is provable that the children are available. 
-  virtual void visitChildren(const std::function<void(shared_ptr_ctor<Element>)>& visitor) {}
+  virtual void visitChildren(std::function<void(std::shared_ptr<Element>)> visitor) {}
 };
 
 
+/// The elements that renders a direct CCNode object and manages its state, with a Widget as its configuration.
 class RenderObjectElement : public Element {
 private:
   cocos2d::CCNode* m_renderObject;
@@ -220,6 +221,7 @@ protected:
   virtual void postAttachRenderObject() {}
   virtual void preDetachRenderObject() {}
 public:
+  RenderObjectElement(Widget* widget) : Element(widget) {}
   void attachRenderObject() final override;
   void detachRenderObject() final override;
 
