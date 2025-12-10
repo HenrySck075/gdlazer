@@ -34,6 +34,14 @@ LAST SUCCESSFUL ACTION (Session 2):
 - Deleted unused WidgetsBinding stub files causing build failures
 - Successfully compiled project with all cores using cmake --build with -j$(nproc)
 
+RECENT CHANGES (this session):
+- Implemented `RootElement::assignOwner(BuildOwner*)` which creates and assigns a `BuildScope` for the root element.
+- Made `Element::m_parentBuildScope` protected so `RootElement` can initialize its own scope (matches Flutter's root behavior).
+- Updated `WidgetsContainer::attachRootWidget()` to call `assignOwner()` on the root element before entering the `BuildOwner::buildScope()` callback.
+- Removed an unused `#include "BuildScope.hpp"` from `WidgetsBinding.cpp`.
+- Adjusted `RootElement` / owner handling to avoid attempting `shared_from_this()` on `BuildOwner` (the owner is managed by the WidgetsBinding lifetime).
+- Rebuilt the project; CMake build succeeded with no errors.
+
 IMPLEMENTATION DETAILS:
 - SingleChildRenderObjectElement: manages single child, implements child rebuilding with exception handling
 - MultiChildRenderObjectElement: manages vector of children, implements basic reconciliation algorithm (rebuild in order, cleanup extras)
@@ -43,8 +51,8 @@ IMPLEMENTATION DETAILS:
 OUTSTANDING PROBLEMS:
 ~~1. _activateWithParent() signature mismatch: declared as Element* but callers pass raw `this` pointer from member functions~~
     ~~- SOLUTION: Either implement as `shared_from_this()` call or change signature to accept shared_ptr<Element>~~
-2. BuildOwner::_registerGlobalKey/_unregisterGlobalKey are stubbed (can't create shared_ptr from raw pointer) (is this true)
-3. no BuildScope is assigned even to the root element, also no scope checks in buildScope for verifying the scope so it crashes because nullptr
+2. BuildOwner::_registerGlobalKey/_unregisterGlobalKey are still stubbed — the global-key registry needs a proper implementation (mapping GlobalKeyU -> shared_ptr<Element>). This remains to be addressed.
+3. (RESOLVED) No BuildScope assigned to the root element. `RootElement::assignOwner()` now creates and assigns a `BuildScope`, and `WidgetsContainer::attachRootWidget()` calls it before entering `BuildOwner::buildScope()`.
 
 BUILD STATUS:
 ✅ BUILD SUCCESSFUL - All targets compiled without errors
