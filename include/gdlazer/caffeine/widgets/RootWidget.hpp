@@ -4,6 +4,7 @@
 #include "gdlazer/caffeine/foundation/Widget.hpp"
 
 class RootElement;
+class BuildOwner;
 
 /// A widget for the root of the widget tree.
 /// Wraps the application's root widget and bootstraps the element tree.
@@ -25,6 +26,7 @@ public:
 
   Element* getChild() const { return m_child.get(); }
 
+  void assignOwner(const std::shared_ptr<BuildOwner>& owner);
   void visitChildren(ElementVisitor visitor) override;
   void performRebuild() override;
   void update(Widget* newWidget) override;

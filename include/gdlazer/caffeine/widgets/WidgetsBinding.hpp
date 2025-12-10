@@ -19,7 +19,8 @@ public:
   void attachRootWidget(Widget* rootWidget);
 
 private:
-  std::unique_ptr<BuildOwner> m_buildOwner;
+  // all elements has this too
+  std::shared_ptr<BuildOwner> m_buildOwner;
   std::shared_ptr<class RootElement> m_rootElement;
 
   bool init() override;

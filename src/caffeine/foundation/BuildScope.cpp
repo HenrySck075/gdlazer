@@ -21,10 +21,12 @@ void BuildScope::flushDirtyElements() {
   m_dirtyElementsNeedsResorting = 2; // 10
   for (auto i = m_dirtyElements.begin(); i != m_dirtyElements.end(); _seekDirtyElementAfterIter(i)) {
     auto& e = *i;
-    if (e->getBuildScope().get() == this) tryRebuild(e);
+    auto elementScope = e->getBuildScope();
+    if (elementScope && elementScope.get() == this) tryRebuild(e);
   }
   for (auto& i : m_dirtyElements) {
-    if (i->getBuildScope().get() == this) {
+    auto elementScope = i->getBuildScope();
+    if (elementScope && elementScope.get() == this) {
       i->m_inDirtyList = false;
     }
   }

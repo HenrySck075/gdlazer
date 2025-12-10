@@ -1,10 +1,17 @@
 #include "gdlazer/caffeine/widgets/RootWidget.hpp"
 #include "gdlazer/caffeine/foundation/Element.hpp"
+#include "gdlazer/caffeine/foundation/BuildOwner.hpp"
+#include "gdlazer/caffeine/foundation/BuildScope.hpp"
 
 std::shared_ptr<Element> RootWidget::createElement() {
   return std::make_shared<RootElement>(
     std::static_pointer_cast<RootWidget>(shared_from_this())
   );
+}
+
+void RootElement::assignOwner(const std::shared_ptr<BuildOwner>& owner) {
+  m_owner = owner;
+  m_parentBuildScope = std::make_shared<BuildScope>();
 }
 
 void RootElement::visitChildren(ElementVisitor visitor) {

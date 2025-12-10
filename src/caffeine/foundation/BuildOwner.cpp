@@ -3,29 +3,41 @@
 #include <gdlazer/caffeine/foundation/BuildScope.hpp>
 #include <gdlazer/caffeine/foundation/utils/massert.h>
 
+BuildOwner::BuildOwner(decltype(onBuildScheduled) onBuildScheduled) 
+  : onBuildScheduled(onBuildScheduled), m_buildScope(std::make_shared<BuildScope>(onBuildScheduled)) {}
+
+
 void BuildOwner::_registerGlobalKey(
   GlobalKeyU* key,
   Element* element
 ) {
-  // Can't create shared_ptr from raw ptr here, so we need to find it or use a different approach
-  // For now, just store raw pointers
+  m_globalKeyRegistry[std::shared_ptr<GlobalKeyU>(key)] = element->shared_from_this();
+  key->m_currentContext = std::static_pointer_cast<BuildContext>(element->shared_from_this());
 }
 
 void BuildOwner::_unregisterGlobalKey(
   GlobalKeyU* key,
   Element* element
 ) {
-  // TODO: implement
+  auto it = m_globalKeyRegistry.find(std::shared_ptr<GlobalKeyU>(key));
+  if (it != m_globalKeyRegistry.end()) {
+    m_globalKeyRegistry.erase(it);
+  }
+  key->m_currentContext = nullptr;
 }
 
 void BuildOwner::scheduleBuildFor(Element* element) {
-  element->getBuildScope()->scheduleBuildFor(element);
+  auto scope = element->getBuildScope();
+  massert(scope, "Element must have an assigned BuildScope");
+  scope->scheduleBuildFor(element);
 }
 
 
 
 void BuildOwner::buildScope(Element* context, std::optional<VoidCallback> callback) {
-  auto& scope = context->getBuildScope();
+  auto scope = context->getBuildScope();
+  massert(scope, "Element must have an assigned BuildScope");
+  
   if (!callback.has_value() && scope->m_dirtyElements.empty()) return;
   assert(dm_stateLockLevel >= 0);
   assert(!dm_building);

@@ -76,8 +76,8 @@ public:
 
 class Element : public BuildContext, public std::enable_shared_from_this<Element> {
   friend class _InactiveElements;
-  std::shared_ptr<BuildScope> m_parentBuildScope;
 protected:
+  std::shared_ptr<BuildScope> m_parentBuildScope;
   std::shared_ptr<BuildOwner> m_owner;
   std::shared_ptr<Element> m_parent; friend class RenderObjectElement;
   std::shared_ptr<Widget> m_widget;

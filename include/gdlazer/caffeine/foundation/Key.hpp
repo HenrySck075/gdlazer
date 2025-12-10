@@ -43,6 +43,7 @@ protected:
   std::shared_ptr<Widget> m_currentWidget;
   std::shared_ptr<BuildContext> m_currentContext;
   friend class Element;
+  friend class BuildOwner;
 };
 /// GlobalKey lore
 template<typename T>

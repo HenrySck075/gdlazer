@@ -10,7 +10,7 @@ class BuildOwner {
   _InactiveElements m_inactiveElements;
   std::optional<VoidCallback> onBuildScheduled;
   friend class Element;
-
+  std::shared_ptr<BuildScope> m_buildScope;
 
   std::unordered_map<std::shared_ptr<GlobalKeyU>, std::shared_ptr<Element>> m_globalKeyRegistry;
 
@@ -29,8 +29,9 @@ class BuildOwner {
 #endif
 public:
   BuildOwner() = delete;
-  BuildOwner(decltype(onBuildScheduled) onBuildScheduled) : onBuildScheduled(onBuildScheduled) {}
+  BuildOwner(decltype(onBuildScheduled) onBuildScheduled);
 
   void scheduleBuildFor(Element* element);
   void buildScope(Element* context, std::optional<VoidCallback> callback);
+  std::shared_ptr<BuildScope> getRootBuildScope() { return m_buildScope; }
 };

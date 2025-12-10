@@ -47,6 +47,13 @@ void Element::mount(std::shared_ptr<Element> parent, void* slot) {
   m_parent = parent;
   m_lifecycleState = _ElementLifecycle::active;
   m_slot = slot;
+  
+  // assign buildscope: if root element, use owner's root scope, else use parent's scope
+  if (parent) {
+    m_owner = parent->m_owner;
+    m_parentBuildScope = parent->m_parentBuildScope;
+  } 
+  
   if (auto key = dynamic_cast<GlobalKeyU*>(m_widget->m_key->get())) {
     m_owner->_registerGlobalKey(key, this);
   }
