@@ -1,7 +1,8 @@
 #include <gdlazer/caffeine/foundation/RenderObjectElements.hpp>
 
 void SingleChildRenderObjectElement::performRebuild() {
-  Widget* childWidget = m_widget->getChild();
+  auto widget = std::static_pointer_cast<SingleChildRenderObjectWidget>(m_widget);
+  Widget* childWidget = const_cast<Widget*>(widget->getChild());
   Element::performRebuild();
   try {
     m_child = updateChild(m_child, childWidget, m_slot);
@@ -12,9 +13,9 @@ void SingleChildRenderObjectElement::performRebuild() {
 }
 
 void SingleChildRenderObjectElement::update(Widget* newWidget) {
-  assert(newWidget != nullptr);
-  m_widget = std::static_pointer_cast<SingleChildRenderObjectWidget>(std::shared_ptr<Widget>(newWidget));
-  markNeedsBuild();
+  Element::update(newWidget);
+  auto widget = std::static_pointer_cast<SingleChildRenderObjectWidget>(m_widget);
+  m_child = updateChild(m_child, const_cast<Widget*>(widget->getChild()), nullptr);
 }
 
 std::shared_ptr<Element> SingleChildRenderObjectElement::getAttachingRenderObjectChild() {
@@ -27,7 +28,7 @@ void SingleChildRenderObjectElement::visitChildren(std::function<void(std::share
   }
 }
 
-cocos2d::CCNode* SingleChildRenderObjectElement::createRenderObject() {
+std::shared_ptr<caffeine::RenderObject> SingleChildRenderObjectElement::createRenderObject() {
   // Subclasses should override this to create their specific render object type
   // Default implementation returns nullptr
   return nullptr;
@@ -35,7 +36,8 @@ cocos2d::CCNode* SingleChildRenderObjectElement::createRenderObject() {
 
 
 void MultiChildRenderObjectElement::performRebuild() {
-  const auto& widgets = m_widget->getChildren();
+  auto widget = std::static_pointer_cast<MultiChildRenderObjectWidget>(m_widget);
+  const auto& widgets = widget->getChildren();
   Element::performRebuild();
 
   try {
@@ -52,7 +54,7 @@ void MultiChildRenderObjectElement::performRebuild() {
       if (i < m_children.size()) {
         child = m_children[i];
       }
-      child = updateChild(child, widgets[i].get(), reinterpret_cast<void*>(i));
+      child = updateChild(child, const_cast<Widget*>(widgets[i].get()), reinterpret_cast<void*>(i));
       if (i < m_children.size()) {
         m_children[i] = child;
       } else {
@@ -66,16 +68,15 @@ void MultiChildRenderObjectElement::performRebuild() {
     m_children.clear();
     // Attempt to rebuild with no children
     for (size_t i = 0; i < widgets.size(); ++i) {
-      auto child = updateChild(nullptr, widgets[i].get(), reinterpret_cast<void*>(i));
+      auto child = updateChild(nullptr, const_cast<Widget*>(widgets[i].get()), reinterpret_cast<void*>(i));
       m_children.push_back(child);
     }
   }
 }
 
 void MultiChildRenderObjectElement::update(Widget* newWidget) {
-  assert(newWidget != nullptr);
-  m_widget = std::static_pointer_cast<MultiChildRenderObjectWidget>(std::shared_ptr<Widget>(newWidget));
-  markNeedsBuild();
+  Element::update(newWidget);
+  // TODO: Element::updateChildren
 }
 
 void MultiChildRenderObjectElement::visitChildren(std::function<void(std::shared_ptr<Element>)> visitor) {
@@ -86,16 +87,16 @@ void MultiChildRenderObjectElement::visitChildren(std::function<void(std::shared
   }
 }
 
-cocos2d::CCNode* MultiChildRenderObjectElement::createRenderObject() {
+std::shared_ptr<caffeine::RenderObject> MultiChildRenderObjectElement::createRenderObject() {
   // Subclasses should override this to create their specific render object type
   // Default implementation returns nullptr
   return nullptr;
 }
 
-void MultiChildRenderObjectElement::insertRenderObjectChild(cocos2d::CCNode* child) {
-  // Subclasses should implement this to handle adding children to their render object
+void MultiChildRenderObjectElement::insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) {
+  // TODO: implement render object tree integration
 }
 
-void MultiChildRenderObjectElement::removeRenderObjectChild(cocos2d::CCNode* child) {
-  // Subclasses should implement this to handle removing children from their render object
+void MultiChildRenderObjectElement::removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) {
+  // TODO: implement render object tree integration
 }

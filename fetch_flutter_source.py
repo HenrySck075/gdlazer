@@ -2,6 +2,8 @@
 """
 General-purpose cache for Flutter source code.
 Allows fetching and caching any files from the Flutter repository.
+
+This very script is for GitHub Copilot and everyone not having a local copy of Flutter installed.
 """
 
 import os

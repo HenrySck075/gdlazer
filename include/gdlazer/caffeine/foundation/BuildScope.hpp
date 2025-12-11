@@ -41,4 +41,5 @@ protected:
   }
 public:
   BuildScope(decltype(m_scheduleRebuildCallback) scheduleRebuild = std::nullopt) : m_scheduleRebuildCallback(scheduleRebuild) {};
+  virtual ~BuildScope() = default;
 };

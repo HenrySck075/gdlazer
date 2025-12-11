@@ -7,7 +7,7 @@
 
 Element::Element(Widget* widget) : m_widget(std::shared_ptr<Widget>(widget)) {}
 
-cocos2d::CCNode *Element::getRenderObject() {
+std::shared_ptr<caffeine::RenderObject> Element::getRenderObject() {
   auto child = getAttachingRenderObjectChild();
   if (child) {
     return child->getRenderObject();
@@ -40,6 +40,7 @@ void Element::mount(std::shared_ptr<Element> parent, void* slot) {
     m_parent == nullptr,
     "This element already has a parent and it shouldn't have one yet."
   );
+  geode::log::debug("[Element::mount]: {}", parent == nullptr);
   massert(
     parent == nullptr || parent->m_lifecycleState == _ElementLifecycle::active,
     "Parent should be null or in the active state"
@@ -112,7 +113,7 @@ std::shared_ptr<Element> Element::inflateWidget(
   }
   else {
     auto newElement = newWidget->createElement();
-    newElement->mount(std::static_pointer_cast<Element>(newElement), newSlot);
+    newElement->mount(shared_from_this(), newSlot);
     assert(newElement->m_lifecycleState == _ElementLifecycle::active);
     return newElement;
   }
@@ -179,24 +180,43 @@ void Element::activate() {
   }
 };
 
+void Element::_activateWithParent(Element* parent, void* slot) {
+  m_parent = parent->shared_from_this();
+  m_slot = slot;
+  m_lifecycleState = _ElementLifecycle::active;
+  _activateRecusively();
+}
+
+void Element::_activateRecusively() {
+  // Mark this element as active and recursively activate children
+  m_lifecycleState = _ElementLifecycle::active;
+  visitChildren([](std::shared_ptr<Element> child) {
+    child->_activateRecusively();
+  });
+}
+void Element::update(Widget *newWidget) { 
+  assert(m_lifecycleState == _ElementLifecycle::active && newWidget != nullptr && Widget::canUpdate(newWidget, m_widget.get()));
+  m_widget = newWidget->shared_from_this(); 
+};
+
 
 std::shared_ptr<RenderObjectElement> RenderObjectElement::findAncestorRenderObjectElement() {
-  // traverse up the parents to find a renderObject that is not this one's
-  // renderObject
   auto current = m_parent;
   while (current) {
-    auto c = dynamic_cast<RenderObjectElement*>(current.get());
-    if (c && c->getRenderObject() != m_renderObject) {
-      return std::static_pointer_cast<RenderObjectElement>(current);
+    auto renderObjElem = std::dynamic_pointer_cast<RenderObjectElement>(current);
+    if (renderObjElem && renderObjElem->getRenderObject() != m_renderObject) {
+      return renderObjElem;
     }
     current = current->m_parent;
   }
   return nullptr;
 }
 
+
 void RenderObjectElement::attachRenderObject() {
-  if (!m_renderObject)
+  if (!m_renderObject) {
     m_renderObject = createRenderObject();
+  }
   if ((m_ancestorRenderObjectElement = findAncestorRenderObjectElement())) {
     m_ancestorRenderObjectElement->insertRenderObjectChild(m_renderObject);
     postAttachRenderObject();
@@ -208,6 +228,14 @@ void RenderObjectElement::detachRenderObject() {
     m_ancestorRenderObjectElement->removeRenderObjectChild(m_renderObject);
   }
 }
+
+std::shared_ptr<caffeine::RenderObject> RenderObjectElement::getRenderObject() {
+  if (!m_renderObject) {
+    m_renderObject = createRenderObject();
+  }
+  return m_renderObject;
+};
+
 
 
 void _InactiveElements::_deactivateRecursively(std::shared_ptr<Element> element) {
@@ -265,17 +293,3 @@ void _InactiveElements::_unmountAll() {
   m_locked = false;
 };
 
-void Element::_activateWithParent(Element* parent, void* slot) {
-  m_parent = parent->shared_from_this();
-  m_slot = slot;
-  m_lifecycleState = _ElementLifecycle::active;
-  _activateRecusively();
-}
-
-void Element::_activateRecusively() {
-  // Mark this element as active and recursively activate children
-  m_lifecycleState = _ElementLifecycle::active;
-  visitChildren([](std::shared_ptr<Element> child) {
-    child->_activateRecusively();
-  });
-}

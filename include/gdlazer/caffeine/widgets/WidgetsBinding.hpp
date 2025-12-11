@@ -9,7 +9,7 @@
 /// A CCNode container that bootstraps and manages the entire widget/element tree.
 /// Combines WidgetsBinding and SchedulerBinding to drive the frame pipeline.
 /// This node hosts the root element's render tree as its sole child.
-class WidgetsContainer : public cocos2d::CCNode, public SchedulerBinding {
+class WidgetsContainer : public cocos2d::CCLayer, public SchedulerBinding {
 public:
   CREATE_FUNC(WidgetsContainer);
 

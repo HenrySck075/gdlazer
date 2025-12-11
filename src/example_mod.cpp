@@ -6,51 +6,54 @@
 #include "gdlazer/caffeine/foundation/RenderObjectElements.hpp"
 #include "gdlazer/caffeine/foundation/Widget.hpp"
 #include "gdlazer/caffeine/foundation/Element.hpp"
-#include "gdlazer/caffeine/foundation/BuildOwner.hpp"
-#include "gdlazer/caffeine/widgets/RootWidget.hpp"
 #include "gdlazer/caffeine/widgets/WidgetsBinding.hpp"
 
 using namespace cocos2d;
 using namespace geode::prelude;
 
-// ============================================================================
-// Example 1: A simple StatelessWidget that creates a colored CCNode
-// ============================================================================
 
-class ColoredBoxWidget : public StatelessWidget {
+// ============================================================================
+// Example 2: A RenderObjectWidget that creates a CCLayerRGBA for a colored box
+// ============================================================================
+/// not the actual colored box so no child needed
+class ColoredBoxWidget : public RenderObjectWidget {
 private:
     ccColor3B m_color;
     CCSize m_size;
 
 public:
-    ColoredBoxWidget(ccColor3B color, CCSize size) 
-        : m_color(color), m_size(size) {}
+    ColoredBoxWidget(ccColor3B color, CCSize size)
+        : RenderObjectWidget(), m_color(color), m_size(size) {}
 
-    Widget* build(std::shared_ptr<BuildContext> context) override {
-        // For now, return nullptr - we'll render directly in the RenderObjectWidget
-        return nullptr;
-    }
+    ccColor3B getColor() const { return m_color; }
+    CCSize getSize() const { return m_size; }
+
+    std::shared_ptr<Element> createElement() override;
 };
 
-// ============================================================================
-// Example 2: A RenderObjectWidget that creates a CCDrawNode for rendering
-// ============================================================================
+/// Custom element that creates the actual CCLayerRGBA render object
+class ColoredBoxElement : public RenderObjectElement {
+protected:
+    cocos2d::CCNode* createRenderObject() override {
+        auto widget = std::static_pointer_cast<ColoredBoxWidget>(m_widget);
+        auto layer = CCLayerColor::create();
+        layer->setContentSize(widget->getSize());
+        layer->setColor(widget->getColor());
+        layer->setOpacity(255);
+        return layer;
+    }
 
-class BoxRenderWidget : public SingleChildRenderObjectWidget {
-private:
-    ccColor3B m_color;
-    CCSize m_size;
+    // what was these supposed to do again?
+    void insertRenderObjectChild(cocos2d::CCNode* child) override {}
+    void removeRenderObjectChild(cocos2d::CCNode* child) override {}
 
 public:
-    BoxRenderWidget(ccColor3B color, CCSize size, shared_ptr_ctor<Widget> child = nullptr)
-        : SingleChildRenderObjectWidget(child), m_color(color), m_size(size) {}
-
-    std::shared_ptr<Element> createElement() override {
-        return std::make_shared<SingleChildRenderObjectElement>(
-            this
-        );
-    }
+    using RenderObjectElement::RenderObjectElement;
 };
+
+inline std::shared_ptr<Element> ColoredBoxWidget::createElement() {
+    return std::make_shared<ColoredBoxElement>(this);
+}
 
 // ============================================================================
 // Hook into MenuLayer to add our Caffeine widget example

@@ -24,12 +24,13 @@ public:
 
 
 class StatelessElement : public ComponentElement {
-protected:
-  std::shared_ptr<StatelessWidget> m_widget;
 public:
   StatelessElement(StatelessWidget* widget) 
-    : ComponentElement(widget), m_widget(std::shared_ptr<StatelessWidget>(widget)) {}
-  Widget* build() override {return m_widget->build(std::shared_ptr<BuildContext>(this));} 
+    : ComponentElement(widget) {}
+  Widget* build() override {
+    auto widget = std::static_pointer_cast<StatelessWidget>(m_widget);
+    return widget->build(std::shared_ptr<BuildContext>(this));
+  } 
   void update(Widget* newWidget) override;
 };
 
@@ -46,6 +47,8 @@ public:
   virtual void dispose() {}
   virtual Widget* build(std::shared_ptr<BuildContext> context) = 0;
   void setState(std::function<void()> fn);
+
+  virtual ~State() = default;
 };
 
 
@@ -79,6 +82,8 @@ public:
   ProxyElement(ProxyWidget* widget) 
     : ComponentElement(widget), m_widget(std::shared_ptr<ProxyWidget>(widget)) {}
 
-  Widget* build() override {return m_widget->getChild();};
+  Widget* build() override {
+    return const_cast<Widget*>(m_widget->getChild());
+  };
   void update(Widget* newWidget) override;
 };

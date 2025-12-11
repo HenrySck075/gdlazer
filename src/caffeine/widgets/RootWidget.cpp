@@ -44,7 +44,7 @@ void RootElement::performRebuild() {
 void RootElement::rebuild() {
   try {
     auto rootWidget = std::static_pointer_cast<RootWidget>(m_widget);
-    Widget* childWidget = rootWidget->getChild();
+    Widget* childWidget = const_cast<Widget*>(rootWidget->getChild());
     m_child = updateChild(m_child, childWidget, nullptr);
   } catch (const std::exception& e) {
     // Log error but don't crash - render tree is unavailable anyway
