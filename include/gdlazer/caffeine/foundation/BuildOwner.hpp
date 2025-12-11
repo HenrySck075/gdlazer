@@ -12,7 +12,9 @@ class BuildOwner {
   friend class Element;
   std::shared_ptr<BuildScope> m_buildScope;
 
-  std::unordered_map<std::shared_ptr<GlobalKeyU>, std::shared_ptr<Element>> m_globalKeyRegistry;
+  // Map from GlobalKeyU pointer to Element
+  // Uses raw pointer identity since GlobalKeyU instances are unique
+  std::unordered_map<GlobalKeyU*, std::shared_ptr<Element>> m_globalKeyRegistry;
 
   void _registerGlobalKey(
     GlobalKeyU* key,

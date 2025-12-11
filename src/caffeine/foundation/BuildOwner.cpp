@@ -11,7 +11,9 @@ void BuildOwner::_registerGlobalKey(
   GlobalKeyU* key,
   Element* element
 ) {
-  m_globalKeyRegistry[std::shared_ptr<GlobalKeyU>(key)] = element->shared_from_this();
+  // Store mapping from raw pointer to shared_ptr<Element>
+  m_globalKeyRegistry[key] = element->shared_from_this();
+  // Also store the element in the key for quick access
   key->m_currentContext = std::static_pointer_cast<BuildContext>(element->shared_from_this());
 }
 
@@ -19,8 +21,9 @@ void BuildOwner::_unregisterGlobalKey(
   GlobalKeyU* key,
   Element* element
 ) {
-  auto it = m_globalKeyRegistry.find(std::shared_ptr<GlobalKeyU>(key));
-  if (it != m_globalKeyRegistry.end()) {
+  // Only remove if it's the same element (check pointer equality)
+  auto it = m_globalKeyRegistry.find(key);
+  if (it != m_globalKeyRegistry.end() && it->second.get() == element) {
     m_globalKeyRegistry.erase(it);
   }
   key->m_currentContext = nullptr;

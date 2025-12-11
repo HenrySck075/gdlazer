@@ -38,6 +38,10 @@ class UniqueKey : public LocalKey {
 class Widget;
 class BuildContext;
 
+/// GlobalKey lore
+
+
+/// The untemplated version of GlobalKey for use in member types
 class GlobalKeyU : public Key {
 protected:
   std::shared_ptr<Widget> m_currentWidget;
@@ -45,7 +49,6 @@ protected:
   friend class Element;
   friend class BuildOwner;
 };
-/// GlobalKey lore
 template<typename T>
 class GlobalKey : public GlobalKeyU {
 protected:

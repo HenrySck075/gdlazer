@@ -8,6 +8,9 @@ bool WidgetsContainer::init() {
   // Create build owner with empty callback for now
   m_buildOwner = std::make_shared<BuildOwner>(std::nullopt);
 
+  // Schedule this node to receive update() calls every frame
+  this->scheduleUpdate();
+
   return true;
 }
 
@@ -38,6 +41,23 @@ void WidgetsContainer::attachRootWidget(Widget* rootWidget) {
       }
     }
   }
+}
+
+void WidgetsContainer::update(float deltaTime) {
+  CCNode::update(deltaTime);
+
+  // Frame counter for timestamp
+  m_frameCount++;
+  uint64_t timeStamp = m_frameCount;
+
+  // Drive the frame pipeline
+  handleBeginFrame(timeStamp);
+  
+  // Transition to mid-frame microtasks phase
+  m_schedulerPhase = SchedulerPhase::midFrameMicrotasks;
+  
+  // Invoke persistent callbacks (which includes the widget rebuild pipeline)
+  handleDrawFrame();
 }
 
 cocos2d::CCNode* runApp(Widget* app) {

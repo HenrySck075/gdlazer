@@ -34,7 +34,7 @@ LAST SUCCESSFUL ACTION (Session 2):
 - Deleted unused WidgetsBinding stub files causing build failures
 - Successfully compiled project with all cores using cmake --build with -j$(nproc)
 
-RECENT CHANGES (this session):
+RECENT CHANGES (Session 3):
 - Implemented `RootElement::assignOwner(BuildOwner*)` which creates and assigns a `BuildScope` for the root element.
 - Made `Element::m_parentBuildScope` protected so `RootElement` can initialize its own scope (matches Flutter's root behavior).
 - Updated `WidgetsContainer::attachRootWidget()` to call `assignOwner()` on the root element before entering the `BuildOwner::buildScope()` callback.
@@ -42,17 +42,43 @@ RECENT CHANGES (this session):
 - Adjusted `RootElement` / owner handling to avoid attempting `shared_from_this()` on `BuildOwner` (the owner is managed by the WidgetsBinding lifetime).
 - Rebuilt the project; CMake build succeeded with no errors.
 
+RECENT CHANGES (Session 4):
+- Made `Element::update(Widget*)` pure virtual to catch missing implementations at compile time
+- Implemented `update()` in all Element subclasses: StatelessElement, StatefulElement, ProxyElement, SingleChildRenderObjectElement, MultiChildRenderObjectElement, RootElement
+- Implemented `Element::_activateWithParent()` to reactivate inactive elements with proper parent/slot assignment
+- Implemented `Element::_activateRecusively()` to recursively activate element tree
+- Created WidgetsBinding.hpp/cpp with WidgetsContainer (CCNode managing entire tree) and runApp() entry point
+- Fixed global key registry: changed from shared_ptr<GlobalKeyU> keys to raw pointer identity (GlobalKeyU*)
+- Updated _registerGlobalKey() to properly store Element mapping and set key->m_currentContext
+- Updated _unregisterGlobalKey() to safely check pointer equality before removing
+- Created fetch_flutter_source.py: General-purpose script for caching Flutter source files locally
+- Successfully compiled all changes; build status ✅
+
+RECENT CHANGES (Session 5 - Frame Pipeline):
+- Created SchedulerBinding.hpp with frame callback management
+  - Supports persistent frame callbacks (called every frame)
+  - Supports post-frame callbacks (called after current frame)
+  - Manages SchedulerPhase state machine
+  - handleBeginFrame() and handleDrawFrame() drive the pipeline
+- Integrated SchedulerBinding into WidgetsContainer
+  - WidgetsContainer now inherits from both CCNode and SchedulerBinding
+  - Calls scheduleUpdate() in init() to receive update() every frame
+  - Overrides update(float deltaTime) to drive handleBeginFrame() → handleDrawFrame()
+  - Frame counter increments each frame to provide timestamp to callbacks
+- Frame pipeline now active: every frame → rebuild pipeline → element tree updates
+- Successfully compiled; build status ✅
+
 IMPLEMENTATION DETAILS:
 - SingleChildRenderObjectElement: manages single child, implements child rebuilding with exception handling
 - MultiChildRenderObjectElement: manages vector of children, implements basic reconciliation algorithm (rebuild in order, cleanup extras)
 - Both classes implement insertRenderObjectChild/removeRenderObjectChild as stubs for subclass implementation
 - createRenderObject() returns nullptr as virtual method for subclasses to override
+- RootElement: manages single child from RootWidget, has no parent element, coordinates element mounting
+- WidgetsContainer: CCNode subclass that owns BuildOwner and RootElement, provides runApp() entry point
+- Global key registry uses raw pointer identity for O(1) lookups and prevents creation of temporary shared_ptrs
 
 OUTSTANDING PROBLEMS:
-~~1. _activateWithParent() signature mismatch: declared as Element* but callers pass raw `this` pointer from member functions~~
-    ~~- SOLUTION: Either implement as `shared_from_this()` call or change signature to accept shared_ptr<Element>~~
-2. BuildOwner::_registerGlobalKey/_unregisterGlobalKey are still stubbed — the global-key registry needs a proper implementation (mapping GlobalKeyU -> shared_ptr<Element>). This remains to be addressed.
-3. (RESOLVED) No BuildScope assigned to the root element. `RootElement::assignOwner()` now creates and assigns a `BuildScope`, and `WidgetsContainer::attachRootWidget()` calls it before entering `BuildOwner::buildScope()`.
+- None currently blocking; all core systems implemented and compiling
 
 BUILD STATUS:
 ✅ BUILD SUCCESSFUL - All targets compiled without errors
@@ -62,6 +88,7 @@ BUILD STATUS:
 - gdlazer_PACKAGE: Built
 
 NEXT STEPS:
-~~1. Implement _activateWithParent using shared_from_this() in Element member functions~~
-2. Complete BuildOwner global key registry implementation (may need design change)
-3. Enhance MultiChildRenderObjectElement reconciliation with proper diffing algorithm (Flutter-style key matching)
+1. Implement actual render object creation in RenderObjectWidget subclasses (CCNode creation)
+2. Enhance MultiChildRenderObjectElement reconciliation with proper diffing algorithm (Flutter-style key matching)
+3. Add setState() triggering proper rebuilds with BuildOwner integration
+4. Implement inherited widgets (InheritedWidget/InheritedElement) for dependency passing
