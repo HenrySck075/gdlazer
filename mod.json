@@ -10,5 +10,10 @@
 	"name": "gd!lazer",
 	"version": "v1.0.0",
 	"developer": "henrysck075",
-	"description": ""
+	"description": "",
+  "resources": {
+    "files": [
+      "skia/*/lib/*.so"
+    ]
+  }
 }

@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <Geode/cocos/include/cocos2d.h>
+#include <skia/include/core/SkCanvas.h>
 
 namespace caffeine {
 
@@ -179,7 +180,8 @@ public:
   virtual void performLayout() = 0;
 
   // Override this to implement painting
-  virtual void paint(cocos2d::CCNode* parent) = 0;
+  // Paint to the Skia canvas
+  virtual void paint(SkCanvas* canvas) = 0;
 
   // Mark layout as dirty
   void markNeedsLayout() {
@@ -325,9 +327,9 @@ public:
     }
   }
 
-  void paint(cocos2d::CCNode* parent) override {
+  void paint(SkCanvas* canvas) override {
     if (m_child) {
-      m_child->paint(parent);
+      m_child->paint(canvas);
     }
   }
 };
@@ -351,9 +353,9 @@ public:
     }
   }
 
-  void paint(cocos2d::CCNode* parent) override {
+  void paint(SkCanvas* canvas) override {
     if (m_child) {
-      m_child->paint(parent);
+      m_child->paint(canvas);
     }
   }
 };
@@ -390,9 +392,9 @@ public:
     }
   }
 
-  void paint(cocos2d::CCNode* parent) override {
+  void paint(SkCanvas* canvas) override {
     if (m_child) {
-      m_child->paint(parent);
+      m_child->paint(canvas);
     }
   }
 };
@@ -433,9 +435,9 @@ public:
     }
   }
 
-  void paint(cocos2d::CCNode* parent) override {
+  void paint(SkCanvas* canvas) override {
     for (auto& child : m_children) {
-      child->paint(parent);
+      child->paint(canvas);
     }
   }
 };
@@ -473,9 +475,9 @@ public:
     }
   }
 
-  void paint(cocos2d::CCNode* parent) override {
+  void paint(SkCanvas* canvas) override {
     for (auto& child : m_children) {
-      child->paint(parent);
+      child->paint(canvas);
     }
   }
 };

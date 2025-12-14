@@ -30,6 +30,14 @@ public:
 
   Element* getChild() const { return m_child.get(); }
 
+  /// Get the child's render object (if it's a RenderObjectElement)
+  std::shared_ptr<caffeine::RenderObject> getChildRenderObject() const {
+    if (m_child) {
+      return m_child->getRenderObject();
+    }
+    return nullptr;
+  }
+
   void assignOwner(const std::shared_ptr<BuildOwner>& owner);
   void visitChildren(ElementVisitor visitor) override;
   void performRebuild() override;

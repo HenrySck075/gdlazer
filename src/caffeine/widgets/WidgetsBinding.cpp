@@ -2,19 +2,7 @@
 #include "gdlazer/caffeine/widgets/RootWidget.hpp"
 #include "gdlazer/caffeine/foundation/Element.hpp"
 
-bool WidgetsContainer::init() {
-  if (!CCNode::init()) return false;
-
-  // Create build owner with empty callback for now
-  m_buildOwner = std::make_shared<BuildOwner>(std::nullopt);
-
-  // Schedule this node to receive update() calls every frame
-  this->scheduleUpdate();
-
-  return true;
-}
-
-void WidgetsContainer::attachRootWidget(Widget* rootWidget) {
+void WidgetsBinding::attachRootWidget(Widget* rootWidget) {
   if (!rootWidget) return;
 
   // Wrap the user's widget in a RootWidget and create shared_ptr
@@ -31,37 +19,5 @@ void WidgetsContainer::attachRootWidget(Widget* rootWidget) {
     // Mount the root element with no parent
     m_rootElement->mount(nullptr, nullptr);
   });
-
-  // Get the render object (CCNode) from the root element's child
-  // and add it as a child of this container
-  if (m_rootElement) {
-    if (auto childElement = m_rootElement->getChild()) {
-      if (auto renderObj = childElement->getRenderObject()) {
-        this->addChild(renderObj);
-      }
-    }
-  }
 }
 
-void WidgetsContainer::update(float deltaTime) {
-  CCNode::update(deltaTime);
-
-  // Frame counter for timestamp
-  m_frameCount++;
-  uint64_t timeStamp = m_frameCount;
-
-  // Drive the frame pipeline
-  handleBeginFrame(timeStamp);
-  
-  // Transition to mid-frame microtasks phase
-  m_schedulerPhase = SchedulerPhase::midFrameMicrotasks;
-  
-  // Invoke persistent callbacks (which includes the widget rebuild pipeline)
-  handleDrawFrame();
-}
-
-cocos2d::CCNode* runApp(Widget* app) {
-  auto container = WidgetsContainer::create();
-  container->attachRootWidget(app);
-  return container;
-}
