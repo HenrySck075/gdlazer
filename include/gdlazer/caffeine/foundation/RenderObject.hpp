@@ -4,6 +4,7 @@
 #include <vector>
 #include <Geode/cocos/include/cocos2d.h>
 #include <skia/include/core/SkCanvas.h>
+#include "log.hpp"
 
 namespace caffeine {
 
@@ -146,7 +147,7 @@ struct BoxConstraints {
 // RenderObject: Base class for layout
 // ============================================================================
 
-class RenderObject : public std::enable_shared_from_this<RenderObject> {
+class RenderObject : public log::WithLogger, public std::enable_shared_from_this<RenderObject> {
 protected:
   BoxConstraints m_constraints;
   Size m_size;
@@ -166,15 +167,7 @@ public:
   bool needsPaint() const { return m_needsPaint; }
 
   // Main layout entry point
-  void layout(const BoxConstraints& constraints, bool parentUsesSize = false) {
-    m_constraints = constraints;
-    
-    // Only layout if something changed or we're marked dirty
-    if (m_needsLayout || !(m_constraints == constraints)) {
-      performLayout();
-      m_needsLayout = false;
-    }
-  }
+  void layout(const BoxConstraints& constraints, bool parentUsesSize = false);
 
   // Override this to implement layout logic
   virtual void performLayout() = 0;
@@ -303,183 +296,42 @@ public:
   }
 };
 
-// ============================================================================
-// Concrete Layout Widgets
-// ============================================================================
-
-// SizedBox: Fixed size container
-class RenderSizedBox : public SingleChildRenderBox {
-private:
-  float m_width = 0.0f;
-  float m_height = 0.0f;
-
-public:
-  RenderSizedBox(float width, float height) : m_width(width), m_height(height) {}
-
-  void performLayout() override {
-    m_size = m_constraints.constrain(Size(m_width, m_height));
-
-    if (m_child) {
-      BoxConstraints childConstraints = BoxConstraints::tight(m_width, m_height);
-      layoutChild(childConstraints, false);
-      // Position child at (0, 0)
-      positionChild(Offset(0, 0));
-    }
-  }
-
-  void paint(SkCanvas* canvas) override {
-    if (m_child) {
-      m_child->paint(canvas);
-    }
-  }
-};
-
-// Center: Centers child within available space
-class RenderCenter : public SingleChildRenderBox {
-public:
-  void performLayout() override {
-    if (m_child) {
-      layoutChild(m_constraints, true);
-      m_size = m_constraints.constrain(m_child->getSize());
-
-      // Center the child
-      Offset offset(
-        (m_size.width - m_child->getSize().width) * 0.5f,
-        (m_size.height - m_child->getSize().height) * 0.5f
-      );
-      positionChild(offset);
-    } else {
-      m_size = m_constraints.biggest();
-    }
-  }
-
-  void paint(SkCanvas* canvas) override {
-    if (m_child) {
-      m_child->paint(canvas);
-    }
-  }
-};
-
-// Padding: Adds padding around child
-class RenderPadding : public SingleChildRenderBox {
-private:
-  float m_left = 0, m_top = 0, m_right = 0, m_bottom = 0;
-
-public:
-  RenderPadding(float left, float top, float right, float bottom)
-    : m_left(left), m_top(top), m_right(right), m_bottom(bottom) {}
-
-  RenderPadding(float padding)
-    : m_left(padding), m_top(padding), m_right(padding), m_bottom(padding) {}
-
-  void performLayout() override {
-    float horizontal = m_left + m_right;
-    float vertical = m_top + m_bottom;
-
-    if (m_child) {
-      BoxConstraints childConstraints = m_constraints.deflate(m_left, m_top, m_right, m_bottom);
-      layoutChild(childConstraints, true);
-
-      m_size = m_constraints.constrain(Size(
-        m_child->getSize().width + horizontal,
-        m_child->getSize().height + vertical
-      ));
-
-      // Position child with padding offset
-      positionChild(Offset(m_left, m_top));
-    } else {
-      m_size = m_constraints.constrain(Size(horizontal, vertical));
-    }
-  }
-
-  void paint(SkCanvas* canvas) override {
-    if (m_child) {
-      m_child->paint(canvas);
-    }
-  }
-};
-
-// Row: Lays out children horizontally
-class RenderRow : public MultiChildRenderBox {
-public:
-  // MainAxisAlignment and CrossAxisAlignment would go here in full flutter
-  // For now, keeping it simple
-
-  void performLayout() override {
-    if (m_children.empty()) {
-      m_size = m_constraints.biggest();
-      return;
-    }
-
-    float totalWidth = 0;
-    float maxHeight = 0;
-
-    // First pass: layout all children with max width available
-    for (auto& child : m_children) {
-      BoxConstraints childConstraints = BoxConstraints::loose(m_constraints.maxWidth, m_constraints.maxHeight);
-      child->layout(childConstraints, true);
-
-      totalWidth += child->getSize().width;
-      maxHeight = std::max(maxHeight, child->getSize().height);
-    }
-
-    // Constrain our size
-    m_size = m_constraints.constrain(Size(totalWidth, maxHeight));
-
-    // Second pass: position children
-    float currentX = 0;
-    for (auto& child : m_children) {
-      float childY = (maxHeight - child->getSize().height) * 0.5f;  // Center vertically
-      positionChild(child, Offset(currentX, childY));
-      currentX += child->getSize().width;
-    }
-  }
-
-  void paint(SkCanvas* canvas) override {
-    for (auto& child : m_children) {
-      child->paint(canvas);
-    }
-  }
-};
-
-// Column: Lays out children vertically
-class RenderColumn : public MultiChildRenderBox {
-public:
-  void performLayout() override {
-    if (m_children.empty()) {
-      m_size = m_constraints.biggest();
-      return;
-    }
-
-    float totalHeight = 0;
-    float maxWidth = 0;
-
-    // First pass: layout all children
-    for (auto& child : m_children) {
-      BoxConstraints childConstraints = BoxConstraints::loose(m_constraints.maxWidth, m_constraints.maxHeight);
-      child->layout(childConstraints, true);
-
-      totalHeight += child->getSize().height;
-      maxWidth = std::max(maxWidth, child->getSize().width);
-    }
-
-    // Constrain our size
-    m_size = m_constraints.constrain(Size(maxWidth, totalHeight));
-
-    // Second pass: position children
-    float currentY = 0;
-    for (auto& child : m_children) {
-      float childX = (maxWidth - child->getSize().width) * 0.5f;  // Center horizontally
-      positionChild(child, Offset(childX, currentY));
-      currentY += child->getSize().height;
-    }
-  }
-
-  void paint(SkCanvas* canvas) override {
-    for (auto& child : m_children) {
-      child->paint(canvas);
-    }
-  }
-};
-
 }  // namespace caffeine
+
+
+
+// Models formatting (with fmt)
+template<>
+class fmt::formatter<caffeine::BoxConstraints> : public fmt::formatter<std::string> {
+public:
+  auto format(const caffeine::BoxConstraints& c, format_context& ctx) const {
+    return fmt::format_to(ctx.out(), 
+      "BoxConstraints(minW: {}, maxW: {}, minH: {}, maxH: {})",
+      c.minWidth, c.maxWidth, c.minHeight, c.maxHeight);
+  }
+};
+
+template<>
+class fmt::formatter<caffeine::Size> : public fmt::formatter<std::string> {
+public:
+  auto format(const caffeine::Size& s, format_context& ctx) const {
+    return fmt::format_to(ctx.out(), "Size({}, {})", s.width, s.height);
+  }
+};
+
+template<>
+class fmt::formatter<caffeine::Offset> : public fmt::formatter<std::string> {
+public:
+  auto format(const caffeine::Offset& o, format_context& ctx) const {
+    return fmt::format_to(ctx.out(), "Offset({}, {})", o.dx, o.dy);
+  }
+};
+
+template<>
+class fmt::formatter<caffeine::Rect> : public fmt::formatter<std::string> {
+public:
+  auto format(const caffeine::Rect& r, format_context& ctx) const {
+    return fmt::format_to(ctx.out(), "Rect(pos: ({}, {}), size: ({}, {}))",
+      r.position.dx, r.position.dy, r.size.width, r.size.height);
+  }
+};

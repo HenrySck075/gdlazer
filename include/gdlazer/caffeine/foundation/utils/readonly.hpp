@@ -10,7 +10,7 @@ public:
   readonly(const T& v) : value(v) {}
   // Read-only access
   operator const T&() const { return value; }
-  const T* operator->() const { return &value; }
+  T* operator->() const { return &value; }
   const T& get() const { return value; }
   // Allow Owner class to modify the value
   friend Owner;

@@ -7,6 +7,7 @@
 #include "gdlazer/caffeine/foundation/Widget.hpp"
 #include "gdlazer/caffeine/foundation/Element.hpp"
 #include "gdlazer/caffeine/foundation/RenderObject.hpp"
+#include "gdlazer/caffeine/widgets/Padding.hpp"
 #include "gdlazer/caffeine/widgets/WidgetsContainer.hpp"
 
 using namespace cocos2d;
@@ -39,39 +40,6 @@ public:
     }
 };
 
-/// Concrete RenderObject for padding layout
-class PaddingRender : public caffeine::SingleChildRenderBox {
-private:
-    float m_padding;
-
-public:
-    PaddingRender(float padding) : m_padding(padding) {}
-
-    void performLayout() override {
-        if (m_child) {
-            caffeine::BoxConstraints childConstraints = m_constraints.deflate(m_padding);
-            layoutChild(childConstraints, true);
-
-            m_size = m_constraints.constrain(caffeine::Size(
-                m_child->getSize().width + m_padding * 2,
-                m_child->getSize().height + m_padding * 2
-            ));
-
-            positionChild(caffeine::Offset(m_padding, m_padding));
-        } else {
-            m_size = m_constraints.biggest();
-        }
-    }
-
-    void paint(SkCanvas* canvas) override {
-        if (m_child) {
-            canvas->save();
-            canvas->translate(m_padding, m_padding);
-            m_child->paint(canvas);
-            canvas->restore();
-        }
-    }
-};
 
 }  // namespace
 
@@ -111,35 +79,6 @@ inline std::shared_ptr<Element> ColoredBoxWidget::createElement() {
     return std::make_shared<ColoredBoxElement>(this);
 }
 
-/// A padding widget that wraps a child and adds spacing
-class PaddingWidget : public SingleChildRenderObjectWidget {
-private:
-    float m_padding;
-
-public:
-    PaddingWidget(float padding, Widget* child)
-        : SingleChildRenderObjectWidget(child), m_padding(padding) {}
-
-    float getPadding() const { return m_padding; }
-
-    std::shared_ptr<Element> createElement() override;
-};
-
-/// Element for padding layout
-class PaddingElement : public SingleChildRenderObjectElement {
-protected:
-    std::shared_ptr<caffeine::RenderObject> createRenderObject() override {
-        auto widget = std::static_pointer_cast<PaddingWidget>(m_widget);
-        return std::make_shared<PaddingRender>(widget->getPadding());
-    }
-
-public:
-    using SingleChildRenderObjectElement::SingleChildRenderObjectElement;
-};
-
-inline std::shared_ptr<Element> PaddingWidget::createElement() {
-    return std::make_shared<PaddingElement>(this);
-}
 
 // ============================================================================
 // Hook into MenuLayer to add our Caffeine widget example
@@ -153,7 +92,7 @@ class $modify(MenuLayer) {
         // Build the widget tree following the catgirl's guide:
         // Padding(16px) -> ColoredBox(blue)
         auto blueBox = new ColoredBoxWidget({100, 150, 200});
-        auto paddedBox = new PaddingWidget(16.0f, blueBox);
+        auto paddedBox = new caffeine::Padding(16.0f, blueBox);
 
         auto app = runApp(paddedBox);
 
