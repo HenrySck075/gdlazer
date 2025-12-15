@@ -1,4 +1,4 @@
-#include "gdlazer/caffeine/foundation/SkiaRenderContext.hpp"
+#include "gdlazer/caffeine/rendering/SkiaRenderContext.hpp"
 
 namespace caffeine {
 
@@ -20,7 +20,7 @@ void SkiaRenderContext::beginFrame(int width, int height) {
   // Clear the canvas to white
   SkCanvas* canvas = m_surface->getCanvas();
   if (canvas) {
-    canvas->clear(SK_ColorWHITE);
+    canvas->clear(SK_ColorBLACK);
   }
 }
 

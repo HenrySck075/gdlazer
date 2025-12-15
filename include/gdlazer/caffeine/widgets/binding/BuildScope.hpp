@@ -1,9 +1,10 @@
 #pragma once
-#include "Element.hpp"
+#include "../framework/Element.hpp"
 #include <cstdint>
 #include <optional>
-#include "types.hpp"
+#include "../../foundation/types.hpp"
 
+namespace caffeine {
 class BuildScope final {
 protected:
   friend class BuildOwner;
@@ -43,3 +44,5 @@ public:
   BuildScope(decltype(m_scheduleRebuildCallback) scheduleRebuild = std::nullopt) : m_scheduleRebuildCallback(scheduleRebuild) {};
   virtual ~BuildScope() = default;
 };
+
+}

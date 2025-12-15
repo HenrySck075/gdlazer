@@ -2,16 +2,18 @@
 
 #include <Geode/cocos/base_nodes/CCNode.h>
 #include <memory>
-#include "gdlazer/caffeine/foundation/Widget.hpp"
-#include "gdlazer/caffeine/foundation/BuildOwner.hpp"
+#include "gdlazer/caffeine/widgets/framework/Widget.hpp"
 #include "gdlazer/caffeine/widgets/RootWidget.hpp"
 
+namespace caffeine {
 /// Manages the BuildOwner and root widget mounting for the entire widget/element tree.
 /// Analogous to Flutter's WidgetsBinding.
 class WidgetsBinding {
 protected:
   std::shared_ptr<BuildOwner> m_buildOwner;
   std::shared_ptr<RootElement> m_rootElement;
+  bool m_shouldRefreshFrame = true;
+
 
   virtual ~WidgetsBinding() = default;
 
@@ -23,11 +25,10 @@ public:
   std::shared_ptr<class RootElement> getRootElement() const { return m_rootElement; }
 
   /// Initialize the binding with an empty build owner.
-  virtual void initWidgetsBinding() {
-    m_buildOwner = std::make_shared<BuildOwner>(std::nullopt);
-  }
+  virtual void initWidgetsBinding(); 
 
   /// Mounts the given widget tree and creates the render tree.
   virtual void attachRootWidget(Widget* rootWidget);
 };
 
+}

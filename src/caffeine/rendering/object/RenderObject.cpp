@@ -1,4 +1,4 @@
-#include <gdlazer/caffeine/foundation/RenderObject.hpp>
+#include <gdlazer/caffeine/rendering/object/RenderObject.hpp>
 
 // Most inline implementations are in the header
 // Add any complex implementations here as needed
@@ -9,12 +9,16 @@ namespace caffeine {
   void RenderObject::layout(const BoxConstraints& constraints, bool parentUsesSize ){
     m_constraints = constraints;
 
-    m_log->debug("Constraint: {}", m_constraints);
+    geode::log::debug("[{}]: Constraint: {}", log::getObjectName(this), m_constraints);
+
+    geode::log::pushNest();
     
     // Only layout if something changed or we're marked dirty
     if (m_needsLayout || !(m_constraints == constraints)) {
       performLayout();
       m_needsLayout = false;
     }
+
+    geode::log::popNest();
   }
 }

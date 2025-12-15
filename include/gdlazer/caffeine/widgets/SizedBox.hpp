@@ -1,9 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "../foundation/RenderObject.hpp"
-#include "../foundation/Widget.hpp"
-#include "../foundation/Element.hpp"
+#include "../rendering/object/RenderObject.hpp"
+#include "../widgets/framework/Widget.hpp"
+#include "../widgets/framework/Element.hpp"
+#include "gdlazer/caffeine/rendering/shifted_box.hpp"
 
 namespace caffeine {
 
@@ -11,80 +12,29 @@ namespace caffeine {
 // SizedBox: Fixed size container
 // ============================================================================
 
-class RenderSizedBox : public SingleChildRenderBox {
+class RenderSizedBox : public RenderShiftedBox {
 private:
-  float m_width = 0.0f;
-  float m_height = 0.0f;
+  Size m_size;
 
 public:
-  RenderSizedBox(float width, float height) : m_width(width), m_height(height) {}
+  RenderSizedBox(Size size) : m_size(size), RenderShiftedBox(nullptr) {}
 
-  void performLayout() override {
-    m_size = m_constraints.constrain(Size(m_width, m_height));
-
-    if (m_child) {
-      BoxConstraints childConstraints = BoxConstraints::tight(m_width, m_height);
-      layoutChild(childConstraints, false);
-      // Position child at (0, 0)
-      positionChild(Offset(0, 0));
-    }
-  }
-
-  void paint(SkCanvas* canvas) override {
-    if (m_child) {
-      m_child->paint(canvas);
-    }
-  }
+  void performLayout() override;
 };
 
 // ============================================================================
-// SizedBox Widget & Element
+// SizedBox Widget
 // ============================================================================
-
-class SizedBoxElement;
 
 class SizedBox : public SingleChildRenderObjectWidget {
 private:
-  float m_width = 0.0f;
-  float m_height = 0.0f;
+  Size m_size;
 
 public:
-  SizedBox(float width, float height, Widget* child = nullptr)
-    : SingleChildRenderObjectWidget(child), m_width(width), m_height(height) {}
+  SizedBox(Size size, Widget* child = nullptr)
+    : SingleChildRenderObjectWidget(child), m_size(size) {}
 
-  float getWidth() const { return m_width; }
-  float getHeight() const { return m_height; }
-
-  std::shared_ptr<Element> createElement() override;
-};
-
-class SizedBoxElement : public RenderObjectElement {
-private:
-  SizedBox* m_widget;
-
-protected:
-  std::shared_ptr<RenderObject> createRenderObject() override {
-    return std::make_shared<RenderSizedBox>(m_widget->getWidth(), m_widget->getHeight());
-  }
-
-  void insertRenderObjectChild(std::shared_ptr<RenderObject> child) override {
-    auto renderSizedBox = std::dynamic_pointer_cast<RenderSizedBox>(getRenderObject());
-    auto renderBox = std::dynamic_pointer_cast<RenderBox>(child);
-    if (renderSizedBox && renderBox) {
-      renderSizedBox->setChild(renderBox);
-    }
-  }
-
-  void removeRenderObjectChild(std::shared_ptr<RenderObject> child) override {
-    auto renderSizedBox = std::dynamic_pointer_cast<RenderSizedBox>(getRenderObject());
-    if (renderSizedBox) {
-      renderSizedBox->setChild(nullptr);
-    }
-  }
-
-public:
-  SizedBoxElement(Widget* widget) : RenderObjectElement(widget), m_widget(static_cast<SizedBox*>(widget)) {}
-  virtual ~SizedBoxElement() = default;
+  std::shared_ptr<RenderObject> createRenderObject() override;
 };
 
 }  // namespace caffeine

@@ -1,6 +1,8 @@
-#include <gdlazer/caffeine/foundation/BuildScope.hpp>
+#include <gdlazer/caffeine/widgets/binding/BuildScope.hpp>
 #include <gdlazer/caffeine/foundation/utils/massert.h>
 
+namespace caffeine {
+  
 void BuildScope::tryRebuild(std::shared_ptr<Element> element) {
   element->rebuild();
 }
@@ -30,4 +32,6 @@ void BuildScope::flushDirtyElements() {
       i->m_inDirtyList = false;
     }
   }
+}
+
 }

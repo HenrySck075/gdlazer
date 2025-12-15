@@ -1,7 +1,9 @@
 #include "gdlazer/caffeine/widgets/WidgetsBinding.hpp"
 #include "gdlazer/caffeine/widgets/RootWidget.hpp"
-#include "gdlazer/caffeine/foundation/Element.hpp"
+#include "gdlazer/caffeine/widgets/binding/BuildOwner.hpp"
+#include "gdlazer/caffeine/widgets/framework/Element.hpp"
 
+namespace caffeine {
 void WidgetsBinding::attachRootWidget(Widget* rootWidget) {
   if (!rootWidget) return;
 
@@ -21,3 +23,8 @@ void WidgetsBinding::attachRootWidget(Widget* rootWidget) {
   });
 }
 
+void WidgetsBinding::initWidgetsBinding() {
+    m_buildOwner = std::make_shared<BuildOwner>([this](){m_shouldRefreshFrame = true;});
+  }
+
+}

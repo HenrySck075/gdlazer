@@ -1,10 +1,13 @@
 #pragma once
 
+#include <cmath>
 #include <memory>
 #include <vector>
 #include <Geode/cocos/include/cocos2d.h>
 #include <skia/include/core/SkCanvas.h>
-#include "log.hpp"
+#include "../../foundation/log.hpp"
+#include "../../dartui/basic_types.hpp"
+#include "gdlazer/caffeine/painting/edge_insets.hpp"
 
 namespace caffeine {
 
@@ -12,86 +15,29 @@ namespace caffeine {
 // BoxConstraints: Describes valid size ranges
 // ============================================================================
 
-struct Size {
-  float width = 0.0f;
-  float height = 0.0f;
-
-  Size() = default;
-  Size(float w, float h) : width(w), height(h) {}
-
-  Size operator+(const Size& other) const {
-    return Size(width + other.width, height + other.height);
-  }
-
-  Size operator-(const Size& other) const {
-    return Size(width - other.width, height - other.height);
-  }
-
-  Size operator*(float scalar) const {
-    return Size(width * scalar, height * scalar);
-  }
-
-  bool operator==(const Size& other) const {
-    return width == other.width && height == other.height;
-  }
-};
-
-struct Offset {
-  float dx = 0.0f;
-  float dy = 0.0f;
-
-  Offset() = default;
-  Offset(float x, float y) : dx(x), dy(y) {}
-
-  Offset operator+(const Offset& other) const {
-    return Offset(dx + other.dx, dy + other.dy);
-  }
-
-  Offset operator*(float scalar) const {
-    return Offset(dx * scalar, dy * scalar);
-  }
-
-  bool operator==(const Offset& other) const {
-    return dx == other.dx && dy == other.dy;
-  }
-};
-
-struct Rect {
-  Offset position;
-  Size size;
-
-  Rect() = default;
-  Rect(Offset pos, Size sz) : position(pos), size(sz) {}
-
-  static Rect fromLTWH(float left, float top, float width, float height) {
-    return Rect(Offset(left, top), Size(width, height));
-  }
-};
-
-constexpr float infinity = 1e10f;  // Large number representing infinity
-
 struct BoxConstraints {
   float minWidth = 0.0f;
-  float maxWidth = infinity;
+  float maxWidth = INFINITY;
   float minHeight = 0.0f;
-  float maxHeight = infinity;
+  float maxHeight = INFINITY;
 
   BoxConstraints() = default;
   BoxConstraints(float minW, float maxW, float minH, float maxH)
     : minWidth(minW), maxWidth(maxW), minHeight(minH), maxHeight(maxH) {}
 
   // Create tight constraints (exact size)
-  static BoxConstraints tight(float width, float height) {
+  static BoxConstraints tight(Size size) {
+    auto width = size.width, height = size.height;
     return BoxConstraints(width, width, height, height);
   }
 
   // Create loose constraints (at most size)
-  static BoxConstraints loose(float maxW, float maxH) {
-    return BoxConstraints(0, maxW, 0, maxH);
+  static BoxConstraints loose(Size maxSize) {
+    return BoxConstraints(0, maxSize.width, 0, maxSize.height);
   }
 
   // Create expanding constraints (fill available space)
-  static BoxConstraints expand(float width = infinity, float height = infinity) {
+  static BoxConstraints expand(float width = INFINITY, float height = INFINITY) {
     return BoxConstraints(width, width, height, height);
   }
 
@@ -102,8 +48,8 @@ struct BoxConstraints {
   bool hasTightWidth() const { return minWidth == maxWidth; }
   bool hasTightHeight() const { return minHeight == maxHeight; }
 
-  bool hasBoundedWidth() const { return maxWidth != infinity; }
-  bool hasBoundedHeight() const { return maxHeight != infinity; }
+  bool hasBoundedWidth() const { return maxWidth != INFINITY; }
+  bool hasBoundedHeight() const { return maxHeight != INFINITY; }
 
   Size biggest() const {
     return Size(maxWidth, maxHeight);
@@ -122,13 +68,14 @@ struct BoxConstraints {
 
   // Reduce constraints by padding all sides
   BoxConstraints deflate(float padding) const {
-    return deflate(padding, padding, padding, padding);
+    EdgeInsets m = EdgeInsets::all(padding);
+    return deflate(&m);
   }
 
   // Reduce constraints by specific padding amounts
-  BoxConstraints deflate(float left, float top, float right, float bottom) const {
-    float horizontal = left + right;
-    float vertical = top + bottom;
+  BoxConstraints deflate(EdgeInsetsGeometry* insets) const {
+    float horizontal = insets->horizontal();
+    float vertical = insets->vertical();
     return BoxConstraints(
       std::max(0.0f, minWidth - horizontal),
       std::max(0.0f, maxWidth - horizontal),
@@ -147,7 +94,7 @@ struct BoxConstraints {
 // RenderObject: Base class for layout
 // ============================================================================
 
-class RenderObject : public log::WithLogger, public std::enable_shared_from_this<RenderObject> {
+class RenderObject : public log::StringConvertible, public std::enable_shared_from_this<RenderObject> {
 protected:
   BoxConstraints m_constraints;
   Size m_size;
@@ -226,7 +173,7 @@ protected:
   std::shared_ptr<RenderBox> m_child;
 
 public:
-  SingleChildRenderBox() = default;
+  SingleChildRenderBox(std::shared_ptr<RenderBox> child = nullptr) : m_child(child) {};
   virtual ~SingleChildRenderBox() = default;
 
   void setChild(std::shared_ptr<RenderBox> child) {
@@ -298,9 +245,6 @@ public:
 
 }  // namespace caffeine
 
-
-
-// Models formatting (with fmt)
 template<>
 class fmt::formatter<caffeine::BoxConstraints> : public fmt::formatter<std::string> {
 public:
@@ -308,30 +252,5 @@ public:
     return fmt::format_to(ctx.out(), 
       "BoxConstraints(minW: {}, maxW: {}, minH: {}, maxH: {})",
       c.minWidth, c.maxWidth, c.minHeight, c.maxHeight);
-  }
-};
-
-template<>
-class fmt::formatter<caffeine::Size> : public fmt::formatter<std::string> {
-public:
-  auto format(const caffeine::Size& s, format_context& ctx) const {
-    return fmt::format_to(ctx.out(), "Size({}, {})", s.width, s.height);
-  }
-};
-
-template<>
-class fmt::formatter<caffeine::Offset> : public fmt::formatter<std::string> {
-public:
-  auto format(const caffeine::Offset& o, format_context& ctx) const {
-    return fmt::format_to(ctx.out(), "Offset({}, {})", o.dx, o.dy);
-  }
-};
-
-template<>
-class fmt::formatter<caffeine::Rect> : public fmt::formatter<std::string> {
-public:
-  auto format(const caffeine::Rect& r, format_context& ctx) const {
-    return fmt::format_to(ctx.out(), "Rect(pos: ({}, {}), size: ({}, {}))",
-      r.position.dx, r.position.dy, r.size.width, r.size.height);
   }
 };

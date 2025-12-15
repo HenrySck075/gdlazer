@@ -1,8 +1,9 @@
 #pragma once
 
-#include "gdlazer/caffeine/foundation/Element.hpp"
-#include "gdlazer/caffeine/foundation/Widget.hpp"
+#include "gdlazer/caffeine/widgets/framework/Element.hpp"
+#include "gdlazer/caffeine/widgets/framework/Widget.hpp"
 
+namespace caffeine {
 class RootElement;
 class BuildOwner;
 
@@ -52,3 +53,4 @@ private:
 
   void rebuild();
 };
+}

@@ -3,6 +3,7 @@
 #include <skia/include/core/SkImageInfo.h>
 #include <vector>
 
+namespace caffeine {
 bool WidgetsContainer::init() {
   if (!CCSprite::init()) return false;
 
@@ -13,6 +14,7 @@ bool WidgetsContainer::init() {
 
   // Initialize the widgets binding (creates build owner)
   initWidgetsBinding();
+
 
   // Schedule this node to receive update() calls every frame
   this->scheduleUpdate();
@@ -26,6 +28,7 @@ void WidgetsContainer::attachRootWidget(Widget* rootWidget) {
 }
 
 void WidgetsContainer::paintRenderTree() {
+  if (!m_shouldRefreshFrame) return;
   // Get the root element's child render object
   auto rootElement = getRootElement();
   if (!rootElement) return;
@@ -35,7 +38,7 @@ void WidgetsContainer::paintRenderTree() {
 
   // Layout phase
   auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
-  caffeine::BoxConstraints constraints = caffeine::BoxConstraints::tight(winSize.width, winSize.height);
+  caffeine::BoxConstraints constraints = caffeine::BoxConstraints::tight({winSize.width, winSize.height});
   rootRenderObject->layout(constraints);
 
   // Begin frame with current window size
@@ -109,10 +112,14 @@ void WidgetsContainer::update(float deltaTime) {
 
   // Paint the render tree to Skia canvas and update sprite texture
   paintRenderTree();
+
+  m_shouldRefreshFrame = false;
 }
 
 cocos2d::CCNode* runApp(Widget* app) {
   auto container = WidgetsContainer::create();
   container->attachRootWidget(app);
   return container;
+}
+
 }

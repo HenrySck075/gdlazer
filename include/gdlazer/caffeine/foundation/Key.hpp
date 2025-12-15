@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+
+
+namespace caffeine {
 class Key {
 public:
   virtual bool equals(std::shared_ptr<Key> other) = 0;
@@ -55,3 +58,5 @@ protected:
   std::shared_ptr<T> m_currentState;
   friend class Element; 
 };
+
+}

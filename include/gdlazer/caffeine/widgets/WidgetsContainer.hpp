@@ -2,8 +2,9 @@
 
 #include "WidgetsBinding.hpp"
 #include "SchedulerBinding.hpp"
-#include "gdlazer/caffeine/foundation/SkiaRenderContext.hpp"
+#include "gdlazer/caffeine/rendering/SkiaRenderContext.hpp"
 
+namespace caffeine {
 /// A CCSprite container that bootstraps and manages the entire widget/element tree.
 /// Combines WidgetsBinding and SchedulerBinding to drive the frame pipeline.
 /// Renders the widget tree using Skia to an off-screen canvas, then displays as a sprite.
@@ -34,3 +35,5 @@ private:
 /// Returns a CCNode that contains the entire widget system.
 /// The returned node should be added to the scene/parent node to render the UI.
 cocos2d::CCNode* runApp(Widget* app);
+
+}

@@ -1,9 +1,11 @@
-#include <gdlazer/caffeine/foundation/Widget.hpp>
-#include <gdlazer/caffeine/foundation/ComponentElements.hpp>
-#include <gdlazer/caffeine/foundation/RenderObjectElements.hpp>
+#include <gdlazer/caffeine/widgets/framework/Widget.hpp>
+#include <gdlazer/caffeine/widgets/framework/ComponentElements.hpp>
+#include <gdlazer/caffeine/widgets/framework/RenderObjectElements.hpp>
+
+namespace caffeine {
 bool Widget::canUpdate(Widget* newWidget, Widget* oldWidget) {
   return typeid(*newWidget) == typeid(*oldWidget) &&
-         newWidget->m_key == oldWidget->m_key;
+         newWidget->getKey() == oldWidget->getKey();
 };
 
 
@@ -39,3 +41,5 @@ std::shared_ptr<Element> SingleChildRenderObjectWidget::createElement() {
 std::shared_ptr<Element> MultiChildRenderObjectWidget::createElement() {
   return std::make_shared<MultiChildRenderObjectElement>(this);
 };
+
+}

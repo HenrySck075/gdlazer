@@ -2,9 +2,8 @@
 
 #include "Element.hpp"
 #include "Widget.hpp"
-#include "utils/shared_ptr_2.hpp"
-#include <vector>
 
+namespace caffeine {
 /* An Element that composes other Elements.
 
 Rather than creating a RenderObject directly, a ComponentElement creates RenderObjects indirectly by creating other Elements.
@@ -67,10 +66,10 @@ public:
     m_state->m_element = self;
   }
 
-  virtual void mount(std::shared_ptr<Element> parent, void* slot);
+  virtual void mount(std::shared_ptr<Element> parent, void* slot) override;
   virtual void performRebuild() override;
   Widget* build() override {return m_state->build(std::shared_ptr<BuildContext>(this));}
-  virtual void update(Widget* newWidget);
+  virtual void update(Widget* newWidget) override;
 };
 
 
@@ -87,3 +86,4 @@ public:
   };
   void update(Widget* newWidget) override;
 };
+}

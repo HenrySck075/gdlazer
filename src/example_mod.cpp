@@ -3,10 +3,10 @@
 #include <cocos2d.h>
 #include <memory>
 
-#include "gdlazer/caffeine/foundation/RenderObjectElements.hpp"
-#include "gdlazer/caffeine/foundation/Widget.hpp"
-#include "gdlazer/caffeine/foundation/Element.hpp"
-#include "gdlazer/caffeine/foundation/RenderObject.hpp"
+#include "gdlazer/caffeine/widgets/framework/RenderObjectElements.hpp"
+#include "gdlazer/caffeine/widgets/framework/Widget.hpp"
+#include "gdlazer/caffeine/widgets/framework/Element.hpp"
+#include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
 #include "gdlazer/caffeine/widgets/Padding.hpp"
 #include "gdlazer/caffeine/widgets/WidgetsContainer.hpp"
 
@@ -48,7 +48,7 @@ public:
 // ============================================================================
 
 /// A colored box widget that renders a solid color rectangle
-class ColoredBoxWidget : public RenderObjectWidget {
+class ColoredBoxWidget : public caffeine::RenderObjectWidget {
 private:
     ccColor3B m_color;
 
@@ -57,28 +57,10 @@ public:
 
     ccColor3B getColor() const { return m_color; }
 
-    std::shared_ptr<Element> createElement() override;
-};
-
-/// Element for the colored box
-class ColoredBoxElement : public RenderObjectElement {
-protected:
     std::shared_ptr<caffeine::RenderObject> createRenderObject() override {
-        auto widget = std::static_pointer_cast<ColoredBoxWidget>(m_widget);
-        return std::make_shared<ColoredBoxRender>(widget->getColor());
+        return std::make_shared<ColoredBoxRender>(m_color);
     }
-
-    void insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {}
-    void removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {}
-
-public:
-    using RenderObjectElement::RenderObjectElement;
 };
-
-inline std::shared_ptr<Element> ColoredBoxWidget::createElement() {
-    return std::make_shared<ColoredBoxElement>(this);
-}
-
 
 // ============================================================================
 // Hook into MenuLayer to add our Caffeine widget example

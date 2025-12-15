@@ -1,10 +1,13 @@
-#include <gdlazer/caffeine/foundation/BuildOwner.hpp>
-#include <gdlazer/caffeine/foundation/Element.hpp>
-#include <gdlazer/caffeine/foundation/BuildScope.hpp>
+#include <gdlazer/caffeine/widgets/binding/BuildOwner.hpp>
+#include <gdlazer/caffeine/widgets/framework/Element.hpp>
+#include <gdlazer/caffeine/widgets/binding/BuildScope.hpp>
 #include <gdlazer/caffeine/foundation/utils/massert.h>
 
-BuildOwner::BuildOwner(decltype(onBuildScheduled) onBuildScheduled) 
-  : onBuildScheduled(onBuildScheduled), m_buildScope(std::make_shared<BuildScope>(onBuildScheduled)) {}
+
+namespace caffeine {
+
+BuildOwner::BuildOwner(decltype(m_onBuildScheduled) onBuildScheduled) 
+  : m_onBuildScheduled(onBuildScheduled), m_buildScope(std::make_shared<BuildScope>(onBuildScheduled)) {}
 
 
 void BuildOwner::_registerGlobalKey(
@@ -32,6 +35,10 @@ void BuildOwner::_unregisterGlobalKey(
 void BuildOwner::scheduleBuildFor(Element* element) {
   auto scope = element->getBuildScope();
   massert(scope, "Element must have an assigned BuildScope");
+  if (!m_scheduledFlushDirtyElement && m_onBuildScheduled.has_value()) {
+    m_scheduledFlushDirtyElement = true;
+    m_onBuildScheduled.value()();
+  }
   scope->scheduleBuildFor(element);
 }
 
@@ -49,15 +56,19 @@ void BuildOwner::buildScope(Element* context, std::optional<VoidCallback> callba
     dm_building = true;
   #endif
   try {
+    m_scheduledFlushDirtyElement = true;
     scope->m_building = true;
     callback.value()();
     scope->flushDirtyElements();
   } catch (std::exception& s) {}
   scope->m_building = false;
+  m_scheduledFlushDirtyElement = false;
   assert(dm_building);
   #ifdef GDF_DEBUG
     dm_building = false;
     dm_stateLockLevel--;
   #endif
   assert(dm_stateLockLevel >= 0);
+}
+
 }

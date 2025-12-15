@@ -6,8 +6,9 @@
 #include <Geode/cocos/include/cocos2d.h>
 #include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
 #include <gdlazer/caffeine/foundation/Key.hpp>
-#include <gdlazer/caffeine/foundation/RenderObject.hpp>
+#include <gdlazer/caffeine/rendering/object/RenderObject.hpp>
 
+namespace caffeine {
 // Element
 class BuildContext {};
 
@@ -108,7 +109,7 @@ public:
   /// Get the render object at current (or below) element
   virtual std::shared_ptr<caffeine::RenderObject> getRenderObject();
 
-  void mount(std::shared_ptr<Element> parent, void* slot);
+  virtual void mount(std::shared_ptr<Element> parent, void* slot);
   /*
    *Transition from the "inactive" to the "defunct" lifecycle state.
 
@@ -184,7 +185,7 @@ Implementations of this method should end with a call to the inherited method.
 
   /// Attach this element's render object to the render tree
   /// The default implementation of this function calls attachRenderObject recursively on each child, because, of course, the one in getRenderObject is not its own, nor do it guarantee the parent is a RenderObjectElement. 
-  virtual void attachRenderObject(); 
+  virtual void attachRenderObject(void* newSlot); 
   /// Detach this element's render object from the render tree
   /// The default implementation of this function calls detachRenderObject recursively on each child, because, of course, the one in getRenderObject is not its own, nor do it guarantee the parent is a RenderObjectElement. 
   virtual void detachRenderObject(); 
@@ -205,29 +206,4 @@ Implementations of this method should end with a call to the inherited method.
   virtual void visitChildren(std::function<void(std::shared_ptr<Element>)> visitor) {}
 };
 
-
-/// The elements that renders a direct RenderObject and manages its state, with a Widget as its configuration.
-class RenderObjectElement : public Element {
-private:
-  std::shared_ptr<caffeine::RenderObject> m_renderObject;
-  std::shared_ptr<RenderObjectElement> findAncestorRenderObjectElement();
-  std::shared_ptr<RenderObjectElement> m_ancestorRenderObjectElement;
-
-protected:
-  /// Creates a render object.
-  ///
-  /// This is called the first time attachRenderObject is called
-  virtual std::shared_ptr<caffeine::RenderObject> createRenderObject() = 0;
-  virtual void postAttachRenderObject() {}
-  virtual void preDetachRenderObject() {}
-public:
-  RenderObjectElement(Widget* widget) : Element(widget) {}
-  virtual ~RenderObjectElement() = default;
-  void attachRenderObject() final override;
-  void detachRenderObject() final override;
-
-  virtual void insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) = 0; 
-  virtual void removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) = 0;
-
-  std::shared_ptr<caffeine::RenderObject> getRenderObject() override;
-};
+}

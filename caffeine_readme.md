@@ -3,7 +3,7 @@
 by ported i mean copies the entire system's code over im that lazy but a good exercise regardless
 
 ## File structure
-Same(ish) as the Flutter engine file structure (`package:flutter/foundation.dart` and `include/gdlazer/caffeine/foundation/*.hpp`)
+Same(ish) as the Flutter engine file structure (`package:flutter/foundation.dart` and `include/gdlazer/caffeine/foundation/*.hpp`). Not all
 
 Files not included below but appears in the folder contains a class named after the file name. Paths listed below relative to `include/gdlazer/caffeine` for headers and `src/caffeine` for sources
 

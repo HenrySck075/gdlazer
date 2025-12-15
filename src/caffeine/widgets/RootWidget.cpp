@@ -1,8 +1,9 @@
 #include "gdlazer/caffeine/widgets/RootWidget.hpp"
-#include "gdlazer/caffeine/foundation/Element.hpp"
-#include "gdlazer/caffeine/foundation/BuildOwner.hpp"
-#include "gdlazer/caffeine/foundation/BuildScope.hpp"
+#include "gdlazer/caffeine/widgets/framework/Element.hpp"
+#include "gdlazer/caffeine/widgets/binding/BuildOwner.hpp"
+#include "gdlazer/caffeine/widgets/binding/BuildScope.hpp"
 
+namespace caffeine {
 std::shared_ptr<Element> RootWidget::createElement() {
   return std::make_shared<RootElement>(
     std::static_pointer_cast<RootWidget>(shared_from_this())
@@ -50,4 +51,6 @@ void RootElement::rebuild() {
     // Log error but don't crash - render tree is unavailable anyway
     m_child = nullptr;
   }
+}
+
 }

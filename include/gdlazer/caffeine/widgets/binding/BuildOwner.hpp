@@ -2,15 +2,17 @@
 
 #include <Geode/cocos/layers_scenes_transitions_nodes/CCScene.h>
 #include <unordered_map>
-#include "types.hpp"
-#include "Element.hpp"
-#include "Widget.hpp"
+#include "../../foundation/types.hpp"
+#include "../framework/Element.hpp"
+#include "../framework/Widget.hpp"
 
+namespace caffeine {
 class BuildOwner {
   _InactiveElements m_inactiveElements;
-  std::optional<VoidCallback> onBuildScheduled;
+  std::optional<VoidCallback> m_onBuildScheduled;
   friend class Element;
   std::shared_ptr<BuildScope> m_buildScope;
+  bool m_scheduledFlushDirtyElement = false;
 
   // Map from GlobalKeyU pointer to Element
   // Uses raw pointer identity since GlobalKeyU instances are unique
@@ -31,9 +33,10 @@ class BuildOwner {
 #endif
 public:
   BuildOwner() = delete;
-  BuildOwner(decltype(onBuildScheduled) onBuildScheduled);
+  BuildOwner(decltype(m_onBuildScheduled) onBuildScheduled);
 
   void scheduleBuildFor(Element* element);
   void buildScope(Element* context, std::optional<VoidCallback> callback);
   std::shared_ptr<BuildScope> getRootBuildScope() { return m_buildScope; }
 };
+}

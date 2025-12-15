@@ -1,10 +1,11 @@
 #include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
 #include <functional>
-#include <gdlazer/caffeine/foundation/BuildOwner.hpp>
+#include <gdlazer/caffeine/widgets/binding/BuildOwner.hpp>
 #include <gdlazer/caffeine/foundation/utils/massert.h>
-#include <gdlazer/caffeine/foundation/Element.hpp>
-#include <gdlazer/caffeine/foundation/Widget.hpp>
+#include <gdlazer/caffeine/widgets/framework/Element.hpp>
+#include <gdlazer/caffeine/widgets/framework/Widget.hpp>
 
+namespace caffeine {
 Element::Element(Widget* widget) : m_widget(std::shared_ptr<Widget>(widget)) {}
 
 std::shared_ptr<caffeine::RenderObject> Element::getRenderObject() {
@@ -22,9 +23,9 @@ std::shared_ptr<Element> Element::getAttachingRenderObjectChild() {
   });
   return next;
 }
-void Element::attachRenderObject() {
-  auto crack = [](std::shared_ptr<Element> child) {
-    child->attachRenderObject();
+void Element::attachRenderObject(void* slot) {
+  auto crack = [slot](std::shared_ptr<Element> child) {
+    child->attachRenderObject(slot);
   };
   visitChildren(crack);
 }
@@ -55,7 +56,7 @@ void Element::mount(std::shared_ptr<Element> parent, void* slot) {
     m_parentBuildScope = parent->m_parentBuildScope;
   } 
   
-  if (auto key = dynamic_cast<GlobalKeyU*>(m_widget->m_key->get())) {
+  if (auto key = dynamic_cast<GlobalKeyU*>(m_widget->getKey().get())) {
     m_owner->_registerGlobalKey(key, this);
   }
 }
@@ -63,7 +64,7 @@ void Element::unmount() {
   assert(m_lifecycleState == _ElementLifecycle::active);
   assert(m_widget);
   assert(m_owner);
-  if (auto k = dynamic_cast<GlobalKeyU*>(m_widget->m_key->get())) {
+  if (auto k = dynamic_cast<GlobalKeyU*>(m_widget->getKey().get())) {
     m_owner->_unregisterGlobalKey(k, this);
   }
 }
@@ -101,8 +102,8 @@ std::shared_ptr<Element> Element::inflateWidget(
   Widget* newWidget,
   void* newSlot
 ) {
-  const auto key = newWidget->m_key;
-  auto maybeGlobalKey = dynamic_cast<GlobalKeyU*>(key->get());
+  const auto key = newWidget->getKey();
+  auto maybeGlobalKey = dynamic_cast<GlobalKeyU*>(key.get());
   auto inactiveElement = maybeGlobalKey ? _retakeInactiveElement(maybeGlobalKey, newWidget) : nullptr;
   if (inactiveElement) {
     assert(inactiveElement->m_parent == nullptr);
@@ -199,45 +200,6 @@ void Element::update(Widget *newWidget) {
   m_widget = newWidget->shared_from_this(); 
 };
 
-
-std::shared_ptr<RenderObjectElement> RenderObjectElement::findAncestorRenderObjectElement() {
-  auto current = m_parent;
-  while (current) {
-    auto renderObjElem = std::dynamic_pointer_cast<RenderObjectElement>(current);
-    if (renderObjElem && renderObjElem->getRenderObject() != m_renderObject) {
-      return renderObjElem;
-    }
-    current = current->m_parent;
-  }
-  return nullptr;
-}
-
-
-void RenderObjectElement::attachRenderObject() {
-  if (!m_renderObject) {
-    m_renderObject = createRenderObject();
-  }
-  if ((m_ancestorRenderObjectElement = findAncestorRenderObjectElement())) {
-    m_ancestorRenderObjectElement->insertRenderObjectChild(m_renderObject);
-    postAttachRenderObject();
-  }
-}
-
-void RenderObjectElement::detachRenderObject() {
-  if (m_ancestorRenderObjectElement) {
-    m_ancestorRenderObjectElement->removeRenderObjectChild(m_renderObject);
-  }
-}
-
-std::shared_ptr<caffeine::RenderObject> RenderObjectElement::getRenderObject() {
-  if (!m_renderObject) {
-    m_renderObject = createRenderObject();
-  }
-  return m_renderObject;
-};
-
-
-
 void _InactiveElements::_deactivateRecursively(std::shared_ptr<Element> element) {
   assert(element->m_lifecycleState == _ElementLifecycle::active);
   element->deactivate();
@@ -293,3 +255,5 @@ void _InactiveElements::_unmountAll() {
   m_locked = false;
 };
 
+
+}

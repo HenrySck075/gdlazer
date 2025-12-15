@@ -1,4 +1,6 @@
-#include <gdlazer/caffeine/foundation/ComponentElements.hpp>
+#include <gdlazer/caffeine/widgets/framework/ComponentElements.hpp>
+
+namespace caffeine {
 
 void ComponentElement::performRebuild() {
   auto built_widget = build();
@@ -59,4 +61,6 @@ void ProxyElement::update(Widget* newWidget) {
   assert(newWidget != nullptr);
   m_widget = std::static_pointer_cast<ProxyWidget>(std::shared_ptr<Widget>(newWidget));
   markNeedsBuild();
+}
+
 }

@@ -18,7 +18,7 @@ def ensure_cache_dir():
     """Create cache directory if it doesn't exist."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-def fetch_file(relative_path: str, force: bool = False) -> Path | None:
+def fetch_file(relative_path: str, force: bool = False, sailent = False) -> Path | None:
     """
     Fetch a file from Flutter repo and cache it locally.
     
@@ -39,14 +39,16 @@ def fetch_file(relative_path: str, force: bool = False) -> Path | None:
     
     # Create parent directories
     cache_path.parent.mkdir(parents=True, exist_ok=True)
+
+    maybePrint = lambda *h, **j: print(*h, **j) if not sailent else None
     
     # Build URL and fetch
     url = f"{FLUTTER_REPO}/{relative_path}"
     try:
-        print(f"Fetching {relative_path}...", end=" ", flush=True)
+        maybePrint(f"Fetching {relative_path}...", end=" ", flush=True)
         urllib.request.urlretrieve(url, cache_path)
         size_kb = cache_path.stat().st_size / 1024
-        print(f"✓ ({size_kb:.1f} KB)")
+        maybePrint(f"✓ ({size_kb:.1f} KB)")
         return cache_path
     except Exception as e:
         print(f"✗ Error: {e}")
@@ -112,6 +114,18 @@ if __name__ == "__main__":
                 print(path.relative_to(CACHE_DIR))
         else:
             print("Cache is empty")
+
+    # also fetch but it dumps the content instead of telling where the cached file is
+    elif cmd == "--dump":
+        force = "-f" in sys.argv or "--force" in sys.argv
+        path = fetch_file(sys.argv[2], force=force, sailent=True)
+        if path:
+            # dump the file's content to stdout
+            with open(path, 'r') as f:
+                print(f.read())
+            sys.exit(0)
+        else:
+            sys.exit(1)
     
     else:
         # Treat as a fetch command

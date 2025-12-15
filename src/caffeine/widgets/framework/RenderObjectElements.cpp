@@ -1,4 +1,46 @@
-#include <gdlazer/caffeine/foundation/RenderObjectElements.hpp>
+#include <gdlazer/caffeine/widgets/framework/RenderObjectElements.hpp>
+
+namespace caffeine {
+
+void RenderObjectElement::mount(std::shared_ptr<Element> parent, void* slot) {
+  Element::mount(parent, slot);
+  m_ancestorRenderObjectElement = findAncestorRenderObjectElement();
+  auto widget = std::static_pointer_cast<RenderObjectWidget>(m_widget);
+  m_renderObject = widget->createRenderObject();
+  attachRenderObject(slot);
+  Element::performRebuild();
+}
+
+std::shared_ptr<RenderObjectElement> RenderObjectElement::findAncestorRenderObjectElement() {
+  auto current = m_parent;
+  while (current) {
+    auto renderObjElem = std::dynamic_pointer_cast<RenderObjectElement>(current);
+    if (renderObjElem && renderObjElem->getRenderObject() != m_renderObject) {
+      return renderObjElem;
+    }
+    current = current->m_parent;
+  }
+  return nullptr;
+}
+
+
+void RenderObjectElement::attachRenderObject(void* slot) {
+  if ((m_ancestorRenderObjectElement = findAncestorRenderObjectElement())) {
+    m_ancestorRenderObjectElement->insertRenderObjectChild(m_renderObject);
+  }
+}
+
+void RenderObjectElement::detachRenderObject() {
+  if (m_ancestorRenderObjectElement) {
+    m_ancestorRenderObjectElement->removeRenderObjectChild(m_renderObject);
+  }
+}
+
+std::shared_ptr<caffeine::RenderObject> RenderObjectElement::getRenderObject() {
+  return m_renderObject;
+};
+
+
 
 void SingleChildRenderObjectElement::performRebuild() {
   auto widget = std::static_pointer_cast<SingleChildRenderObjectWidget>(m_widget);
@@ -27,12 +69,16 @@ void SingleChildRenderObjectElement::visitChildren(std::function<void(std::share
     visitor(m_child);
   }
 }
-
-std::shared_ptr<caffeine::RenderObject> SingleChildRenderObjectElement::createRenderObject() {
-  // Subclasses should override this to create their specific render object type
-  // Default implementation returns nullptr
-  return nullptr;
-}
+void SingleChildRenderObjectElement::mount(std::shared_ptr<Element> parent, void *slot) {
+  RenderObjectElement::mount(parent, slot);
+  m_child = updateChild(
+    m_child,
+    const_cast<Widget*>(
+      static_cast<SingleChildRenderObjectWidget*>(m_widget.get())->getChild()
+    ),
+    nullptr
+  );
+};
 
 
 void MultiChildRenderObjectElement::performRebuild() {
@@ -87,11 +133,18 @@ void MultiChildRenderObjectElement::visitChildren(std::function<void(std::shared
   }
 }
 
-std::shared_ptr<caffeine::RenderObject> MultiChildRenderObjectElement::createRenderObject() {
-  // Subclasses should override this to create their specific render object type
-  // Default implementation returns nullptr
-  return nullptr;
-}
+void MultiChildRenderObjectElement::mount(std::shared_ptr<Element> parent, void *slot) {
+  RenderObjectElement::mount(parent, slot);
+  auto widget = std::static_pointer_cast<MultiChildRenderObjectWidget>(m_widget);
+  const auto& widgets = widget->getChildren();
+  for (size_t i = 0; i < widgets.size(); ++i) {
+    auto child = inflateWidget(
+      const_cast<Widget*>(widgets[i].get()),
+      reinterpret_cast<void*>(i)
+    );
+    m_children.push_back(child);
+  }
+};
 
 void MultiChildRenderObjectElement::insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) {
   // TODO: implement render object tree integration
@@ -100,3 +153,4 @@ void MultiChildRenderObjectElement::insertRenderObjectChild(std::shared_ptr<caff
 void MultiChildRenderObjectElement::removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) {
   // TODO: implement render object tree integration
 }
+} // namespace caffeine
