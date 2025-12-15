@@ -44,7 +44,8 @@ else()
 endif()
 
 if(DEFINED SKIA_PLATFORM)
-    set(SKIA_VERSION "vabe90c7-20251213-134716")
+    #set(SKIA_VERSION "v5e1ff61-20251215-132238")
+    set(SKIA_VERSION "v5e1ff61-20251215-152117")
     set(SKIA_URL "https://github.com/HenrySck075/geode-skia/releases/download/${SKIA_VERSION}/${SKIA_ARCHIVE}")
     set(SKIA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/skia/${SKIA_PLATFORM}")
     
@@ -135,10 +136,14 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
-# Add Skia support (after add_library)
+# Add Skia support
 if(DEFINED SKIA_PLATFORM)
   target_include_directories(${PROJECT_NAME} PUBLIC "${SKIA_DIR}")
-  file(GLOB_RECURSE SKIA_LIBS "${SKIA_DIR}/lib/*") # crime
+  if (SKIA_PLATFORM STREQUAL "Windows")
+    file(GLOB_RECURSE SKIA_LIBS "${SKIA_DIR}/lib/*.lib") # crime
+  else()
+    file(GLOB_RECURSE SKIA_LIBS "${SKIA_DIR}/lib/*") # crime
+  endif()
   target_link_libraries(${PROJECT_NAME} ${SKIA_LIBS})
 endif()
 

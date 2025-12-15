@@ -3,9 +3,7 @@
 #include <cocos2d.h>
 #include <memory>
 
-#include "gdlazer/caffeine/widgets/framework/RenderObjectElements.hpp"
 #include "gdlazer/caffeine/widgets/framework/Widget.hpp"
-#include "gdlazer/caffeine/widgets/framework/Element.hpp"
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
 #include "gdlazer/caffeine/widgets/Padding.hpp"
 #include "gdlazer/caffeine/widgets/WidgetsContainer.hpp"
@@ -48,7 +46,7 @@ public:
 // ============================================================================
 
 /// A colored box widget that renders a solid color rectangle
-class ColoredBoxWidget : public caffeine::RenderObjectWidget {
+class ColoredBoxWidget : public caffeine::LeafRenderObjectWidget {
 private:
     ccColor3B m_color;
 

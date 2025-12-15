@@ -6,7 +6,12 @@
 #include <vector>
 
 namespace caffeine {
-/// The elements that renders a direct RenderObject and manages its state, with a Widget as its configuration.
+/* An Element that renders a RenderObject directly.
+ *
+ * Each RenderObjectWidget has a corresponding RenderObjectElement.
+ * This is the base class for elements that manage render objects.
+ */
+
 class RenderObjectElement : public Element {
 private:
   std::shared_ptr<RenderObject> m_renderObject;
@@ -29,18 +34,21 @@ public:
   std::shared_ptr<caffeine::RenderObject> getRenderObject() override;
 
   void performRebuild() override {
-    std::static_pointer_cast<RenderObjectWidget>(m_widget)
+    std::static_pointer_cast<RenderObjectWidget>(m_widget)->updateRenderObject(shared_from_this(), m_renderObject);
   };
 };
-/* An Element that renders a RenderObject directly.
- *
- * Each RenderObjectWidget has a corresponding RenderObjectElement.
- * This is the base class for elements that manage render objects.
- */
+
+class LeafRenderObjectElement : public RenderObjectElement {
+public:
+  LeafRenderObjectElement(LeafRenderObjectWidget* widget)
+    : RenderObjectElement(widget) {}
+  void insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) final override {}; 
+  void removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) final override {};
+};
 
 class SingleChildRenderObjectElement : public RenderObjectElement {
 protected:
-  std::shared_ptr<caffeine::RenderBox> m_renderBox;
+  std::shared_ptr<caffeine::RenderBox> m_renderBox; // TODO: mixin, or smth like that
   std::shared_ptr<Element> m_child;
 
 public:
@@ -53,7 +61,9 @@ public:
   std::shared_ptr<Element> getAttachingRenderObjectChild() override;
   void visitChildren(std::function<void(std::shared_ptr<Element>)> visitor) override;
 
-  virtual void insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {}
+  virtual void insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {
+    std::static_pointer_cast<SingleChildRenderBox>(m_renderBox)->setChild(child);
+  }
   virtual void removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {}
 
   virtual ~SingleChildRenderObjectElement() = default;

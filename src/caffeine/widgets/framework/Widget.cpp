@@ -22,14 +22,8 @@ std::shared_ptr<Element> StatefulWidget::createElement() {
   return elem;
 };
 
-
-std::shared_ptr<Element> RenderObjectWidget::createElement() {
-  return nullptr; // TODO: should create appropriate RenderObjectElement subclass
-};
-
-
-std::shared_ptr<Element> ProxyWidget::createElement() {
-  return nullptr; // TODO: should create ProxyElement
+std::shared_ptr<Element> LeafRenderObjectWidget::createElement() {
+  return std::make_shared<LeafRenderObjectElement>(this);
 };
 
 
@@ -42,4 +36,4 @@ std::shared_ptr<Element> MultiChildRenderObjectWidget::createElement() {
   return std::make_shared<MultiChildRenderObjectElement>(this);
 };
 
-}
+} // namespace caffeine

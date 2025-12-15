@@ -16,7 +16,7 @@ private:
   std::shared_ptr<Key> m_key;
 public:
   const std::shared_ptr<Key>& getKey() const { return m_key; }
-  virtual std::shared_ptr<Element> createElement() {return nullptr;};
+  virtual std::shared_ptr<Element> createElement() = 0;
   static bool canUpdate(Widget* newWidget, Widget* oldWidget);
 
   virtual ~Widget() = default;
@@ -46,7 +46,6 @@ public:
 
 class RenderObjectWidget : public Widget {
 public:
-  virtual std::shared_ptr<Element> createElement();
 
   /// Creates the render object for this widget.
   /// Subclasses must override this to create their specific render object type.
@@ -61,6 +60,13 @@ public:
 };
 
 
+/// A superclass for RenderObjectWidgets that configure RenderObject subclasses that have no children.
+class LeafRenderObjectWidget : public RenderObjectWidget {
+public:
+  virtual std::shared_ptr<Element> createElement();
+};
+
+
 class ProxyWidget : public Widget {
 protected:
   std::shared_ptr<Widget> m_child;
@@ -70,7 +76,6 @@ public:
   ProxyWidget(Widget* child) : m_child(std::shared_ptr<Widget>(child)) {}
   
   const Widget* getChild() const { return m_child.get(); }
-  virtual std::shared_ptr<Element> createElement() = 0;
 
   virtual ~ProxyWidget() = default;
 };

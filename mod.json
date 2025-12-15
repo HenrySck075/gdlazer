@@ -13,7 +13,7 @@
 	"description": "",
   "resources": {
     "files": [
-      "skia/*/lib/*.so"
+      "skia/*/lib/*.dll"
     ]
   }
 }
