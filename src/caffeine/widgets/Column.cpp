@@ -24,7 +24,7 @@ void RenderColumn::performLayout() {
   float currentY = 0;
   for (auto& child : m_children) {
     float childX = (maxWidth - child->getSize().width) * 0.5f;
-    positionChild(child, Offset(childX, currentY));
+    ChildLayoutHelper::positionChild(child, Offset(childX, currentY));
     currentY += child->getSize().height;
   }
 }

@@ -4,7 +4,7 @@ namespace caffeine {
 
 void RenderCenter::performLayout() {
   if (m_child) {
-    layoutChild(m_constraints, true);
+    m_child->layout(m_constraints, true);
     m_size = m_constraints.constrain(m_child->getSize());
 
     Offset offset(

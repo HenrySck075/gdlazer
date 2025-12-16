@@ -4,23 +4,8 @@
 #include "../rendering/object/RenderObject.hpp"
 #include "../widgets/framework/Widget.hpp"
 #include "../widgets/framework/Element.hpp"
-#include "gdlazer/caffeine/rendering/shifted_box.hpp"
 
 namespace caffeine {
-
-// ============================================================================
-// SizedBox: Fixed size container
-// ============================================================================
-
-class RenderSizedBox : public RenderShiftedBox {
-private:
-  Size m_size;
-
-public:
-  RenderSizedBox(Size size) : m_size(size), RenderShiftedBox(nullptr) {}
-
-  void performLayout() override;
-};
 
 // ============================================================================
 // SizedBox Widget
@@ -28,13 +13,14 @@ public:
 
 class SizedBox : public SingleChildRenderObjectWidget {
 private:
-  Size m_size;
+  BoxConstraints m_additionalConstraints;
 
 public:
   SizedBox(Size size, Widget* child = nullptr)
-    : SingleChildRenderObjectWidget(child), m_size(size) {}
+    : SingleChildRenderObjectWidget(child), m_additionalConstraints(BoxConstraints::tight(size)) {}
 
   std::shared_ptr<RenderObject> createRenderObject() override;
+  void updateRenderObject(std::shared_ptr<BuildContext>, std::shared_ptr<RenderObject> renderObject) override;
 };
 
 }  // namespace caffeine

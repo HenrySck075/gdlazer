@@ -24,7 +24,7 @@ void RenderRow::performLayout() {
   float currentX = 0;
   for (auto& child : m_children) {
     float childY = (maxHeight - child->getSize().height) * 0.5f;
-    positionChild(child, Offset(currentX, childY));
+    ChildLayoutHelper::positionChild(child, Offset(currentX, childY));
     currentX += child->getSize().width;
   }
 }

@@ -13,7 +13,7 @@ namespace caffeine {
  */
 
 class RenderObjectElement : public Element {
-private:
+protected:
   std::shared_ptr<RenderObject> m_renderObject;
   std::shared_ptr<RenderObjectElement> findAncestorRenderObjectElement();
   std::shared_ptr<RenderObjectElement> m_ancestorRenderObjectElement;
@@ -35,6 +35,11 @@ public:
 
   void performRebuild() override {
     std::static_pointer_cast<RenderObjectWidget>(m_widget)->updateRenderObject(shared_from_this(), m_renderObject);
+    Element::performRebuild();
+  };
+  void update(Widget* newWidget) override {
+    Element::update(newWidget);
+    performRebuild();
   };
 };
 
@@ -48,7 +53,6 @@ public:
 
 class SingleChildRenderObjectElement : public RenderObjectElement {
 protected:
-  std::shared_ptr<caffeine::RenderBox> m_renderBox; // TODO: mixin, or smth like that
   std::shared_ptr<Element> m_child;
 
 public:
@@ -62,9 +66,16 @@ public:
   void visitChildren(std::function<void(std::shared_ptr<Element>)> visitor) override;
 
   virtual void insertRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {
-    std::static_pointer_cast<SingleChildRenderBox>(m_renderBox)->setChild(child);
+    auto renderObject = dynamic_cast<RenderObjectWithChildMixin*>(m_renderObject.get());
+    if (renderObject) renderObject->setChild(child);
   }
-  virtual void removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {}
+  virtual void removeRenderObjectChild(std::shared_ptr<caffeine::RenderObject> child) override {
+    auto renderObject = dynamic_cast<RenderObjectWithChildMixin*>(m_renderObject.get());
+    if (renderObject) {
+      assert(renderObject->getChild() == child);
+      renderObject->setChild(nullptr);
+    }
+  }
 
   virtual ~SingleChildRenderObjectElement() = default;
 };

@@ -21,4 +21,20 @@ namespace caffeine {
 
     geode::log::popNest();
   }
-}
+  Size ChildLayoutHelper::layoutChild(std::shared_ptr<RenderBox> child,
+                                      const BoxConstraints &childConstraints) {
+    if (child) {
+      child->layout(childConstraints, true);
+      return child->getSize();
+    }
+    geode::log::warn("you dont put a nullptr in layoutChild btw");
+    return {0, 0};
+  }
+  void ChildLayoutHelper::positionChild(std::shared_ptr<RenderBox> child,
+                                        const Offset &offset) {
+    if (child) {
+      std::static_pointer_cast<RenderBox::BoxParentData>(child->getParentData())
+          ->offset = offset;
+    }
+  }
+  } // namespace caffeine

@@ -10,7 +10,7 @@ void RenderPadding::performLayout() {
 
   if (m_child) {
     BoxConstraints childConstraints = m_constraints.deflate(&m_insets);
-    layoutChild(childConstraints, true);
+    m_child->layout(childConstraints, true);
 
     m_size = m_constraints.constrain(Size(
       m_child->getSize().width + horizontal,

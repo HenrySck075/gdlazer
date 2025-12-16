@@ -11,7 +11,7 @@ namespace caffeine {
 // Row: Lays out children horizontally
 // ============================================================================
 
-class RenderRow : public MultiChildRenderBox {
+class RenderRow : public ContainerRenderObjectMixin {
 public:
   void performLayout() override;
   void paint(SkCanvas* canvas) override;

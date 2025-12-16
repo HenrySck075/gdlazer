@@ -11,7 +11,7 @@ namespace caffeine {
 // Column: Lays out children vertically
 // ============================================================================
 
-class RenderColumn : public MultiChildRenderBox {
+class RenderColumn : public ContainerRenderObjectMixin {
 public:
   void performLayout() override;
   void paint(SkCanvas* canvas) override;

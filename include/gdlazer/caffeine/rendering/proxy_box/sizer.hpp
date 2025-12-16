@@ -11,6 +11,20 @@ namespace caffeine {
     BoxConstraints getAdditionalConstraints() const {
       return m_additionalConstraints;
     }
+    void setAdditionalConstraints(BoxConstraints constraints) {
+      if (constraints == m_additionalConstraints) return;
+      m_additionalConstraints = constraints;
+      markNeedsLayout();
+    }
+
+    void performLayout() override {
+      if (m_child) {
+        m_child->layout(m_additionalConstraints.enforce(m_constraints), true);
+        m_size = m_child->getSize();
+      } else {
+        m_size = m_additionalConstraints.enforce(m_constraints).smallest();
+      }
+    }
   private:
     BoxConstraints m_additionalConstraints;
   };

@@ -6,6 +6,7 @@
 #include <Geode/cocos/include/cocos2d.h>
 #include <skia/include/core/SkCanvas.h>
 #include "../../foundation/log.hpp"
+#include "../../foundation/utils/macros.h"
 #include "../../dartui/basic_types.hpp"
 #include "gdlazer/caffeine/painting/edge_insets.hpp"
 
@@ -84,11 +85,23 @@ struct BoxConstraints {
     );
   }
 
+  // Returns new box constraints that respect the given constraints while being as close as possible to the original constraints.
+  BoxConstraints enforce(const BoxConstraints& constraints) const {
+    return BoxConstraints(
+      std::max(minWidth, constraints.minWidth),
+      std::min(maxWidth, constraints.maxWidth),
+      std::max(minHeight, constraints.minHeight),
+      std::min(maxHeight, constraints.maxHeight)
+    );
+  }
+
   bool operator==(const BoxConstraints& other) const {
     return minWidth == other.minWidth && maxWidth == other.maxWidth &&
            minHeight == other.minHeight && maxHeight == other.maxHeight;
   }
 };
+
+class ParentData {};
 
 // ============================================================================
 // RenderObject: Base class for layout
@@ -103,6 +116,7 @@ protected:
   bool m_needsPaint = true;
 
 public:
+  virtual std::shared_ptr<ParentData> getParentData() const { return nullptr; }
   RenderObject() = default;
   virtual ~RenderObject() = default;
 
@@ -148,9 +162,9 @@ public:
 // RenderBox: Base class for rectangular layouts
 // ============================================================================
 
-class RenderBox : public RenderObject {
+class RenderBox : virtual public RenderObject {
 public:
-  struct BoxParentData {
+  struct BoxParentData : public ParentData {
     Offset offset;  // Position set by parent
   };
 
@@ -161,22 +175,20 @@ public:
   RenderBox() : m_parentData(std::make_shared<BoxParentData>()) {}
   virtual ~RenderBox() = default;
 
-  std::shared_ptr<BoxParentData> getParentData() const { return m_parentData; }
+  std::shared_ptr<ParentData> getParentData() const { return m_parentData; } 
+
 };
 
 // ============================================================================
-// SingleChildRenderBox: Base for layouts with one child
+// RenderObjectWithChildMixin: Base for layouts with one child
 // ============================================================================
 
-class SingleChildRenderBox : public RenderBox {
+class RenderObjectWithChildMixin : virtual public RenderObject {
 protected:
-  std::shared_ptr<RenderBox> m_child;
+  std::shared_ptr<RenderObject> m_child;
 
 public:
-  SingleChildRenderBox(std::shared_ptr<RenderBox> child = nullptr) : m_child(child) {};
-  virtual ~SingleChildRenderBox() = default;
-
-  void setChild(std::shared_ptr<RenderBox> child) {
+  void setChild(std::shared_ptr<RenderObject> child) {
     m_child = child;
     if (child) {
       child->setParent(shared_from_this());
@@ -184,35 +196,28 @@ public:
     markNeedsLayout();
   }
 
-  std::shared_ptr<RenderBox> getChild() const { return m_child; }
+  std::shared_ptr<RenderObject> getChild() const { return m_child; }
+};
+
+struct ChildLayoutHelper final {
 
   // Layout helper: call this in performLayout
-  void layoutChild(const BoxConstraints& childConstraints, bool parentUsesSize = false) {
-    if (m_child) {
-      m_child->layout(childConstraints, parentUsesSize);
-    }
-  }
-
-  // Position helper: call this after getting child size
-  void positionChild(const Offset& offset) {
-    if (m_child) {
-      m_child->getParentData()->offset = offset;
-    }
-  }
+  static Size layoutChild(std::shared_ptr<RenderBox> child,
+                          const BoxConstraints &childConstraints);
+  // Position helper for multi-child
+  static void positionChild(std::shared_ptr<RenderBox> child,
+                            const Offset &offset);
 };
 
 // ============================================================================
-// MultiChildRenderBox: Base for layouts with multiple children
+// ContainerRenderObjectMixin: Base for layouts with multiple children
 // ============================================================================
 
-class MultiChildRenderBox : public RenderBox {
+class ContainerRenderObjectMixin : virtual public RenderObject {
 protected:
   std::vector<std::shared_ptr<RenderBox>> m_children;
 
 public:
-  MultiChildRenderBox() = default;
-  virtual ~MultiChildRenderBox() = default;
-
   void addChild(std::shared_ptr<RenderBox> child) {
     m_children.push_back(child);
     if (child) {
@@ -234,13 +239,6 @@ public:
   }
 
   size_t getChildCount() const { return m_children.size(); }
-
-  // Position helper for multi-child
-  void positionChild(std::shared_ptr<RenderBox> child, const Offset& offset) {
-    if (child) {
-      child->getParentData()->offset = offset;
-    }
-  }
 };
 
 }  // namespace caffeine

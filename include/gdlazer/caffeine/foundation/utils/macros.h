@@ -28,3 +28,8 @@
 
 
 #define finally catch(std::exception&)
+
+
+
+#define $mixin template<class Derived> class
+#define $mxself Derived* self = static_cast<Derived*>(this)

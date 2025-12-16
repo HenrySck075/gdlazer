@@ -3,18 +3,24 @@
 
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
 namespace caffeine {
-  class RenderShiftedBox : public SingleChildRenderBox {
+  class RenderShiftedBox : public RenderBox, public RenderObjectWithChildMixin {
   public:
-    RenderShiftedBox(std::shared_ptr<RenderBox> child)
-      : SingleChildRenderBox(child) {};
+    RenderShiftedBox(std::shared_ptr<RenderBox> child) {m_child = child;};
     void paint(SkCanvas* canvas) override {
       if (m_child) {
-        auto offset = m_child->getParentData()->offset;
+        auto offset = std::static_pointer_cast<BoxParentData>(m_child->getParentData())->offset;
         canvas->save();
         canvas->translate(offset.dx, offset.dy);
         m_child->paint(canvas);
         canvas->restore();
       }
     };
+
+    // Position helper: call this after getting child size
+    void positionChild(const Offset& offset) {
+      if (m_child) {
+        std::static_pointer_cast<RenderBox::BoxParentData>(m_child->getParentData())->offset = offset;
+      }
+    }
   };
 }
