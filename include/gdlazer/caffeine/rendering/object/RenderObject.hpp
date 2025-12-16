@@ -67,6 +67,10 @@ struct BoxConstraints {
     );
   }
 
+  BoxConstraints loosen() const {
+    return {0,maxWidth,0,maxHeight};
+  }
+
   // Reduce constraints by padding all sides
   BoxConstraints deflate(float padding) const {
     EdgeInsets m = EdgeInsets::all(padding);

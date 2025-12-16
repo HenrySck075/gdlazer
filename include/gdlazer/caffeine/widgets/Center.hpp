@@ -1,10 +1,9 @@
 #pragma once
 
 #include <memory>
-#include "../rendering/object/RenderObject.hpp"
+#include "Align.hpp"
+#include "../painting/alignment.hpp"
 #include "../widgets/framework/Widget.hpp"
-#include "../widgets/framework/Element.hpp"
-#include "gdlazer/caffeine/rendering/shifted_box.hpp"
 
 namespace caffeine {
 
@@ -12,22 +11,15 @@ namespace caffeine {
 // Center: Centers child within available space
 // ============================================================================
 
-class RenderCenter : public RenderShiftedBox {
+/// A widget that centers its child within itself.
+///
+/// This is a convenience widget for aligning a child with Alignment::center.
+class Center : public Align {
 public:
-  RenderCenter(std::shared_ptr<RenderBox> child = nullptr)
-    : RenderShiftedBox(child) {}
-  void performLayout() override;
+  Center(Widget* child = nullptr)
+    : Align(std::make_shared<Alignment>(Alignment::center), child, 1.0f, 1.0f) {}
+
+  virtual ~Center() = default;
 };
-
-// ============================================================================
-// Center Widget
-// ============================================================================
-
-class Center : public SingleChildRenderObjectWidget {
-public:
-  Center(Widget* child = nullptr) : SingleChildRenderObjectWidget(child) {}
-
-  std::shared_ptr<RenderObject> createRenderObject() override;
- };
 
 }  // namespace caffeine

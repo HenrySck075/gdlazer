@@ -11,6 +11,10 @@ namespace caffeine {
 
 
   enum class VerticalDirection : char {up, down};
+  enum class TextDirection {
+    ltr,
+    rtl,
+  };
   enum class AxisDirection : char {up,down,left,right};
   inline Axis axisDirectionToAxis(AxisDirection axisDir) {
     switch (axisDir) {

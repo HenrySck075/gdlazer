@@ -19,6 +19,7 @@ namespace caffeine {
       m_needsLayout = false;
     }
 
+    geode::log::debug("[{}]: Size: {}", log::getObjectName(this), m_size);
     geode::log::popNest();
   }
   Size ChildLayoutHelper::layoutChild(std::shared_ptr<RenderBox> child,
@@ -33,8 +34,9 @@ namespace caffeine {
   void ChildLayoutHelper::positionChild(std::shared_ptr<RenderBox> child,
                                         const Offset &offset) {
     if (child) {
-      std::static_pointer_cast<RenderBox::BoxParentData>(child->getParentData())
-          ->offset = offset;
+      std::static_pointer_cast<RenderBox::BoxParentData>(child->getParentData())->offset = offset;
+      geode::log::debug("Set <{}>'s position to {}", log::getObjectName(child.get()), offset);
+
     }
   }
   } // namespace caffeine

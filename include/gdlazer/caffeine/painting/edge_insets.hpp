@@ -8,11 +8,6 @@
 
 namespace caffeine {
 
-enum class TextDirection {
-  ltr,
-  rtl,
-};
-
 // Forward declarations
 struct EdgeInsets;
 struct EdgeInsetsDirectional;

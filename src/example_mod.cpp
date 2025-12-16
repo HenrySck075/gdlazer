@@ -3,6 +3,8 @@
 #include <cocos2d.h>
 #include <memory>
 
+#include "gdlazer/caffeine/widgets/Center.hpp"
+#include "gdlazer/caffeine/widgets/SizedBox.hpp"
 #include "gdlazer/caffeine/widgets/framework/Widget.hpp"
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
 #include "gdlazer/caffeine/widgets/Padding.hpp"
@@ -72,7 +74,8 @@ class $modify(MenuLayer) {
         // Build the widget tree following the catgirl's guide:
         // Padding(16px) -> ColoredBox(blue)
         auto blueBox = new ColoredBoxWidget({100, 150, 200});
-        auto paddedBox = new caffeine::Padding(16.0f, blueBox);
+        auto sizedBox = new caffeine::SizedBox({200,200}, blueBox);
+        auto paddedBox = new caffeine::Center(sizedBox);
 
         auto app = runApp(paddedBox);
 

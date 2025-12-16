@@ -17,10 +17,8 @@ namespace caffeine {
     };
 
     // Position helper: call this after getting child size
-    void positionChild(const Offset& offset) {
-      if (m_child) {
-        std::static_pointer_cast<RenderBox::BoxParentData>(m_child->getParentData())->offset = offset;
-      }
+    inline void positionChild(const Offset& offset) {
+      ChildLayoutHelper::positionChild(std::dynamic_pointer_cast<RenderBox>(m_child), offset);
     }
   };
 }
