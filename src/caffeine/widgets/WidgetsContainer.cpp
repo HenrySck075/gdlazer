@@ -2,19 +2,42 @@
 #include <Geode/cocos/CCDirector.h>
 #include <skia/include/core/SkImageInfo.h>
 #include <vector>
+#include <cstring>
 
 namespace caffeine {
-bool WidgetsContainer::init() {
-  if (!CCSprite::init()) return false;
 
-  // Get window size and initialize sprite size
+// Helper function to flip texture vertically (convert from Skia Y-up to OpenGL Y-down)
+static void flipTextureVertically(uint8_t* pixelData, int width, int height) {
+  const int bytesPerPixel = 4; // RGBA
+  const int rowBytes = width * bytesPerPixel;
+  std::vector<uint8_t> tempRow(rowBytes);
+
+  for (int i = 0; i < height / 2; ++i) {
+    uint8_t* topRow = pixelData + i * rowBytes;
+    uint8_t* bottomRow = pixelData + (height - 1 - i) * rowBytes;
+    
+    // Swap rows
+    std::memcpy(tempRow.data(), topRow, rowBytes);
+    std::memcpy(topRow, bottomRow, rowBytes);
+    std::memcpy(bottomRow, tempRow.data(), rowBytes);
+  }
+}
+
+bool WidgetsContainer::init() {
+  if (!CCLayer::init()) return false;
+
+  // Get window size and initialize layer size
   auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
   this->setContentSize(winSize);
   this->setAnchorPoint(ccp(0, 0));
 
+  // Create the internal texture sprite
+  m_textureSprite = cocos2d::CCSprite::create();
+  m_textureSprite->setAnchorPoint(ccp(0, 0));
+  this->addChild(m_textureSprite);
+
   // Initialize the widgets binding (creates build owner)
   initWidgetsBinding();
-
 
   // Schedule this node to receive update() calls every frame
   this->scheduleUpdate();
@@ -72,10 +95,15 @@ void WidgetsContainer::updateSpriteTexture() {
     return;
   }
 
+  auto gomer = pixelData.data();
+
+  // Flip the texture vertically since Skia renders with Y-up but Cocos2D expects Y-down
+  flipTextureVertically(gomer, width, height);
+
   // Create a CCTexture2D from pixel data
   cocos2d::CCTexture2D* texture = new cocos2d::CCTexture2D();
   bool success = texture->initWithData(
-    pixelData.data(),
+    gomer,
     cocos2d::kCCTexture2DPixelFormat_RGBA8888,
     width,
     height,
@@ -86,16 +114,24 @@ void WidgetsContainer::updateSpriteTexture() {
     texture->release();
     return;
   }
-
-  // Update the sprite with the new texture
-  this->setTexture(texture);
-  this->setTextureRect(cocos2d::CCRectMake(0, 0, width, height));
+  
+  // Update the internal sprite with the new texture
+  auto textureContentSize = texture->getContentSize();
+  m_textureSprite->setTexture(texture);
+  m_textureSprite->setTextureRect(cocos2d::CCRectMake(0, 0, textureContentSize.width, textureContentSize.height));
+  
+  // Scale the sprite to fit the container while maintaining the aspect ratio
+  auto containerSize = this->getContentSize();
+  float scaleX = containerSize.width / textureContentSize.width;
+  float scaleY = containerSize.height / textureContentSize.height;
+  float scale = std::min(scaleX, scaleY);
+  m_textureSprite->setScale(scale);
   
   texture->release();
 }
 
 void WidgetsContainer::update(float deltaTime) {
-  CCSprite::update(deltaTime);
+  CCLayer::update(deltaTime);
 
   // Frame counter for timestamp
   m_frameCount++;

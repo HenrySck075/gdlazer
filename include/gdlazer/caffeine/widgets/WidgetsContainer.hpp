@@ -5,10 +5,10 @@
 #include "gdlazer/caffeine/rendering/SkiaRenderContext.hpp"
 
 namespace caffeine {
-/// A CCSprite container that bootstraps and manages the entire widget/element tree.
+/// A CCLayer container that bootstraps and manages the entire widget/element tree.
 /// Combines WidgetsBinding and SchedulerBinding to drive the frame pipeline.
-/// Renders the widget tree using Skia to an off-screen canvas, then displays as a sprite.
-class WidgetsContainer : public cocos2d::CCSprite, public WidgetsBinding, public SchedulerBinding {
+/// Renders the widget tree using Skia to an off-screen canvas, then displays via an internal CCSprite.
+class WidgetsContainer : public cocos2d::CCLayer, public WidgetsBinding, public SchedulerBinding {
 public:
   CREATE_FUNC(WidgetsContainer);
 
@@ -21,13 +21,14 @@ public:
 private:
   uint64_t m_frameCount = 0;
   caffeine::SkiaRenderContext m_skiaContext;
+  cocos2d::CCSprite* m_textureSprite = nullptr;
 
   bool init() override;
   
   /// Paints the render object tree to the Skia canvas.
   void paintRenderTree();
   
-  /// Updates the CCSprite texture from the latest Skia snapshot.
+  /// Updates the internal sprite texture from the latest Skia snapshot.
   void updateSpriteTexture();
 };
 

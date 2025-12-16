@@ -37,8 +37,6 @@ public:
     std::static_pointer_cast<BoxParentData>(m_child->getParentData())->offset = m_alignment->alongSize(m_size - m_child->getSize());
   }
 
-  void performLayout() override;
-
   virtual ~RenderAligningShiftedBox() = default;
 };
 

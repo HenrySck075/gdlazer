@@ -81,7 +81,7 @@ class $modify(MenuLayer) {
 
         // Add the widget system to the menu layer
         this->addChild(app, 10);
-
+/*
         // Add a label to indicate the framework is active
         auto label = CCLabelBMFont::create(
             "Caffeine Skia Rendering Active",
@@ -92,7 +92,7 @@ class $modify(MenuLayer) {
         label->setScale(0.5f);
         label->setColor({0, 255, 0});
         this->addChild(label, 11);
-
+*/
         return true;
     }
 };
