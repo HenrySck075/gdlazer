@@ -5,7 +5,9 @@
 
 #include "gdlazer/caffeine/widgets/Center.hpp"
 #include "gdlazer/caffeine/widgets/SizedBox.hpp"
+#include "gdlazer/caffeine/widgets/framework/State.hpp"
 #include "gdlazer/caffeine/widgets/framework/Widget.hpp"
+#include "gdlazer/caffeine/widgets/ColoredBox.hpp"
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
 #include "gdlazer/caffeine/widgets/Padding.hpp"
 #include "gdlazer/caffeine/widgets/WidgetsContainer.hpp"
@@ -14,57 +16,43 @@ using namespace cocos2d;
 using namespace geode::prelude;
 
 // ============================================================================
-// Example Layout: Inspired by the Catgirl's Guide from LAYOUT_SYSTEM.md
-// A simple colored box with padding, demonstrating the layout system
-// ============================================================================
-
-namespace {
-
-/// Concrete RenderObject for a colored box
-class ColoredBoxRender : public caffeine::RenderBox {
-private:
-    ccColor3B m_color;
-
-public:
-    ColoredBoxRender(ccColor3B color) : m_color(color) {}
-
-    void performLayout() override {
-        m_size = m_constraints.biggest();
-    }
-
-    void paint(SkCanvas* canvas) override {
-        // Paint a colored rectangle using Skia
-        SkPaint paint;
-        paint.setColor(SkColorSetARGB(255, m_color.r, m_color.g, m_color.b));
-        canvas->drawRect(SkRect::MakeWH(m_size.width, m_size.height), paint);
-    }
-};
-
-
-}  // namespace
-
-// ============================================================================
-// Widgets - Map to RenderObjects
-// ============================================================================
-
-/// A colored box widget that renders a solid color rectangle
-class ColoredBoxWidget : public caffeine::LeafRenderObjectWidget {
-private:
-    ccColor3B m_color;
-
-public:
-    ColoredBoxWidget(ccColor3B color) : m_color(color) {}
-
-    ccColor3B getColor() const { return m_color; }
-
-    std::shared_ptr<caffeine::RenderObject> createRenderObject() override {
-        return std::make_shared<ColoredBoxRender>(m_color);
-    }
-};
-
-// ============================================================================
 // Hook into MenuLayer to add our Caffeine widget example
 // ============================================================================
+
+class gamerState : public caffeine::State {
+  caffeine::Color m_color;
+  std::thread m_thread;
+public:
+  void initState() override {
+    // A thread that sleeps for 1 second and roll a random color in a setState callback
+    m_thread = std::thread([this]() {
+      while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        this->setState([this]() {
+          // Random color
+          int r = rand() % 256;
+          int g = rand() % 256;
+          int b = rand() % 256;
+          m_color = caffeine::Color::fromRGB(r, g, b);
+        });
+      }
+    });
+  }
+  caffeine::Widget* build(std::shared_ptr<caffeine::BuildContext> context) override {
+    // Build a simple widget tree: Padding(16px) -> ColoredBox(blue)
+    return new caffeine::SizedBox(
+      {200,200}, 
+      new caffeine::ColoredBox(m_color)
+    );
+  }
+};
+
+class gamer : public caffeine::StatefulWidget {
+public:
+  std::shared_ptr<caffeine::State> createState() override {
+    return std::make_shared<gamerState>();
+  }
+};
 
 class $modify(MenuLayer) {
     bool init() {
@@ -73,9 +61,7 @@ class $modify(MenuLayer) {
 
         // Build the widget tree following the catgirl's guide:
         // Padding(16px) -> ColoredBox(blue)
-        auto blueBox = new ColoredBoxWidget({100, 150, 200});
-        auto sizedBox = new caffeine::SizedBox({200,200}, blueBox);
-        auto paddedBox = new caffeine::Center(sizedBox);
+        auto paddedBox = new caffeine::Center(new gamer());
 
         auto app = runApp(paddedBox);
 

@@ -1,3 +1,4 @@
+#include "gdlazer/caffeine/foundation/log.hpp"
 #include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
 #include <functional>
 #include <gdlazer/caffeine/widgets/binding/BuildOwner.hpp>
@@ -126,22 +127,28 @@ std::shared_ptr<Element> Element::updateChild(
   Widget* newWidget,
   void* newSlot
 ) {
+  auto orb = log::getObjectName(this);
   if (child == nullptr) {
     if (newWidget != nullptr) {
+      geode::log::debug("[{}::updateChild]: Inflating new element", orb);
       auto newChild = inflateWidget(newWidget, newSlot);
       return newChild;
     } else {
+      geode::log::debug("[{}::updateChild]: nothing happens", orb);
       return nullptr;
     }
   } else if (newWidget == nullptr) {
+    geode::log::debug("[{}::updateChild]: Deleting {}", orb, child->toString());
     deactivateChild(child);
     return nullptr;
   } else if (Widget::canUpdate(newWidget, child->m_widget.get())) {
+    geode::log::debug("[{}::updateChild]: Updating {}", orb, child->toString());
     if (child->m_slot != newSlot) updateSlotForChild(child, newSlot);
     child->update(newWidget);
     assert(child->m_widget.get() == newWidget);
     return child;
   } else {
+    geode::log::debug("[{}::updateChild]: Child not updatable, inflating new one", orb);
     deactivateChild(child);
     auto newChild = inflateWidget(newWidget, newSlot);
     return newChild;

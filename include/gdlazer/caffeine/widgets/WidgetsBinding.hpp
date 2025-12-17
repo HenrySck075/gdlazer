@@ -29,6 +29,8 @@ public:
 
   /// Mounts the given widget tree and creates the render tree.
   virtual void attachRootWidget(Widget* rootWidget);
+
+  void drawFrame();
 };
 
 }

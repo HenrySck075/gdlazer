@@ -34,41 +34,19 @@ public:
 };
 
 
-class StatefulElement;
-
-class State {
-  friend class StatefulElement;
-protected:
-  std::shared_ptr<StatefulElement> m_element;
-public:
-  virtual void initState() {}
-  virtual void didUpdateWidget(std::shared_ptr<StatefulWidget> oldWidget) {}
-  virtual void dispose() {}
-  virtual Widget* build(std::shared_ptr<BuildContext> context) = 0;
-  void setState(std::function<void()> fn);
-
-  virtual ~State() = default;
-};
-
-
 class StatefulElement : public ComponentElement {
 protected:
   std::shared_ptr<State> m_state;
   std::shared_ptr<StatefulWidget> m_widget;
 
 public:
-  StatefulElement(StatefulWidget* widget) 
-    : ComponentElement(widget), m_widget(std::shared_ptr<StatefulWidget>(widget)) {
-    m_state = widget->createState();
-  }
+  StatefulElement(StatefulWidget *widget);
 
-  void setStateElement(std::shared_ptr<StatefulElement> self) {
-    m_state->m_element = self;
-  }
+  void setStateElement(std::shared_ptr<StatefulElement> self);
 
   virtual void mount(std::shared_ptr<Element> parent, void* slot) override;
   virtual void performRebuild() override;
-  Widget* build() override {return m_state->build(std::shared_ptr<BuildContext>(this));}
+  Widget* build() override;
   virtual void update(Widget* newWidget) override;
 };
 

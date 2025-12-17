@@ -36,7 +36,8 @@ public:
   BuildOwner(decltype(m_onBuildScheduled) onBuildScheduled);
 
   void scheduleBuildFor(Element* element);
-  void buildScope(Element* context, std::optional<VoidCallback> callback);
+  void buildScope(Element* context, std::optional<VoidCallback> callback = std::nullopt);
+  void finalizeTree();
   std::shared_ptr<BuildScope> getRootBuildScope() { return m_buildScope; }
 };
 }

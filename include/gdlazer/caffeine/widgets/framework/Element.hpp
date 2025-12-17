@@ -7,10 +7,9 @@
 #include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
 #include <gdlazer/caffeine/foundation/Key.hpp>
 #include <gdlazer/caffeine/rendering/object/RenderObject.hpp>
+#include "BuildContext.hpp"
 
 namespace caffeine {
-// Element
-class BuildContext {};
 
 class Widget;
 class Element;
@@ -63,6 +62,7 @@ enum class _ElementLifecycle {
 
 class _InactiveElements {
   friend class Element;
+  friend class BuildOwner;
   std::list<std::shared_ptr<Element>> m_elements;
   bool m_locked = false;
 
@@ -76,7 +76,7 @@ public:
   void remove(std::shared_ptr<Element> element);
 };
 
-class Element : public BuildContext, public std::enable_shared_from_this<Element> {
+class Element : public BuildContext, public std::enable_shared_from_this<Element>, public log::StringConvertible {
   friend class _InactiveElements;
 protected:
   std::shared_ptr<BuildScope> m_parentBuildScope;

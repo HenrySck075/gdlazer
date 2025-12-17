@@ -12,6 +12,7 @@ namespace caffeine {
     Size computeSizeForNoChild(BoxConstraints& constraints) {
       return constraints.smallest();
     }
+  public:
     void paint(SkCanvas* canvas) override {
       if (m_child) {
         m_child->paint(canvas);

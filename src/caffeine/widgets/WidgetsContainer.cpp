@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <gdlazer/caffeine/widgets/WidgetsContainer.hpp>
 #include <Geode/cocos/CCDirector.h>
 #include <skia/include/core/SkImageInfo.h>
@@ -10,16 +11,13 @@ namespace caffeine {
 static void flipTextureVertically(uint8_t* pixelData, int width, int height) {
   const int bytesPerPixel = 4; // RGBA
   const int rowBytes = width * bytesPerPixel;
-  std::vector<uint8_t> tempRow(rowBytes);
 
   for (int i = 0; i < height / 2; ++i) {
     uint8_t* topRow = pixelData + i * rowBytes;
     uint8_t* bottomRow = pixelData + (height - 1 - i) * rowBytes;
     
     // Swap rows
-    std::memcpy(tempRow.data(), topRow, rowBytes);
-    std::memcpy(topRow, bottomRow, rowBytes);
-    std::memcpy(bottomRow, tempRow.data(), rowBytes);
+    std::swap_ranges(topRow,topRow+rowBytes,bottomRow);
   }
 }
 
@@ -38,6 +36,8 @@ bool WidgetsContainer::init() {
 
   // Initialize the widgets binding (creates build owner)
   initWidgetsBinding();
+
+  addPersistentFrameCallback([this](unsigned long){drawFrame();});
 
   // Schedule this node to receive update() calls every frame
   this->scheduleUpdate();

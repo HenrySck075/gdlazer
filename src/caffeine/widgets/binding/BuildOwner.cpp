@@ -71,4 +71,10 @@ void BuildOwner::buildScope(Element* context, std::optional<VoidCallback> callba
   assert(dm_stateLockLevel >= 0);
 }
 
+void BuildOwner::finalizeTree() {
+#ifdef GDF_DEBUG
+  dm_stateLockLevel++;
+#endif
+  m_inactiveElements._unmountAll();
+}
 }

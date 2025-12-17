@@ -1,4 +1,5 @@
 #include <gdlazer/caffeine/widgets/framework/ComponentElements.hpp>
+#include <gdlazer/caffeine/widgets/framework/State.hpp>
 
 namespace caffeine {
 
@@ -24,11 +25,26 @@ void StatelessElement::update(Widget* newWidget) {
   markNeedsBuild();
 }
 
+StatefulElement::StatefulElement(StatefulWidget* widget)
+    : ComponentElement(widget),
+      m_widget(std::shared_ptr<StatefulWidget>(widget)) {
+  m_state = widget->createState();
+  m_state->m_widget = m_widget;
+  m_state->m_element = std::static_pointer_cast<StatefulElement>(shared_from_this());
+}
+
 void StatefulElement::mount(std::shared_ptr<Element> parent, void* slot) {
   Element::mount(parent, slot);
   m_state->initState();
 }
 
+
+void StatefulElement::setStateElement(std::shared_ptr<StatefulElement> self) {
+  //m_state->m_element = self;
+}
+Widget* StatefulElement::build() {
+  return m_state->build(std::shared_ptr<BuildContext>(this));
+}
 
 void StatefulElement::performRebuild() {
   auto built_widget = build();
@@ -51,16 +67,9 @@ void StatefulElement::update(Widget* newWidget) {
   markNeedsBuild();
 }
 
-
-void State::setState(std::function<void()> fn) {
-  fn();
-  m_element->markNeedsBuild();
-}
-
 void ProxyElement::update(Widget* newWidget) {
   assert(newWidget != nullptr);
   m_widget = std::static_pointer_cast<ProxyWidget>(std::shared_ptr<Widget>(newWidget));
   markNeedsBuild();
 }
-
-}
+} // namespace caffeine

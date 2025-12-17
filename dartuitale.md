@@ -791,8 +791,8 @@ void notifyClients(InheritedWidget oldWidget) {
                     │               │
                     ▼               ▼
         ┌──────────────────┐  ┌──────────────────┐
-        │   createElement()  │  │   canUpdate()    │
-        │   (Inflates)      │  │   (Reconciles)   │
+        │ createElement()  │  │   canUpdate()    │
+        │   (Inflates)     │  │   (Reconciles)   │
         └──────────────────┘  └──────────────────┘
                     │               │
                     └───────┬───────┘
@@ -809,8 +809,8 @@ void notifyClients(InheritedWidget oldWidget) {
                     │                    │
                     ▼                    ▼
         ┌──────────────────┐  ┌──────────────────┐
-        │ performRebuild()  │  │ attachRenderObject()
-        │ (Calls build())   │  │ (Links RenderObject)
+        │ performRebuild() │  │ attachRenderObject()
+        │ (Calls build())  │  │ (Links RenderObject)
         └──────────────────┘  └──────────────────┘
                     │                    │
                     └───────┬────────────┘

@@ -12,13 +12,12 @@ bool Widget::canUpdate(Widget* newWidget, Widget* oldWidget) {
 
 
 std::shared_ptr<Element> StatelessWidget::createElement() { 
-  return std::shared_ptr<Element>(new StatelessElement(this));
+  return std::make_shared<StatelessElement>(this);
 };
 
 
 std::shared_ptr<Element> StatefulWidget::createElement() {
   auto elem = std::make_shared<StatefulElement>(this);
-  elem->setStateElement(elem);
   return elem;
 };
 

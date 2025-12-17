@@ -23,8 +23,17 @@ void WidgetsBinding::attachRootWidget(Widget* rootWidget) {
   });
 }
 
+void WidgetsBinding::drawFrame() {
+  // if we dont have to refresh the frame then we simply dont bother
+  // if anything, animated widgets' tickers cb on begin frame callbacks shouldve caused them to be marked as dirty
+  // remove this if it breaks
+  if (!m_shouldRefreshFrame) return;
+  m_buildOwner->buildScope(m_rootElement.get());
+  m_buildOwner->finalizeTree();
+}
+
 void WidgetsBinding::initWidgetsBinding() {
-    m_buildOwner = std::make_shared<BuildOwner>([this](){m_shouldRefreshFrame = true;});
-  }
+  m_buildOwner = std::make_shared<BuildOwner>([this](){m_shouldRefreshFrame = true;});
+}
 
 }
