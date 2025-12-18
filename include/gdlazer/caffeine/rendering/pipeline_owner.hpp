@@ -6,6 +6,9 @@
 
 namespace caffeine {
 
+class PaintingContext;
+struct Offset;
+
 class PipelineOwner {
 private:
   std::vector<RenderObject*> m_nodesNeedingPaint;
@@ -32,7 +35,7 @@ public:
 
   /// Process all dirty paint nodes
   /// Sorts by depth (deepest first) and calls paint() on each
-  void flushPaint() {
+  void flushPaint(PaintingContext* context = nullptr, const Offset& offset = Offset{0, 0}) {
     if (m_nodesNeedingPaint.empty()) return;
 
     // Sort by depth: deeper nodes first (children before parents)
@@ -45,12 +48,10 @@ public:
     auto toRepaint = std::move(m_nodesNeedingPaint);
     m_nodesNeedingPaint.clear();
 
-    // Paint each node
-    // TODO: Get PaintingContext and Offset from somewhere (RenderView)
+    // Paint each node with provided context
     for (auto node : toRepaint) {
-      if (node->needsPaint()) {
-        // Stub for now - will be called from RenderView with proper context
-        // node->_paintWithContext(context, offset);
+      if (node->needsPaint() && context) {
+        node->_paintWithContext(context, offset);
       }
     }
   }

@@ -8,10 +8,12 @@ namespace caffeine {
   public:
     RenderShiftedBox(RefNauseam<RenderBox> child) {m_child = child;};
     void paint(PaintingContext* context, const Offset& offset) override {
-      if (m_child) {
+      if (m_child && context) {
         auto offset_data = static_cast<BoxParentData*>(m_child->getParentData().get())->offset;
-        // Note: Will need to implement canvas translation in PaintingContext
-        m_child->paint(context, offset_data);
+        // Push the child's offset onto the canvas
+        context->pushOffset(offset_data);
+        m_child->paint(context, offset);
+        context->popOffset();
       }
     };
 

@@ -19,6 +19,23 @@ public:
 
   SkCanvas* getCanvas() const { return m_canvas; }
   const Rect& getPaintBounds() const { return m_paintBounds; }
+
+  /// Apply an offset transformation to the canvas
+  /// Caller must restore() after painting
+  void pushOffset(const Offset& offset) {
+    if (m_canvas) {
+      m_canvas->save();
+      m_canvas->translate(offset.dx, offset.dy);
+    }
+  }
+
+  /// Restore the canvas state after pushOffset
+  void popOffset() {
+    if (m_canvas) {
+      m_canvas->restore();
+    }
+  }
 };
 
 }  // namespace caffeine
+

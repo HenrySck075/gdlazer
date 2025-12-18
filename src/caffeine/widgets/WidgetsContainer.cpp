@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <gdlazer/caffeine/widgets/WidgetsContainer.hpp>
+#include <gdlazer/caffeine/rendering/painting_context.hpp>
 #include <Geode/cocos/CCDirector.h>
 #include <skia/include/core/SkImageInfo.h>
 #include <vector>
@@ -74,9 +75,12 @@ void WidgetsContainer::paintRenderTree() {
   // Paint phase - render to Skia canvas
   SkCanvas* canvas = m_skiaContext.getCanvas();
   if (canvas) {
-    // TODO: Need to create PaintingContext and pass offset
-    // For now, stub the painting phase
-    // rootRenderObject->paint(context, offset);
+    // Create painting context for the root with full bounds
+    Rect bounds = Rect{0, 0, winSize.width, winSize.height};
+    caffeine::PaintingContext context(canvas, bounds);
+    
+    // Paint the root render object tree
+    rootRenderObject->paint(&context, Offset{0, 0});
   }
 
   // End frame and capture snapshot
