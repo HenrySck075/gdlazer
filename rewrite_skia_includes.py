@@ -39,6 +39,20 @@ def rewrite_includes_in_file(filepath):
         content
     )
     
+    # Handle #include "modules/ with #include "skia/modules/
+    content = re.sub(
+        r'#include\s+"modules/',
+        '#include "skia/modules/',
+        content
+    )
+    
+    # Also handle #include <modules/
+    content = re.sub(
+        r'#include\s+<modules/',
+        '#include <skia/modules/',
+        content
+    )
+    
     if content != original_content:
         try:
             with open(filepath, 'w', encoding='utf-8') as f:

@@ -37,6 +37,13 @@ public:
   PipelineOwner* getPipelineOwner() const { return m_pipelineOwner.get(); }
   SkiaRenderContext* getRenderContext() const { return m_renderContext.get(); }
 
+  /// Mark a node as a repaint boundary for layer caching
+  void markRepaintBoundary(RenderObject* node) {
+    if (node) {
+      node->setRepaintBoundary(true);
+    }
+  }
+
   /// Main frame orchestration - called once per frame
   /// Follows Flutter's frame pipeline:
   void drawFrame();

@@ -126,6 +126,7 @@ protected:
   int m_depth = 0;
   bool m_needsLayout = true;
   bool m_needsPaint = true;
+  bool m_isRepaintBoundary = false;
 
 public:
   virtual std::shared_ptr<ParentData> getParentData() const { return nullptr; }
@@ -140,6 +141,10 @@ public:
   bool needsPaint() const { return m_needsPaint; }
   int getDepth() const { return m_depth; }
   PipelineOwner* getOwner() const { return m_owner; }
+  bool isRepaintBoundary() const { return m_isRepaintBoundary; }
+
+  // Setters for optimization
+  void setRepaintBoundary(bool value) { m_isRepaintBoundary = value; }
 
   // Main layout entry point
   void layout(const BoxConstraints& constraints, bool parentUsesSize = false);

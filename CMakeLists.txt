@@ -32,21 +32,21 @@ add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 # Map GEODE_TARGET_PLATFORM to Skia platform name
 if(GEODE_TARGET_PLATFORM STREQUAL "Win64")
     set(SKIA_PLATFORM "Windows")
-    set(SKIA_ARCHIVE "skia-Windows.zip")
+    set(SKIA_ARCHIVE "skia-Windows-bin.zip")
 elseif(GEODE_TARGET_PLATFORM STREQUAL "Android64")
     set(SKIA_PLATFORM "Android64")
-    set(SKIA_ARCHIVE "skia-Android64.tar.gz")
+    set(SKIA_ARCHIVE "skia-Android64-bin.tar.gz")
 elseif(GEODE_TARGET_PLATFORM STREQUAL "MacOS")
     set(SKIA_PLATFORM "macOS")
-    set(SKIA_ARCHIVE "skia-macOS.tar.gz")
+    set(SKIA_ARCHIVE "skia-macOS-bin.tar.gz")
 else()
     message(WARNING "Skia not available for platform ${GEODE_TARGET_PLATFORM}")
 endif()
 
 if(DEFINED SKIA_PLATFORM)
-    #set(SKIA_VERSION "v5e1ff61-20251215-132238")
-    set(SKIA_VERSION "v5e1ff61-20251215-152117")
+    set(SKIA_VERSION "v5b6a9ad-20251218-084354")
     set(SKIA_URL "https://github.com/HenrySck075/geode-skia/releases/download/${SKIA_VERSION}/${SKIA_ARCHIVE}")
+    set(SKIA_HEADERS_URL "https://github.com/HenrySck075/geode-skia/releases/download/${SKIA_VERSION}/skia-headers.tar.gz")
     set(SKIA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/skia/${SKIA_PLATFORM}")
     
     # Download and extract Skia if not already present
@@ -67,36 +67,65 @@ if(DEFINED SKIA_PLATFORM)
             if(NOT DOWNLOAD_STATUS_CODE EQUAL 0)
             list(GET DOWNLOAD_STATUS 1 DOWNLOAD_STATUS_MSG)
             file(REMOVE "${SKIA_TEMP}/${SKIA_ARCHIVE}")
-            message(FATAL_ERROR "Failed to download Skia: ${DOWNLOAD_STATUS_MSG}")
+            message(FATAL_ERROR "Failed to download Skia binaries: ${DOWNLOAD_STATUS_MSG}")
             endif()
         else()
-            message(STATUS "Skia archive already exists, skipping download")
+            message(STATUS "Skia binary archive already exists, skipping download")
+        endif()
+        if(NOT EXISTS "${SKIA_TEMP}/skia-headers.tar.gz")
+          file(DOWNLOAD "${SKIA_HEADERS_URL}" "${SKIA_TEMP}/skia-headers.tar.gz" 
+             SHOW_PROGRESS STATUS DOWNLOAD_STATUS)
+            
+            list(GET DOWNLOAD_STATUS 0 DOWNLOAD_STATUS_CODE)
+            if(NOT DOWNLOAD_STATUS_CODE EQUAL 0)
+            list(GET DOWNLOAD_STATUS 1 DOWNLOAD_STATUS_MSG)
+            file(REMOVE "${SKIA_TEMP}/skia-headers.tar.gz")
+            message(FATAL_ERROR "Failed to download Skia headers: ${DOWNLOAD_STATUS_MSG}")
+            endif()
+        else()
+            message(STATUS "Skia headers archive already exists, skipping download")
         endif()
         
         # Extract
         message(STATUS "Extracting Skia...")
-        file(MAKE_DIRECTORY "${SKIA_TEMP}/${SKIA_PLATFORM}")
+        file(MAKE_DIRECTORY "${SKIA_TEMP}/unzipped")
         if(SKIA_ARCHIVE MATCHES "\\.zip$")
             execute_process(COMMAND ${CMAKE_COMMAND} -E tar xf "${SKIA_TEMP}/${SKIA_ARCHIVE}"
-                          WORKING_DIRECTORY "${SKIA_TEMP}/${SKIA_PLATFORM}"
+                          WORKING_DIRECTORY "${SKIA_TEMP}/unzipped"
                           RESULT_VARIABLE EXTRACT_RESULT)
         else()
             # For tar.gz, extract to a subdirectory first
             execute_process(COMMAND tar -xzf "${SKIA_TEMP}/${SKIA_ARCHIVE}"
-                          WORKING_DIRECTORY "${SKIA_TEMP}/${SKIA_PLATFORM}"
+                          WORKING_DIRECTORY "${SKIA_TEMP}/unzipped"
                           RESULT_VARIABLE EXTRACT_RESULT)
         endif()
         
         if(NOT EXTRACT_RESULT EQUAL 0)
-            message(FATAL_ERROR "Failed to extract Skia")
+            message(FATAL_ERROR "Failed to extract Skia binaries")
         endif()
         
         # Move to final location
         file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/skia")
-        file(RENAME "${SKIA_TEMP}/${SKIA_PLATFORM}" "${SKIA_DIR}")
+        file(RENAME "${SKIA_TEMP}/unzipped" "${SKIA_DIR}")
+        file(MAKE_DIRECTORY "${SKIA_TEMP}/unzipped")
         # Move SKIA_DIR/include to SKIA_DIR/skia/include
-        file(MAKE_DIRECTORY "${SKIA_DIR}/skia")
-        file(RENAME "${SKIA_DIR}/include" "${SKIA_DIR}/skia/include")
+        if(SKIA_ARCHIVE MATCHES "\\.zip$")
+            execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf "${SKIA_TEMP}/skia-headers.tar.gz"
+                          WORKING_DIRECTORY "${SKIA_TEMP}/unzipped"
+                          RESULT_VARIABLE EXTRACT_RESULT)
+        else()
+            # For tar.gz, extract to a subdirectory first
+            execute_process(COMMAND tar -xzf "${SKIA_TEMP}/skia-headers.tar.gz"
+                          WORKING_DIRECTORY "${SKIA_TEMP}/unzipped"
+                          RESULT_VARIABLE EXTRACT_RESULT)
+        endif()
+        
+        if(NOT EXTRACT_RESULT EQUAL 0)
+            message(FATAL_ERROR "Failed to extract Skia headers: ${EXTRACT_RESULT}")
+        endif()
+        
+        file(RENAME "${SKIA_TEMP}/unzipped" "${SKIA_DIR}/skia")
+
         file(REMOVE_RECURSE "${SKIA_TEMP}")
         
         message(STATUS "Skia extracted to ${SKIA_DIR}")
