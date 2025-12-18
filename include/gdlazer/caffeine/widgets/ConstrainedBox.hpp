@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include "../rendering/object/RenderObject.hpp"
@@ -17,7 +18,7 @@ protected:
 
 public:
   RenderConstrainedBox(BoxConstraints additionalConstraints = BoxConstraints(),
-                       std::shared_ptr<RenderBox> child = nullptr)
+                       RefNauseam<RenderBox> child = nullptr)
     : RenderProxyBox(child), m_additionalConstraints(additionalConstraints) {}
 
   BoxConstraints getAdditionalConstraints() const { return m_additionalConstraints; }
@@ -48,9 +49,9 @@ public:
 
   BoxConstraints getConstraints() const { return m_constraints; }
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
-  void updateRenderObject(std::shared_ptr<BuildContext> context,
-                          std::shared_ptr<RenderObject> renderObject) override;
+  RefNauseam<RenderObject> createRenderObject() override;
+  void updateRenderObject(RefNauseam<BuildContext> context,
+                          RefNauseam<RenderObject> renderObject) override;
 
   virtual ~ConstrainedBox() = default;
 };

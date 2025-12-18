@@ -7,17 +7,17 @@
 namespace caffeine {
 
 BuildOwner::BuildOwner(decltype(m_onBuildScheduled) onBuildScheduled) 
-  : m_onBuildScheduled(onBuildScheduled), m_buildScope(std::make_shared<BuildScope>(onBuildScheduled)) {}
+  : m_onBuildScheduled(onBuildScheduled), m_buildScope(new BuildScope(onBuildScheduled)) {}
 
 
 void BuildOwner::_registerGlobalKey(
   GlobalKeyU* key,
   Element* element
 ) {
-  // Store mapping from raw pointer to shared_ptr<Element>
-  m_globalKeyRegistry[key] = element->shared_from_this();
+  // Store mapping from raw pointer to RefNauseam<Element>
+  m_globalKeyRegistry[key] = element;
   // Also store the element in the key for quick access
-  key->m_currentContext = std::static_pointer_cast<BuildContext>(element->shared_from_this());
+  key->m_currentContext = dynamic_cast<BuildContext*>(element);
 }
 
 void BuildOwner::_unregisterGlobalKey(

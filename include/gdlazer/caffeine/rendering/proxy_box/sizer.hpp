@@ -3,10 +3,11 @@
 /// Every RenderProxyBox that affects the size
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
 #include "gdlazer/caffeine/rendering/proxy_box/ProxyBox.hpp"
+#include "gdlazer/caffeine/foundation/utils/Ref.hpp"
 namespace caffeine {
   class RenderConstrainedBox : public RenderProxyBox {
   public:
-    RenderConstrainedBox(const BoxConstraints& additionalConstraints, std::shared_ptr<RenderBox> child = nullptr)
+    RenderConstrainedBox(const BoxConstraints& additionalConstraints, RefNauseam<RenderBox> child = nullptr)
       : RenderProxyBox(child), m_additionalConstraints(additionalConstraints) {}
     BoxConstraints getAdditionalConstraints() const {
       return m_additionalConstraints;

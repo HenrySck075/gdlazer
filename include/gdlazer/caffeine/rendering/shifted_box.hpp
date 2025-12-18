@@ -2,23 +2,22 @@
 
 
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
+#include "gdlazer/caffeine/foundation/utils/Ref.hpp"
 namespace caffeine {
   class RenderShiftedBox : public RenderBox, public RenderObjectWithChildMixin {
   public:
-    RenderShiftedBox(std::shared_ptr<RenderBox> child) {m_child = child;};
-    void paint(SkCanvas* canvas) override {
+    RenderShiftedBox(RefNauseam<RenderBox> child) {m_child = child;};
+    void paint(PaintingContext* context, const Offset& offset) override {
       if (m_child) {
-        auto offset = std::static_pointer_cast<BoxParentData>(m_child->getParentData())->offset;
-        canvas->save();
-        canvas->translate(offset.dx, offset.dy);
-        m_child->paint(canvas);
-        canvas->restore();
+        auto offset_data = static_cast<BoxParentData*>(m_child->getParentData().get())->offset;
+        // Note: Will need to implement canvas translation in PaintingContext
+        m_child->paint(context, offset_data);
       }
     };
 
     // Position helper: call this after getting child size
     inline void positionChild(const Offset& offset) {
-      ChildLayoutHelper::positionChild(std::dynamic_pointer_cast<RenderBox>(m_child), offset);
+      ChildLayoutHelper::positionChild(dynamic_cast<RenderBox*>(m_child.get()), offset);
     }
   };
 }

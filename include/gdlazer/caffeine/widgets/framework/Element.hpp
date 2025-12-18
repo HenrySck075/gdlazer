@@ -5,6 +5,7 @@
 #include <memory>
 #include <Geode/cocos/include/cocos2d.h>
 #include <gdlazer/caffeine/foundation/utils/shared_ptr_2.hpp>
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 #include <gdlazer/caffeine/foundation/Key.hpp>
 #include <gdlazer/caffeine/rendering/object/RenderObject.hpp>
 #include "BuildContext.hpp"
@@ -15,7 +16,7 @@ class Widget;
 class Element;
 class BuildOwner;
 class BuildScope;
-using ElementVisitor = std::function<void(std::shared_ptr<Element>)>;
+using ElementVisitor = std::function<void(RefNauseam<Element>)>;
 enum class _ElementLifecycle {
   /// The [Element] is created but has not yet been incorporated into the element
   /// tree.
@@ -63,26 +64,26 @@ enum class _ElementLifecycle {
 class _InactiveElements {
   friend class Element;
   friend class BuildOwner;
-  std::list<std::shared_ptr<Element>> m_elements;
+  std::list<RefNauseam<Element>> m_elements;
   bool m_locked = false;
 
-  static void _unmount(std::shared_ptr<Element> element);
+  static void _unmount(RefNauseam<Element> element);
   void _unmountAll();
 
-  void _deactivateRecursively(std::shared_ptr<Element> element);
+  void _deactivateRecursively(RefNauseam<Element> element);
 
 public:
-  void add(std::shared_ptr<Element> element);
-  void remove(std::shared_ptr<Element> element);
+  void add(RefNauseam<Element> element);
+  void remove(RefNauseam<Element> element);
 };
 
-class Element : public BuildContext, public std::enable_shared_from_this<Element>, public log::StringConvertible {
+class Element : public BuildContext, public log::StringConvertible {
   friend class _InactiveElements;
 protected:
   std::shared_ptr<BuildScope> m_parentBuildScope;
   std::shared_ptr<BuildOwner> m_owner;
-  std::shared_ptr<Element> m_parent; friend class RenderObjectElement;
-  std::shared_ptr<Widget> m_widget;
+  RefNauseam<Element> m_parent; friend class RenderObjectElement;
+  RefNauseam<Widget> m_widget;
   /// idk what do they mean by this their usage is confusing
   _ElementLifecycle m_lifecycleState = _ElementLifecycle::initial;
   bool m_dirty = 0;
@@ -91,11 +92,11 @@ protected:
 
   void* m_slot = 0;
 
-  std::shared_ptr<Element> _retakeInactiveElement(
+  RefNauseam<Element> _retakeInactiveElement(
     GlobalKeyU* key, Widget* widget
   );
 public:
-  static bool _sort(std::shared_ptr<Element> a, std::shared_ptr<Element> b) {
+  static bool _sort(RefNauseam<Element> a, RefNauseam<Element> b) {
     if (int diff = a->m_depth - b->m_depth) return diff < 0;
     bool bDirty = b->m_dirty;
     if (a->m_dirty != bDirty) return bDirty;
@@ -103,13 +104,13 @@ public:
   }
 
 
-  Element(Widget* widget);
+  Element(RefNauseam<Widget> widget);
   virtual ~Element() = default;
 
   /// Get the render object at current (or below) element
-  virtual std::shared_ptr<caffeine::RenderObject> getRenderObject();
+  virtual RefNauseam<caffeine::RenderObject> getRenderObject();
 
-  virtual void mount(std::shared_ptr<Element> parent, void* slot);
+  virtual void mount(RefNauseam<Element> parent, void* slot);
   /*
    *Transition from the "inactive" to the "defunct" lifecycle state.
 
@@ -125,18 +126,18 @@ Implementations of this method should end with a call to the inherited method.
   virtual void performRebuild();
 
   virtual void update(Widget *newWidget);
-  std::shared_ptr<Element> updateChild(
-    std::shared_ptr<Element> child,
+  RefNauseam<Element> updateChild(
+    RefNauseam<Element> child,
     Widget* newWidget,
     void* newSlot
   );
   void updateSlotForChild(
-    std::shared_ptr<Element> child,
+    RefNauseam<Element> child,
     void* slot
   );
   void updateSlot(void* slot);
 
-  std::shared_ptr<Element> inflateWidget(
+  RefNauseam<Element> inflateWidget(
     Widget* widget,
     void* slot
   );
@@ -160,7 +161,7 @@ private:
 public:
 
 
-  void deactivateChild(std::shared_ptr<Element> child);
+  void deactivateChild(RefNauseam<Element> child);
   /*
 Transition from the "active" to the "inactive" lifecycle state.
 
@@ -191,7 +192,7 @@ Implementations of this method should end with a call to the inherited method.
   virtual void detachRenderObject(); 
 
   /// Get the child element that has an attached render object
-  virtual std::shared_ptr<Element> getAttachingRenderObjectChild();
+  virtual RefNauseam<Element> getAttachingRenderObjectChild();
 
   /// Calls the argument for each child. Must be overridden by subclasses that
   /// support having children.
@@ -203,7 +204,7 @@ Implementations of this method should end with a call to the inherited method.
   /// being updated at that point, so the children might not be constructed yet,
   /// or might be old children that are going to be replaced. This method should
   /// only be called if it is provable that the children are available. 
-  virtual void visitChildren(std::function<void(std::shared_ptr<Element>)> visitor) {}
+  virtual void visitChildren(std::function<void(RefNauseam<Element>)> visitor) {}
 };
 
 }

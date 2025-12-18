@@ -9,8 +9,14 @@
 #include "../../foundation/utils/macros.h"
 #include "../../dartui/basic_types.hpp"
 #include "gdlazer/caffeine/painting/edge_insets.hpp"
+#include "../painting_context.hpp"
+
+#include "../../foundation/utils/Ref.hpp"
 
 namespace caffeine {
+
+class PipelineOwner;
+class SkiaRenderContext;
 
 // ============================================================================
 // BoxConstraints: Describes valid size ranges
@@ -111,11 +117,13 @@ class ParentData {};
 // RenderObject: Base class for layout
 // ============================================================================
 
-class RenderObject : public log::StringConvertible, public std::enable_shared_from_this<RenderObject> {
+class RenderObject : public log::StringConvertible, public cocos2d::CCObject {
 protected:
   BoxConstraints m_constraints;
   Size m_size;
-  std::shared_ptr<RenderObject> m_parent;
+  RefNauseam<RenderObject> m_parent;
+  PipelineOwner* m_owner = nullptr;
+  int m_depth = 0;
   bool m_needsLayout = true;
   bool m_needsPaint = true;
 
@@ -127,9 +135,11 @@ public:
   // Getters
   const BoxConstraints& getConstraints() const { return m_constraints; }
   const Size& getSize() const { return m_size; }
-  std::shared_ptr<RenderObject> getParent() const { return m_parent; }
+  RefNauseam<RenderObject> getParent() const { return m_parent; }
   bool needsLayout() const { return m_needsLayout; }
   bool needsPaint() const { return m_needsPaint; }
+  int getDepth() const { return m_depth; }
+  PipelineOwner* getOwner() const { return m_owner; }
 
   // Main layout entry point
   void layout(const BoxConstraints& constraints, bool parentUsesSize = false);
@@ -138,8 +148,8 @@ public:
   virtual void performLayout() = 0;
 
   // Override this to implement painting
-  // Paint to the Skia canvas
-  virtual void paint(SkCanvas* canvas) = 0;
+  // New signature: paint takes PaintingContext and offset
+  virtual void paint(PaintingContext* context, const Offset& offset) = 0;
 
   // Mark layout as dirty
   void markNeedsLayout() {
@@ -152,14 +162,24 @@ public:
   }
 
   // Mark paint as dirty
-  void markNeedsPaint() {
-    m_needsPaint = true;
-  }
+  // Queues to owner instead of just flagging
+  void markNeedsPaint();
 
   // Set parent (internal use)
-  void setParent(std::shared_ptr<RenderObject> parent) {
+  void setParent(RefNauseam<RenderObject> parent) {
     m_parent = parent;
+    if (parent) {
+      m_depth = parent->getDepth() + 1;
+    }
   }
+
+  // Set pipeline owner (internal use)
+  void setOwner(PipelineOwner* owner) {
+    m_owner = owner;
+  }
+
+  // Called by PipelineOwner during flushPaint()
+  virtual void _paintWithContext(PaintingContext* context, const Offset& offset);
 };
 
 // ============================================================================
@@ -189,27 +209,27 @@ public:
 
 class RenderObjectWithChildMixin : virtual public RenderObject {
 protected:
-  std::shared_ptr<RenderObject> m_child;
+  RefNauseam<RenderObject> m_child;
 
 public:
-  void setChild(std::shared_ptr<RenderObject> child) {
+  void setChild(RefNauseam<RenderObject> child) {
     m_child = child;
     if (child) {
-      child->setParent(shared_from_this());
+      child->setParent(this);
     }
     markNeedsLayout();
   }
 
-  std::shared_ptr<RenderObject> getChild() const { return m_child; }
+  RefNauseam<RenderObject> getChild() const { return m_child; }
 };
 
 struct ChildLayoutHelper final {
 
   // Layout helper: call this in performLayout
-  static Size layoutChild(std::shared_ptr<RenderBox> child,
+  static Size layoutChild(RefNauseam<RenderBox> child,
                           const BoxConstraints &childConstraints);
   // Position helper for multi-child
-  static void positionChild(std::shared_ptr<RenderBox> child,
+  static void positionChild(RefNauseam<RenderBox> child,
                             const Offset &offset);
 };
 
@@ -219,18 +239,18 @@ struct ChildLayoutHelper final {
 
 class ContainerRenderObjectMixin : virtual public RenderObject {
 protected:
-  std::vector<std::shared_ptr<RenderBox>> m_children;
+  std::vector<RefNauseam<RenderBox>> m_children;
 
 public:
-  void addChild(std::shared_ptr<RenderBox> child) {
+  void addChild(RefNauseam<RenderBox> child) {
     m_children.push_back(child);
     if (child) {
-      child->setParent(shared_from_this());
+      child->setParent(this);
     }
     markNeedsLayout();
   }
 
-  void removeChild(std::shared_ptr<RenderBox> child) {
+  void removeChild(RefNauseam<RenderBox> child) {
     auto it = std::find(m_children.begin(), m_children.end(), child);
     if (it != m_children.end()) {
       m_children.erase(it);
@@ -238,7 +258,7 @@ public:
     }
   }
 
-  const std::vector<std::shared_ptr<RenderBox>>& getChildren() const {
+  const std::vector<RefNauseam<RenderBox>>& getChildren() const {
     return m_children;
   }
 

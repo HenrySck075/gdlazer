@@ -29,14 +29,14 @@ void RenderRow::performLayout() {
   }
 }
 
-void RenderRow::paint(SkCanvas* canvas) {
+void RenderRow::paint(PaintingContext* context, const Offset& offset) {
   for (auto& child : m_children) {
-    child->paint(canvas);
+    child->paint(context, offset);
   }
 }
 
-std::shared_ptr<RenderObject> Row::createRenderObject() {
-  return std::make_shared<RenderRow>();
+RefNauseam<RenderObject> Row::createRenderObject() {
+  return new RenderRow();
 }
 }  // namespace caffeine
 

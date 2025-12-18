@@ -3,13 +3,13 @@
 #include <cocos2d.h>
 #include <memory>
 
+#include "gdlazer/caffeine/widgets/framework/ComponentElements.hpp"
+#include "gdlazer/caffeine/foundation/utils/Ref.hpp"
 #include "gdlazer/caffeine/widgets/Center.hpp"
 #include "gdlazer/caffeine/widgets/SizedBox.hpp"
 #include "gdlazer/caffeine/widgets/framework/State.hpp"
 #include "gdlazer/caffeine/widgets/framework/Widget.hpp"
 #include "gdlazer/caffeine/widgets/ColoredBox.hpp"
-#include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
-#include "gdlazer/caffeine/widgets/Padding.hpp"
 #include "gdlazer/caffeine/widgets/WidgetsContainer.hpp"
 
 using namespace cocos2d;
@@ -38,7 +38,7 @@ public:
       }
     });
   }
-  caffeine::Widget* build(std::shared_ptr<caffeine::BuildContext> context) override {
+  caffeine::Widget* build(caffeine::RefNauseam<caffeine::BuildContext> context) override {
     // Build a simple widget tree: Padding(16px) -> ColoredBox(blue)
     return new caffeine::SizedBox(
       {200,200}, 
@@ -49,8 +49,8 @@ public:
 
 class gamer : public caffeine::StatefulWidget {
 public:
-  std::shared_ptr<caffeine::State> createState() override {
-    return std::make_shared<gamerState>();
+  caffeine::RefNauseam<caffeine::State> createState() override {
+    return new gamerState();
   }
 };
 

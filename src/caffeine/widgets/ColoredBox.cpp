@@ -3,8 +3,8 @@
 
 namespace caffeine {
 
-void RenderColoredBox::paint(SkCanvas* canvas) {
-  if (canvas) {
+void RenderColoredBox::paint(PaintingContext* context, const Offset& offset) {
+  if (context) {
     SkPaint paint;
     uint8_t a = m_color.getAlpha();
     uint8_t r = m_color.getRed();
@@ -15,19 +15,19 @@ void RenderColoredBox::paint(SkCanvas* canvas) {
     paint.setAntiAlias(m_isAntiAlias);
 
     SkRect rect = SkRect::MakeWH(m_size.width, m_size.height);
-    canvas->drawRect(rect, paint);
+    auto canvas = context->getCanvas(); canvas->drawRect(rect, paint);
   }
 
-  RenderProxyBox::paint(canvas);
+  RenderProxyBox::paint(context, offset);
 }
 
-std::shared_ptr<RenderObject> ColoredBox::createRenderObject() {
-  return std::make_shared<RenderColoredBox>(m_color, m_isAntiAlias);
+RefNauseam<RenderObject> ColoredBox::createRenderObject() {
+  return new RenderColoredBox(m_color, m_isAntiAlias);
 }
 
-void ColoredBox::updateRenderObject(std::shared_ptr<BuildContext> context,
-                                    std::shared_ptr<RenderObject> renderObject) {
-  auto coloredBox = std::dynamic_pointer_cast<RenderColoredBox>(renderObject);
+void ColoredBox::updateRenderObject(RefNauseam<BuildContext> context,
+                                    RefNauseam<RenderObject> renderObject) {
+  auto coloredBox = dynamic_cast<RenderColoredBox*>(renderObject.get());
   if (coloredBox) {
     coloredBox->setColor(m_color);
     coloredBox->setIsAntiAlias(m_isAntiAlias);

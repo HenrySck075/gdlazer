@@ -29,14 +29,14 @@ void RenderColumn::performLayout() {
   }
 }
 
-void RenderColumn::paint(SkCanvas* canvas) {
+void RenderColumn::paint(PaintingContext* context, const Offset& offset) {
   for (auto& child : m_children) {
-    child->paint(canvas);
+    child->paint(context, offset);
   }
 }
 
-std::shared_ptr<RenderObject> Column::createRenderObject() {
-  return std::make_shared<RenderColumn>();
+RefNauseam<RenderObject> Column::createRenderObject() {
+  return new RenderColumn();
 }
 
 

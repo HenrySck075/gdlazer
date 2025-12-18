@@ -8,7 +8,7 @@ void State::setState(std::function<void()> fn) {
   m_element->markNeedsBuild();
 }
 
-std::shared_ptr<BuildContext> State::getContext() {
-  return m_element;
+RefNauseam<BuildContext> State::getContext() {
+  return dynamic_cast<BuildContext*>(m_element.get());
 };
 }

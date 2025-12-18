@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include "../painting/alignment.hpp"
@@ -32,9 +33,9 @@ public:
   float getWidthFactor() const { return m_widthFactor; }
   float getHeightFactor() const { return m_heightFactor; }
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
-  void updateRenderObject(std::shared_ptr<BuildContext> context, 
-                          std::shared_ptr<RenderObject> renderObject) override;
+  RefNauseam<RenderObject> createRenderObject() override;
+  void updateRenderObject(RefNauseam<BuildContext> context, 
+                          RefNauseam<RenderObject> renderObject) override;
 
   virtual ~Align() = default;
 };

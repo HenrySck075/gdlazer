@@ -3,6 +3,7 @@
 /// ProxyBox and other abstract subclasses probably
 
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
+#include "gdlazer/caffeine/foundation/utils/Ref.hpp"
 namespace caffeine {
   /// Implementation of RenderProxyBox
   class RenderProxyBoxMixin : public RenderObjectWithChildMixin {
@@ -13,9 +14,9 @@ namespace caffeine {
       return constraints.smallest();
     }
   public:
-    void paint(SkCanvas* canvas) override {
+    void paint(PaintingContext* context, const Offset& offset) override {
       if (m_child) {
-        m_child->paint(canvas);
+        m_child->paint(context, offset);
       }
     }
   };
@@ -32,7 +33,7 @@ namespace caffeine {
   /// of their child.
   class RenderProxyBox : public RenderBox, public RenderProxyBoxMixin {
   public:
-    RenderProxyBox(std::shared_ptr<RenderBox> child = nullptr) {m_child = child;}
+    RenderProxyBox(RefNauseam<RenderBox> child = nullptr) {m_child = child;}
   };
 
 }

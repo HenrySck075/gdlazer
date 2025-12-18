@@ -19,7 +19,7 @@ protected:
 public:
   RenderAligningShiftedBox(
     std::shared_ptr<AlignmentGeometry> alignment,
-    std::shared_ptr<RenderBox> child = nullptr
+    RefNauseam<RenderBox> child = nullptr
   ) : RenderShiftedBox(child), m_alignment(alignment) {}
 
   std::shared_ptr<AlignmentGeometry> getAlignment() const {
@@ -48,7 +48,7 @@ class RenderPositionedBox : public RenderAligningShiftedBox {
 public:
   RenderPositionedBox(
     std::shared_ptr<Alignment> alignment = nullptr,
-    std::shared_ptr<RenderBox> child = nullptr,
+    RefNauseam<RenderBox> child = nullptr,
     std::optional<float> widthFactor = std::nullopt,
     std::optional<float> heightFactor = std::nullopt
   ) : RenderAligningShiftedBox(alignment ? alignment : std::make_shared<Alignment>(0.0f, 0.0f), child),

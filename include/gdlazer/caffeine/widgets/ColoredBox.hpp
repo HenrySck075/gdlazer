@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include <cstdint>
@@ -48,7 +49,7 @@ protected:
 
 public:
   RenderColoredBox(Color color = Color(), bool isAntiAlias = true, 
-                   std::shared_ptr<RenderBox> child = nullptr)
+                   RefNauseam<RenderBox> child = nullptr)
     : RenderProxyBox(child), m_color(color), m_isAntiAlias(isAntiAlias) {}
 
   Color getColor() const { return m_color; }
@@ -67,7 +68,7 @@ public:
     }
   }
 
-  void paint(SkCanvas* canvas) override;
+  void paint(PaintingContext* context, const Offset& offset) override;
 
   virtual ~RenderColoredBox() = default;
 };
@@ -88,9 +89,9 @@ public:
   Color getColor() const { return m_color; }
   bool getIsAntiAlias() const { return m_isAntiAlias; }
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
-  void updateRenderObject(std::shared_ptr<BuildContext> context,
-                          std::shared_ptr<RenderObject> renderObject) override;
+  RefNauseam<RenderObject> createRenderObject() override;
+  void updateRenderObject(RefNauseam<BuildContext> context,
+                          RefNauseam<RenderObject> renderObject) override;
 
   virtual ~ColoredBox() = default;
 };

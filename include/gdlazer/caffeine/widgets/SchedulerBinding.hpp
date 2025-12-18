@@ -74,4 +74,5 @@ public:
   }
 
   SchedulerPhase getSchedulerPhase() const { return m_schedulerPhase; }
+  void setSchedulerPhase(SchedulerPhase phase) { m_schedulerPhase = phase; }
 };

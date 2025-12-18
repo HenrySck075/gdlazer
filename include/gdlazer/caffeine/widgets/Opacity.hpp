@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include "../rendering/proxy_box/ProxyBox.hpp"
@@ -17,7 +18,7 @@ protected:
 
 public:
   RenderOpacity(double opacity = 1.0, bool alwaysIncludeSemantics = false,
-                std::shared_ptr<RenderBox> child = nullptr)
+                RefNauseam<RenderBox> child = nullptr)
     : RenderProxyBox(child), m_opacity(opacity), m_alwaysIncludeSemantics(alwaysIncludeSemantics) {
     // Clamp opacity to [0, 1]
     if (m_opacity < 0.0) m_opacity = 0.0;
@@ -45,7 +46,7 @@ public:
     m_alwaysIncludeSemantics = value;
   }
 
-  void paint(SkCanvas* canvas) override;
+  void paint(PaintingContext* context, const Offset& offset) override;
 
   virtual ~RenderOpacity() = default;
 };
@@ -72,9 +73,9 @@ public:
   double getOpacity() const { return m_opacity; }
   bool getAlwaysIncludeSemantics() const { return m_alwaysIncludeSemantics; }
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
-  void updateRenderObject(std::shared_ptr<BuildContext> context,
-                          std::shared_ptr<RenderObject> renderObject) override;
+  RefNauseam<RenderObject> createRenderObject() override;
+  void updateRenderObject(RefNauseam<BuildContext> context,
+                          RefNauseam<RenderObject> renderObject) override;
 
   virtual ~Opacity() = default;
 };

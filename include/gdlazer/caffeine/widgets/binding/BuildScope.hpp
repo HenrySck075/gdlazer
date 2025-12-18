@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 #include "../framework/Element.hpp"
 #include <cstdint>
 #include <optional>
@@ -8,7 +9,7 @@ namespace caffeine {
 class BuildScope final {
 protected:
   friend class BuildOwner;
-  std::list<std::shared_ptr<Element>> m_dirtyElements;
+  std::list<RefNauseam<Element>> m_dirtyElements;
   using DirtyElementsIter = decltype(m_dirtyElements)::iterator;
   // in bits
   // 00: null
@@ -19,7 +20,7 @@ protected:
   bool m_building = false; friend class BuildOwner;
   std::optional<VoidCallback> m_scheduleRebuildCallback;
 
-  void tryRebuild(std::shared_ptr<Element> element);
+  void tryRebuild(RefNauseam<Element> element);
   void scheduleBuildFor(Element* element);
   void flushDirtyElements();
   inline void _seekDirtyElementAfterIter(DirtyElementsIter iter) {

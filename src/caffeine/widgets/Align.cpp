@@ -3,8 +3,8 @@
 
 namespace caffeine {
 
-std::shared_ptr<RenderObject> Align::createRenderObject() {
-  auto renderObj = std::make_shared<RenderPositionedBox>(
+RefNauseam<RenderObject> Align::createRenderObject() {
+  auto renderObj = new RenderPositionedBox(
     std::dynamic_pointer_cast<Alignment>(m_alignment),
     nullptr,
     m_widthFactor,
@@ -13,9 +13,9 @@ std::shared_ptr<RenderObject> Align::createRenderObject() {
   return renderObj;
 }
 
-void Align::updateRenderObject(std::shared_ptr<BuildContext> context,
-                               std::shared_ptr<RenderObject> renderObject) {
-  auto posBox = std::dynamic_pointer_cast<RenderPositionedBox>(renderObject);
+void Align::updateRenderObject(RefNauseam<BuildContext> context,
+                               RefNauseam<RenderObject> renderObject) {
+  auto posBox = dynamic_cast<RenderPositionedBox*>(renderObject.get());
   if (posBox) {
     posBox->setAlignment(m_alignment);
     posBox->setWidthFactor(m_widthFactor);

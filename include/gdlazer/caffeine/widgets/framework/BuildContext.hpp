@@ -2,5 +2,5 @@
 
 namespace caffeine {
 // Element
-class BuildContext {};
+class BuildContext : public cocos2d::CCObject {};
 }

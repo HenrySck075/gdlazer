@@ -3,13 +3,13 @@
 
 namespace caffeine {
   
-void BuildScope::tryRebuild(std::shared_ptr<Element> element) {
+void BuildScope::tryRebuild(RefNauseam<Element> element) {
   element->rebuild();
 }
 
 void BuildScope::scheduleBuildFor(Element* element) {
   if (element->m_inDirtyList) return;
-  m_dirtyElements.push_back(std::shared_ptr<Element>(element));
+  m_dirtyElements.push_back(element);
   element->m_inDirtyList = true;
   if (m_dirtyElementsNeedsResorting != 0) {
     m_dirtyElementsNeedsResorting = 3;

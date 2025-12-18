@@ -23,8 +23,8 @@ void RenderPadding::performLayout() {
   }
 }
 
-std::shared_ptr<RenderObject> Padding::createRenderObject() {
-  return std::make_shared<RenderPadding>(m_insets, nullptr);
+RefNauseam<RenderObject> Padding::createRenderObject() {
+  return new RenderPadding(m_insets, nullptr);
 }
 }  // namespace caffeine
 

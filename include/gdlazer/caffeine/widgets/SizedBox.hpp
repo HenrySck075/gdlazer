@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include "../rendering/object/RenderObject.hpp"
@@ -19,8 +20,8 @@ public:
   SizedBox(Size size, Widget* child = nullptr)
     : SingleChildRenderObjectWidget(child), m_additionalConstraints(BoxConstraints::tight(size)) {}
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
-  void updateRenderObject(std::shared_ptr<BuildContext>, std::shared_ptr<RenderObject> renderObject) override;
+  RefNauseam<RenderObject> createRenderObject() override;
+  void updateRenderObject(RefNauseam<BuildContext>, RefNauseam<RenderObject> renderObject) override;
 };
 
 }  // namespace caffeine

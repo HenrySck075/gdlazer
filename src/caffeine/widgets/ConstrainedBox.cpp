@@ -13,13 +13,13 @@ void RenderConstrainedBox::performLayout() {
   }
 }
 
-std::shared_ptr<RenderObject> ConstrainedBox::createRenderObject() {
-  return std::make_shared<RenderConstrainedBox>(m_constraints);
+RefNauseam<RenderObject> ConstrainedBox::createRenderObject() {
+  return new RenderConstrainedBox(m_constraints);
 }
 
-void ConstrainedBox::updateRenderObject(std::shared_ptr<BuildContext> context,
-                                        std::shared_ptr<RenderObject> renderObject) {
-  auto constrainedBox = std::dynamic_pointer_cast<RenderConstrainedBox>(renderObject);
+void ConstrainedBox::updateRenderObject(RefNauseam<BuildContext> context,
+                                        RefNauseam<RenderObject> renderObject) {
+  auto constrainedBox = dynamic_cast<RenderConstrainedBox*>(renderObject.get());
   if (constrainedBox) {
     constrainedBox->setAdditionalConstraints(m_constraints);
   }

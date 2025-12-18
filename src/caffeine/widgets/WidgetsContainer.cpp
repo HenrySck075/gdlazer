@@ -24,6 +24,9 @@ static void flipTextureVertically(uint8_t* pixelData, int width, int height) {
 bool WidgetsContainer::init() {
   if (!CCLayer::init()) return false;
 
+  // Create the binding object
+  m_binding = std::make_unique<WidgetsFlutterBinding>();
+
   // Get window size and initialize layer size
   auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
   this->setContentSize(winSize);
@@ -35,9 +38,9 @@ bool WidgetsContainer::init() {
   this->addChild(m_textureSprite);
 
   // Initialize the widgets binding (creates build owner)
-  initWidgetsBinding();
+  m_binding->initWidgetsBinding();
 
-  addPersistentFrameCallback([this](unsigned long){drawFrame();});
+  m_binding->addPersistentFrameCallback([this](unsigned long){paintRenderTree();});
 
   // Schedule this node to receive update() calls every frame
   this->scheduleUpdate();
@@ -46,14 +49,15 @@ bool WidgetsContainer::init() {
 }
 
 void WidgetsContainer::attachRootWidget(Widget* rootWidget) {
-  // Call parent implementation
-  WidgetsBinding::attachRootWidget(rootWidget);
+  if (m_binding) {
+    m_binding->attachRootWidget(rootWidget);
+  }
 }
 
 void WidgetsContainer::paintRenderTree() {
-  if (!m_shouldRefreshFrame) return;
-  // Get the root element's child render object
-  auto rootElement = getRootElement();
+  if (!m_binding) return;
+  
+  auto rootElement = m_binding->getRootElement();
   if (!rootElement) return;
 
   auto rootRenderObject = rootElement->getChildRenderObject();
@@ -70,7 +74,9 @@ void WidgetsContainer::paintRenderTree() {
   // Paint phase - render to Skia canvas
   SkCanvas* canvas = m_skiaContext.getCanvas();
   if (canvas) {
-    rootRenderObject->paint(canvas);
+    // TODO: Need to create PaintingContext and pass offset
+    // For now, stub the painting phase
+    // rootRenderObject->paint(context, offset);
   }
 
   // End frame and capture snapshot
@@ -133,23 +139,20 @@ void WidgetsContainer::updateSpriteTexture() {
 void WidgetsContainer::update(float deltaTime) {
   CCLayer::update(deltaTime);
 
+  if (!m_binding) return;
+
   // Frame counter for timestamp
   m_frameCount++;
   uint64_t timeStamp = m_frameCount;
 
   // Drive the frame pipeline
-  handleBeginFrame(timeStamp);
+  m_binding->handleBeginFrame(timeStamp);
   
   // Transition to mid-frame microtasks phase
-  m_schedulerPhase = SchedulerPhase::midFrameMicrotasks;
+  m_binding->setSchedulerPhase(SchedulerPhase::midFrameMicrotasks);
   
-  // Invoke persistent callbacks (for future element tree rebuild hooks)
-  handleDrawFrame();
-
-  // Paint the render tree to Skia canvas and update sprite texture
-  paintRenderTree();
-
-  m_shouldRefreshFrame = false;
+  // Invoke persistent callbacks (triggers paintRenderTree)
+  m_binding->handleDrawFrame();
 }
 
 cocos2d::CCNode* runApp(Widget* app) {

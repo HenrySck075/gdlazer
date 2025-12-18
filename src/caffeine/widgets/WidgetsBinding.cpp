@@ -7,17 +7,20 @@ namespace caffeine {
 void WidgetsBinding::attachRootWidget(Widget* rootWidget) {
   if (!rootWidget) return;
 
-  // Wrap the user's widget in a RootWidget and create shared_ptr
-  auto rootWidgetPtr = std::make_shared<RootWidget>(rootWidget);
+  // Wrap the user's widget in a RootWidget and create RefNauseam
+  auto rootWidgetPtr = new RootWidget(
+    rootWidget
+  );
 
   // Create the root element from the widget
-  m_rootElement = std::static_pointer_cast<RootElement>(rootWidgetPtr->createElement());
+  m_rootElement = dynamic_cast<RootElement*>(rootWidgetPtr->createElement().get());
 
   // Assign the build owner to the root element (creates its BuildScope)
   m_rootElement->assignOwner(m_buildOwner);
 
   // Mount within build scope
   m_buildOwner->buildScope(m_rootElement.get(), [this]() {
+      geode::log::debug("hai");
     // Mount the root element with no parent
     m_rootElement->mount(nullptr, nullptr);
   });
@@ -33,7 +36,7 @@ void WidgetsBinding::drawFrame() {
 }
 
 void WidgetsBinding::initWidgetsBinding() {
-  m_buildOwner = std::make_shared<BuildOwner>([this](){m_shouldRefreshFrame = true;});
+  m_buildOwner = std::shared_ptr<BuildOwner>(new BuildOwner([this](){m_shouldRefreshFrame = true;}));
 }
 
 }

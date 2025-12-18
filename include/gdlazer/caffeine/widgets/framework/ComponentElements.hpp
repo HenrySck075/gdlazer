@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include "Element.hpp"
 #include "Widget.hpp"
@@ -12,13 +13,13 @@ Contrast with RenderObjectElement.
 */
 class ComponentElement : public Element {
 protected:
-  std::shared_ptr<Element> m_child;
+  RefNauseam<Element> m_child;
 
 public:
   ComponentElement(Widget* widget) : Element(widget) {};
   void performRebuild() override;
   virtual Widget* build() = 0;
-  std::shared_ptr<Element> getAttachingRenderObjectChild() override;
+  RefNauseam<Element> getAttachingRenderObjectChild() override;
 }; 
 
 
@@ -27,8 +28,8 @@ public:
   StatelessElement(StatelessWidget* widget) 
     : ComponentElement(widget) {}
   Widget* build() override {
-    auto widget = std::static_pointer_cast<StatelessWidget>(m_widget);
-    return widget->build(std::shared_ptr<BuildContext>(this));
+    auto widget = dynamic_cast<StatelessWidget*>(m_widget.get());
+    return widget->build(this);
   } 
   void update(Widget* newWidget) override;
 };
@@ -36,16 +37,16 @@ public:
 
 class StatefulElement : public ComponentElement {
 protected:
-  std::shared_ptr<State> m_state;
-  std::shared_ptr<StatefulWidget> m_widget;
+  RefNauseam<State> m_state;
+  RefNauseam<StatefulWidget> m_widget;
 
 public:
-  StatefulElement(StatefulWidget *widget);
+  StatefulElement(StatefulWidget* widget);
 
-  void setStateElement(std::shared_ptr<StatefulElement> self);
+  void setStateElement(StatefulElement* self);
 
-  virtual void mount(std::shared_ptr<Element> parent, void* slot) override;
-  virtual void performRebuild() override;
+  virtual void mount(RefNauseam<Element> parent, void* slot) override;
+  //virtual void performRebuild() override;
   Widget* build() override;
   virtual void update(Widget* newWidget) override;
 };
@@ -53,11 +54,11 @@ public:
 
 class ProxyElement : public ComponentElement {
 protected:
-  std::shared_ptr<ProxyWidget> m_widget;
+  RefNauseam<ProxyWidget> m_widget;
 
 public:
   ProxyElement(ProxyWidget* widget) 
-    : ComponentElement(widget), m_widget(std::shared_ptr<ProxyWidget>(widget)) {}
+    : ComponentElement(widget), m_widget(widget) {}
 
   Widget* build() override {
     return const_cast<Widget*>(m_widget->getChild());

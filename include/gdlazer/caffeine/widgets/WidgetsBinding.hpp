@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <Geode/cocos/base_nodes/CCNode.h>
 #include <memory>
@@ -11,7 +12,7 @@ namespace caffeine {
 class WidgetsBinding {
 protected:
   std::shared_ptr<BuildOwner> m_buildOwner;
-  std::shared_ptr<RootElement> m_rootElement;
+  RefNauseam<RootElement> m_rootElement;
   bool m_shouldRefreshFrame = true;
 
 
@@ -22,7 +23,7 @@ public:
   BuildOwner* getBuildOwner() const { return m_buildOwner.get(); }
 
   /// Returns the root element.
-  std::shared_ptr<class RootElement> getRootElement() const { return m_rootElement; }
+  RootElement* getRootElement() const { return m_rootElement.get(); }
 
   /// Initialize the binding with an empty build owner.
   virtual void initWidgetsBinding(); 

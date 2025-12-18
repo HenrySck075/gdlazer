@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <Geode/cocos/layers_scenes_transitions_nodes/CCScene.h>
 #include <unordered_map>
@@ -16,7 +17,7 @@ class BuildOwner {
 
   // Map from GlobalKeyU pointer to Element
   // Uses raw pointer identity since GlobalKeyU instances are unique
-  std::unordered_map<GlobalKeyU*, std::shared_ptr<Element>> m_globalKeyRegistry;
+  std::unordered_map<GlobalKeyU*, RefNauseam<Element>> m_globalKeyRegistry;
 
   void _registerGlobalKey(
     GlobalKeyU* key,

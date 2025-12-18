@@ -5,16 +5,16 @@
 namespace caffeine {
 
 
-void SizedBox::updateRenderObject(std::shared_ptr<BuildContext>, std::shared_ptr<RenderObject> renderObject) {
-  auto t = std::dynamic_pointer_cast<RenderConstrainedBox>(renderObject);
+void SizedBox::updateRenderObject(RefNauseam<BuildContext>, RefNauseam<RenderObject> renderObject) {
+  auto t = dynamic_cast<RenderConstrainedBox*>(renderObject.get());
   if (t) {
     t->setAdditionalConstraints(m_additionalConstraints);
   }
 };
 
 
-std::shared_ptr<RenderObject> SizedBox::createRenderObject() {
-  return std::make_shared<RenderConstrainedBox>(m_additionalConstraints);
+RefNauseam<RenderObject> SizedBox::createRenderObject() {
+  return new RenderConstrainedBox(m_additionalConstraints);
 }
 
 

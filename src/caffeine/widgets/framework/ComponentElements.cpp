@@ -15,37 +15,36 @@ void ComponentElement::performRebuild() {
   }
 };
 
-std::shared_ptr<Element> ComponentElement::getAttachingRenderObjectChild() {
+RefNauseam<Element> ComponentElement::getAttachingRenderObjectChild() {
   return m_child;
 }
 
 void StatelessElement::update(Widget* newWidget) {
   assert(newWidget != nullptr);
-  m_widget = std::static_pointer_cast<StatelessWidget>(std::shared_ptr<Widget>(newWidget));
+  m_widget = newWidget;
   markNeedsBuild();
 }
 
 StatefulElement::StatefulElement(StatefulWidget* widget)
     : ComponentElement(widget),
-      m_widget(std::shared_ptr<StatefulWidget>(widget)) {
+      m_widget(widget) {
   m_state = widget->createState();
   m_state->m_widget = m_widget;
-  m_state->m_element = std::static_pointer_cast<StatefulElement>(shared_from_this());
+  m_state->m_element = this;
 }
 
-void StatefulElement::mount(std::shared_ptr<Element> parent, void* slot) {
+void StatefulElement::mount(RefNauseam<Element> parent, void* slot) {
   Element::mount(parent, slot);
   m_state->initState();
+  rebuild();
 }
 
-
-void StatefulElement::setStateElement(std::shared_ptr<StatefulElement> self) {
-  //m_state->m_element = self;
-}
+ 
 Widget* StatefulElement::build() {
-  return m_state->build(std::shared_ptr<BuildContext>(this));
+  return m_state->build(this);
 }
 
+/*
 void StatefulElement::performRebuild() {
   auto built_widget = build();
   Element::performRebuild();
@@ -57,19 +56,19 @@ void StatefulElement::performRebuild() {
     m_child = updateChild(nullptr, built_widget, m_slot);
   }
 }
-
+*/
 
 void StatefulElement::update(Widget* newWidget) {
   assert(newWidget != nullptr);
   auto oldWidget = m_widget;
-  m_widget = std::static_pointer_cast<StatefulWidget>(std::shared_ptr<Widget>(newWidget));
+  m_widget = dynamic_cast<StatefulWidget*>(newWidget);
   m_state->didUpdateWidget(oldWidget);
   markNeedsBuild();
 }
 
 void ProxyElement::update(Widget* newWidget) {
   assert(newWidget != nullptr);
-  m_widget = std::static_pointer_cast<ProxyWidget>(std::shared_ptr<Widget>(newWidget));
+  m_widget = dynamic_cast<ProxyWidget*>(newWidget);
   markNeedsBuild();
 }
 } // namespace caffeine

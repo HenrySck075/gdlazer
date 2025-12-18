@@ -11,28 +11,27 @@ bool Widget::canUpdate(Widget* newWidget, Widget* oldWidget) {
 
 
 
-std::shared_ptr<Element> StatelessWidget::createElement() { 
-  return std::make_shared<StatelessElement>(this);
+RefNauseam<Element> StatelessWidget::createElement() { 
+  return new StatelessElement(this);
 };
 
 
-std::shared_ptr<Element> StatefulWidget::createElement() {
-  auto elem = std::make_shared<StatefulElement>(this);
-  return elem;
+RefNauseam<Element> StatefulWidget::createElement() {
+  return new StatefulElement(this);
 };
 
-std::shared_ptr<Element> LeafRenderObjectWidget::createElement() {
-  return std::make_shared<LeafRenderObjectElement>(this);
-};
-
-
-std::shared_ptr<Element> SingleChildRenderObjectWidget::createElement() {
-  return std::make_shared<SingleChildRenderObjectElement>(this);
+RefNauseam<Element> LeafRenderObjectWidget::createElement() {
+  return new LeafRenderObjectElement(this);
 };
 
 
-std::shared_ptr<Element> MultiChildRenderObjectWidget::createElement() {
-  return std::make_shared<MultiChildRenderObjectElement>(this);
+RefNauseam<Element> SingleChildRenderObjectWidget::createElement() {
+  return new SingleChildRenderObjectElement(this);
+};
+
+
+RefNauseam<Element> MultiChildRenderObjectWidget::createElement() {
+  return new MultiChildRenderObjectElement(this);
 };
 
 } // namespace caffeine

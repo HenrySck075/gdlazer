@@ -1,24 +1,24 @@
 #pragma once
 
-#include "WidgetsBinding.hpp"
-#include "SchedulerBinding.hpp"
+#include "WidgetsFlutterBinding.hpp"
 #include "gdlazer/caffeine/rendering/SkiaRenderContext.hpp"
 
 namespace caffeine {
 /// A CCLayer container that bootstraps and manages the entire widget/element tree.
-/// Combines WidgetsBinding and SchedulerBinding to drive the frame pipeline.
+/// Owns a WidgetsFlutterBinding to drive the frame pipeline.
 /// Renders the widget tree using Skia to an off-screen canvas, then displays via an internal CCSprite.
-class WidgetsContainer : public cocos2d::CCLayer, public WidgetsBinding, public SchedulerBinding {
+class WidgetsContainer : public cocos2d::CCLayer {
 public:
   CREATE_FUNC(WidgetsContainer);
 
   /// Mounts the given widget tree and creates the render tree.
-  void attachRootWidget(Widget* rootWidget) override;
+  void attachRootWidget(Widget* rootWidget);
 
   /// Called every frame by cocos2d. Drives the frame pipeline.
   void update(float deltaTime) override;
 
 private:
+  std::unique_ptr<WidgetsFlutterBinding> m_binding;
   uint64_t m_frameCount = 0;
   caffeine::SkiaRenderContext m_skiaContext;
   cocos2d::CCSprite* m_textureSprite = nullptr;

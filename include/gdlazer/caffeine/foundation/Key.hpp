@@ -1,10 +1,11 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 
 
 namespace caffeine {
-class Key {
+class Key : public cocos2d::CCObject {
 public:
   virtual bool equals(std::shared_ptr<Key> other) = 0;
 };
@@ -47,8 +48,8 @@ class BuildContext;
 /// The untemplated version of GlobalKey for use in member types
 class GlobalKeyU : public Key {
 protected:
-  std::shared_ptr<Widget> m_currentWidget;
-  std::shared_ptr<BuildContext> m_currentContext;
+  RefNauseam<Widget> m_currentWidget;
+  RefNauseam<BuildContext> m_currentContext;
   friend class Element;
   friend class BuildOwner;
 };

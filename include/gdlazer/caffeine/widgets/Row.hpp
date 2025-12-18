@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include "../rendering/object/RenderObject.hpp"
@@ -14,7 +15,7 @@ namespace caffeine {
 class RenderRow : public ContainerRenderObjectMixin {
 public:
   void performLayout() override;
-  void paint(SkCanvas* canvas) override;
+  void paint(PaintingContext* context, const Offset& offset) override;
 };
 
 // ============================================================================
@@ -25,7 +26,7 @@ class Row : public MultiChildRenderObjectWidget {
 public:
   Row(std::vector<Widget*> children = {}) : MultiChildRenderObjectWidget(children) {}
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
+  RefNauseam<RenderObject> createRenderObject() override;
 };
 
 }  // namespace caffeine

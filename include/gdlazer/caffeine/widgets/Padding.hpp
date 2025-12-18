@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include <memory>
 #include "../rendering/object/RenderObject.hpp"
@@ -18,7 +19,7 @@ private:
   EdgeInsets m_insets;
 
 public:
-  RenderPadding(EdgeInsets insets, std::shared_ptr<RenderBox> child)
+  RenderPadding(EdgeInsets insets, RefNauseam<RenderBox> child)
     : m_insets(insets), RenderShiftedBox(child) {}
 
   void performLayout() override;
@@ -38,7 +39,7 @@ public:
 
   inline EdgeInsets getInsets() {return m_insets;}
 
-  std::shared_ptr<RenderObject> createRenderObject() override;
+  RefNauseam<RenderObject> createRenderObject() override;
 };
 
 }  // namespace caffeine

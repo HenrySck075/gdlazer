@@ -1,4 +1,5 @@
 #pragma once
+#include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
 #include "../../foundation/Key.hpp"
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
@@ -10,13 +11,13 @@ class Element;
 class BuildContext;
 class State;
 
-class Widget : public std::enable_shared_from_this<Widget> {
+class Widget : public cocos2d::CCObject {
   friend class Element;
 private:
-  std::shared_ptr<Key> m_key;
+  RefNauseam<Key> m_key;
 public:
-  const std::shared_ptr<Key>& getKey() const { return m_key; }
-  virtual std::shared_ptr<Element> createElement() = 0;
+  const RefNauseam<Key>& getKey() const { return m_key; }
+  virtual RefNauseam<Element> createElement() = 0;
   static bool canUpdate(Widget* newWidget, Widget* oldWidget);
 
   virtual ~Widget() = default;
@@ -26,8 +27,8 @@ public:
 
 class StatelessWidget : public Widget {
 public:
-  virtual std::shared_ptr<Element> createElement();
-  virtual Widget* build(std::shared_ptr<BuildContext> context) = 0;
+  virtual RefNauseam<Element> createElement();
+  virtual Widget* build(RefNauseam<BuildContext> context) = 0;
 
   virtual ~StatelessWidget() = default;
 };
@@ -37,8 +38,8 @@ class State;
 
 class StatefulWidget : public Widget {
 public:
-  virtual std::shared_ptr<Element> createElement();
-  virtual std::shared_ptr<State> createState() = 0;
+  virtual RefNauseam<Element> createElement();
+  virtual RefNauseam<State> createState() = 0;
 
   virtual ~StatefulWidget() = default;
 };
@@ -49,12 +50,12 @@ public:
 
   /// Creates the render object for this widget.
   /// Subclasses must override this to create their specific render object type.
-  virtual std::shared_ptr<RenderObject> createRenderObject() = 0;
+  virtual RefNauseam<RenderObject> createRenderObject() = 0;
   
   /// Copies the configuration described by this RenderObjectWidget to the given RenderObject, which will be of the same type as returned by this object's createRenderObject.
   ///
   /// This method should not do anything to update the children of the render object. That should instead be handled by the method that overrides RenderObjectElement.update in the object rendered by this object's createElement method. See, for example, SingleChildRenderObjectElement::update.
-  virtual void updateRenderObject(std::shared_ptr<BuildContext> context, std::shared_ptr<RenderObject> renderObject) {}
+  virtual void updateRenderObject(RefNauseam<BuildContext> context, RefNauseam<RenderObject> renderObject) {}
 
   virtual ~RenderObjectWidget() = default;
 };
@@ -63,17 +64,17 @@ public:
 /// A superclass for RenderObjectWidgets that configure RenderObject subclasses that have no children.
 class LeafRenderObjectWidget : public RenderObjectWidget {
 public:
-  virtual std::shared_ptr<Element> createElement();
+  virtual RefNauseam<Element> createElement();
 };
 
 
 class ProxyWidget : public Widget {
 protected:
-  std::shared_ptr<Widget> m_child;
+  RefNauseam<Widget> m_child;
 public:
   // Accept raw Widget* and convert to shared_ptr internally
   // Enables: new MyProxyWidget(new ChildWidget())
-  ProxyWidget(Widget* child) : m_child(std::shared_ptr<Widget>(child)) {}
+  ProxyWidget(Widget* child) : m_child(RefNauseam<Widget>(child)) {}
   
   const Widget* getChild() const { return m_child.get(); }
 
@@ -83,14 +84,14 @@ public:
 
 class SingleChildRenderObjectWidget : public RenderObjectWidget {
 protected:
-  std::shared_ptr<Widget> m_child;
+  RefNauseam<Widget> m_child;
 public:
   // Accept raw Widget* and convert to shared_ptr internally
   // Enables: new MyRenderWidget(new ChildWidget())
-  SingleChildRenderObjectWidget(Widget* child) : m_child(std::shared_ptr<Widget>(child)) {}
+  SingleChildRenderObjectWidget(Widget* child) : m_child(RefNauseam<Widget>(child)) {}
   
   const Widget* getChild() const { return m_child.get(); }
-  virtual std::shared_ptr<Element> createElement();
+  virtual RefNauseam<Element> createElement();
 
   virtual ~SingleChildRenderObjectWidget() = default;
 };
@@ -98,17 +99,17 @@ public:
 
 class MultiChildRenderObjectWidget : public RenderObjectWidget {
 protected:
-  std::vector<std::shared_ptr<Widget>> m_children;
+  std::vector<RefNauseam<Widget>> m_children;
 public:
   // Accept raw Widget pointers for convenience, convert to shared_ptr internally
   MultiChildRenderObjectWidget(std::vector<Widget*> children) {
     for (auto* child : children) {
-      m_children.push_back(std::shared_ptr<Widget>(child));
+      m_children.push_back(RefNauseam<Widget>(child));
     }
   }
   
-  const std::vector<std::shared_ptr<Widget>>& getChildren() const { return m_children; }
-  virtual std::shared_ptr<Element> createElement();
+  const std::vector<RefNauseam<Widget>>& getChildren() const { return m_children; }
+  virtual RefNauseam<Element> createElement();
 
   virtual ~MultiChildRenderObjectWidget() = default;
 };
