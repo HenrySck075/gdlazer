@@ -51,4 +51,13 @@ namespace caffeine {
     return po->toString();
   };
 
+  // calls geode::log::pushNest() on ctor and geode::log::popNest() on dtor
+  struct LogNestPusher {
+    LogNestPusher() {
+      geode::log::pushNest();
+    }
+    ~LogNestPusher() {
+      geode::log::popNest();
+    }
+  };
 }}

@@ -42,7 +42,6 @@ void Element::mount(RefNauseam<Element> parent, void* slot) {
     m_parent == nullptr,
     "This element already has a parent and it shouldn't have one yet."
   );
-  geode::log::debug("[Element::mount]: {}", parent == nullptr);
   massert(
     parent == nullptr || parent->m_lifecycleState == _ElementLifecycle::active,
     "Parent should be null or in the active state"
@@ -128,6 +127,7 @@ RefNauseam<Element> Element::updateChild(
   Widget* newWidget,
   void* newSlot
 ) {
+  log::LogNestPusher _;
   auto orb = log::getObjectName(this);
   if (child == nullptr) {
     if (newWidget != nullptr) {

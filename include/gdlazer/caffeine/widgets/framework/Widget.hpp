@@ -3,6 +3,7 @@
 
 #include "../../foundation/Key.hpp"
 #include "gdlazer/caffeine/rendering/object/RenderObject.hpp"
+#include "BuildContext.hpp"
 #include <memory>
 #include <vector>
 

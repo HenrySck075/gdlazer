@@ -1,17 +1,7 @@
 #include "gdlazer/caffeine/widgets/ConstrainedBox.hpp"
+#include "gdlazer/caffeine/rendering/proxy_box/sizer.hpp"
 
 namespace caffeine {
-
-void RenderConstrainedBox::performLayout() {
-  if (m_child) {
-    // Enforce additional constraints on top of our constraints
-    BoxConstraints childConstraints = m_constraints.enforce(m_additionalConstraints);
-    m_child->layout(childConstraints, true);
-    m_size = m_constraints.constrain(m_child->getSize());
-  } else {
-    m_size = m_constraints.constrain(m_additionalConstraints.constrain(Size(0, 0)));
-  }
-}
 
 RefNauseam<RenderObject> ConstrainedBox::createRenderObject() {
   return new RenderConstrainedBox(m_constraints);

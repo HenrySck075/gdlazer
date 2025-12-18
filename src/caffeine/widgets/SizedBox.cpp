@@ -1,6 +1,5 @@
 #include "gdlazer/caffeine/widgets/SizedBox.hpp"
 #include "gdlazer/caffeine/rendering/proxy_box/sizer.hpp"
-#include <memory>
 
 namespace caffeine {
 

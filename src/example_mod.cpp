@@ -27,14 +27,17 @@ public:
     // A thread that sleeps for 1 second and roll a random color in a setState callback
     m_thread = std::thread([this]() {
       while (true) {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        this->setState([this]() {
-          // Random color
-          int r = rand() % 256;
-          int g = rand() % 256;
-          int b = rand() % 256;
-          m_color = caffeine::Color::fromRGB(r, g, b);
+        /// geode's queue is called before our framework's pipeline cycle so its technically still on the previous frame
+        geode::queueInMainThread([this]{
+          this->setState([this]() {
+            // Random color
+            int r = rand() % 256;
+            int g = rand() % 256;
+            int b = rand() % 256;
+            m_color = caffeine::Color::fromRGB(r, g, b);
+          });
         });
+        std::this_thread::sleep_for(std::chrono::seconds(1));
       }
     });
   }

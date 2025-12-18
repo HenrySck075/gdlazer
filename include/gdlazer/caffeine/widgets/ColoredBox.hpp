@@ -1,7 +1,6 @@
 #pragma once
 #include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
-#include <memory>
 #include <cstdint>
 #include "../rendering/proxy_box/ProxyBox.hpp"
 #include "framework/Widget.hpp"

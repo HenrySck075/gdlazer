@@ -11,7 +11,7 @@ namespace caffeine {
   void RenderObject::layout(const BoxConstraints& constraints, bool parentUsesSize ){
     m_constraints = constraints;
 
-    geode::log::debug("[{}]: Constraint: {}", log::getObjectName(this), m_constraints);
+    ///geode::log::debug("[{}]: Constraint: {}", log::getObjectName(this), m_constraints);
 
     geode::log::pushNest();
     
@@ -21,11 +21,13 @@ namespace caffeine {
       m_needsLayout = false;
     }
 
-    geode::log::debug("[{}]: Size: {}", log::getObjectName(this), m_size);
+    //geode::log::debug("[{}]: Size: {}", log::getObjectName(this), m_size);
     geode::log::popNest();
   }
 
   void RenderObject::markNeedsPaint() {
+    log::LogNestPusher _;
+    geode::log::debug("[{}::markNeedsPaint]: idk man", log::getObjectName(this));
     if (!m_needsPaint) {
       m_needsPaint = true;
       if (m_owner) {
@@ -37,6 +39,8 @@ namespace caffeine {
   }
 
   void RenderObject::_paintWithContext(PaintingContext* context, const Offset& offset) {
+    log::LogNestPusher _;
+    geode::log::debug("[{}::_paintWithContext]: {}", log::getObjectName(this), m_needsPaint);
     if (m_needsPaint) {
       paint(context, offset);
       m_needsPaint = false;

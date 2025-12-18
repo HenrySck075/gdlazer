@@ -29,6 +29,7 @@ void ColoredBox::updateRenderObject(RefNauseam<BuildContext> context,
                                     RefNauseam<RenderObject> renderObject) {
   auto coloredBox = dynamic_cast<RenderColoredBox*>(renderObject.get());
   if (coloredBox) {
+    geode::log::debug("hello");
     coloredBox->setColor(m_color);
     coloredBox->setIsAntiAlias(m_isAntiAlias);
   }

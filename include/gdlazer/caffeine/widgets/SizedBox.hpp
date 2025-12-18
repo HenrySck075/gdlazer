@@ -1,7 +1,6 @@
 #pragma once
 #include <gdlazer/caffeine/foundation/utils/Ref.hpp>
 
-#include <memory>
 #include "../rendering/object/RenderObject.hpp"
 #include "../widgets/framework/Widget.hpp"
 #include "../widgets/framework/Element.hpp"
