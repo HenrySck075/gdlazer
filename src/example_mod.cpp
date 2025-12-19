@@ -20,7 +20,8 @@ using namespace geode::prelude;
 // ============================================================================
 
 class gamerState : public caffeine::State {
-  caffeine::Color m_color;
+  caffeine::Color m_color {0xffffff};
+  caffeine::Size m_size {200,200};
   std::thread m_thread;
 public:
   void initState() override {
@@ -29,13 +30,19 @@ public:
       while (true) {
         /// geode's queue is called before our framework's pipeline cycle so its technically still on the previous frame
         geode::queueInMainThread([this]{
-          this->setState([this]() {
+          auto c = [this]() {
             // Random color
             int r = rand() % 256;
             int g = rand() % 256;
             int b = rand() % 256;
             m_color = caffeine::Color::fromRGB(r, g, b);
-          });
+
+            // Random size (min 50x50, max 300x300)
+            int w = 50 + rand() % 251;
+            int h = 50 + rand() % 251;
+            m_size = caffeine::Size(w, h);
+          };
+          this->setState(c);
         });
         std::this_thread::sleep_for(std::chrono::seconds(1));
       }
@@ -44,7 +51,7 @@ public:
   caffeine::Widget* build(caffeine::RefNauseam<caffeine::BuildContext> context) override {
     // Build a simple widget tree: Padding(16px) -> ColoredBox(blue)
     return new caffeine::SizedBox(
-      {200,200}, 
+      m_size, 
       new caffeine::ColoredBox(m_color)
     );
   }

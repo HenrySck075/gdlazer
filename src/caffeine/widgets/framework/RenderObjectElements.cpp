@@ -42,15 +42,17 @@ RefNauseam<caffeine::RenderObject> RenderObjectElement::getRenderObject() {
 
 
 
+/*
 void SingleChildRenderObjectElement::performRebuild() {
   auto widget = dynamic_cast<SingleChildRenderObjectWidget*>(m_widget.get());
   Widget* childWidget = const_cast<Widget*>(widget->getChild());
-  Element::performRebuild();
+  RenderObjectElement::performRebuild();
   m_child = updateChild(m_child, childWidget, m_slot);
-}
+}*/
 
 void SingleChildRenderObjectElement::update(Widget* newWidget) {
-  Element::update(newWidget);
+  RenderObjectElement::update(newWidget);
+  geode::log::debug("[RenderObjectElement]: h");
   auto widget = dynamic_cast<SingleChildRenderObjectWidget*>(m_widget.get());
   m_child = updateChild(m_child, const_cast<Widget*>(widget->getChild()), nullptr);
 }
@@ -79,7 +81,7 @@ void SingleChildRenderObjectElement::mount(RefNauseam<Element> parent, void *slo
 void MultiChildRenderObjectElement::performRebuild() {
   auto widget = dynamic_cast<MultiChildRenderObjectWidget*>(m_widget.get());
   const auto& widgets = widget->getChildren();
-  Element::performRebuild();
+  RenderObjectElement::performRebuild();
 
   // TODO: Implement proper child reconciliation algorithm
   // For now, we'll do a simple approach: rebuild children in order
@@ -104,7 +106,7 @@ void MultiChildRenderObjectElement::performRebuild() {
 }
 
 void MultiChildRenderObjectElement::update(Widget* newWidget) {
-  Element::update(newWidget);
+  RenderObjectElement::update(newWidget);
   // TODO: Element::updateChildren
 }
 

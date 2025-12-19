@@ -20,7 +20,6 @@ void WidgetsBinding::attachRootWidget(Widget* rootWidget) {
 
   // Mount within build scope
   m_buildOwner->buildScope(m_rootElement.get(), [this]() {
-      geode::log::debug("hai");
     // Mount the root element with no parent
     m_rootElement->mount(nullptr, nullptr);
   });
@@ -31,12 +30,18 @@ void WidgetsBinding::drawFrame() {
   // if anything, animated widgets' tickers cb on begin frame callbacks shouldve caused them to be marked as dirty
   // remove this if it breaks
   if (!m_shouldRefreshFrame) return;
+  geode::log::debug("[WidgetsBinding]: attempting to rebuild");
   m_buildOwner->buildScope(m_rootElement.get());
+  geode::log::debug("[WidgetsBinding]: finalizing build");
   m_buildOwner->finalizeTree();
+  m_shouldRefreshFrame = false;
 }
 
 void WidgetsBinding::initWidgetsBinding() {
-  m_buildOwner = std::shared_ptr<BuildOwner>(new BuildOwner([this](){m_shouldRefreshFrame = true;}));
+  m_buildOwner = std::make_shared<BuildOwner>([this](){
+    geode::log::debug("[WidgetsBinding]: new dirty node yay");
+    m_shouldRefreshFrame = true;
+  });
 }
 
 }

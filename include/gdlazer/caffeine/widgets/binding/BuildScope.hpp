@@ -23,10 +23,10 @@ protected:
   void tryRebuild(RefNauseam<Element> element);
   void scheduleBuildFor(Element* element);
   void flushDirtyElements();
-  inline void _seekDirtyElementAfterIter(DirtyElementsIter iter) {
+  inline DirtyElementsIter _seekDirtyElementAfterIter(DirtyElementsIter& iter) {
     if (m_dirtyElementsNeedsResorting != 3) {
-      ++iter;
-      return;
+      iter++;
+      return iter;
     }
     m_dirtyElements.sort(Element::_sort);
     m_dirtyElementsNeedsResorting = 2;
@@ -40,6 +40,7 @@ protected:
       // until just after the right-most clean node.
       iter--;
     }
+    return iter;
   }
 public:
   BuildScope(decltype(m_scheduleRebuildCallback) scheduleRebuild = std::nullopt) : m_scheduleRebuildCallback(scheduleRebuild) {};

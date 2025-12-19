@@ -47,6 +47,7 @@ void BuildOwner::scheduleBuildFor(Element* element) {
 void BuildOwner::buildScope(Element* context, std::optional<VoidCallback> callback) {
   auto scope = context->getBuildScope();
   massert(scope, "Element must have an assigned BuildScope");
+  geode::log::debug("[BuildOwner::buildScope]: {}", !callback.has_value() && scope->m_dirtyElements.empty());
   
   if (!callback.has_value() && scope->m_dirtyElements.empty()) return;
   assert(dm_stateLockLevel >= 0);
@@ -55,12 +56,12 @@ void BuildOwner::buildScope(Element* context, std::optional<VoidCallback> callba
     dm_stateLockLevel++;
     dm_building = true;
   #endif
-  try {
+  /*try {*/
     m_scheduledFlushDirtyElement = true;
     scope->m_building = true;
-    callback.value()();
+    if (callback.has_value()) callback.value()();
     scope->flushDirtyElements();
-  } catch (std::exception& s) {}
+  /*} catch (std::exception& s) {}*/
   scope->m_building = false;
   m_scheduledFlushDirtyElement = false;
   assert(dm_building);

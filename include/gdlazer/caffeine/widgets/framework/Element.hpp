@@ -86,7 +86,7 @@ protected:
   RefNauseam<Widget> m_widget;
   /// idk what do they mean by this their usage is confusing
   _ElementLifecycle m_lifecycleState = _ElementLifecycle::initial;
-  bool m_dirty = 0;
+  bool m_dirty = true;
   bool m_inDirtyList = false; friend class BuildScope;
   int m_depth = 0;
 

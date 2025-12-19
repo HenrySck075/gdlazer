@@ -1,5 +1,6 @@
 #include <gdlazer/caffeine/widgets/binding/BuildScope.hpp>
 #include <gdlazer/caffeine/foundation/utils/massert.h>
+#include <stdexcept>
 
 namespace caffeine {
   
@@ -8,10 +9,14 @@ void BuildScope::tryRebuild(RefNauseam<Element> element) {
 }
 
 void BuildScope::scheduleBuildFor(Element* element) {
-  if (element->m_inDirtyList) return;
+  if (element->m_inDirtyList) {
+    geode::log::warn("{} already in a dirty list", element->toString());
+    return;
+  }
   m_dirtyElements.push_back(element);
   element->m_inDirtyList = true;
   if (m_dirtyElementsNeedsResorting != 0) {
+    throw std::runtime_error("");
     m_dirtyElementsNeedsResorting = 3;
   }
 };
@@ -21,10 +26,19 @@ void BuildScope::flushDirtyElements() {
 
   m_dirtyElements.sort(Element::_sort);
   m_dirtyElementsNeedsResorting = 2; // 10
-  for (auto i = m_dirtyElements.begin(); i != m_dirtyElements.end(); _seekDirtyElementAfterIter(i)) {
+  geode::log::debug("[BuildScope::flushDirtyElements]:");
+  auto prevIter = m_dirtyElements.end();
+  for (auto i = m_dirtyElements.begin(); i != m_dirtyElements.end(); i=_seekDirtyElementAfterIter(i)) {
+    if (prevIter == i) {
+      geode::log::warn("Iterator seemingly doesn't move.");
+      break;
+    }
     auto& e = *i;
     auto elementScope = e->getBuildScope();
-    if (elementScope && elementScope.get() == this) tryRebuild(e);
+    geode::log::debug("[BuildScope::flushDirtyElements]: exist: {} isThis: {}",elementScope!=nullptr,elementScope.get() == this);
+    if (elementScope && elementScope.get() == this) {
+      tryRebuild(e);
+    }
   }
   for (auto& i : m_dirtyElements) {
     auto elementScope = i->getBuildScope();
@@ -32,6 +46,8 @@ void BuildScope::flushDirtyElements() {
       i->m_inDirtyList = false;
     }
   }
+  m_dirtyElementsNeedsResorting = 0;
+  m_dirtyElements.clear();
 }
 
 }

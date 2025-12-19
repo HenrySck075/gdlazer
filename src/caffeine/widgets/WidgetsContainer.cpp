@@ -41,6 +41,7 @@ bool WidgetsContainer::init() {
   // Initialize the widgets binding (creates build owner)
   m_binding->initWidgetsBinding();
 
+  m_binding->addPersistentFrameCallback([this](unsigned long){m_binding->drawFrame();});
   m_binding->addPersistentFrameCallback([this](unsigned long){paintRenderTree();});
 
   // Schedule this node to receive update() calls every frame

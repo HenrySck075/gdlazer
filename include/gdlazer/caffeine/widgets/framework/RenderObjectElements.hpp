@@ -35,7 +35,8 @@ public:
   RefNauseam<caffeine::RenderObject> getRenderObject() override;
 
   void performRebuild() override {
-    dynamic_cast<RenderObjectWidget*>(m_widget.get())->updateRenderObject(this, m_renderObject);
+    geode::log::debug("c");
+    static_cast<RenderObjectWidget*>(m_widget.get())->updateRenderObject(this, m_renderObject);
     Element::performRebuild();
   };
   void update(Widget* newWidget) override {
@@ -61,7 +62,7 @@ public:
     : RenderObjectElement(widget) {}
 
   void mount(RefNauseam<Element> parent, void *slot) override;
-  void performRebuild() override;
+  //void performRebuild() override;
   void update(Widget* newWidget) override;
   RefNauseam<Element> getAttachingRenderObjectChild() override;
   void visitChildren(std::function<void(RefNauseam<Element>)> visitor) override;
