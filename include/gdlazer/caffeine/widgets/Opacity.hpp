@@ -46,6 +46,14 @@ public:
     m_alwaysIncludeSemantics = value;
   }
 
+  // Opacity nodes need special compositing for proper alpha blending
+  void updateCompositingBits() override {
+    // Mark as repaint boundary if opacity is partial (not 0 or 1)
+    // This allows for layer-based compositing which is more efficient
+    bool needsLayer = m_opacity > 0.0 && m_opacity < 1.0;
+    setRepaintBoundary(needsLayer);
+  }
+
   void paint(PaintingContext* context, const Offset& offset) override;
 
   virtual ~RenderOpacity() = default;

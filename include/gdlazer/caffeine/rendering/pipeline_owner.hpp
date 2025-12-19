@@ -44,6 +44,10 @@ public:
   /// Sorts by depth (shallowest first) and calls layout() on each
   void flushLayout();
 
+  /// Update compositing bits for layer optimization
+  /// Walk render tree and determine which nodes need to be layer boundaries
+  void flushCompositingBits();
+
   /// Queue a node for painting during flushPaint()
   void addDirtyPaint(RenderObject* node) {
     if (!node) return;

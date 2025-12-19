@@ -129,6 +129,7 @@ protected:
   bool m_needsPaint = true;
   bool m_isRepaintBoundary = false;
   std::optional<bool> m_isRelayoutBoundary = std::nullopt;
+  bool m_sizedByParent = false;
 
 public:
   virtual std::shared_ptr<ParentData> getParentData() const { return nullptr; }
@@ -144,9 +145,11 @@ public:
   int getDepth() const { return m_depth; }
   PipelineOwner* getOwner() const { return m_owner; }
   bool isRepaintBoundary() const { return m_isRepaintBoundary; }
+  bool sizedByParent() const { return m_sizedByParent; }
 
   // Setters for optimization
   void setRepaintBoundary(bool value) { m_isRepaintBoundary = value; }
+  void setSizedByParent(bool value) { m_sizedByParent = value; }
 
   // Main layout entry point
   void layout(const BoxConstraints& constraints, bool parentUsesSize = false);
@@ -170,6 +173,12 @@ public:
   // Mark paint as dirty
   // Queues to owner instead of just flagging
   void markNeedsPaint();
+
+  // Update compositing bits - determine if node needs to be a layer boundary
+  virtual void updateCompositingBits() {
+    // Default: no special compositing requirements
+    // Subclasses (Opacity, Transform, etc.) override this
+  }
 
   // Set parent (internal use)
   void setParent(RefNauseam<RenderObject> parent) {

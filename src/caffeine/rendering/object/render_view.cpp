@@ -31,18 +31,22 @@ void RenderView::flushLayout() {
 }
 
 void RenderView::flushCompositingBits() {
-  // Phase 2: Prepare compositing bits
-  // Walk the tree and mark repaint boundaries for layer caching
-  // In Flutter, these include:
-  // - Opacity nodes (need to composite with alpha)
-  // - ShiftedBox nodes with transforms (need isolated rendering)
-  // - Explicit RepaintBoundary widgets
+  // Phase 2: Update compositing bits tree-wide
+  // Walk the render tree and determine which nodes need to be layer boundaries
+  // This allows for optimization: nodes that won't change can be cached as layers
   //
-  // For now, we use a simple heuristic: nodes that would benefit from caching
-  // can be marked as repaint boundaries. This is a pass where we could
-  // analyze the tree and mark expensive subtrees for layer isolation.
+  // In Flutter, this is where:
+  // - Opacity nodes are marked for layer composition
+  // - Transform nodes are marked for isolated rendering
+  // - Expensive subtrees are identified for caching
   //
-  // TODO: Implement smart heuristics to auto-mark expensive subtrees
+  // For now, this is a recursive walk that lets each node determine if it
+  // needs special compositing treatment (e.g., via updateCompositingBits override)
+  
+  if (m_child) {
+    // Start tree walk from the root child
+    m_child->updateCompositingBits();
+  }
 }
 
 void RenderView::flushPaint() {

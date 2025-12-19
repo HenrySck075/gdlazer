@@ -29,7 +29,12 @@ namespace caffeine {
   }
 
   bool RenderObject::computeIsRelayoutBoundary(bool parentUsesSize) {
-    bool boundary = !parentUsesSize || m_constraints.isTight() || !m_parent;
+    // A render object is a relayout boundary if:
+    // 1. It has no parent (root node)
+    // 2. Parent doesn't use its size (size is independent)
+    // 3. It's explicitly sized by parent (sizedByParent constraint)
+    // 4. Parent constraints are tight (size is determined by parent)
+    bool boundary = !m_parent || !parentUsesSize || m_sizedByParent || m_constraints.isTight();
     m_isRelayoutBoundary = boundary;
     return boundary;
   }
