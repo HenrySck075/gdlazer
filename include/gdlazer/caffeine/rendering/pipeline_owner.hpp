@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 #include "object/RenderObject.hpp"
 
 namespace caffeine {
@@ -11,8 +12,10 @@ struct Offset;
 
 class PipelineOwner {
 private:
+  std::vector<RenderObject*> m_nodesNeedingLayout;
   std::vector<RenderObject*> m_nodesNeedingPaint;
   SkiaRenderContext* m_renderContext = nullptr;
+  std::function<void()> m_onNeedVisualUpdate = nullptr;
 
 public:
   PipelineOwner() = default;
@@ -21,6 +24,25 @@ public:
   void setRenderContext(SkiaRenderContext* context) {
     m_renderContext = context;
   }
+
+  /// Register callback for visual update notifications (frame scheduling)
+  void setOnNeedVisualUpdate(std::function<void()> callback) {
+    m_onNeedVisualUpdate = callback;
+  }
+
+  /// Queue a node for layout during flushLayout()
+  void addDirtyLayout(RenderObject* node) {
+    if (!node) return;
+    
+    auto it = std::find(m_nodesNeedingLayout.begin(), m_nodesNeedingLayout.end(), node);
+    if (it == m_nodesNeedingLayout.end()) {
+      m_nodesNeedingLayout.push_back(node);
+    }
+  }
+
+  /// Process all dirty layout nodes
+  /// Sorts by depth (shallowest first) and calls layout() on each
+  void flushLayout();
 
   /// Queue a node for painting during flushPaint()
   void addDirtyPaint(RenderObject* node) {
@@ -61,8 +83,9 @@ public:
   }
 
   void requestVisualUpdate() {
-    // Called by markNeedsPaint() to signal that frame needs updating
-    // In full implementation, would schedule vsync callback
+    if (m_onNeedVisualUpdate) {
+      m_onNeedVisualUpdate();
+    }
   }
 };
 

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+#include <optional>
 #include <Geode/cocos/include/cocos2d.h>
 #include <skia/include/core/SkCanvas.h>
 #include "../../foundation/log.hpp"
@@ -127,6 +128,7 @@ protected:
   bool m_needsLayout = true;
   bool m_needsPaint = true;
   bool m_isRepaintBoundary = false;
+  std::optional<bool> m_isRelayoutBoundary = std::nullopt;
 
 public:
   virtual std::shared_ptr<ParentData> getParentData() const { return nullptr; }
@@ -157,14 +159,13 @@ public:
   virtual void paint(PaintingContext* context, const Offset& offset) = 0;
 
   // Mark layout as dirty
-  void markNeedsLayout() {
-    if (!m_needsLayout) {
-      m_needsLayout = true;
-      if (m_parent) {
-        m_parent->markNeedsLayout();
-      }
-    }
-  }
+  void markNeedsLayout();
+
+  // Propagate layout dirty mark to parent without queuing
+  void markParentNeedsLayout();
+
+  // Compute relayout boundary status based on constraints and parent relationship
+  bool computeIsRelayoutBoundary(bool parentUsesSize);
 
   // Mark paint as dirty
   // Queues to owner instead of just flagging

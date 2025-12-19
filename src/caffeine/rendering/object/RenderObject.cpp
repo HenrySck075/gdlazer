@@ -2,23 +2,58 @@
 #include <gdlazer/caffeine/rendering/pipeline_owner.hpp>
 #include <gdlazer/caffeine/rendering/painting_context.hpp>
 
-// Most inline implementations are in the header
-// Add any complex implementations here as needed
-
-// TODO: Add paint implementations that actually draw to cocos2d
-// TODO: Add parentData storage mechanism (could be a map or property on RenderBox)
 namespace caffeine {
-  void RenderObject::layout(const BoxConstraints& constraints, bool parentUsesSize ){
+
+  void RenderObject::markNeedsLayout() {
+    if (m_needsLayout) {
+      return;
+    }
+
+    m_needsLayout = true;
+
+    bool isRelayoutBoundary = m_isRelayoutBoundary.value_or(false);
+
+    if (m_owner && isRelayoutBoundary) {
+      m_owner->addDirtyLayout(this);
+      m_owner->requestVisualUpdate();
+    } else if (m_parent) {
+      markParentNeedsLayout();
+    }
+  }
+
+  void RenderObject::markParentNeedsLayout() {
+    m_needsLayout = true;
+    if (m_parent) {
+      m_parent->markNeedsLayout();
+    }
+  }
+
+  bool RenderObject::computeIsRelayoutBoundary(bool parentUsesSize) {
+    bool boundary = !parentUsesSize || m_constraints.isTight() || !m_parent;
+    m_isRelayoutBoundary = boundary;
+    return boundary;
+  }
+
+  void RenderObject::layout(const BoxConstraints& constraints, bool parentUsesSize) {
     m_constraints = constraints;
 
     ///geode::log::debug("[{}]: Constraint: {}", log::getObjectName(this), m_constraints);
 
     geode::log::pushNest();
     
+    // Compute relayout boundary status based on current constraints and parent info
+    computeIsRelayoutBoundary(parentUsesSize);
+
     // Only layout if something changed or we're marked dirty
     if (m_needsLayout || !(m_constraints == constraints)) {
+      Size oldSize = m_size;
       performLayout();
       m_needsLayout = false;
+      
+      // If size changed, mark paint as dirty
+      if (oldSize != m_size) {
+        markNeedsPaint();
+      }
     }
 
     //geode::log::debug("[{}]: Size: {}", log::getObjectName(this), m_size);
@@ -32,6 +67,7 @@ namespace caffeine {
       m_needsPaint = true;
       if (m_owner) {
         m_owner->addDirtyPaint(this);
+        m_owner->requestVisualUpdate();
       } else if (m_parent) {
         m_parent->markNeedsPaint();
       }
@@ -64,4 +100,4 @@ namespace caffeine {
 
     }
   }
-  } // namespace caffeine
+}  // namespace caffeine
